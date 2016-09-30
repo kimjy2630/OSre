@@ -92,6 +92,10 @@ struct thread
     /* Shared between thread.c and synch.c. */
     struct list_elem elem;              /* List element. */
 
+    ////
+    struct list lock;
+    int effective_priority;
+
 #ifdef USERPROG
     /* Owned by userprog/process.c. */
     uint32_t *pagedir;                  /* Page directory. */
@@ -100,6 +104,14 @@ struct thread
     /* Owned by thread.c. */
     unsigned magic;                     /* Detects stack overflow. */
   };
+
+//// sleeping_thread
+struct sleeping_thread{
+	struct thread *thread;
+	int64_t wakeup_time;
+
+	struct list_elem elem;
+};
 
 /* If false (default), use round-robin scheduler.
    If true, use multi-level feedback queue scheduler.
@@ -132,5 +144,11 @@ int thread_get_nice (void);
 void thread_set_nice (int);
 int thread_get_recent_cpu (void);
 int thread_get_load_avg (void);
+
+//////
+bool priority_insert(const struct list_elem *a, const struct list_elem *b, void *aux);
+void update_effective_priority(struct thread *t);
+//void thread_sleep (int64_t sleep_start, int64_t sleep_time);/
+//void thread_wakeup ();
 
 #endif /* threads/thread.h */
