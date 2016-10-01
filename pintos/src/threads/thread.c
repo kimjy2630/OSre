@@ -418,6 +418,13 @@ thread_calc_eff_priority (struct thread* t)
 //			if(!list_empty(&list_entry(e, struct lock, elem)->semaphore.waiters))
 			if(!list_empty(list_wait))
 			{
+				struct thread* t2 = list_entry(list_max(list_wait, highest_priority_sema, NULL), struct thread, elem_sema);
+				int pr = thread_get_eff_priority(t2);
+				if(pr > thread_get_eff_priority(t))
+					thread_set_eff_priority(t, pr);
+
+				/*
+
 //				struct list_elem *e2 = list_begin(&list_entry(e, struct lock, elem)->semaphore.waiters);
 				struct list_elem *e2 = list_begin(list_wait);
 //				for(; e2 != list_end(&list_entry(e, struct lock, elem)->semaphore.waiters); e2 = list_next(e2))
@@ -428,6 +435,9 @@ thread_calc_eff_priority (struct thread* t)
 					if(pri > thread_get_eff_priority(t))
 						thread_set_eff_priority(t, pri);
 				}
+
+				*/
+
 			}
 		}
 	}
