@@ -71,7 +71,7 @@ sema_down (struct semaphore *sema)
     {
 	  ////
 //      list_push_back (&sema->waiters, &thread_current ()->elem);
-      list_insert_ordered (&sema->waiters, &thread_current ()->elem, higher_priority, NULL);
+      list_insert_ordered (&sema->waiters, &thread_current ()->elem_sema, higher_priority, NULL);
       thread_block ();
     }
   sema->value--;
@@ -121,7 +121,8 @@ sema_up (struct semaphore *sema)
 	struct thread *t = list_entry (list_pop_front (&sema->waiters), struct thread, elem);
     thread_unblock (t);
 
-    if(t->priority > thread_get_priority()){
+//    if(t->priority > thread_get_priority()){
+    if(thread_get_eff_priority(t) > thread_get_eff_priority(thread_current()))
     	thread_yield();
     }
   }
