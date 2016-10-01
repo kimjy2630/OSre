@@ -337,9 +337,11 @@ thread_set_priority (int new_priority)
   thread_current ()->priority = new_priority;
   ////
   //
-  thread_calc_eff_priority(thread_current());
+//  thread_calc_eff_priority(thread_current());
+  if(new_priority > thread_get_eff_priority(thread_current()))
+	  thread_set_eff_priority(thread_current(), new_priority);
   //
-  int highest_in_ready = list_entry (list_max (&ready_list, higher_priority, NULL), struct thread, elem)->priority;
+  int highest_in_ready = list_entry (list_max (&ready_list, highest_priority, NULL), struct thread, elem)->priority;
   if(new_priority < highest_in_ready)
 	  thread_yield();
 
@@ -352,6 +354,16 @@ thread_get_priority (void)
 //  return thread_current ()->priority;
 	return thread_current ()->priority_eff;
 }
+
+//
+bool
+highest_priority(const struct list_elem* a, const struct list_elem* b, void* aux)
+{
+	int priority_a = thread_get_eff_priority(list_entry (a, struct thread, elem));
+	int priority_b = thread_get_eff_priority(list_entry (b, struct thread, elem));
+	return priority_a < priority_b;
+}
+//
 
 ////
 bool
