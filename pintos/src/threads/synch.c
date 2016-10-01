@@ -72,6 +72,14 @@ sema_down (struct semaphore *sema)
 	  ////
       list_push_back (&sema->waiters, &thread_current ()->elem_sema);
 //      list_insert_ordered (&sema->waiters, &thread_current ()->elem_sema, higher_priority, NULL);
+
+
+      /*debugging*/
+      for(struct list_elem* e = list_begin(&sema->waiters); e != list_end(&sema->waiters); e = list_next(e))
+    	  ASSERT(is_thread(list_entry(e, struct thread, elem_sema)));
+
+      /*debugging end*/
+
       thread_block ();
     }
   sema->value--;
