@@ -417,7 +417,7 @@ thread_calc_eff_priority (struct thread* t)
 		}
 	}
 
-	intr_set(old_level);
+	intr_set_level(old_level);
 }
 //
 
