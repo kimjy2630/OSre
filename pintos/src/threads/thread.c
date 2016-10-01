@@ -390,18 +390,23 @@ higher_priority(const struct list_elem *a, const struct list_elem *b, void *aux)
 void
 thread_set_eff_priority (struct thread* t, int new_priority)
 {
+	ASSERT(is_thread(t));
+
 	t->priority_eff = new_priority;
 }
 
 int
 thread_get_eff_priority (struct thread* t)
 {
+	ASSERT(is_thread(t));
+
 	return t->priority_eff;
 }
 
 void
 thread_calc_eff_priority (struct thread* t)
 {
+	ASSERT(is_thread(t));
 	enum intr_level old_level = intr_disable();
 
 //	msg("ASDF\n");
