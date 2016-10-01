@@ -93,6 +93,7 @@ struct thread
     struct list_elem elem;              /* List element. */
     //
     struct list list_lock;
+    int priority_eff;
     //
 
 #ifdef USERPROG

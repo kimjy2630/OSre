@@ -343,6 +343,31 @@ higher_priority(const struct list_elem *a, const struct list_elem *b, void *aux)
 	return priority_a > priority_b;
 }
 
+//
+int
+thread_get_eff_priority (struct thread* t)
+{
+	return t->priority_eff;
+}
+
+void
+thread_calc_eff_priority (struct thread* t)
+{
+	t->priority_eff = t->priority;
+
+	struct list_elem *e = list_begin (&t->list_lock);
+	if (e != NULL)
+	{
+		for (; e != list_end (&t->list_lock); e = list_next (e))
+		{
+			int pri = list_entry(e, struct lock, elem)->holder->priority_eff;
+			if(pri > t->priority_eff)
+				t->priority_eff = pri;
+		}
+	}
+}
+//
+
 /* Sets the current thread's nice value to NICE. */
 void
 thread_set_nice (int nice UNUSED) 
@@ -460,6 +485,7 @@ init_thread (struct thread *t, const char *name, int priority)
   t->priority = priority;
   t->magic = THREAD_MAGIC;
   //
+  t->priority_eff = t->priority;
   list_init(&t->list_lock);
   //
 }
