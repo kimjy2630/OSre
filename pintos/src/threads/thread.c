@@ -342,7 +342,8 @@ thread_set_priority (int new_priority)
 	  thread_set_eff_priority(thread_current(), new_priority);
   //
   int highest_in_ready = list_entry (list_max (&ready_list, highest_priority, NULL), struct thread, elem)->priority;
-  if(new_priority < highest_in_ready)
+//  if(new_priority < highest_in_ready)
+  if(thread_get_eff_priority(thread_current()) < highest_in_ready)
 	  thread_yield();
 
 }
@@ -393,6 +394,8 @@ thread_get_eff_priority (struct thread* t)
 void
 thread_calc_eff_priority (struct thread* t)
 {
+	enum intr_level old_level = intr_disable();
+
 	t->priority_eff = t->priority;
 
 
@@ -408,11 +411,13 @@ thread_calc_eff_priority (struct thread* t)
 				{
 					int pri = thread_get_eff_priority(list_entry(e2, struct thread, elem_sema));
 					if(pri > thread_get_eff_priority(t))
-						thread_set_eff_priority(thread_current(), pri);
+						thread_set_eff_priority(t, pri);
 				}
 			}
 		}
 	}
+
+	intr_set(old_level);
 }
 //
 
