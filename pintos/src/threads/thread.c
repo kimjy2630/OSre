@@ -343,7 +343,7 @@ thread_set_priority (int new_priority)
   //
   if(!list_empty(&ready_list))
   {
-	  int highest_in_ready = list_entry (list_max (&ready_list, highest_priority, NULL), struct thread, elem)->priority;
+	  int highest_in_ready = list_entry (list_max (&ready_list, highest_priority, NULL), struct thread, elem)->priority_eff;
 //  if(new_priority < highest_in_ready)
 	  if(thread_get_eff_priority(thread_current()) < highest_in_ready)
 		  thread_yield();
