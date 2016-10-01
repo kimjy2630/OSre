@@ -413,6 +413,7 @@ thread_calc_eff_priority (struct thread* t)
 	enum intr_level old_level = intr_disable();
 
 //	msg("ASDF\n");
+	int priority_old = t->priority_eff;
 
 	t->priority_eff = t->priority;
 //	return;
@@ -452,6 +453,14 @@ thread_calc_eff_priority (struct thread* t)
 				*/
 
 			}
+		}
+	}
+
+	if(priority_old != t->priority_eff)
+	{
+		if(t->lock_waiting != NULL)
+		{
+			thread_calc_eff_priority(t->lock_waiting->holder);
 		}
 	}
 
@@ -578,6 +587,7 @@ init_thread (struct thread *t, const char *name, int priority)
   //
   t->priority_eff = t->priority;
   list_init(&t->list_lock);
+  t->lock_waiting = NULL;
   //
 }
 

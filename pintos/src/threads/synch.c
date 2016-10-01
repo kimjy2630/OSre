@@ -224,15 +224,24 @@ lock_acquire (struct lock *lock)
   //
   enum intr_level old_level = intr_disable();
 
+  thread_current()->lock_waiting = lock;
+
   if(lock->holder != NULL)
   {
 	  if(thread_get_eff_priority(lock->holder) < thread_get_eff_priority(thread_current()))
 	  {
 		  thread_set_eff_priority(lock->holder, thread_get_eff_priority(thread_current()));
+		  struct lock* lock_nested = lock->holder->lock_waiting;
+		  if(lock_nested != NULL)
+		  {
+			  struct thread* t_nested = lock_nested->holder;
+			  thread_calc_eff_priority(t_nested);
+		  }
 	  }
   }
   //
   sema_down (&lock->semaphore);
+  thread_current()->lock_waiting = NULL;
   lock->holder = thread_current ();
   //
   list_push_back(&lock->holder->list_lock, &lock->elem);

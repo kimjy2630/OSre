@@ -94,6 +94,7 @@ struct thread
     //
     struct list_elem elem_sema;
     struct list list_lock;
+    struct lock* lock_waiting;
     int priority_eff;
     //
 
