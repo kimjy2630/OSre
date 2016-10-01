@@ -75,7 +75,8 @@ sema_down (struct semaphore *sema)
 
 
       /*debugging*/
-      for(struct list_elem* e = list_begin(&sema->waiters); e != list_end(&sema->waiters); e = list_next(e))
+      struct list_elem* e ;
+      for(e = list_begin(&sema->waiters); e != list_end(&sema->waiters); e = list_next(e))
     	  ASSERT(is_thread(list_entry(e, struct thread, elem_sema)));
 
       /*debugging end*/
