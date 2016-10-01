@@ -200,7 +200,8 @@ thread_create (const char *name, int priority,
   thread_unblock (t);
 
   ////
-  if(priority > thread_get_priority())
+//  if(priority > thread_get_priority())
+  if(priority > thread_get_eff_priority(thread_current()))
 	  thread_yield();
 
   return tid;

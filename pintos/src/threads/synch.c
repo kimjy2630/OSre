@@ -209,6 +209,7 @@ lock_acquire (struct lock *lock)
   lock->holder = thread_current ();
   //
   list_push_back(&lock->holder->list_lock, &lock->elem);
+  thread_calc_eff_priority(&lock->holder);
   //
 
 }
@@ -249,6 +250,7 @@ lock_release (struct lock *lock)
   sema_up (&lock->semaphore);
   //
   list_remove(&lock->elem);
+  thread_calc_eff_priority(thread_current());
   //
 }
 
