@@ -302,8 +302,8 @@ thread_exit (void)
 	  lock_release(lock);
   }
 
-  if(&thread_current()->elem_sema != NULL)
-	  list_remove(&thread_current()->elem_sema);
+//  if(&thread_current()->elem_sema != NULL)
+//	  list_remove(&thread_current()->elem_sema);
   //
 
   thread_current ()->status = THREAD_DYING;
