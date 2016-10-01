@@ -396,6 +396,8 @@ thread_calc_eff_priority (struct thread* t)
 {
 	enum intr_level old_level = intr_disable();
 
+	printf("ASDF\n");
+
 	t->priority_eff = t->priority;
 
 
@@ -410,7 +412,7 @@ thread_calc_eff_priority (struct thread* t)
 				for(; e2 != list_end(&list_entry(e, struct lock, elem)->semaphore.waiters); e2 = list_next(e2))
 				{
 					int pri = thread_get_eff_priority(list_entry(e2, struct thread, elem_sema));
-					printf("%d\n",pri);
+//					printf("%d\n",pri);
 					if(pri > thread_get_eff_priority(t))
 						thread_set_eff_priority(t, pri);
 				}
