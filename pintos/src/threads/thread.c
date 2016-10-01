@@ -582,8 +582,13 @@ next_thread_to_run (void)
   if (list_empty (&ready_list))
     return idle_thread;
   else
-//	  return list_entry(list_max(&ready_list, highest_priority, NULL), struct thread, elem);
-    return list_entry (list_pop_front (&ready_list), struct thread, elem);
+  {
+	  struct list_elem e = list_max(&ready_list, highest_priority, NULL);
+	  list_remove(e);
+	  return list_entry(e, struct thread, elem);
+  }
+
+//    return list_entry (list_pop_front (&ready_list), struct thread, elem);
 }
 
 /* Completes a thread switch by activating the new thread's page
