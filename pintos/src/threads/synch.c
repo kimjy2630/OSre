@@ -206,6 +206,8 @@ lock_acquire (struct lock *lock)
   ASSERT (!lock_held_by_current_thread (lock));
 
   //
+  enum intr_level old_level = intr_disable();
+
   if(lock->holder != NULL)
   {
 	  if(thread_get_eff_priority(lock->holder) < thread_get_eff_priority(thread_current()))
@@ -219,6 +221,8 @@ lock_acquire (struct lock *lock)
   //
   list_push_back(&lock->holder->list_lock, &lock->elem);
 //  thread_calc_eff_priority(&lock->holder);
+
+  intr_set_level(old_level);
   //
 
 }
@@ -255,11 +259,17 @@ lock_release (struct lock *lock)
   ASSERT (lock != NULL);
   ASSERT (lock_held_by_current_thread (lock));
 
+  //
+  enum intr_level old_level = intr_disable();
+  //
+
   lock->holder = NULL;
   sema_up (&lock->semaphore);
   //
   list_remove(&lock->elem);
   thread_calc_eff_priority(thread_current());
+
+  intr_set_level(old_level);
   //
 }
 
