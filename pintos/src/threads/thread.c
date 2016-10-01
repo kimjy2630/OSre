@@ -352,6 +352,12 @@ higher_priority(const struct list_elem *a, const struct list_elem *b, void *aux)
 }
 
 //
+void
+thread_set_eff_priority (struct thread* t, int new_priority)
+{
+	t->priority_eff = new_priority;
+}
+
 int
 thread_get_eff_priority (struct thread* t)
 {
@@ -363,14 +369,19 @@ thread_calc_eff_priority (struct thread* t)
 {
 	t->priority_eff = t->priority;
 
-	struct list_elem *e = list_begin (&t->list_lock);
-	if (e != NULL)
+
+	if (!list_empty(&t->list_lock))
 	{
+		struct list_elem *e = list_begin (&t->list_lock);
 		for (; e != list_end (&t->list_lock); e = list_next (e))
 		{
-			int pri = list_entry(e, struct lock, elem)->holder->priority_eff;
-			if(pri > t->priority_eff)
-				t->priority_eff = pri;
+			struct list_elem *e2 = list_begin(&list_entry(e, struct lock, elem)->semaphore.waiters);
+			for(; e2 != list_end(&list_entry(e, struct lock, elem)->semaphore.waiters); e2 = list_next(e2))
+			{
+				int pri = thread_get_eff_priority(list_entry(e, struct thread, elem));
+				if(pri > t->priority_eff)
+					thread_set_eff_priority(thread_current(), pri);
+			}
 		}
 	}
 }
