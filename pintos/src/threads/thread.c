@@ -428,7 +428,8 @@ thread_calc_eff_priority (struct thread* t)
 			{
 //				struct thread* t2 = list_entry(list_max(list_wait, highest_priority_sema, NULL), struct thread, elem_sema);
 //				int pr = thread_get_eff_priority(t2);
-				int pr = thread_get_eff_priority(list_entry(list_begin(list_wait), struct thread, elem));
+				ASSERT(is_thread(list_entry(list_begin(list_wait), struct thread, elem_sema)));
+				int pr = thread_get_eff_priority(list_entry(list_begin(list_wait), struct thread, elem_sema));
 				if(pr > thread_get_eff_priority(t))
 					thread_set_eff_priority(t, pr);
 
