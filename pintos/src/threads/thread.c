@@ -200,7 +200,7 @@ thread_create (const char *name, int priority,
   thread_unblock (t);
 
   ////
-  if(priority > thread_get_priority())
+  if(thread_get_eff_priority(t) > thread_get_priority())
 //  if(priority > thread_get_eff_priority(thread_current()))
 	  thread_yield();
 
@@ -293,6 +293,19 @@ thread_exit (void)
   /* Just set our status to dying and schedule another process.
      We will be destroyed during the call to schedule_tail(). */
   intr_disable ();
+
+  //
+  struct list* list_lock = &thread_current()->list_lock;
+  while(!list_empty(list_lock))
+  {
+	  struct lock* lock = list_entry(list_pop_front(list_lock), struct lock, elem);
+	  lock_release(lock);
+  }
+
+  if(&thread_current()->elem_sema != NULL)
+	  list_remove(&thread_current()->elem_sema);
+  //
+
   thread_current ()->status = THREAD_DYING;
   schedule ();
   NOT_REACHED ();
