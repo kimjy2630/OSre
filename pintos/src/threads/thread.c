@@ -396,7 +396,7 @@ thread_calc_eff_priority (struct thread* t)
 {
 	enum intr_level old_level = intr_disable();
 
-	printf("ASDF\n");
+	msg("ASDF\n");
 
 	t->priority_eff = t->priority;
 
