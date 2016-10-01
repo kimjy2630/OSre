@@ -188,9 +188,7 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 	/* Add to run queue. */
 	thread_unblock(t);
 
-	////
 	if (thread_get_eff_priority(t) > thread_get_priority())
-//  if(priority > thread_get_eff_priority(thread_current()))
 		thread_yield();
 
 	return tid;
@@ -219,14 +217,11 @@ void thread_block(void) {
  it may expect that it can atomically unblock a thread and
  update other data. */
 void thread_unblock(struct thread *t) {
-	enum intr_level old_level;
-
 	ASSERT(is_thread(t));
 
-	old_level = intr_disable();
+	enum intr_level old_level = intr_disable();
 	ASSERT(t->status == THREAD_BLOCKED);
 	list_push_back(&ready_list, &t->elem);
-//  list_insert_ordered (&ready_list, &t->elem, higher_priority, NULL);
 	t->status = THREAD_READY;
 	intr_set_level(old_level);
 }
@@ -273,22 +268,15 @@ void thread_exit(void) {
 	 We will be destroyed during the call to schedule_tail(). */
 	intr_disable();
 
-	//
 	struct list* list_lock = &thread_current()->list_lock;
 	while (!list_empty(list_lock)) {
-		struct lock* lock = list_entry(list_pop_front(list_lock), struct lock,
-				elem);
+		struct lock* lock = list_entry(list_pop_front(list_lock), struct lock, elem);
 		lock_release(lock);
 	}
 
-//  if(&thread_current()->elem_sema != NULL)
-//	  list_remove(&thread_current()->elem_sema);
-	//
-
 	thread_current()->status = THREAD_DYING;
 	schedule();
-	NOT_REACHED ()
-	;
+	NOT_REACHED ();
 }
 
 /* Yields the CPU.  The current thread is not put to sleep and
@@ -302,7 +290,6 @@ void thread_yield(void) {
 	old_level = intr_disable();
 	if (curr != idle_thread)
 		list_push_back(&ready_list, &curr->elem);
-//	  list_insert_ordered(&ready_list, &curr->elem, higher_priority, NULL);
 	curr->status = THREAD_READY;
 	schedule();
 	intr_set_level(old_level);
@@ -313,22 +300,16 @@ void thread_set_priority(int new_priority) {
 	enum intr_level old_level = intr_disable();
 
 	thread_current()->priority = new_priority;
-	////
-	//
+
 	thread_calc_eff_priority(thread_current());
-//  if(new_priority > thread_get_eff_priority(thread_current()))
-//	  thread_set_eff_priority(thread_current(), new_priority);
-	//
+
 	if (!list_empty(&ready_list)) {
-		int highest_in_ready =
-				list_entry (list_max (&ready_list, highest_priority, NULL), struct thread, elem)->priority_eff;
-//  if(new_priority < highest_in_ready)
+		int highest_in_ready = list_entry (list_max (&ready_list, highest_priority, NULL), struct thread, elem)->priority_eff;
 		if (thread_get_eff_priority(thread_current()) < highest_in_ready)
 			thread_yield();
 	}
 
 	intr_set_level(old_level);
-
 }
 
 /* Returns the current thread's priority. */
@@ -337,41 +318,18 @@ int thread_get_priority(void) {
 	return thread_current()->priority_eff;
 }
 
-//
-bool highest_priority(const struct list_elem* a, const struct list_elem* b,
-		void* aux) {
-	int priority_a = thread_get_eff_priority(
-			list_entry(a, struct thread, elem));
-	int priority_b = thread_get_eff_priority(
-			list_entry(b, struct thread, elem));
+bool highest_priority(const struct list_elem* a, const struct list_elem* b, void* aux) {
+	int priority_a = thread_get_eff_priority(list_entry(a, struct thread, elem));
+	int priority_b = thread_get_eff_priority(list_entry(b, struct thread, elem));
 	return priority_a < priority_b;
 }
 
-bool highest_priority_sema(const struct list_elem* a, const struct list_elem* b,
-		void* aux) {
-	int priority_a = thread_get_eff_priority(
-			list_entry(a, struct thread, elem_sema));
-	int priority_b = thread_get_eff_priority(
-			list_entry(b, struct thread, elem_sema));
+bool highest_priority_sema(const struct list_elem* a, const struct list_elem* b, void* aux) {
+	int priority_a = thread_get_eff_priority(list_entry(a, struct thread, elem_sema));
+	int priority_b = thread_get_eff_priority(list_entry(b, struct thread, elem_sema));
 	return priority_a < priority_b;
 }
-//
 
-////
-bool higher_priority(const struct list_elem *a, const struct list_elem *b,
-		void *aux) {
-//	int priority_a = list_entry (a, struct thread, elem)->priority;
-//	int priority_b = list_entry (b, struct thread, elem)->priority;
-//	return priority_a > priority_b;
-
-	int priority_a = thread_get_eff_priority(
-			list_entry(a, struct thread, elem));
-	int priority_b = thread_get_eff_priority(
-			list_entry(b, struct thread, elem));
-	return priority_a > priority_b;
-}
-
-//
 void thread_set_eff_priority(struct thread* t, int new_priority) {
 	ASSERT(is_thread(t));
 
@@ -388,59 +346,36 @@ void thread_calc_eff_priority(struct thread* t) {
 	ASSERT(is_thread(t));
 	enum intr_level old_level = intr_disable();
 
-//	msg("ASDF\n");
 	int priority_old = t->priority_eff;
 
 	t->priority_eff = t->priority;
-//	return;
 
 	struct list* list_lock = &t->list_lock;
 
-	if (!list_empty(list_lock)) {
+	if (!list_empty(list_lock))
+	{
 		struct list_elem *e = list_begin(list_lock);
-		for (; e != list_end(list_lock); e = list_next(e)) {
-			struct list* list_wait =
-					&list_entry(e, struct lock, elem)->semaphore.waiters;
-//			if(!list_empty(&list_entry(e, struct lock, elem)->semaphore.waiters))
-			if (!list_empty(list_wait)) {
-//				struct thread* t2 = list_entry(list_max(list_wait, highest_priority_sema, NULL), struct thread, elem_sema);
-//				int pr = thread_get_eff_priority(t2);
-				ASSERT(
-						is_thread(list_entry(list_begin(list_wait), struct thread, elem_sema)));
-				int pr = thread_get_eff_priority(
-						list_entry(list_begin(list_wait), struct thread,
-								elem_sema));
+		for (; e != list_end(list_lock); e = list_next(e))
+		{
+			struct list* list_wait = &list_entry(e, struct lock, elem)->semaphore.waiters;
+
+			if (!list_empty(list_wait))
+			{
+				ASSERT(is_thread(list_entry(list_begin(list_wait), struct thread, elem_sema)));
+
+				int pr = thread_get_eff_priority(list_entry(list_begin(list_wait), struct thread, elem_sema));
 				if (pr > thread_get_eff_priority(t))
 					thread_set_eff_priority(t, pr);
-
-				/*
-
-				 //				struct list_elem *e2 = list_begin(&list_entry(e, struct lock, elem)->semaphore.waiters);
-				 struct list_elem *e2 = list_begin(list_wait);
-				 //				for(; e2 != list_end(&list_entry(e, struct lock, elem)->semaphore.waiters); e2 = list_next(e2))
-				 for(; e2 != list_end(list_wait); e2 = list_next(e2))
-				 {
-				 int pri = thread_get_eff_priority(list_entry(e2, struct thread, elem_sema));
-				 //					printf("%d\n",pri);
-				 if(pri > thread_get_eff_priority(t))
-				 thread_set_eff_priority(t, pri);
-				 }
-
-				 */
-
 			}
 		}
 	}
 
-	if (priority_old != t->priority_eff) {
-		if (t->lock_waiting != NULL) {
+	if (priority_old != t->priority_eff)
+		if (t->lock_waiting != NULL)
 			thread_calc_eff_priority(t->lock_waiting->holder);
-		}
-	}
 
 	intr_set_level(old_level);
 }
-//
 
 /* Sets the current thread's nice value to NICE. */
 void thread_set_nice(int nice UNUSED) {
@@ -565,16 +500,14 @@ alloc_frame(struct thread *t, size_t size) {
  will be in the run queue.)  If the run queue is empty, return
  idle_thread. */
 static struct thread *
-next_thread_to_run(void) {
+next_thread_to_run(void)
+{
 	if (list_empty(&ready_list))
 		return idle_thread;
-	else {
-		struct list_elem* e = list_max(&ready_list, highest_priority, NULL);
-		list_remove(e);
-		return list_entry(e, struct thread, elem);
-	}
 
-//    return list_entry (list_pop_front (&ready_list), struct thread, elem);
+	struct list_elem* e = list_max(&ready_list, highest_priority, NULL);
+	list_remove(e);
+	return list_entry(e, struct thread, elem);
 }
 
 /* Completes a thread switch by activating the new thread's page

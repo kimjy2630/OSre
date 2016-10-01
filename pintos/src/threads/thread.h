@@ -145,11 +145,7 @@ void thread_set_nice (int);
 int thread_get_recent_cpu (void);
 int thread_get_load_avg (void);
 
-//
 bool highest_priority(const struct list_elem *a, const struct list_elem *b, void *aux);
 bool highest_priority_sema(const struct list_elem *a, const struct list_elem *b, void *aux);
-//
-////
-bool higher_priority(const struct list_elem *a, const struct list_elem *b, void *aux);
 
 #endif /* threads/thread.h */
