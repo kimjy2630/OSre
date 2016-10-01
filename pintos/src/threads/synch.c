@@ -207,6 +207,10 @@ lock_acquire (struct lock *lock)
 
   sema_down (&lock->semaphore);
   lock->holder = thread_current ();
+  //
+  list_push_back(&lock->holder->list_lock, &lock->elem);
+  //
+
 }
 
 /* Tries to acquires LOCK and returns true if successful or false
@@ -243,6 +247,9 @@ lock_release (struct lock *lock)
 
   lock->holder = NULL;
   sema_up (&lock->semaphore);
+  //
+  list_remove(&lock->elem);
+  //
 }
 
 /* Returns true if the current thread holds LOCK, false
