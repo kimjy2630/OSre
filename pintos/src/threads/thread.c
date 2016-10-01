@@ -347,8 +347,8 @@ higher_priority(const struct list_elem *a, const struct list_elem *b, void *aux)
 //	int priority_b = list_entry (b, struct thread, elem)->priority;
 //	return priority_a > priority_b;
 
-	int priority_a = thread_get_priority(list_entry (a, struct thread, elem));
-	int priority_b = thread_get_priority(list_entry (b, struct thread, elem));
+	int priority_a = thread_get_eff_priority(list_entry (a, struct thread, elem));
+	int priority_b = thread_get_eff_priority(list_entry (b, struct thread, elem));
 	return priority_a > priority_b;
 }
 
