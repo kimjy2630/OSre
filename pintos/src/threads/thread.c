@@ -583,7 +583,7 @@ next_thread_to_run (void)
     return idle_thread;
   else
   {
-	  struct list_elem e = list_max(&ready_list, highest_priority, NULL);
+	  struct list_elem* e = list_max(&ready_list, highest_priority, NULL);
 	  list_remove(e);
 	  return list_entry(e, struct thread, elem);
   }
