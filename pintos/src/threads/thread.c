@@ -407,6 +407,7 @@ thread_calc_eff_priority (struct thread* t)
 //	msg("ASDF\n");
 
 	t->priority_eff = t->priority;
+	return;
 
 
 	if (!list_empty(&t->list_lock))
