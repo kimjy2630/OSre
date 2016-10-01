@@ -337,9 +337,9 @@ thread_set_priority (int new_priority)
   thread_current ()->priority = new_priority;
   ////
   //
-//  thread_calc_eff_priority(thread_current());
-  if(new_priority > thread_get_eff_priority(thread_current()))
-	  thread_set_eff_priority(thread_current(), new_priority);
+  thread_calc_eff_priority(thread_current());
+//  if(new_priority > thread_get_eff_priority(thread_current()))
+//	  thread_set_eff_priority(thread_current(), new_priority);
   //
   if(!list_empty(&ready_list))
   {
