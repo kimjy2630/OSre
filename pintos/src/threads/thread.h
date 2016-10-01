@@ -91,12 +91,10 @@ struct thread
 
     /* Shared between thread.c and synch.c. */
     struct list_elem elem;              /* List element. */
-    //
-    struct list_elem elem_sema;
-    struct list list_lock;
-    struct lock* lock_waiting;
-    int priority_eff;
-    //
+    struct list_elem elem_sema;			/* List element for list in semaphore. */
+    struct list list_lock;				/* List of locks that this thread has. */
+    struct lock* lock_waiting;			/* Lock that this thread is waiting for. */
+    int priority_eff;					/* Effective priority. */
 
 #ifdef USERPROG
     /* Owned by userprog/process.c. */

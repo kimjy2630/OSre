@@ -30,7 +30,7 @@ static void busy_wait (int64_t loops);
 static void real_time_sleep (int64_t num, int32_t denom);
 
 ////
-static struct list sleeping_thread_list;
+static struct list list_sleeping_thread;
 // static bool wakeup_early (const struct list_elem *a, const struct list_elem *b, void *aux);
 
 /* Sets up the 8254 Programmable Interval Timer (PIT) to
@@ -50,7 +50,7 @@ timer_init (void)
   intr_register_ext (0x20, timer_interrupt, "8254 Timer");
 
   ////
-  list_init (&sleeping_thread_list);
+  list_init (&list_sleeping_thread);
 }
 
 /* Calibrates loops_per_tick, used to implement brief delays. */
@@ -100,14 +100,6 @@ timer_elapsed (int64_t then)
 }
 
 ////
-//static bool
-//wakeup_early (const struct list_elem *a, const struct list_elem *b, void *aux){
-//	int64_t time_a = list_entry (a, struct sleeping_thread, elem)->wakeup_time;
-//	int64_t time_b = list_entry (b, struct sleeping_thread, elem)->wakeup_time;
-//	return time_a < time_b;
-//}
-
-////
 /* Suspends execution for approximately TICKS timer ticks. */
 void
 timer_sleep (int64_t ticks) 
@@ -119,26 +111,20 @@ timer_sleep (int64_t ticks)
   while (timer_elapsed (start) < ticks) 
     thread_yield ();
 */
-  int64_t start = timer_ticks ();
+	int64_t start = timer_ticks();
 
-  struct thread *curr = thread_current();
-  enum intr_level old_level;
+	struct thread *curr = thread_current();
+	enum intr_level old_level;
 
-//  if(curr != idle_thread){
+	struct sleeping_thread t;
 
-	  struct sleeping_thread t;
+	t.thread = curr;
+	t.wakeup_time = start + ticks;
 
-	  t.thread = curr;
-	  t.wakeup_time = start + ticks;
-
-	  old_level = intr_disable ();
-	  list_push_back (&sleeping_thread_list, &t.elem);
-//	  list_insert_ordered (&sleeping_thread_list, &t.elem, wakeup_early, NULL);
-//	  curr->status = THREAD_BLOCKED;
-//	  schedule();
-	  thread_block();
-	  intr_set_level (old_level);
-//  }
+	old_level = intr_disable();
+	list_push_back(&list_sleeping_thread, &t.elem);
+	thread_block();
+	intr_set_level (old_level);
 }
 
 
@@ -181,7 +167,7 @@ timer_interrupt (struct intr_frame *args UNUSED)
   struct list_elem *e, *b;
   struct sleeping_thread *t;
 
-  for(e = list_begin (&sleeping_thread_list); e != list_end (&sleeping_thread_list); e = b){
+  for(e = list_begin (&list_sleeping_thread); e != list_end (&list_sleeping_thread); e = b){
 	  b = list_next(e);
 	  t = list_entry(e, struct sleeping_thread, elem);
 
