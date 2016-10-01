@@ -280,10 +280,12 @@ lock_release (struct lock *lock)
   //
 
   lock->holder = NULL;
-  sema_up (&lock->semaphore);
+
   //
   list_remove(&lock->elem);
   thread_calc_eff_priority(thread_current());
+
+  sema_up (&lock->semaphore);
 
   intr_set_level(old_level);
   //
