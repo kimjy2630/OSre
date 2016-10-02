@@ -324,6 +324,12 @@ bool highest_priority(const struct list_elem* a, const struct list_elem* b, void
 	return priority_a < priority_b;
 }
 
+bool higher_priority(const struct list_elem* a, const struct list_elem* b, void* aux) {
+	int priority_a = thread_get_eff_priority(list_entry(a, struct thread, elem));
+	int priority_b = thread_get_eff_priority(list_entry(b, struct thread, elem));
+	return priority_a > priority_b;
+}
+
 bool highest_priority_sema(const struct list_elem* a, const struct list_elem* b, void* aux) {
 	int priority_a = thread_get_eff_priority(list_entry(a, struct thread, elem_sema));
 	int priority_b = thread_get_eff_priority(list_entry(b, struct thread, elem_sema));

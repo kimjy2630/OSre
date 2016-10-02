@@ -122,7 +122,8 @@ timer_sleep (int64_t ticks)
 	t.wakeup_time = start + ticks;
 
 	old_level = intr_disable();
-	list_push_back(&list_sleeping_thread, &t.elem);
+//	list_push_back(&list_sleeping_thread, &t.elem);
+	list_insert_ordered(&list_sleeping_thread, &t.elem, higher_priority, NULL);
 	thread_block();
 	intr_set_level (old_level);
 }
@@ -167,14 +168,18 @@ timer_interrupt (struct intr_frame *args UNUSED)
   struct list_elem *e, *b;
   struct sleeping_thread *t;
 
-  for(e = list_begin (&list_sleeping_thread); e != list_end (&list_sleeping_thread); e = b){
+  for(e = list_begin (&list_sleeping_thread); e != list_end (&list_sleeping_thread); e = b)
+  {
 	  b = list_next(e);
 	  t = list_entry(e, struct sleeping_thread, elem);
 
-	  if(t->wakeup_time <= timer_ticks()){
+	  if(t->wakeup_time <= timer_ticks())
+	  {
 		  thread_unblock (t->thread);
 		  list_remove(e);
 	  }
+	  else
+		  break;
   }
 }
 
