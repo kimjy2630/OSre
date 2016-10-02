@@ -31,7 +31,14 @@ static void real_time_sleep (int64_t num, int32_t denom);
 
 ////
 static struct list list_sleeping_thread;
-// static bool wakeup_early (const struct list_elem *a, const struct list_elem *b, void *aux);
+
+bool
+wakeup_early (const struct list_elem *a, const struct list_elem *b, void *aux)
+{
+	int time_a = list_entry(a, struct sleeping_thread, elem)->wakeup_time;
+	int time_b = list_entry(b, struct sleeping_thread, elem)->wakeup_time;
+	return time_a < time_b;
+}
 
 /* Sets up the 8254 Programmable Interval Timer (PIT) to
    interrupt PIT_FREQ times per second, and registers the
@@ -123,7 +130,7 @@ timer_sleep (int64_t ticks)
 
 	old_level = intr_disable();
 //	list_push_back(&list_sleeping_thread, &t.elem);
-	list_insert_ordered(&list_sleeping_thread, &t.elem, higher_priority, NULL);
+	list_insert_ordered(&list_sleeping_thread, &t.elem, wakeup_early, NULL);
 	thread_block();
 	intr_set_level (old_level);
 }
