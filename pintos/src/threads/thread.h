@@ -102,7 +102,7 @@ struct thread
     ////
     int exit_status;					/* Exit status */
     bool is_exit = false;				/* Check whether the thread run exit code */
-    ////
+    /////
 #endif
 
     /* Owned by thread.c. */

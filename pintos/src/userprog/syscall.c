@@ -13,7 +13,7 @@ static int get_user (const uint8_t *uaddr);
 static bool put_user (uint8_t *udst, uint8_t byte);
 static bool read_validity (const uint8_t *uaddr);
 static bool write_validity (uint8_t *udst, uint8_t byte);
-////
+/////
 
 void
 syscall_init (void) 

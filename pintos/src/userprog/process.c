@@ -20,7 +20,7 @@
 
 static thread_func start_process NO_RETURN;
 static bool load(const char *cmdline, void (**eip)(void), void **esp);
-////
+/////
 void push_stack(void **esp, void *data, size_t size);
 ////
 
