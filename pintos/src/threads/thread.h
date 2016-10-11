@@ -99,6 +99,10 @@ struct thread
 #ifdef USERPROG
     /* Owned by userprog/process.c. */
     uint32_t *pagedir;                  /* Page directory. */
+    ////
+    int exit_status;					/* Exit status */
+    bool is_exit = false;				/* Check whether the thread run exit code */
+    ////
 #endif
 
     /* Owned by thread.c. */

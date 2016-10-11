@@ -215,7 +215,8 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 	 */
 	////
 	char buffer[strlen(file_name)];
-	strcpy(buffer, file_name);
+//	strcpy(buffer, file_name);
+	strlcpy(buffer, file_name, strlen(file_name)+1);
 
 	char *token, *last;
 	int argc = 0;
