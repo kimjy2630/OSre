@@ -297,9 +297,8 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 		goto done;
 
 	////
-	{
 	size_t size;
-	void *argv[argc];
+	void *argv = malloc(argc);
 	// push arguments
 	for (i = 0; i < argc; ++i) {
 		while (*last != '\0')
@@ -335,8 +334,8 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 	// return address
 	i=0;
 	push_stack(esp, &i, 4);
+	free(argv);
 	////
-	}
 
 	/* Start address. */
 	*eip = (void (*)(void)) ehdr.e_entry;
