@@ -355,9 +355,7 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 
 ////
 void push_argument (int argc, char *last, void **esp){
-	////
 	size_t size, int i;
-	{
 	void *argv[argc];
 	// push arguments
 	for (i = 0; i < argc; ++i) {
@@ -372,7 +370,6 @@ void push_argument (int argc, char *last, void **esp){
 		size = strlen(last) + 1;
 		push_stack(esp, last, size);
 		argv[i] = *esp;
-	}
 	// word-align
 	int align_size = (int)(*esp) % 4;
 	if(align_size != 0){
@@ -394,7 +391,6 @@ void push_argument (int argc, char *last, void **esp){
 	// return address
 	i=0;
 	}
-	////
 }
 
 void push_stack(void **esp, void *data, size_t size){
