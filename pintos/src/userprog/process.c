@@ -22,6 +22,7 @@ static thread_func start_process NO_RETURN;
 static bool load(const char *cmdline, void (**eip)(void), void **esp);
 /////
 void push_stack(void **esp, void *data, size_t size);
+void push_argument (int argc, char *last, void **esp);
 ////
 
 /* Starts a new thread running a user program loaded from
@@ -297,8 +298,11 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 		goto done;
 
 	////
+	push_argument(argc, last, esp);
+	/*
 	size_t size;
-	void *argv = malloc(argc);
+	{
+	void *argv[argc];
 	// push arguments
 	for (i = 0; i < argc; ++i) {
 		while (*last != '\0')
@@ -333,8 +337,8 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 	push_stack(esp, &argc, 4);
 	// return address
 	i=0;
-	push_stack(esp, &i, 4);
-	free(argv);
+	}
+	*/
 	////
 
 	/* Start address. */
@@ -350,6 +354,49 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 
 
 ////
+void push_argument (int argc, char *last, void **esp){
+	////
+	size_t size, int i;
+	{
+	void *argv[argc];
+	// push arguments
+	for (i = 0; i < argc; ++i) {
+		while (*last != '\0')
+			--last;
+		last--;
+		while (*last != '\0')
+			--last;
+		++last;
+		while (*last == ' ')
+			++last;
+		size = strlen(last) + 1;
+		push_stack(esp, last, size);
+		argv[i] = *esp;
+	}
+	// word-align
+	int align_size = (int)(*esp) % 4;
+	if(align_size != 0){
+		i = 0;
+		push_stack(esp, &i, align_size);
+	}
+	// null pointer argv[argc]
+	i = 0;
+	push_stack(esp, &i, 4);
+	// argv[i]
+	for(i=argc-1; i>=0; i--){
+		push_stack(esp, &argv[i], 4);
+	}
+	// argv, argc
+	void *argv_ptr;
+	argv_ptr = *esp;
+	push_stack(esp, &argv_ptr, 4);
+	push_stack(esp, &argc, 4);
+	// return address
+	i=0;
+	}
+	////
+}
+
 void push_stack(void **esp, void *data, size_t size){
 	*esp = *esp - size;
 	memcpy(*esp, data, size);
