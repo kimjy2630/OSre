@@ -40,8 +40,55 @@ syscall_handler (struct intr_frame *f UNUSED)
     	halt();
     	break;
     case SYS_EXIT:
+    	// int type arg
+    	exit(0);
+    	break;
+    case SYS_EXEC;
+    	// char* type arg
+    	exec(NULL);
+    	break;
+    case SYS_WAIT;
+    	// pid_t type arg
+    	wait(0);
+    	break;
+    case SYS_CREATE;
+    	// char*, unsigned type arg
+    	create(NULL, 0);
+    	break;
+    case SYS_REMOVE;
+    	// char* type arg
+    	remove(NULL);
+    	break;
+    case SYS_OPEN;
+    	// char* type arg
+    	open(NULL);
+    	break;
+    case SYS_FILESIZE;
+    	// int type arg
+    	filesize(0);
+    	break;
+    case SYS_READ;
+    	// int, void*, unsigned type arg
+    	read(0, NULL, 0);
+    	break;
+    case SYS_WRITE;
+    	// int, void*, unsigned type arg
+    	write(0, NULL, 0);
+    	break;
+    case SYS_SEEK;
+    	// int, unsigned type arg
+    	seek(0, 0);
+    	break;
+    case SYS_TELL;
+    	// unsigned type arg
+    	tell(0);
+    	break;
+    case SYS_CLOSE;
+    	// unsigned type arg
+    	close(0);
     	break;
   }
+  thread_exit();
 ////
 }
 
@@ -56,34 +103,38 @@ void exit (int status){
 	thread_exit();
 }
 pid_t exec (const char *file){
-
+	return -1;
 }
 int wait (pid_t pid){
-
+	return -1;
 }
 bool create (const char *file, unsigned initial_size){
-
+	return FALSE;
 }
 bool remove (const char *file){
-
+	return FALSE;
 }
 int open (const char *file){
-
+	return -1;
 }
 int filesize (int fd){
-
+	return -1;
 }
 int read (int fd, void *buffer, unsigned length){
-
+	return -1;
 }
 int write (int fd, const void *buffer, unsigned length){
-
+	if(fd == 1){ // write to console
+		putbuf(buffer, (size_t) length);
+		return length; // ???
+	}
+	return -1;
 }
 void seek (int fd, unsigned position){
-
+	return -1;
 }
 unsigned tell (int fd){
-
+	return 0;
 }
 void close (int fd){
 

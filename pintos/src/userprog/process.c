@@ -87,6 +87,9 @@ static void start_process(void *f_name) {
 int
 process_wait (tid_t child_tid UNUSED)
 {
+	while(TRUE){
+		// 일단 무한 루프
+	}
 	return -1;
 }
 
