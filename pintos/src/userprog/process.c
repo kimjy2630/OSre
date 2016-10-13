@@ -373,6 +373,7 @@ void push_argument (int argc, char *last, void **esp){
 		push_stack(esp, last, size);
 		argv[i] = *esp;
 //		argv + i = *esp;
+	}
 	// word-align
 	int align_size = (int)(*esp) % 4;
 	if(align_size != 0){
@@ -394,7 +395,6 @@ void push_argument (int argc, char *last, void **esp){
 	push_stack(esp, &argc, 4);
 	// return address
 	i=0;
-
 //	free(argv);
 }
 
