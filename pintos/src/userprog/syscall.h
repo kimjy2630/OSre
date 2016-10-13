@@ -19,6 +19,6 @@ void seek (int fd, unsigned position);
 unsigned tell (int fd);
 void close (int fd);
 */
-////
+/////
 
 #endif /* userprog/syscall.h */

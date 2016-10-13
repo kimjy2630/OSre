@@ -88,7 +88,7 @@ int
 process_wait (tid_t child_tid UNUSED)
 {
 	while(true){
-		// 일단 무한 루프
+		//// 일단 무한 루프
 	}
 	return -1;
 }

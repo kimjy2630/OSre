@@ -104,7 +104,7 @@ struct thread
     bool is_exit;						/* Check whether the thread run exit code */
     struct list list_children;			/* List of child threads */
     struct list_elem elem_child;		/* List element for children_list */
-    /////
+    ////
 #endif
 
     /* Owned by thread.c. */
