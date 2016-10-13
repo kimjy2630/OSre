@@ -297,6 +297,7 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 		goto done;
 
 	////
+	{
 	size_t size;
 	void *argv[argc];
 	// push arguments
@@ -335,6 +336,7 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 	i=0;
 	push_stack(esp, &i, 4);
 	////
+	}
 
 	/* Start address. */
 	*eip = (void (*)(void)) ehdr.e_entry;
