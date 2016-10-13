@@ -4,6 +4,7 @@
 void syscall_init (void);
 
 ////
+/*
 void halt (void);
 void exit (int status);
 pid_t exec (const char *file);
@@ -17,6 +18,7 @@ int write (int fd, const void *buffer, unsigned length);
 void seek (int fd, unsigned position);
 unsigned tell (int fd);
 void close (int fd);
+*/
 ////
 
 #endif /* userprog/syscall.h */

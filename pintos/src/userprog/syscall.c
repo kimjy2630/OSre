@@ -5,20 +5,46 @@
 #include "threads/thread.h"
 ////
 #include "threads/init.h"
+#include "threads/vaddr.h"
+#include "lib/kernel/console.c"
 ////
 
 static void syscall_handler (struct intr_frame *);
 ////
 static int get_user (const uint8_t *uaddr);
 static bool put_user (uint8_t *udst, uint8_t byte);
-static bool read_validity (const uint8_t *uaddr);
+static bool read_validity (const void *uaddr, int size);
 static bool write_validity (uint8_t *udst, uint8_t byte);
+static void* get_argument (uint8_t *ptr)
+
+void halt (void);
+void exit (int status);
+pid_t exec (const char *file);
+int wait (pid_t pid);
+bool create (const char *file, unsigned initial_size);
+bool remove (const char *file);
+int open (const char *file);
+int filesize (int fd);
+int read (int fd, void *buffer, unsigned length);
+int write (int fd, const void *buffer, unsigned length);
+void seek (int fd, unsigned position);
+unsigned tell (int fd);
+void close (int fd);
 /////
 
 void
 syscall_init (void) 
 {
   intr_register_int (0x30, 3, INTR_ON, syscall_handler, "syscall");
+}
+
+static void*
+get_argument (uint8_t *ptr){
+	if(!read_validity(ptr)){
+		printf("invalid user pointer read\n");
+		return NULL;
+	}
+	return *ptr;
 }
 
 static void
@@ -31,7 +57,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 ////
 //  int syscall_num = *((int *) (f->esp));
   int *ptr = (int *) f->esp;
-  if(!read_validity (uint8_t *) ptr){
+  if(!read_validity ((void *) ptr, 4)){
 	  printf("invalid user pointer read\n");
 	  thread_exit();
   }
@@ -41,27 +67,51 @@ syscall_handler (struct intr_frame *f UNUSED)
     	break;
     case SYS_EXIT:
     	// int type arg
-    	exit(0);
+    	if(!read_validity ((void *) ptr + 1, 4)){
+    		printf("invalid user pointer read\n");
+    		thread_exit();
+    	}
+    	exit(**(ptr+1));
     	break;
     case SYS_EXEC;
     	// char* type arg
-    	exec(NULL);
+    	if(!read_validity ((void *) ptr + 1, 4)){
+        	printf("invalid user pointer read\n");
+        	thread_exit();
+    	}
+    	exec(**((char **)ptr+1));
     	break;
     case SYS_WAIT;
     	// pid_t type arg
-    	wait(0);
+    	if(!read_validity ((void *) ptr + 1, 4)){
+         	printf("invalid user pointer read\n");
+         	thread_exit();
+        }
+    	wait(**((pid_t *)ptr+1));
     	break;
     case SYS_CREATE;
     	// char*, unsigned type arg
-    	create(NULL, 0);
+    	if(!read_validity ((void *) ptr + 1, 8)){
+           	printf("invalid user pointer read\n");
+           	thread_exit();
+        }
+    	create(**((char **)ptr+1), **(unsigned *)ptr+1);
     	break;
     case SYS_REMOVE;
     	// char* type arg
-    	remove(NULL);
+    	if(!read_validity ((void *) ptr + 1, 4)){
+           	printf("invalid user pointer read\n");
+           	thread_exit();
+        }
+    	remove(**((char **)ptr+1));
     	break;
     case SYS_OPEN;
     	// char* type arg
-    	open(NULL);
+    	if(!read_validity ((void *) ptr + 1, 4)){
+           	printf("invalid user pointer read\n");
+           	thread_exit();
+        }
+    	open(**((char **)ptr+1));
     	break;
     case SYS_FILESIZE;
     	// int type arg
@@ -117,7 +167,7 @@ bool remove (const char *file){
 int open (const char *file){
 	return -1;
 }
-int filesize (int fd){
+int filesize (int fd+){
 	return -1;
 }
 int read (int fd, void *buffer, unsigned length){
@@ -131,7 +181,7 @@ int write (int fd, const void *buffer, unsigned length){
 	return -1;
 }
 void seek (int fd, unsigned position){
-	return -1;
+
 }
 unsigned tell (int fd){
 	return 0;
@@ -156,9 +206,17 @@ put_user (uint8_t *udst, uint8_t byte){
 }
 
 static bool
-read_validity (const uint8_t *uaddr){
-	return (uaddr < PHYS_BASE) && (get_user(uaddr) != -1);
+read_validity (const void *uaddr, int size){
+	int i;
+	if (((uint8_t *) uaddr) + size > PHYS_BASE)
+		return false;
+	for(i=0; i<size, i++){
+		if(get_user(((uint8_t *) uaddr) + i) == -1)
+			return false;
+	}
+	return true;
 }
+
 static bool
 write_validity (uint8_t *udst, uint8_t byte){
 	return (udst < PHYS_BASE) && put_user (udst, byte);

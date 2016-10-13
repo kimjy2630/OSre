@@ -101,7 +101,7 @@ struct thread
     uint32_t *pagedir;                  /* Page directory. */
     ////
     int exit_status;					/* Exit status */
-    bool is_exit = false;				/* Check whether the thread run exit code */
+    bool is_exit;						/* Check whether the thread run exit code */
     struct list list_children;			/* List of child threads */
     struct list_elem elem_child;		/* List element for children_list */
     /////

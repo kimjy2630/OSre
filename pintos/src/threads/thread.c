@@ -485,6 +485,7 @@ static void init_thread(struct thread *t, const char *name, int priority) {
 	t->priority_eff = t->priority;
 	list_init(&t->list_lock);
 	t->lock_waiting = NULL;
+	t->is_exit = false;
 	list_init(&t->list_children);
 	////
 }
