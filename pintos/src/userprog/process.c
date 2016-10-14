@@ -113,13 +113,12 @@ process_wait (tid_t child_tid)
 	bool flag = false;
 	printf("PROCESS_WAIT %d\n", i++);
 
-	for(e=list_begin(list_child); e!=list_end(list_child); e= list_next(list_child))
-	{
+	for (e = list_begin(list_child); e != list_end(list_child);
+			e = list_next(e)) {
 		printf("PROCESS_WAIT %d\n", i++);
 		child = list_entry(e, struct thread, elem_child);
 		printf("PROCESS_WAIT %d\n", i++);
-		if(child->tid == child_tid)
-		{
+		if (child->tid == child_tid) {
 			printf("PROCESS_WAIT %d\n", i++);
 			flag = true;
 			printf("PROCESS_WAIT %d\n", i++);
