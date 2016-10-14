@@ -16,7 +16,7 @@ static int get_user (const uint8_t *uaddr);
 static bool put_user (uint8_t *udst, uint8_t byte);
 static bool read_validity (const void *uaddr, int size);
 static bool write_validity (uint8_t *udst, uint8_t byte);
-static void* get_argument (uint8_t *ptr);
+//static void* get_argument (uint8_t *ptr);
 
 void halt (void);
 void exit (int status);
@@ -39,14 +39,16 @@ syscall_init (void)
   intr_register_int (0x30, 3, INTR_ON, syscall_handler, "syscall");
 }
 
+/*
 static void*
 get_argument (uint8_t *ptr){
-	if(!read_validity(ptr)){
+	if(!read_validity(ptr, 1)){
 		printf("invalid user pointer read\n");
 		return NULL;
 	}
 	return *ptr;
 }
+*/
 
 static void
 syscall_handler (struct intr_frame *f UNUSED) 
@@ -74,7 +76,7 @@ syscall_handler (struct intr_frame *f UNUSED)
     	}
     	exit(**(ptr+1));
     	break;
-    case SYS_EXEC;
+    case SYS_EXEC:
     	// char* type arg
     	if(!read_validity ((void *) ptr + 1, 4)){
         	printf("invalid user pointer read\n");
@@ -82,7 +84,7 @@ syscall_handler (struct intr_frame *f UNUSED)
     	}
     	exec(**((char **)ptr+1));
     	break;
-    case SYS_WAIT;
+    case SYS_WAIT:
     	// pid_t type arg
     	if(!read_validity ((void *) ptr + 1, 4)){
          	printf("invalid user pointer read\n");
@@ -90,7 +92,7 @@ syscall_handler (struct intr_frame *f UNUSED)
         }
     	wait(**((pid_t *)ptr+1));
     	break;
-    case SYS_CREATE;
+    case SYS_CREATE:
     	// char*, unsigned type arg
     	if(!read_validity ((void *) ptr + 1, 8)){
            	printf("invalid user pointer read\n");
@@ -98,7 +100,7 @@ syscall_handler (struct intr_frame *f UNUSED)
         }
     	create(**((char **)ptr+1), **(unsigned *)ptr+1);
     	break;
-    case SYS_REMOVE;
+    case SYS_REMOVE:
     	// char* type arg
     	if(!read_validity ((void *) ptr + 1, 4)){
            	printf("invalid user pointer read\n");
@@ -106,7 +108,7 @@ syscall_handler (struct intr_frame *f UNUSED)
         }
     	remove(**((char **)ptr+1));
     	break;
-    case SYS_OPEN;
+    case SYS_OPEN:
     	// char* type arg
     	if(!read_validity ((void *) ptr + 1, 4)){
            	printf("invalid user pointer read\n");
@@ -114,27 +116,27 @@ syscall_handler (struct intr_frame *f UNUSED)
         }
     	open(**((char **)ptr+1));
     	break;
-    case SYS_FILESIZE;
+    case SYS_FILESIZE:
     	// int type arg
     	filesize(0);
     	break;
-    case SYS_READ;
+    case SYS_READ:
     	// int, void*, unsigned type arg
     	read(0, NULL, 0);
     	break;
-    case SYS_WRITE;
+    case SYS_WRITE:
     	// int, void*, unsigned type arg
     	write(0, NULL, 0);
     	break;
-    case SYS_SEEK;
+    case SYS_SEEK:
     	// int, unsigned type arg
     	seek(0, 0);
     	break;
-    case SYS_TELL;
+    case SYS_TELL:
     	// unsigned type arg
     	tell(0);
     	break;
-    case SYS_CLOSE;
+    case SYS_CLOSE:
     	// unsigned type arg
     	close(0);
     	break;
@@ -160,15 +162,15 @@ int wait (pid_t pid){
 	return -1;
 }
 bool create (const char *file, unsigned initial_size){
-	return FALSE;
+	return false;
 }
 bool remove (const char *file){
-	return FALSE;
+	return false;
 }
 int open (const char *file){
 	return -1;
 }
-int filesize (int fd+){
+int filesize (int fd){
 	return -1;
 }
 int read (int fd, void *buffer, unsigned length){
@@ -211,8 +213,9 @@ read_validity (const void *uaddr, int size){
 	int i;
 	if (((uint8_t *) uaddr) + size > PHYS_BASE)
 		return false;
-	for(i=0; i<size, i++){
-		if(get_user(((uint8_t *) uaddr) + i) == -1)
+	for (i = 0; i < size; i++)
+	{
+		if (get_user(((uint8_t *) uaddr) + i) == -1)
 			return false;
 	}
 	return true;
