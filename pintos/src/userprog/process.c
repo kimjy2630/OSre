@@ -112,6 +112,7 @@ process_wait (tid_t child_tid)
 		child = list_entry(e, struct thread, elem_child);
 		if (child->tid == child_tid) {
 			flag = true;
+			list_remove(e);
 			break;
 		}
 	}
@@ -173,7 +174,7 @@ void process_exit(void) {
 
 
 
-	lock_release(&curr->lock_child);
+//	lock_release(&curr->lock_child);
 	//TODO
 	printf("LOCK RELEASE END\n");
 
