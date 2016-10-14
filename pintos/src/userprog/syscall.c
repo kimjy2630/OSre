@@ -72,11 +72,12 @@ syscall_handler (struct intr_frame *f UNUSED)
   */
 ////
 //  int syscall_num = *((int *) (f->esp));
-  void *ptr = (void *) f->esp;
-  if(!read_validity (ptr, 4)){
-	  printf("invalid user pointer read\n");
-	  thread_exit();
-  }
+	void *ptr = (void *) f->esp;
+	if (!read_validity(ptr, 4)) {
+		printf("invalid user pointer read\n");
+		thread_exit();
+	}
+	printf("SYSNUM %d\n", *((int*) ptr));
 	switch (*((int*) ptr)) {
 	case SYS_HALT:
 		halt();
