@@ -172,9 +172,7 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 	tid = t->tid = allocate_tid();
 
 	#ifdef USERPROG
-	t->user_thread = false;
-	t->is_exit = false;
-	list_init(&t->list_children);
+
 	list_push_back(&thread_current()->list_children, &t->elem_child);
 //	lock_init(t->lock_child);
 //	lock_acquire(t->lock_child);
@@ -495,6 +493,12 @@ static void init_thread(struct thread *t, const char *name, int priority) {
 	t->priority_eff = t->priority;
 	list_init(&t->list_lock);
 	t->lock_waiting = NULL;
+
+#ifdef USERPROG
+	t->user_thread = false;
+	t->is_exit = false;
+	list_init(&t->list_children);
+#endif
 	////
 }
 
