@@ -138,7 +138,7 @@ void process_exit(void) {
 	//TODO
 	int tid = thread_current()->tid;
 	enum intr_level old = intr_disable();
-	printf("PROCESS_EXIT %d\n", tid);
+//	printf("PROCESS_EXIT %d\n", tid);
 	intr_set_level(old);
 
 	struct thread *curr = thread_current();
@@ -186,7 +186,7 @@ void process_activate(void) {
 	//TODO
 	int tid = t->tid;
 	enum intr_level old = intr_disable();
-	printf("PROCESS_ACTIVATE %d\n", tid);
+//	printf("PROCESS_ACTIVATE %d\n", tid);
 	intr_set_level(old);
 
 	/* Activate thread's page tables. */

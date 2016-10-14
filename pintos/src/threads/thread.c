@@ -268,7 +268,7 @@ void thread_exit(void) {
 	//TODO
 	int tid = thread_current()->tid;
 	enum intr_level old = intr_disable();
-	printf("THREAD_EXIT %d\n", tid);
+//	printf("THREAD_EXIT %d\n", tid);
 	intr_set_level(old);
 
 	ASSERT(!intr_context());
