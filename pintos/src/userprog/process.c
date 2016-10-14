@@ -125,7 +125,7 @@ process_wait (tid_t child_tid)
 //		list_remove(e);
 		int status = child->exit_status;
 		printf("FOUND STATUS %d\n", status);
-//		lock_release(&child->lock_child);
+		lock_release(&child->lock_child);
 
 		return status;
 	}
@@ -180,7 +180,7 @@ void process_exit(void) {
 
 
 
-	lock_release(&curr->lock_child);
+//	lock_release(&curr->lock_child);
 	//TODO
 	printf("LOCK RELEASE END\n");
 
