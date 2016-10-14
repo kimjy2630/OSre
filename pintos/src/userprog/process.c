@@ -178,7 +178,7 @@ void process_exit(void) {
  This function is called on every context switch. */
 void process_activate(void) {
 	//TODO
-	printf("PROCESS_ACTIVATE\n");
+//	printf("PROCESS_ACTIVATE\n");
 	struct thread *t = thread_current();
 
 	/* Activate thread's page tables. */
