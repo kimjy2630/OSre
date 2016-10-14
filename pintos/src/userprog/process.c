@@ -100,38 +100,48 @@ process_wait (tid_t child_tid)
 {
 	//TODO
 	int i=0;
-	printf("PROCESS_WAIT\n");
-	while(1){
-		printf("%d\n", ++i);
-	}
+	printf("PROCESS_WAIT %d\n", i++);
 	struct list_elem *e;
+	printf("PROCESS_WAIT %d\n", i++);
 	struct thread *t = thread_current();
+	printf("PROCESS_WAIT %d\n", i++);
 	struct list *list_child = &t->list_children;
+	printf("PROCESS_WAIT %d\n", i++);
 	struct thread *child;
+	printf("PROCESS_WAIT %d\n", i++);
 
 	bool flag = false;
+	printf("PROCESS_WAIT %d\n", i++);
 
 	for(e=list_begin(list_child); e!=list_end(list_child); e= list_next(list_child))
 	{
+		printf("PROCESS_WAIT %d\n", i++);
 		child = list_entry(e, struct thread, elem_child);
+		printf("PROCESS_WAIT %d\n", i++);
 		if(child->tid == child_tid)
 		{
+			printf("PROCESS_WAIT %d\n", i++);
 			flag = true;
+			printf("PROCESS_WAIT %d\n", i++);
 			break;
 		}
+		printf("PROCESS_WAIT %d\n", i++);
 	}
+	printf("PROCESS_WAIT %d\n", i++);
 	if(flag)
 	{
+		printf("PROCESS_WAIT %d\n", i++);
 //		lock_acquire(&child->lock_child);
 		int status = child->exit_status;
+		printf("PROCESS_WAIT %d\n", i++);
 //		lock_release(&child->lock_child);
 
-		printf("PROCESS_WAIT END %d\n",status);
+		printf("PROCESS_WAIT END %d %d\n", status, i++);
 		return status;
 	}
 	else
 	{
-		printf("PROCESS_WAIT END %d\n", -1);
+		printf("PROCESS_WAIT END %d %d\n", -1, i++);
 		return -1;
 	}
 
