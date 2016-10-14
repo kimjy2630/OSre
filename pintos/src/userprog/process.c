@@ -429,8 +429,8 @@ void push_argument (int argc, char *last, void **esp){
 	void *argv_ptr;
 	argv_ptr = *esp;
 	push_stack(esp, &argv_ptr, 4);
-	push_stack(esp, &argc, 4);
 	printf("argv %p %p\n", argv_ptr, *esp);
+	push_stack(esp, &argc, 4);
 	printf("argc %d %p\n", argc, *esp);
 	// return address
 	i=0;

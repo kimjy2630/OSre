@@ -155,7 +155,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 				get_argument_int(ptr, 3));
 		f->eax = write(get_argument_int(ptr, 1), get_argument_ptr(ptr, 2),
 				get_argument_int(ptr, 3));
-		printf("SYSWRITE RET %d\n", f->eax);
+		printf("\n\nSYSWRITE RET %d\n", f->eax);
 		break;
 	case SYS_SEEK:
 		// int, unsigned type arg
