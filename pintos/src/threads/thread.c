@@ -593,6 +593,9 @@ void schedule_tail(struct thread *prev) {
  It's not safe to call printf() until schedule_tail() has
  completed. */
 static void schedule(void) {
+	//TODO
+	printf("SCHEDULE\n");
+
 	struct thread *curr = running_thread();
 	struct thread *next = next_thread_to_run();
 	struct thread *prev = NULL;
