@@ -182,7 +182,7 @@ void process_activate(void) {
 	//TODO
 	enum intr_level old = intr_disable();
 	printf("PROCESS_ACTIVATE %d\n", t->tid);
-	set_intr_level(old);
+	intr_set_level(old);
 
 	/* Activate thread's page tables. */
 	pagedir_activate(t->pagedir);
