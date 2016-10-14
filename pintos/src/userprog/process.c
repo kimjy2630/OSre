@@ -59,7 +59,7 @@ static void start_process(void *f_name) {
 	struct thread* curr = thread_current();
 	curr->user_thread = true;
 	lock_init(&curr->lock_child);
-	lock_acquire(&curr->lock_child);
+//	lock_acquire(&curr->lock_child);
 //	lock_release(&curr->lock_child);
 
 	/* Initialize interrupt frame and load executable. */
@@ -175,7 +175,7 @@ void process_exit(void) {
 
 
 
-	lock_release(&curr->lock_child);
+//	lock_release(&curr->lock_child);
 	//TODO
 	printf("LOCK RELEASE END\n");
 
