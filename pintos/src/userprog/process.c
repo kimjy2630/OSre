@@ -59,8 +59,8 @@ static void start_process(void *f_name) {
 	struct thread* curr = thread_current();
 	curr->user_thread = true;
 	lock_init(&curr->lock_child);
-//	lock_acquire(&curr->lock_child);
-//	lock_release(&curr->lock_child);
+	lock_acquire(&curr->lock_child);
+	lock_release(&curr->lock_child);
 
 	/* Initialize interrupt frame and load executable. */
 	memset(&if_, 0, sizeof if_);
