@@ -21,8 +21,8 @@
 static thread_func start_process NO_RETURN;
 static bool load(const char *cmdline, void (**eip)(void), void **esp);
 /////
-void push_stack(void **esp, void *data, size_t size);
-void push_argument (int argc, char *last, void **esp);
+static void push_stack(void **esp, void *data, size_t size);
+static void push_argument (int argc, char *last, void **esp);
 ////
 
 /* Starts a new thread running a user program loaded from
@@ -353,7 +353,7 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 }
 
 //TODO
-void
+static void
 push_argument(int argc, char *last, void **esp) {
 	/* Null-terminate the strings and count the arguments */
 	/* Array of pointers to the strings on the stack */
@@ -438,7 +438,7 @@ void push_argument (int argc, char *last, void **esp){
 }
 */
 
-void push_stack(void **esp, void *data, size_t size){
+static void push_stack(void **esp, void *data, size_t size){
 	*esp = *esp - size;
 	memcpy(*esp, data, size);
 }
