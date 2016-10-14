@@ -384,7 +384,7 @@ void push_argument (int argc, char *last, void **esp){
 //	void *argv[argc];
 	void *argv[128];
 	// push arguments
-	for (i = 0; i < argc; ++i) {
+	for (i = argc - 1; i >= 0; --i) {
 		while (*last != '\0')
 			--last;
 		last--;
@@ -408,8 +408,9 @@ void push_argument (int argc, char *last, void **esp){
 	// null pointer argv[argc]
 	push_stack(esp, &i, 4);
 	// argv[i]
-	for(i=argc-1; i>=0; i--){
+	for (i = argc - 1; i >= 0; i--) {
 		push_stack(esp, &argv[i], 4);
+		printf("argv[%] %p\n", i, argv[i]);
 	}
 	// argv, argc
 	void *argv_ptr;
