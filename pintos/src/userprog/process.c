@@ -69,8 +69,10 @@ static void start_process(void *f_name) {
 	palloc_free_page(file_name);
 	if (!success)
 		thread_exit();
-//TODO
+
+	//TODO
 	printf("THREAD_EXIT END\n");
+
 	/* Start the user process by simulating a return from an
 	 interrupt, implemented by intr_exit (in
 	 threads/intr-stubs.S).  Because intr_exit takes all of its
@@ -433,7 +435,8 @@ void push_argument (int argc, char *last, void **esp){
 //		argv + i = *esp;
 	}
 	// word-align
-	int align_size = (int)(*esp) % 4;
+//	int align_size = (int)(*esp) % 4;
+	int align_size = (*((int*) esp)) % 4;
 	if(align_size != 0){
 		i = 0;
 		push_stack(esp, &i, align_size);
