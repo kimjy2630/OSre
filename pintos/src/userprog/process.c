@@ -218,6 +218,8 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 	 file = filesys_open (file_name);
 	 */
 	////
+	//TODO
+	/*
 	char buffer[strlen(file_name)];
 //	strcpy(buffer, file_name);
 	strlcpy(buffer, file_name, strlen(file_name)+1);
@@ -231,6 +233,8 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 		token = strtok_r(NULL, " ", &last);
 		argc++;
 	}
+	*/
+	//TODO
 	////
 	if (file == NULL) {
 		printf("load: %s: open failed\n", file_name);
