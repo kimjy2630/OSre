@@ -357,7 +357,8 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 void push_argument (int argc, char *last, void **esp){
 	int i;
 	size_t size;
-	void *argv[argc];
+//	void *argv[argc];
+	void *argv[128];
 //	void *argv = malloc(4*argc);
 	// push arguments
 	for (i = 0; i < argc; ++i) {
