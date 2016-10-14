@@ -219,8 +219,8 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 	 */
 	////
 	//TODO
-	/*
-	char buffer[strlen(file_name)];
+//	char buffer[strlen(file_name)];
+	char buffer[200];
 //	strcpy(buffer, file_name);
 	strlcpy(buffer, file_name, strlen(file_name)+1);
 
@@ -233,7 +233,6 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 		token = strtok_r(NULL, " ", &last);
 		argc++;
 	}
-	*/
 	//TODO
 	////
 	if (file == NULL) {

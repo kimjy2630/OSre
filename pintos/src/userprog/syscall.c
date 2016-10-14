@@ -15,7 +15,7 @@ static int get_user (const uint8_t *uaddr);
 static bool put_user (uint8_t *udst, uint8_t byte);
 static bool read_validity (const void *uaddr, int size);
 static bool write_validity (uint8_t *udst, uint8_t byte);
-static void* get_argument (uint8_t *ptr)
+static void* get_argument (uint8_t *ptr);
 
 void halt (void);
 void exit (int status);
