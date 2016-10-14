@@ -116,9 +116,7 @@ process_wait (tid_t child_tid UNUSED)
 	else
 		return -1;
 
-	while(true){
-		//// 일단 무한 루프
-	}
+	while(1);//// 일단 무한 루프
 	return -1;
 }
 
