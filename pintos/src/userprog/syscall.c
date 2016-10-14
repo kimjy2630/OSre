@@ -186,7 +186,7 @@ pid_t exec (const char *file){
 }
 int wait (pid_t pid){
 	//TODO
-	process_wait(pid);
+	return process_wait(pid);
 //	return -1;
 }
 bool create (const char *file, unsigned initial_size){
@@ -207,7 +207,7 @@ int read (int fd, void *buffer, unsigned length){
 int write (int fd, const void *buffer, unsigned length){
 	if(fd == 1){ // write to console
 		putbuf(buffer, (size_t) length);
-		return length; // ???
+		return length;
 	}
 	return -1;
 }
