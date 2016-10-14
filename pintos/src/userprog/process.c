@@ -362,7 +362,7 @@ push_argument(int argc, char *last, void **esp) {
 	char *str_ptr = last;
 	int i;
 	for (i = 0; i < argc; i++) {
-		stack_push(esp, str_ptr, strlen(str_ptr) + 1);
+		push_stack(esp, str_ptr, strlen(str_ptr) + 1);
 		str_ptr = strchr(str_ptr, '\0') + 1;
 		/* skip all delimiters */
 		while (*str_ptr == ' ')
