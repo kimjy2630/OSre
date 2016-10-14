@@ -74,7 +74,7 @@ syscall_handler (struct intr_frame *f UNUSED)
     		printf("invalid user pointer read\n");
     		thread_exit();
     	}
-    	exit(**(ptr+1));
+		exit(**((int **)ptr + 1));
     	break;
     case SYS_EXEC:
     	// char* type arg
