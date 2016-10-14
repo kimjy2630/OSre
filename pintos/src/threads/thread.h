@@ -100,10 +100,12 @@ struct thread
     /* Owned by userprog/process.c. */
     uint32_t *pagedir;                  /* Page directory. */
     ////
+    bool user_thread;
     int exit_status;					/* Exit status */
     bool is_exit;						/* Check whether the thread run exit code */
     struct list list_children;			/* List of child threads */
     struct list_elem elem_child;		/* List element for children_list */
+    struct lock* lock_child;
     ////
 #endif
 

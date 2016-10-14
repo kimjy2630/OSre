@@ -54,6 +54,10 @@ static void start_process(void *f_name) {
 	struct intr_frame if_;
 	bool success;
 
+	thread_current()->user_thread = true;
+	lock_init(thread_current()->lock_child);
+	lock_aquire(thread_chrreut()->lock_child);
+
 	/* Initialize interrupt frame and load executable. */
 	memset(&if_, 0, sizeof if_);
 	if_.gs = if_.fs = if_.es = if_.ds = if_.ss = SEL_UDSEG;
@@ -88,6 +92,28 @@ static void start_process(void *f_name) {
 int
 process_wait (tid_t child_tid UNUSED)
 {
+	struct list_elem *e;
+	struct thread *t = thread_current();
+	struct list *list_child = &t->list_children;
+
+	bool flag = false;
+
+	for(e=list_begin(list_child); e!=list_end(list_child); e= list_next(list_child))
+	{
+		tid_t tid = list_entry(e,struct thread, elem_child)->tid;
+		if(tid == child_tid)
+		{
+			flag = true;
+			break;
+		}
+	}
+	if(flag)
+	{
+
+	}
+	else
+		return -1;
+
 	while(true){
 		//// 일단 무한 루프
 	}

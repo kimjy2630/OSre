@@ -45,6 +45,8 @@ get_argument (void *ptr, int pos)
 {
 	if(!read_validity(ptr, 4)){
 		printf("invalid user pointer read\n");
+		thread_current()->exit_status = -1;
+		thread_exit();
 		return NULL;
 	}
 	return ptr;
@@ -183,7 +185,9 @@ pid_t exec (const char *file){
 	return -1;
 }
 int wait (pid_t pid){
-	return -1;
+	//TODO
+	process_wait(pid);
+//	return -1;
 }
 bool create (const char *file, unsigned initial_size){
 	return false;
