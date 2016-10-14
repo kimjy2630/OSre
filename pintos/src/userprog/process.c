@@ -161,6 +161,7 @@ void process_exit(void) {
 
 
 	lock_release(&curr->lock_child);
+	printf("LOCK RELEASE END\n")
 
 }
 
