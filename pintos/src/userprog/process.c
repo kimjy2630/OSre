@@ -55,8 +55,8 @@ static void start_process(void *f_name) {
 	bool success;
 
 	thread_current()->user_thread = true;
-	lock_init(thread_current()->lock_child);
-	lock_acquire(thread_current()->lock_child);
+	lock_init(&thread_current()->lock_child);
+	lock_acquire(&thread_current()->lock_child);
 
 	/* Initialize interrupt frame and load executable. */
 	memset(&if_, 0, sizeof if_);
@@ -110,9 +110,9 @@ process_wait (tid_t child_tid UNUSED)
 	}
 	if(flag)
 	{
-		lock_acquire(child->lock_child);
+		lock_acquire(&child->lock_child);
 		int status = child->exit_status;
-		lock_release(child->lock_child);
+		lock_release(&child->lock_child);
 
 		return status;
 	}
@@ -158,7 +158,7 @@ void process_exit(void) {
 
 
 
-	lock_release(curr->lock_child);
+	lock_release(&curr->lock_child);
 
 }
 
