@@ -96,6 +96,8 @@ struct thread
     struct lock* lock_waiting;			/* Lock that this thread is waiting for. */
     int priority_eff;					/* Effective priority. */
 
+    struct lock asdf;
+
 #ifdef USERPROG
     /* Owned by userprog/process.c. */
     uint32_t *pagedir;                  /* Page directory. */
