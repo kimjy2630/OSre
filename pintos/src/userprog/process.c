@@ -113,6 +113,7 @@ process_wait (tid_t child_tid)
 		printf("PROCESSWAIT%d\n",i++);
 		child = list_entry(e, struct thread, elem_child);
 		if (child->tid == child_tid) {
+			list_remove(e);
 			flag = true;
 			break;
 		}
