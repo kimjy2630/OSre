@@ -105,7 +105,7 @@ process_wait (tid_t child_tid)
 	struct thread *child;
 
 	bool flag = false;
-	int i=0;
+//	int i=0;
 	for (e = list_begin(list_child); e != list_end(list_child);
 			e = list_next(e)) {
 		printf("PROCESSWAIT%d\n",i++);
