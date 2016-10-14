@@ -16,7 +16,8 @@ static int get_user (const uint8_t *uaddr);
 static bool put_user (uint8_t *udst, uint8_t byte);
 static bool read_validity (const void *uaddr, int size);
 static bool write_validity (uint8_t *udst, uint8_t byte);
-//static void* get_argument (uint8_t *ptr);
+static void* get_argument (void *ptr, int pos);
+
 
 void halt (void);
 void exit (int status);
@@ -39,16 +40,25 @@ syscall_init (void)
   intr_register_int (0x30, 3, INTR_ON, syscall_handler, "syscall");
 }
 
-/*
 static void*
-get_argument (uint8_t *ptr){
-	if(!read_validity(ptr, 1)){
+get_argument (void *ptr, int pos)
+{
+	if(!read_validity(ptr, 4)){
 		printf("invalid user pointer read\n");
 		return NULL;
 	}
-	return *ptr;
+	return ptr;
 }
-*/
+
+static int get_argument_int (void *ptr, int pos)
+{
+	return *((int*) get_argument(ptr, pos));
+}
+
+static int get_argument_ptr (void *ptr, int pos)
+{
+	return *((void**) get_argument(ptr, pos));
+}
 
 static void
 syscall_handler (struct intr_frame *f UNUSED) 
@@ -59,88 +69,102 @@ syscall_handler (struct intr_frame *f UNUSED)
   */
 ////
 //  int syscall_num = *((int *) (f->esp));
-  int *ptr = (int *) f->esp;
-  if(!read_validity ((void *) ptr, 4)){
+  void *ptr = (void *) f->esp;
+  if(!read_validity (ptr, 4)){
 	  printf("invalid user pointer read\n");
 	  thread_exit();
   }
-  switch (*ptr){
-    case SYS_HALT:
-    	halt();
-    	break;
-    case SYS_EXIT:
-    	// int type arg
-    	if(!read_validity ((void *) ptr + 1, 4)){
-    		printf("invalid user pointer read\n");
-    		thread_exit();
-    	}
-		exit(**((int **)ptr + 1));
-    	break;
-    case SYS_EXEC:
-    	// char* type arg
-    	if(!read_validity ((void *) ptr + 1, 4)){
-        	printf("invalid user pointer read\n");
-        	thread_exit();
-    	}
-    	exec(**((char ***)ptr+1));
-    	break;
-    case SYS_WAIT:
-    	// pid_t type arg
-    	if(!read_validity ((void *) ptr + 1, 4)){
-         	printf("invalid user pointer read\n");
-         	thread_exit();
-        }
-    	wait(**((pid_t **)ptr+1));
-    	break;
-    case SYS_CREATE:
-    	// char*, unsigned type arg
-    	if(!read_validity ((void *) ptr + 1, 8)){
-           	printf("invalid user pointer read\n");
-           	thread_exit();
-        }
-    	create(**((char ***)ptr+1), **(unsigned **)ptr+1);
-    	break;
-    case SYS_REMOVE:
-    	// char* type arg
-    	if(!read_validity ((void *) ptr + 1, 4)){
-           	printf("invalid user pointer read\n");
-           	thread_exit();
-        }
-    	remove(**((char ***)ptr+1));
-    	break;
-    case SYS_OPEN:
-    	// char* type arg
-    	if(!read_validity ((void *) ptr + 1, 4)){
-           	printf("invalid user pointer read\n");
-           	thread_exit();
-        }
-    	open(**((char ***)ptr+1));
-    	break;
-    case SYS_FILESIZE:
-    	// int type arg
-    	filesize(0);
-    	break;
-    case SYS_READ:
-    	// int, void*, unsigned type arg
-    	read(0, NULL, 0);
-    	break;
-    case SYS_WRITE:
-    	// int, void*, unsigned type arg
-    	write(0, NULL, 0);
-    	break;
-    case SYS_SEEK:
-    	// int, unsigned type arg
-    	seek(0, 0);
-    	break;
-    case SYS_TELL:
-    	// unsigned type arg
-    	tell(0);
-    	break;
-    case SYS_CLOSE:
-    	// unsigned type arg
-    	close(0);
-    	break;
-  }
+	switch (*((int*) ptr)) {
+	case SYS_HALT:
+		halt();
+		break;
+	case SYS_EXIT:
+		// int type arg
+//		if (!read_validity(ptr + 1, 4)) {
+//			printf("invalid user pointer read\n");
+//			thread_exit();
+//		}
+//		exit(*((int *) ptr + 1));
+		exit(get_argument_int(ptr, 1));
+		break;
+	case SYS_EXEC:
+		// char* type arg
+//		if (!read_validity(ptr + 1, 4)) {
+//			printf("invalid user pointer read\n");
+//			thread_exit();
+//		}
+//		exec(*((char **) ptr + 1));
+		f->eax = exec(get_argument_ptr(ptr, 1));
+		break;
+	case SYS_WAIT:
+		// pid_t type arg
+//		if (!read_validity(ptr + 1, 4)) {
+//			printf("invalid user pointer read\n");
+//			thread_exit();
+//		}
+//		wait(*((pid_t *) ptr + 1));
+		f->eax = wait(get_argument_int(ptr, 1));
+		break;
+	case SYS_CREATE:
+		// char*, unsigned type arg
+//		if (!read_validity(ptr + 1, 8)) {
+//			printf("invalid user pointer read\n");
+//			thread_exit();
+//		}
+//		create(*((char **) ptr + 1), *(unsigned *) ptr + 2);
+		f->eax = create(get_argument_ptr(ptr, 1), get_argument_int(ptr, 2));
+		break;
+	case SYS_REMOVE:
+		// char* type arg
+//		if (!read_validity(ptr + 1, 4)) {
+//			printf("invalid user pointer read\n");
+//			thread_exit();
+//		}
+//		remove(*((char **) ptr + 1));
+		f->eax = remove(get_argument_ptr(ptr, 1));
+		break;
+	case SYS_OPEN:
+		// char* type arg
+//		if (!read_validity(ptr + 1, 4)) {
+//			printf("invalid user pointer read\n");
+//			thread_exit();
+//		}
+//		open(*((char **) ptr + 1));
+		f->eax = open(get_argument_ptr(ptr, 1));
+		break;
+	case SYS_FILESIZE:
+		// int type arg
+//		filesize(0);
+		f->eax = filesize(get_argument_int(ptr, 1));
+		break;
+	case SYS_READ:
+		// int, void*, unsigned type arg
+//		read(0, NULL, 0);
+		f->eax = read(get_argument_int(ptr, 1), get_argument_ptr(ptr, 2),
+				get_argument_int(ptr, 3));
+		break;
+	case SYS_WRITE:
+		// int, void*, unsigned type arg
+//		write(0, NULL, 0);
+		f->eax = write(get_argument_int(ptr, 1), get_argument_ptr(ptr, 2),
+				get_argument_int(ptr, 3));
+		break;
+	case SYS_SEEK:
+		// int, unsigned type arg
+//		seek(0, 0);
+		f->eax = seek(get_argument_int(ptr, 1), get_argument_int(ptr, 2));
+		break;
+	case SYS_TELL:
+		// unsigned type arg
+//		tell(0);
+		f->eax = tell(get_argument_int(ptr, 1));
+		break;
+	case SYS_CLOSE:
+		// unsigned type arg
+//		close(0);
+		f->eax = close(get_argument_int(ptr, 1));
+		break;
+	}
   thread_exit();
 ////
 }
