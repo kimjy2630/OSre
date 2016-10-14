@@ -354,6 +354,8 @@ int thread_get_eff_priority(struct thread* t) {
 	//TODO
 	if(t == NULL)
 		printf("THREAD_GET_EFF_PRIORITY NULL\n");
+	else
+		printf("THREAD MAGIC %u\n", t->magic);
 	//TODO
 	ASSERT(is_thread(t));
 
