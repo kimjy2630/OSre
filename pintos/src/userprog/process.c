@@ -59,7 +59,7 @@ static void start_process(void *f_name) {
 	struct thread* curr = thread_current();
 	curr->user_thread = true;
 	lock_init(&curr->lock_child);
-//	lock_acquire(&curr->lock_child);
+	lock_acquire(&curr->lock_child);
 //	lock_release(&curr->lock_child);
 
 	/* Initialize interrupt frame and load executable. */
@@ -122,7 +122,7 @@ process_wait (tid_t child_tid)
 		printf("FOUND %d %d\n", child->tid, thread_current()->tid);
 		lock_acquire(&child->lock_child);
 		int status = child->exit_status;
-		lock_release(&child->lock_child);
+//		lock_release(&child->lock_child);
 
 		return status;
 	}
@@ -177,7 +177,7 @@ void process_exit(void) {
 
 
 
-//	lock_release(&curr->lock_child);
+	lock_release(&curr->lock_child);
 	//TODO
 	printf("LOCK RELEASE END\n");
 
