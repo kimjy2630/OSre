@@ -6,7 +6,7 @@
 ////
 #include "threads/init.h"
 #include "threads/vaddr.h"
-#include "lib/kernel/console.c"
+#include "lib/kernel/console.h"
 #include "lib/user/syscall.h"
 ////
 
