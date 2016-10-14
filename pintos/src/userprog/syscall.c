@@ -7,6 +7,7 @@
 #include "threads/init.h"
 #include "threads/vaddr.h"
 #include "lib/kernel/console.c"
+#include "lib/user/syscall.h"
 ////
 
 static void syscall_handler (struct intr_frame *);
