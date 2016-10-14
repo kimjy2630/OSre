@@ -140,7 +140,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 		close(get_argument_int(ptr, 1));
 		break;
 	}
-  thread_exit();
+//  thread_exit();
 ////
 }
 
