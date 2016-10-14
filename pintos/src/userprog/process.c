@@ -302,7 +302,7 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 
 	////
 	//TODO
-//	push_argument(argc, last, esp);
+	push_argument(argc, last, esp);
 	/*
 	size_t size;
 	{
@@ -356,46 +356,9 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 	return success;
 }
 
-//TODO
-static void
-push_argument(int argc, char *last, void **esp) {
-	/* Null-terminate the strings and count the arguments */
-	/* Array of pointers to the strings on the stack */
-	char *argv[argc];
-	/* Push the argument strings to the stack */
-	char *str_ptr = last;
-	int i;
-	for (i = 0; i < argc; i++) {
-		push_stack(esp, str_ptr, strlen(str_ptr) + 1);
-		str_ptr = strchr(str_ptr, '\0') + 1;
-		/* skip all delimiters */
-		while (*str_ptr == ' ')
-			str_ptr++;
-		/* Save the stack location */
-		argv[i] = *esp;
-	}
-	/* pad to 4-bytes */
-	for (i = 0; i < ((int) (*esp) % 4); i++) {
-		char c = 0;
-		push_stack(esp, &c, sizeof(c));
-	}
-	/* Push the arg pointers, in reverse order */
-	/* Start with a null ptr for args[argc] */
-	int zero = 0;
-	push_stack(esp, &zero, sizeof(zero));
-	for (i = argc - 1; i >= 0; i--)
-		push_stack(esp, &argv[i], sizeof(char*));
-	/* Push the address of the first arg pointer */
-	void *saved_esp = *esp;
-	push_stack(esp, &saved_esp, sizeof(void*));
-	/* Push argc */
-	push_stack(esp, &(argc), sizeof(argc));
-	/* Push the return address */
-	push_stack(esp, &zero, sizeof(zero));
-}
-//TODO
+
 ////
-/*
+
 void push_argument (int argc, char *last, void **esp){
 	int i;
 	size_t size;
@@ -440,7 +403,7 @@ void push_argument (int argc, char *last, void **esp){
 	i=0;
 //	free(argv);
 }
-*/
+
 
 static void push_stack(void **esp, void *data, size_t size){
 	*esp = *esp - size;
