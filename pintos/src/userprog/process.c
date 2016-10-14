@@ -136,7 +136,11 @@ process_wait (tid_t child_tid UNUSED)
 /* Free the current process's resources. */
 void process_exit(void) {
 	//TODO
-	printf("PROCESS_EXIT %\n", thread_current()->tid);
+	int tid = thread_current()->tid;
+	enum intr_level old = intr_disable();
+	printf("PROCESS_EXIT %d\n", tid);
+	intr_set_level(old);
+
 	struct thread *curr = thread_current();
 	uint32_t *pd;
 
