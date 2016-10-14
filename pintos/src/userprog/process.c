@@ -180,7 +180,9 @@ void process_exit(void) {
 void process_activate(void) {
 	struct thread *t = thread_current();
 	//TODO
+	enum intr_level old = intr_disable();
 	printf("PROCESS_ACTIVATE %d\n", t->tid);
+	set_intr_level(old);
 
 	/* Activate thread's page tables. */
 	pagedir_activate(t->pagedir);
