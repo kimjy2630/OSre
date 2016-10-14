@@ -115,6 +115,7 @@ process_wait (tid_t child_tid)
 		if (child->tid == child_tid) {
 			list_remove(e);
 			flag = true;
+			list_remove(e);
 			break;
 		}
 	}
