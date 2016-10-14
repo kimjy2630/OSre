@@ -266,7 +266,7 @@ tid_t thread_tid(void) {
  returns to the caller. */
 void thread_exit(void) {
 	//TODO
-	printf("THREAD_EXIT\n");
+	printf("THREAD_EXIT %d\n", thread_current()->tid);
 	ASSERT(!intr_context());
 
 #ifdef USERPROG
