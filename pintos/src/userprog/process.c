@@ -420,6 +420,7 @@ void push_argument (int argc, char *last, void **esp){
 	// return address
 	i=0;
 //	free(argv);
+	hex_dump();
 }
 
 
