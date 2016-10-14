@@ -149,13 +149,13 @@ syscall_handler (struct intr_frame *f UNUSED)
 		break;
 	case SYS_WRITE:
 		// int, void*, unsigned type arg
-//		write(0, NULL, 0);
-//		printf("SYSWRITE %d_%p_%s_%u\n", get_argument_int(ptr, 1),
-//				get_argument_ptr(ptr, 2), get_argument_ptr(ptr, 2),
-//				get_argument_int(ptr, 3));
+		write(0, NULL, 0);
+		printf("SYSWRITE %d_%p_%s_%u\n", get_argument_int(ptr, 1),
+				get_argument_ptr(ptr, 2), get_argument_ptr(ptr, 2),
+				get_argument_int(ptr, 3));
 		f->eax = write(get_argument_int(ptr, 1), get_argument_ptr(ptr, 2),
 				get_argument_int(ptr, 3));
-//		printf("\n\nSYSWRITE RET %d\n", f->eax);
+		printf("\n\nSYSWRITE RET %d\n", f->eax);
 		break;
 	case SYS_SEEK:
 		// int, unsigned type arg
@@ -213,7 +213,7 @@ int read (int fd, void *buffer, unsigned length){
 int write (int fd, const void *buffer, unsigned length){
 	if (read_validity(buffer, length))
 		if (fd == 1) { // write to console
-//			printf("WRITE FD 1\n");
+			printf("WRITE FD 1\n");
 			putbuf(buffer, (size_t) length);
 			return length;
 		}
