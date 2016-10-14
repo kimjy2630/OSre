@@ -353,7 +353,7 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 }
 
 //TODO
-static void
+void
 push_argument(int argc, char *last, void **esp) {
 	/* Null-terminate the strings and count the arguments */
 	/* Array of pointers to the strings on the stack */
