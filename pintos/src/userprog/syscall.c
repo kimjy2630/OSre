@@ -257,8 +257,15 @@ read_validity (const void *uaddr, int size){
 	return true;
 }
 
-static bool
-write_validity (uint8_t *udst, uint8_t byte){
-	return (udst < PHYS_BASE) && put_user (udst, byte);
+static bool write_validity(const void* udst, int size)
+{
+	if (((uint8_t*) udst) + size > PHYS_BASE)
+		return false;
+	int i;
+	for (i = 0; i < size; ++i) {
+		if (!put_user(((uint8_t*) udst) + i, '\0'))
+			return false;
+	}
+	return true;
 }
 ////
