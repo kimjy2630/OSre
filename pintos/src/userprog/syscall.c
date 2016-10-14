@@ -152,7 +152,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 	case SYS_SEEK:
 		// int, unsigned type arg
 //		seek(0, 0);
-		f->eax = seek(get_argument_int(ptr, 1), get_argument_int(ptr, 2));
+		seek(get_argument_int(ptr, 1), get_argument_int(ptr, 2));
 		break;
 	case SYS_TELL:
 		// unsigned type arg
@@ -162,7 +162,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 	case SYS_CLOSE:
 		// unsigned type arg
 //		close(0);
-		f->eax = close(get_argument_int(ptr, 1));
+		close(get_argument_int(ptr, 1));
 		break;
 	}
   thread_exit();
