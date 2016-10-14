@@ -82,7 +82,7 @@ syscall_handler (struct intr_frame *f UNUSED)
         	printf("invalid user pointer read\n");
         	thread_exit();
     	}
-    	exec(**((char **)ptr+1));
+    	exec(**((char ***)ptr+1));
     	break;
     case SYS_WAIT:
     	// pid_t type arg
@@ -90,7 +90,7 @@ syscall_handler (struct intr_frame *f UNUSED)
          	printf("invalid user pointer read\n");
          	thread_exit();
         }
-    	wait(**((pid_t *)ptr+1));
+    	wait(**((pid_t **)ptr+1));
     	break;
     case SYS_CREATE:
     	// char*, unsigned type arg
@@ -98,7 +98,7 @@ syscall_handler (struct intr_frame *f UNUSED)
            	printf("invalid user pointer read\n");
            	thread_exit();
         }
-    	create(**((char **)ptr+1), **(unsigned *)ptr+1);
+    	create(**((char ***)ptr+1), **(unsigned **)ptr+1);
     	break;
     case SYS_REMOVE:
     	// char* type arg
@@ -106,7 +106,7 @@ syscall_handler (struct intr_frame *f UNUSED)
            	printf("invalid user pointer read\n");
            	thread_exit();
         }
-    	remove(**((char **)ptr+1));
+    	remove(**((char ***)ptr+1));
     	break;
     case SYS_OPEN:
     	// char* type arg
@@ -114,7 +114,7 @@ syscall_handler (struct intr_frame *f UNUSED)
            	printf("invalid user pointer read\n");
            	thread_exit();
         }
-    	open(**((char **)ptr+1));
+    	open(**((char ***)ptr+1));
     	break;
     case SYS_FILESIZE:
     	// int type arg
