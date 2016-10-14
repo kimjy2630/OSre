@@ -211,7 +211,7 @@ int read (int fd, void *buffer, unsigned length){
 	return -1;
 }
 int write (int fd, const void *buffer, unsigned length){
-	if (write_validity(buffer, length))
+	if (read_validity(buffer, length))
 		if (fd == 1) { // write to console
 			printf("WRITE FD 1\n");
 			putbuf(buffer, (size_t) length);
