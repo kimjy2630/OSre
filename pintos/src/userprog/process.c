@@ -119,9 +119,9 @@ process_wait (tid_t child_tid)
 	}
 	if(flag)
 	{
-//		lock_acquire(&child->lock_child);
+		lock_acquire(&child->lock_child);
 		int status = child->exit_status;
-//		lock_release(&child->lock_child);
+		lock_release(&child->lock_child);
 
 		return status;
 	}
