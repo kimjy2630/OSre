@@ -210,11 +210,11 @@ int read (int fd, void *buffer, unsigned length){
 	return -1;
 }
 int write (int fd, const void *buffer, unsigned length){
-	write_validity(buffer, length);
-	if(fd == 1){ // write to console
-		putbuf(buffer, (size_t) length);
-		return length;
-	}
+	if (write_validity(buffer, length))
+		if (fd == 1) { // write to console
+			putbuf(buffer, (size_t) length);
+			return length;
+		}
 	return -1;
 }
 void seek (int fd, unsigned position){
