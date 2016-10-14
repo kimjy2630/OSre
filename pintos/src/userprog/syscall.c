@@ -150,7 +150,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 	case SYS_WRITE:
 		// int, void*, unsigned type arg
 //		write(0, NULL, 0);
-		printf("SYSWRITE %d %s %u\n", get_argument_int(ptr, 1),
+		printf("SYSWRITE %d %p %u\n", get_argument_int(ptr, 1),
 				get_argument_ptr(ptr, 2), get_argument_int(ptr, 3));
 		f->eax = write(get_argument_int(ptr, 1), get_argument_ptr(ptr, 2),
 				get_argument_int(ptr, 3));
