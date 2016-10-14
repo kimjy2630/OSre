@@ -436,14 +436,11 @@ void push_argument (int argc, char *last, void **esp){
 	}
 	// word-align
 //	int align_size = (int)(*esp) % 4;
-	int align_size = (*((unsigned int*) esp)) % 4;
-	printf("ALIGN %d\n",align_size);
-	if(align_size > 0){
-		i = 0;
-		push_stack(esp, &i, align_size);
-	}
-	// null pointer argv[argc]
 	i = 0;
+	while( (*((unsigned int*) esp)) % 4)
+		push_stack(esp, &i, 1);
+
+	// null pointer argv[argc]
 	push_stack(esp, &i, 4);
 	// argv[i]
 	for(i=argc-1; i>=0; i--){
