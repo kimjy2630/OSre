@@ -99,7 +99,7 @@ int
 process_wait (tid_t child_tid UNUSED)
 {
 	//TODO
-//	printf("PROCESS_WAIT\n");
+	printf("PROCESS_WAIT\n");
 	struct list_elem *e;
 	struct thread *t = thread_current();
 	struct list *list_child = &t->list_children;
@@ -122,10 +122,14 @@ process_wait (tid_t child_tid UNUSED)
 		int status = child->exit_status;
 //		lock_release(&child->lock_child);
 
+		printf("PROCESS_WAIT END %d\n",status);
 		return status;
 	}
 	else
+	{
+		printf("PROCESS_WAIT END %d\n", -1);
 		return -1;
+	}
 
 //	while(true){
 //		//// 일단 무한 루프
