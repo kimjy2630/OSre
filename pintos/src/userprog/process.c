@@ -378,6 +378,7 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 ////
 
 void push_argument (int argc, char *last, void **esp){
+	printf("PUSH_ARGUMENT\n");
 	int i;
 	size_t size;
 //	void *argv[argc];
