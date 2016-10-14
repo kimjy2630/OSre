@@ -4,6 +4,9 @@
 #include <debug.h>
 #include <list.h>
 #include <stdint.h>
+//TODO
+#include "threads/synch.h"
+//TODO
 
 /* States in a thread's life cycle. */
 enum thread_status
@@ -95,8 +98,6 @@ struct thread
     struct list list_lock;				/* List of locks that this thread has. */
     struct lock* lock_waiting;			/* Lock that this thread is waiting for. */
     int priority_eff;					/* Effective priority. */
-
-    struct lock asdf;
 
 #ifdef USERPROG
     /* Owned by userprog/process.c. */
