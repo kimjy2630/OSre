@@ -371,6 +371,12 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 	/* We arrive here whether the load is successful or not. */
 	if (file != NULL)
 		file_close(file);
+
+	//TODO
+	if(success)
+		printf("LOAD SUCCESS\n");
+	else
+		printf("LOAD FAIL\n");
 	return success;
 }
 
