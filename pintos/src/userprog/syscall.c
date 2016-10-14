@@ -65,7 +65,7 @@ static int get_argument_ptr (void *ptr, int pos)
 static void
 syscall_handler (struct intr_frame *f UNUSED) 
 {
-	printf("SYSCALL_HANDLER\n");
+//	printf("SYSCALL_HANDLER\n");
   /* original code
   printf ("system call!\n");
   thread_exit ();
@@ -77,7 +77,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 		printf("invalid user pointer read\n");
 		thread_exit();
 	}
-	printf("SYSNUM %d\n", *((int*) ptr));
+//	printf("SYSNUM %d\n", *((int*) ptr));
 	switch (*((int*) ptr)) {
 	case SYS_HALT:
 		halt();
@@ -117,12 +117,12 @@ syscall_handler (struct intr_frame *f UNUSED)
 		break;
 	case SYS_WRITE:
 		// int, void*, unsigned type arg
-		printf("SYSWRITE %d_%p_%s_%u\n", get_argument_int(ptr, 1),
-				get_argument_ptr(ptr, 2), get_argument_ptr(ptr, 2),
-				get_argument_int(ptr, 3));
+//		printf("SYSWRITE %d_%p_%s_%u\n", get_argument_int(ptr, 1),
+//				get_argument_ptr(ptr, 2), get_argument_ptr(ptr, 2),
+//				get_argument_int(ptr, 3));
 		f->eax = write(get_argument_int(ptr, 1), get_argument_ptr(ptr, 2),
 				get_argument_int(ptr, 3));
-		printf("\n\nSYSWRITE RET %d\n", f->eax);
+//		printf("\n\nSYSWRITE RET %d\n", f->eax);
 		break;
 	case SYS_SEEK:
 		// int, unsigned type arg
@@ -146,11 +146,12 @@ void halt (void){
 	power_off();
 }
 void exit (int status){
-	printf("SYS_EXIT %d\n", status);
+//	printf("SYS_EXIT %d\n", status);
 	struct thread *curr = thread_current();
 	curr->exit_status = status;
 	curr->is_exit = true;
 	lock_release(&curr->lock_child);
+	printf("%s: exit(%d)\n", curr->name, status);
 	thread_exit();
 }
 pid_t exec (const char *file){
@@ -179,7 +180,7 @@ int read (int fd, void *buffer, unsigned length){
 int write (int fd, const void *buffer, unsigned length){
 	if (read_validity(buffer, length))
 		if (fd == 1) { // write to console
-			printf("WRITE FD 1\n");
+//			printf("WRITE FD 1\n");
 			putbuf(buffer, (size_t) length);
 			return length;
 		}

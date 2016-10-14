@@ -108,7 +108,7 @@ process_wait (tid_t child_tid)
 //	int i=0;
 	for (e = list_begin(list_child); e != list_end(list_child);
 			e = list_next(e)) {
-		printf("PROCESSWAIT%d\n",i++);
+//		printf("PROCESSWAIT%d\n",i++);
 		child = list_entry(e, struct thread, elem_child);
 		if (child->tid == child_tid) {
 			flag = true;
@@ -176,7 +176,7 @@ void process_exit(void) {
 
 //	lock_release(&curr->lock_child);
 	//TODO
-	printf("LOCK RELEASE END\n");
+//	printf("LOCK RELEASE END\n");
 
 }
 
