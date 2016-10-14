@@ -99,7 +99,10 @@ int
 process_wait (tid_t child_tid)
 {
 	//TODO
-	printf("PROCESS_WAIT\n");
+	int i=0;
+	printf("PROCESS_WAIT\n"){
+		printf("%d\n", ++i);
+	}
 	while(1);
 	struct list_elem *e;
 	struct thread *t = thread_current();
