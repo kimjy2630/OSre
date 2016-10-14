@@ -352,14 +352,14 @@ void thread_set_eff_priority(struct thread* t, int new_priority) {
 
 int thread_get_eff_priority(struct thread* t) {
 	//TODO
-	if(t == NULL)
-		printf("THREAD_GET_EFF_PRIORITY NULL\n");
-	else
-	{
-		printf("THREAD MAGIC %u\n", t->magic);
-		printf("ORIGINAL MAGIC %u\n", THREAD_MAGIC);
-		printf("ASSERT RESULT: %b\n", t != NULL && t->magic == THREAD_MAGIC);
-	}
+//	if(t == NULL)
+//		printf("THREAD_GET_EFF_PRIORITY NULL\n");
+//	else
+//	{
+//		printf("THREAD MAGIC %u\n", t->magic);
+//		printf("ORIGINAL MAGIC %u\n", THREAD_MAGIC);
+//		printf("ASSERT RESULT: %b\n", t != NULL && t->magic == THREAD_MAGIC);
+//	}
 	//TODO
 	ASSERT(is_thread(t));
 
