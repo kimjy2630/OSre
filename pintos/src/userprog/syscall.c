@@ -43,13 +43,13 @@ syscall_init (void)
 static void*
 get_argument (void *ptr, int pos)
 {
-	if(!read_validity(ptr, 4)){
+	if (!read_validity(((int*) ptr) + pos, 4)) {
 		printf("invalid user pointer read\n");
 		thread_current()->exit_status = -1;
 		thread_exit();
 		return NULL;
 	}
-	return ptr;
+	return ((int*) ptr) + pos;
 }
 
 static int get_argument_int (void *ptr, int pos)
