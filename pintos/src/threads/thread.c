@@ -358,6 +358,7 @@ int thread_get_eff_priority(struct thread* t) {
 	{
 		printf("THREAD MAGIC %u\n", t->magic);
 		printf("ORIGINAL MAGIC %u\n", THREAD_MAGIC);
+		printf("ASSERT RESULT: %b\n", t != NULL && t->magic == THREAD_MAGIC);
 	}
 	//TODO
 	ASSERT(is_thread(t));
