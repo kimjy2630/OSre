@@ -494,7 +494,7 @@ static void init_thread(struct thread *t, const char *name, int priority) {
 	#ifdef USERPROG
 	t->is_exit = false;
 	list_init(&t->list_children);
-	list_pushback(&thread_current()->list_children, &t->elem_child);
+	list_push_back(&thread_current()->list_children, &t->elem_child);
 //	lock_init(t->lock_child);
 //	lock_acquire(t->lock_child);
 	#endif
