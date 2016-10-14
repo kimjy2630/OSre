@@ -31,7 +31,7 @@ static void push_argument (int argc, char *last, void **esp);
  thread id, or TID_ERROR if the thread cannot be created. */
 tid_t process_execute(const char *file_name) {
 	//TODO
-	printf("PROCESS+EXECUTE\n");
+//	printf("PROCESS+EXECUTE\n");
 	char *fn_copy;
 	tid_t tid;
 
@@ -73,7 +73,7 @@ static void start_process(void *f_name) {
 		thread_exit();
 
 	//TODO
-	printf("THREAD_EXIT END\n");
+//	printf("THREAD_EXIT END\n");
 
 	/* Start the user process by simulating a return from an
 	 interrupt, implemented by intr_exit (in
@@ -82,7 +82,7 @@ static void start_process(void *f_name) {
 	 we just point the stack pointer (%esp) to our stack frame
 	 and jump to it. */
 	asm volatile ("movl %0, %%esp; jmp intr_exit" : : "g" (&if_) : "memory");
-	printf("NOT_REACHED\n");
+//	printf("NOT_REACHED\n");
 	NOT_REACHED();
 }
 
@@ -99,7 +99,7 @@ int
 process_wait (tid_t child_tid UNUSED)
 {
 	//TODO
-	printf("PROCESS_WAIT\n");
+//	printf("PROCESS_WAIT\n");
 	struct list_elem *e;
 	struct thread *t = thread_current();
 	struct list *list_child = &t->list_children;
@@ -136,7 +136,7 @@ process_wait (tid_t child_tid UNUSED)
 /* Free the current process's resources. */
 void process_exit(void) {
 	//TODO
-	printf("PROCESS_EXIT\n");
+//	printf("PROCESS_EXIT\n");
 	struct thread *curr = thread_current();
 	uint32_t *pd;
 
@@ -170,7 +170,7 @@ void process_exit(void) {
 
 //	lock_release(&curr->lock_child);
 	//TODO
-	printf("LOCK RELEASE END\n");
+//	printf("LOCK RELEASE END\n");
 
 }
 
@@ -289,7 +289,7 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 
 	token = strtok_r(buffer, " ", &last);
 	file = filesys_open(token);
-	printf("filesys_open(%s)\n", token);
+//	printf("filesys_open(%s)\n", token);
 	while (token != NULL) {
 		token = strtok_r(NULL, " ", &last);
 		argc++;
@@ -380,10 +380,10 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 		file_close(file);
 
 	//TODO
-	if(success)
-		printf("LOAD SUCCESS\n");
-	else
-		printf("LOAD FAIL\n");
+//	if(success)
+//		printf("LOAD SUCCESS\n");
+//	else
+//		printf("LOAD FAIL\n");
 	return success;
 }
 
@@ -391,7 +391,7 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 ////
 
 void push_argument (int argc, char *last, void **esp){
-	printf("PUSH_ARGUMENT\n");
+//	printf("PUSH_ARGUMENT\n");
 	int i;
 	size_t size;
 //	void *argv[argc];
@@ -410,7 +410,7 @@ void push_argument (int argc, char *last, void **esp){
 		push_stack(esp, last, size);
 		argv[i] = *esp;
 
-		printf("argv[%d] %s %p\n", i, last, argv[i]);
+//		printf("argv[%d] %s %p\n", i, last, argv[i]);
 	}
 	// word-align
 //	int align_size = (int)(*esp) % 4;
@@ -423,15 +423,15 @@ void push_argument (int argc, char *last, void **esp){
 	// argv[i]
 	for (i = argc - 1; i >= 0; i--) {
 		push_stack(esp, &argv[i], 4);
-		printf("argv[%d] %p %p\n", i, argv[i], *esp);
+//		printf("argv[%d] %p %p\n", i, argv[i], *esp);
 	}
 	// argv, argc
 	void *argv_ptr;
 	argv_ptr = *esp;
 	push_stack(esp, &argv_ptr, 4);
-	printf("argv %p %p\n", argv_ptr, *esp);
+//	printf("argv %p %p\n", argv_ptr, *esp);
 	push_stack(esp, &argc, 4);
-	printf("argc %d %p\n", argc, *esp);
+//	printf("argc %d %p\n", argc, *esp);
 	// return address
 	i=0;
 	push_stack(esp, &i, 4);
