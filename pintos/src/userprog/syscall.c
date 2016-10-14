@@ -117,16 +117,12 @@ syscall_handler (struct intr_frame *f UNUSED)
 		break;
 	case SYS_WRITE:
 		// int, void*, unsigned type arg
-<<<<<<< HEAD
 //		printf("SYSWRITE %d_%p_%s_%u\n", get_argument_int(ptr, 1),
 //				get_argument_ptr(ptr, 2), get_argument_ptr(ptr, 2),
 //				get_argument_int(ptr, 3));
-=======
-		write(0, NULL, 0);
 		printf("SYSWRITE %d_%p_%s_%u\n", get_argument_int(ptr, 1),
 				get_argument_ptr(ptr, 2), get_argument_ptr(ptr, 2),
 				get_argument_int(ptr, 3));
->>>>>>> branch 'newJY' of https://github.com/kimjy2630/OSre.git
 		f->eax = write(get_argument_int(ptr, 1), get_argument_ptr(ptr, 2),
 				get_argument_int(ptr, 3));
 		printf("\n\nSYSWRITE RET %d\n", f->eax);
