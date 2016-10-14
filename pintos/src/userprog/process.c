@@ -275,7 +275,7 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 
 	token = strtok_r(buffer, " ", &last);
 	file = filesys_open(token);
-	ptinf("filesys_open(%s)\n", token);
+	printf("filesys_open(%s)\n", token);
 	while (token != NULL) {
 		token = strtok_r(NULL, " ", &last);
 		argc++;
