@@ -410,7 +410,7 @@ void push_argument (int argc, char *last, void **esp){
 	// argv[i]
 	for (i = argc - 1; i >= 0; i--) {
 		push_stack(esp, &argv[i], 4);
-		printf("argv[%] %p\n", i, argv[i]);
+		printf("argv[%d] %p\n", i, argv[i]);
 	}
 	// argv, argc
 	void *argv_ptr;
