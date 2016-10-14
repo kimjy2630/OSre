@@ -106,14 +106,14 @@ process_wait (tid_t child_tid)
 
 	bool flag = false;
 
-//	for (e = list_begin(list_child); e != list_end(list_child);
-//			e = list_next(e)) {
-//		child = list_entry(e, struct thread, elem_child);
-//		if (child->tid == child_tid) {
-//			flag = true;
-//			break;
-//		}
-//	}
+	for (e = list_begin(list_child); e != list_end(list_child);
+			e = list_next(e)) {
+		child = list_entry(e, struct thread, elem_child);
+		if (child->tid == child_tid) {
+			flag = true;
+			break;
+		}
+	}
 	if(flag)
 	{
 //		lock_acquire(&child->lock_child);
