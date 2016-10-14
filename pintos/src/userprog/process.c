@@ -95,6 +95,8 @@ static void start_process(void *f_name) {
 int
 process_wait (tid_t child_tid UNUSED)
 {
+	//TODO
+	printf("PROCESS_WAIT\n");
 	struct list_elem *e;
 	struct thread *t = thread_current();
 	struct list *list_child = &t->list_children;
