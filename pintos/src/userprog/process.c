@@ -298,7 +298,8 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 		goto done;
 
 	////
-	push_argument(argc, last, esp);
+	//TODO
+//	push_argument(argc, last, esp);
 	/*
 	size_t size;
 	{
