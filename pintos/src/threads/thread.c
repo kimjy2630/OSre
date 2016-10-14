@@ -167,13 +167,18 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 	if (t == NULL)
 		return TID_ERROR;
 
-	#ifdef USERPROG
-	t->user_thread = false;
-	#endif
-
 	/* Initialize thread. */
 	init_thread(t, name, priority);
 	tid = t->tid = allocate_tid();
+
+	#ifdef USERPROG
+	t->user_thread = false;
+	t->is_exit = false;
+	list_init(&t->list_children);
+	list_push_back(&thread_current()->list_children, &t->elem_child);
+//	lock_init(t->lock_child);
+//	lock_acquire(t->lock_child);
+	#endif
 
 	/* Stack frame for kernel_thread(). */
 	kf = alloc_frame(t, sizeof *kf);
@@ -490,14 +495,6 @@ static void init_thread(struct thread *t, const char *name, int priority) {
 	t->priority_eff = t->priority;
 	list_init(&t->list_lock);
 	t->lock_waiting = NULL;
-
-	#ifdef USERPROG
-	t->is_exit = false;
-	list_init(&t->list_children);
-	list_push_back(&thread_current()->list_children, &t->elem_child);
-//	lock_init(t->lock_child);
-//	lock_acquire(t->lock_child);
-	#endif
 	////
 }
 
