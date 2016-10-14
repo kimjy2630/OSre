@@ -15,7 +15,7 @@ static void syscall_handler (struct intr_frame *);
 static int get_user (const uint8_t *uaddr);
 static bool put_user (uint8_t *udst, uint8_t byte);
 static bool read_validity (const void *uaddr, int size);
-static bool write_validity (uint8_t *udst, uint8_t byte);
+static bool write_validity(const void* udst, int size);
 static void* get_argument (void *ptr, int pos);
 
 
