@@ -437,7 +437,7 @@ void push_argument (int argc, char *last, void **esp){
 	// word-align
 //	int align_size = (int)(*esp) % 4;
 	int align_size = (*((int*) esp)) % 4;
-	if(align_size != 0){
+	if(align_size > 0){
 		i = 0;
 		push_stack(esp, &i, align_size);
 	}
