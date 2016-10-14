@@ -96,7 +96,7 @@ static void start_process(void *f_name) {
  This function will be implemented in problem 2-2.  For now, it
  does nothing. */
 int
-process_wait (tid_t child_tid UNUSED)
+process_wait (tid_t child_tid)
 {
 	//TODO
 	printf("PROCESS_WAIT\n");
