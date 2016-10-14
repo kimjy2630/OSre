@@ -351,6 +351,10 @@ void thread_set_eff_priority(struct thread* t, int new_priority) {
 }
 
 int thread_get_eff_priority(struct thread* t) {
+	//TODO
+	if(t == NULL)
+		printf("THREAD_GET_EFF_PRIORITY NULL\n");
+	//TODO
 	ASSERT(is_thread(t));
 
 	return t->priority_eff;
