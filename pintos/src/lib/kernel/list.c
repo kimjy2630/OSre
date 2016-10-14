@@ -168,9 +168,11 @@ list_tail (struct list *list)
 void
 list_insert (struct list_elem *before, struct list_elem *elem)
 {
+	if(!(is_interior (before) || is_tail (before))){
 	printf("LIST INSERT %d %d\n", is_interior(before), is_tail(before));
 	printf("LIST INSERT %d %d %d\n", elem != NULL, elem->prev != NULL ,elem->next != NULL);
 	printf("LIST INSERT %d %d %d\n", elem != NULL, elem->prev != NULL, elem->next == NULL);
+	}
   ASSERT (is_interior (before) || is_tail (before));
   ASSERT (elem != NULL);
 
