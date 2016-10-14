@@ -121,7 +121,7 @@ process_wait (tid_t child_tid)
 	{
 		printf("FOUND %d %d\n", child->tid, thread_current()->tid);
 		lock_acquire(&child->lock_child);
-		list_remove(e);
+//		list_remove(e);
 		int status = child->exit_status;
 		printf("FOUND STATUS %d\n", status);
 //		lock_release(&child->lock_child);
