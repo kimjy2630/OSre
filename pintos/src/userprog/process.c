@@ -294,6 +294,9 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 		goto done;
 	}
 
+	//TODO
+	file_deny_write(file);
+
 	/* Read and verify executable header. */
 	if (file_read(file, &ehdr, sizeof ehdr) != sizeof ehdr || memcmp(ehdr.e_ident, "\177ELF\1\1\1", 7) || ehdr.e_type != 2 || ehdr.e_machine != 3 || ehdr.e_version != 1 || ehdr.e_phentsize != sizeof(struct Elf32_Phdr) || ehdr.e_phnum > 1024) {
 		printf("load: %s: error loading executable\n", file_name);
@@ -357,46 +360,6 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 	////
 	//TODO
 	push_argument(argc, last, esp);
-	/*
-	size_t size;
-	{
-	void *argv[argc];
-	// push arguments
-	for (i = 0; i < argc; ++i) {
-		while (*last != '\0')
-			--last;
-		last--;
-		while (*last != '\0')
-			--last;
-		++last;
-		while (*last == ' ')
-			++last;
-		size = strlen(last) + 1;
-		push_stack(esp, last, size);
-		argv[i] = *esp;
-	}
-	// word-align
-	int align_size = (int)(*esp) % 4;
-	if(align_size != 0){
-		i = 0;
-		push_stack(esp, &i, align_size);
-	}
-	// null pointer argv[argc]
-	i = 0;
-	push_stack(esp, &i, 4);
-	// argv[i]
-	for(i=argc-1; i>=0; i--){
-		push_stack(esp, &argv[i], 4);
-	}
-	// argv, argc
-	void *argv_ptr;
-	argv_ptr = *esp;
-	push_stack(esp, &argv_ptr, 4);
-	push_stack(esp, &argc, 4);
-	// return address
-	i=0;
-	}
-	*/
 	////
 
 	/* Start address. */
@@ -406,7 +369,8 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 
 	done:
 	/* We arrive here whether the load is successful or not. */
-	file_close(file);
+	if (file != NULL)
+		file_close(file);
 	return success;
 }
 
