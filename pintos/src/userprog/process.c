@@ -119,6 +119,7 @@ process_wait (tid_t child_tid)
 	}
 	if(flag)
 	{
+		printf("FOUND %d %d\n", child->tid, thread_current()->tid);
 		lock_acquire(&child->lock_child);
 		int status = child->exit_status;
 		lock_release(&child->lock_child);
@@ -127,6 +128,7 @@ process_wait (tid_t child_tid)
 	}
 	else
 	{
+		printf("NOT FOUND\n");
 		return -1;
 	}
 
