@@ -265,6 +265,7 @@ tid_t thread_tid(void) {
 /* Deschedules the current thread and destroys it.  Never
  returns to the caller. */
 void thread_exit(void) {
+	printf("THREAD_EXIT\n");
 	ASSERT(!intr_context());
 
 #ifdef USERPROG
