@@ -285,7 +285,9 @@ void thread_exit(void) {
 	}
 
 	thread_current()->status = THREAD_DYING;
+	printf("THREAD_EXIT SCHEDULE\n");
 	schedule();
+	printf("THREAD_EXIT NOT REACHED\n");
 	NOT_REACHED ();
 }
 
