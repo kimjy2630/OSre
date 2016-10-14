@@ -56,7 +56,7 @@ static void start_process(void *f_name) {
 
 	thread_current()->user_thread = true;
 	lock_init(thread_current()->lock_child);
-	lock_aquire(thread_chrreut()->lock_child);
+	lock_acquire(thread_chrreut()->lock_child);
 
 	/* Initialize interrupt frame and load executable. */
 	memset(&if_, 0, sizeof if_);
@@ -95,13 +95,14 @@ process_wait (tid_t child_tid UNUSED)
 	struct list_elem *e;
 	struct thread *t = thread_current();
 	struct list *list_child = &t->list_children;
+	struct thread *child;
 
 	bool flag = false;
 
 	for(e=list_begin(list_child); e!=list_end(list_child); e= list_next(list_child))
 	{
-		tid_t tid = list_entry(e,struct thread, elem_child)->tid;
-		if(tid == child_tid)
+		child = list_entry(e, struct thread, elem_child);
+		if(child->tid == child_tid)
 		{
 			flag = true;
 			break;
@@ -109,7 +110,8 @@ process_wait (tid_t child_tid UNUSED)
 	}
 	if(flag)
 	{
-
+		lock_acquire(child->lock_child);
+		lock_release(child->lock_child);
 	}
 	else
 		return -1;
@@ -140,6 +142,19 @@ void process_exit(void) {
 		pagedir_activate(NULL);
 		pagedir_destroy(pd);
 	}
+
+	struct list_elem *e;
+
+	//TODO wait until all children die
+	// for each child
+	// 		if the child is alive
+	// 			wait the child: acquire lock_child of child
+	//			release
+	//			release lock_child of child
+	// release list of children
+
+	lock_release(curr->lock_child);
+
 }
 
 /* Sets up the CPU for running user code in the current
