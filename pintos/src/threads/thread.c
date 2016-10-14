@@ -266,7 +266,11 @@ tid_t thread_tid(void) {
  returns to the caller. */
 void thread_exit(void) {
 	//TODO
-	printf("THREAD_EXIT %d\n", thread_current()->tid);
+	int tid = thread_current()->tid;
+	enum intr_level old = intr_disable();
+	printf("THREAD_EXIT %d\n", tid);
+	intr_set_level(old);
+
 	ASSERT(!intr_context());
 
 #ifdef USERPROG
