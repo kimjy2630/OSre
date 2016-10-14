@@ -111,7 +111,10 @@ process_wait (tid_t child_tid UNUSED)
 	if(flag)
 	{
 		lock_acquire(child->lock_child);
+		int status = child->exit_status;
 		lock_release(child->lock_child);
+
+		return status;
 	}
 	else
 		return -1;
@@ -152,6 +155,8 @@ void process_exit(void) {
 	//			release
 	//			release lock_child of child
 	// release list of children
+
+
 
 	lock_release(curr->lock_child);
 
@@ -270,6 +275,7 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 
 	token = strtok_r(buffer, " ", &last);
 	file = filesys_open(token);
+	ptinf("filesys_open(%s)\n", token);
 	while (token != NULL) {
 		token = strtok_r(NULL, " ", &last);
 		argc++;
