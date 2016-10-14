@@ -283,9 +283,9 @@ void thread_exit(void) {
 		struct lock* lock = list_entry(list_pop_front(list_lock), struct lock, elem);
 		lock_release(lock);
 	}
+	printf("THREAD_EXIT SCHEDULE\n");
 
 	thread_current()->status = THREAD_DYING;
-	printf("THREAD_EXIT SCHEDULE\n");
 	schedule();
 	printf("THREAD_EXIT NOT REACHED\n");
 	NOT_REACHED ();
