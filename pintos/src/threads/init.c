@@ -116,12 +116,11 @@ main (void)
 #endif
 
   printf ("Boot complete.\n");
-  
+  printf("poweroff %b\n", power_off_when_done);
   /* Run actions specified on kernel command line. */
   run_actions (argv);
 
   /* Finish up. */
-  printf("poweroff %b\n", power_off_when_done);
   if (power_off_when_done)
     power_off ();
   thread_exit ();
