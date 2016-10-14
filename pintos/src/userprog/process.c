@@ -69,7 +69,8 @@ static void start_process(void *f_name) {
 	palloc_free_page(file_name);
 	if (!success)
 		thread_exit();
-
+//TODO
+	printf("THREAD_EXIT END\n");
 	/* Start the user process by simulating a return from an
 	 interrupt, implemented by intr_exit (in
 	 threads/intr-stubs.S).  Because intr_exit takes all of its
@@ -161,6 +162,7 @@ void process_exit(void) {
 
 
 	lock_release(&curr->lock_child);
+	//TODO
 	printf("LOCK RELEASE END\n");
 
 }
