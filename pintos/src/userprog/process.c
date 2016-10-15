@@ -92,7 +92,7 @@ tid_t process_execute(const char *file_name) {
 /* A thread function that loads a user process and makes it start
  running. */
 static void start_process(void *f_name) {
-	char *file_name = ((as *) f_name)->fn_copy;
+	char *file_name = ((struct arg_success *) f_name)->fn_copy;
 	struct intr_frame if_;
 	bool success;
 
@@ -107,7 +107,7 @@ static void start_process(void *f_name) {
 	if_.eflags = FLAG_IF | FLAG_MBS;
 	success = load(file_name, &if_.eip, &if_.esp);
 
-	((as *) f_name)->succees = success;
+	((struct arg_success *) f_name)->succees = success;
 
 	////
 //	printf("success? [%d]\n", success);
