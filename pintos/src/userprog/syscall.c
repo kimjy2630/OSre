@@ -148,7 +148,7 @@ static void halt(void) {
 }
 
 static void exit(int status) {
-	printf("SYS_EXIT %d\n", status);
+//	printf("SYS_EXIT %d\n", status);
 	struct thread *curr = thread_current();
 	curr->exit_status = status;
 	curr->is_exit = true;
