@@ -27,14 +27,10 @@ static char* parse_name(char *file_name, char **last, char *buffer);
 ////
 
 static char* parse_name(char *file_name, char **last, char *buffer) {
-//	printf("(parse_name) file_name: [%s]\n", file_name);
 	strlcpy(buffer, file_name, strlen(file_name) + 1);
-//	printf("(parse_name) buffer: [%s]\n", buffer);
-
 	char *token;
 
 	token = strtok_r(buffer, " ", last);
-//	printf("(parse_name) token: [%s], *last: [%s]\n", token, *last);
 	return token;
 }
 
@@ -44,7 +40,6 @@ static char* parse_name(char *file_name, char **last, char *buffer) {
  thread id, or TID_ERROR if the thread cannot be created. */
 tid_t process_execute(const char *file_name) {
 	//TODO
-//	printf("PROCESS+EXECUTE\n");
 	tid_t tid;
 	char *fn_copy;
 
@@ -58,25 +53,22 @@ tid_t process_execute(const char *file_name) {
 	 Otherwise there's a race between the caller and load(). */
 
 	as->fn_copy = palloc_get_page(0);
-	fn_copy = palloc_get_page(0);
-	if (fn_copy == NULL)
-		return TID_ERROR;
+//	fn_copy = palloc_get_page(0);
+//	if (fn_copy == NULL)
+//		return TID_ERROR;
 	if(as->fn_copy==NULL)
 	{
 		free(as);
 		return TID_ERROR;
 	}
-	strlcpy(fn_copy, file_name, PGSIZE);
+//	strlcpy(fn_copy, file_name, PGSIZE);
 	strlcpy(as->fn_copy, file_name, PGSIZE);
-//	as->fn_copy = fn_copy;
 
 	////
 	char **last;
 	char *buffer;
 	last = (char **) malloc(100);
 	buffer = (char *) malloc(100);
-//	printf("fn_copy: [%s]\n", fn_copy);
-//	char *fun_name = parse_name(fn_copy, last, buffer);
 	char *fun_name = parse_name(as->fn_copy, last, buffer);
 	////
 //	as->f = filesys_open(fun_name);
@@ -89,25 +81,14 @@ tid_t process_execute(const char *file_name) {
 	 return tid;
 	 */
 	////
-//	printf("CCCCCCCCCCC%s\n", as->fn_copy);
-//	char* fn_copy = palloc_get_page(0);
-//	strlcpy(fn_copy, as->fn_copy, PGSIZE);
-//	strlcpy(fn_copy, file_name, PGSIZE);
-//	printf("{thread_create} fun_name: [%s], fn_copy: [%s]\n", fun_name, fn_copy);
-//	tid = thread_create(fun_name, PRI_DEFAULT, start_process, fn_copy);
 	tid = thread_create(fun_name, PRI_DEFAULT, start_process, as);
-//	tid = thread_create(fun_name, PRI_DEFAULT, start_process, as->fn_copy);
-//	int success = fn_copy[0];
-//	if(fn_copy[0] == 'a')
-//		tid = -1;
 	sema_down(&as->loading);
 	if (!as->success)
 		tid = -1;
-//	printf("BBBBBBBB%s\n", as->fn_copy);
 	free(last);
 	free(buffer);
 	if (tid == TID_ERROR)
-		palloc_free_page(fn_copy);
+//		palloc_free_page(fn_copy);
 		palloc_free_page(as->fn_copy);
 	free(as);
 
