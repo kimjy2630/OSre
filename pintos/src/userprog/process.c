@@ -46,16 +46,19 @@ tid_t process_execute(const char *file_name) {
 	//TODO
 //	printf("PROCESS+EXECUTE\n");
 	tid_t tid;
+	char *fn_copy;
 
 	struct arg_success *as = malloc(sizeof(struct arg_success));
 	if (as == NULL)
 		return TID_ERROR;
 	/* Make a copy of FILE_NAME.
 	 Otherwise there's a race between the caller and load(). */
-	as->fn_copy = palloc_get_page(0);
-	if (as->fn_copy == NULL)
+
+	fn_copy = palloc_get_page(0);
+	if (fn_copy == NULL)
 		return TID_ERROR;
-	strlcpy(as->fn_copy, file_name, PGSIZE);
+	strlcpy(fn_copy, file_name, PGSIZE);
+	as->fn_copy = fn_copy;
 
 	////
 	char **last;
@@ -63,7 +66,7 @@ tid_t process_execute(const char *file_name) {
 	last = (char **) malloc(100);
 	buffer = (char *) malloc(100);
 //	printf("fn_copy: [%s]\n", fn_copy);
-	char *fun_name = parse_name(as->fn_copy, last, buffer);
+	char *fun_name = parse_name(fn_copy, last, buffer);
 	////
 
 	/* Create a new thread to execute FILE_NAME. */
@@ -82,7 +85,7 @@ tid_t process_execute(const char *file_name) {
 	free(last);
 	free(buffer);
 	if (tid == TID_ERROR)
-		palloc_free_page(as->fn_copy);
+		palloc_free_page(fn_copy);
 	free(as);
 
 //	printf("process exec fin\n");
