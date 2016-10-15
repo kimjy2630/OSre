@@ -46,18 +46,21 @@ tid_t process_execute(const char *file_name) {
 	//TODO
 //	printf("PROCESS+EXECUTE\n");
 	tid_t tid;
-	char *fn_copy;
+//	char *fn_copy;
 
-//	struct arg_success *as = malloc(sizeof(struct arg_success));
-//	if (as == NULL)
-//		return TID_ERROR;
+	struct arg_success *as = malloc(sizeof(struct arg_success));
+	if (as == NULL)
+		return TID_ERROR;
 	/* Make a copy of FILE_NAME.
 	 Otherwise there's a race between the caller and load(). */
 
-	fn_copy = palloc_get_page(0);
-	if (fn_copy == NULL)
+	as->fn_copy = palloc_get_page(0);
+//	fn_copy = palloc_get_page(0);
+//	if (fn_copy == NULL)
+	if(as->fn_copy)
 		return TID_ERROR;
-	strlcpy(fn_copy, file_name, PGSIZE);
+//	strlcpy(fn_copy, file_name, PGSIZE);
+	strlcpy(as->fn_copy, file_name, PGSIZE);
 //	as->fn_copy = fn_copy;
 
 	////
@@ -66,7 +69,8 @@ tid_t process_execute(const char *file_name) {
 	last = (char **) malloc(100);
 	buffer = (char *) malloc(100);
 //	printf("fn_copy: [%s]\n", fn_copy);
-	char *fun_name = parse_name(fn_copy, last, buffer);
+//	char *fun_name = parse_name(fn_copy, last, buffer);
+	char *fun_name = parse_name(as->fn_copy, last, buffer);
 	////
 //	as->f = filesys_open(fun_name);
 
@@ -79,17 +83,19 @@ tid_t process_execute(const char *file_name) {
 	 */
 	////
 //	printf("{thread_create} fun_name: [%s], fn_copy: [%s]\n", fun_name, fn_copy);
-	tid = thread_create(fun_name, PRI_DEFAULT, start_process, fn_copy);
-	int success = fn_copy[0];
-	if(fn_copy[0] == 'a')
-		tid = -1;
-//	if (!as->success)
+//	tid = thread_create(fun_name, PRI_DEFAULT, start_process, fn_copy);
+	tid = thread_create(fun_name, PRI_DEFAULT, start_process, as->fn_copy);
+//	int success = fn_copy[0];
+//	if(fn_copy[0] == 'a')
 //		tid = -1;
+	if (!as->success)
+		tid = -1;
 //	tid = thread_create(fn_copy, PRI_DEFAULT, start_process, fn_copy);
 	free(last);
 	free(buffer);
 	if (tid == TID_ERROR)
-		palloc_free_page(fn_copy);
+//		palloc_free_page(fn_copy);
+//		palloc_free_page(as->fn_copy);
 //	free(as);
 
 //	printf("process exec fin\n");
@@ -99,8 +105,8 @@ tid_t process_execute(const char *file_name) {
 /* A thread function that loads a user process and makes it start
  running. */
 static void start_process(void *f_name) {
-//	char *file_name = ((struct arg_success *) f_name)->fn_copy;
-	char *file_name = f_name;
+	char *file_name = ((struct arg_success *) f_name)->fn_copy;
+//	char *file_name = f_name;
 	struct intr_frame if_;
 	bool success;
 
