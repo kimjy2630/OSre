@@ -88,6 +88,7 @@ tid_t process_execute(const char *file_name) {
 //	int success = fn_copy[0];
 //	if(fn_copy[0] == 'a')
 //		tid = -1;
+	sema_down(&as->loading);
 	if (!as->success)
 		tid = -1;
 //	tid = thread_create(fn_copy, PRI_DEFAULT, start_process, fn_copy);
@@ -120,13 +121,9 @@ static void start_process(void *f_name) {
 	if_.cs = SEL_UCSEG;
 	if_.eflags = FLAG_IF | FLAG_MBS;
 	success = load(file_name, &if_.eip, &if_.esp);
-	if(success)
-		file_name[0] = 'b';
-	else
-		file_name[0] = 'a';
 
-//	((struct arg_success *) f_name)->success = success;
-
+	((struct arg_success *) f_name)->success = success;
+	sema_up(((struct arg_success *) f_name)->loading);
 	////
 //	printf("success? [%d]\n", success);
 
