@@ -94,6 +94,7 @@ tid_t process_execute(const char *file_name) {
 //	if (!as->success)
 //		tid = -1;
 //	tid = thread_create(fn_copy, PRI_DEFAULT, start_process, fn_copy);
+	printf("BBBBBBBB%s\n", fn_copy);
 	free(last);
 	free(buffer);
 	if (tid == TID_ERROR)
