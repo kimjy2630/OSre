@@ -157,10 +157,11 @@ int process_wait(tid_t child_tid) {
 	}
 	if (flag) {
 //		lock_acquire(&child->lock_child);
+		struct process_status *child_ps = child->ps;
 		while (!child->is_exit) {
 			barrier();
 		}
-		int status = child->exit_status;
+		int status = child_ps->exit_status;
 //		lock_release(&child->lock_child);
 		/*
 		 int i = 10000000;
