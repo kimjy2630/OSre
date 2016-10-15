@@ -9,6 +9,7 @@
 #include "lib/kernel/console.h"
 #include "lib/user/syscall.h"
 #include "userprog/process.h"
+#include "lib/string.h"
 ////
 
 static void syscall_handler (struct intr_frame *);
