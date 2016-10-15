@@ -140,15 +140,15 @@ int process_wait(tid_t child_tid) {
 	int i = 0;
 	struct list_elem *e;
 	struct thread *t = thread_current();
-	struct list *list_child = &t->list_children;
+	struct list *list_ps = &t->list_ps;
 	struct thread *child;
 
 	bool flag = false;
 //	int cnt = 0;
 //	int i=0;
-	for (e = list_begin(list_child); e != list_end(list_child); e = list_next(e)) {
+	for (e = list_begin(list_ps); e != list_end(list_ps); e = list_next(e)) {
 //		printf("PROCESSWAIT%d\n",i++);
-		child = list_entry(e, struct thread, elem_child);
+		child = list_entry(e, struct process_status, elem)->t;
 		if (child->tid == child_tid) {
 			flag = true;
 			list_remove(e);
