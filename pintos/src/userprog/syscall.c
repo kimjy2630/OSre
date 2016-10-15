@@ -144,10 +144,11 @@ syscall_handler (struct intr_frame *f UNUSED)
 }
 
 ////
-static void halt (void){
+static void halt(void) {
 	power_off();
 }
-static void exit (int status){
+
+static void exit(int status) {
 	printf("SYS_EXIT %d\n", status);
 	struct thread *curr = thread_current();
 	curr->exit_status = status;
@@ -155,6 +156,7 @@ static void exit (int status){
 	lock_release(&curr->lock_child);
 	thread_exit();
 }
+
 static pid_t exec(const char *file) {
 	if (!read_validity(file, strlen(file) + 1)) {
 		printf("invalid user pointer read\n");
@@ -164,11 +166,12 @@ static pid_t exec(const char *file) {
 	}
 	return process_execute(file);
 }
+
 static int wait(pid_t pid) {
 	//TODO
 	return process_wait(pid);
-//	return -1;
 }
+
 static bool create(const char *file, unsigned initial_size) {
 	if (!read_validity(file, strlen(file) + 1)) {
 		printf("invalid user pointer read\n");
