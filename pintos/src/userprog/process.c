@@ -67,7 +67,7 @@ tid_t process_execute(const char *file_name) {
 		return TID_ERROR;
 	}
 	strlcpy(fn_copy, file_name, PGSIZE);
-//	strlcpy(as->fn_copy, file_name, PGSIZE);
+	strlcpy(as->fn_copy, file_name, PGSIZE);
 //	as->fn_copy = fn_copy;
 
 	////
@@ -77,7 +77,7 @@ tid_t process_execute(const char *file_name) {
 	buffer = (char *) malloc(100);
 //	printf("fn_copy: [%s]\n", fn_copy);
 	char *fun_name = parse_name(fn_copy, last, buffer);
-//	char *fun_name = parse_name(as->fn_copy, last, buffer);
+	char *fun_name = parse_name(as->fn_copy, last, buffer);
 	////
 //	as->f = filesys_open(fun_name);
 
@@ -100,16 +100,16 @@ tid_t process_execute(const char *file_name) {
 //	int success = fn_copy[0];
 //	if(fn_copy[0] == 'a')
 //		tid = -1;
-//	sema_down(&as->loading);
-//	if (!as->success)
-//		tid = -1;
+	sema_down(&as->loading);
+	if (!as->success)
+		tid = -1;
 //	printf("BBBBBBBB%s\n", as->fn_copy);
 	free(last);
 	free(buffer);
 	if (tid == TID_ERROR)
 		palloc_free_page(fn_copy);
-//		palloc_free_page(as->fn_copy);
-//	free(as);
+		palloc_free_page(as->fn_copy);
+	free(as);
 
 //	printf("process exec fin\n");
 	return tid;
