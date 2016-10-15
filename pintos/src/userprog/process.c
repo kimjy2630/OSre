@@ -51,7 +51,7 @@ tid_t process_execute(const char *file_name) {
 	struct arg_success *as = malloc(sizeof(struct arg_success));
 	if (as == NULL)
 		return TID_ERROR;
-	sema_init(&as->loading, 0);
+//	sema_init(&as->loading, 0);
 
 	/* Make a copy of FILE_NAME.
 	 Otherwise there's a race between the caller and load(). */
@@ -90,7 +90,7 @@ tid_t process_execute(const char *file_name) {
 //	int success = fn_copy[0];
 //	if(fn_copy[0] == 'a')
 //		tid = -1;
-	sema_down(&as->loading);
+//	sema_down(&as->loading);
 	if (!as->success)
 		tid = -1;
 	printf("BBBBBBBB%s\n", as->fn_copy);
@@ -127,7 +127,7 @@ static void start_process(void *f_name) {
 	success = load(file_name, &if_.eip, &if_.esp);
 
 	((struct arg_success *) f_name)->success = success;
-	sema_up(&((struct arg_success *) f_name)->loading);
+//	sema_up(&((struct arg_success *) f_name)->loading);
 	////
 //	printf("success? [%d]\n", success);
 
