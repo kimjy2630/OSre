@@ -360,7 +360,6 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 
 	//TODO
 	file_deny_write(file);
-	file_allow_write(file);
 	thread_current()->f = file;
 
 	/* Read and verify executable header. */
@@ -437,8 +436,8 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 
 	done:
 	/* We arrive here whether the load is successful or not. */
-	if (file != NULL)
-		file_close(file);
+//	if (file != NULL)
+//		file_close(file);
 
 	//TODO
 //	if(success)
