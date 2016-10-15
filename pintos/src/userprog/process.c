@@ -219,7 +219,7 @@ void process_exit(void) {
 
 	if(curr->f != NULL)
 	{
-		file_allow_write(curr->f);
+//		file_allow_write(curr->f);
 		file_close(curr->f);
 	}
 
@@ -359,7 +359,6 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 	}
 
 	//TODO
-	file_deny_write(file);
 	file_deny_write(file);
 	thread_current()->f = file;
 
