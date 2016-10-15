@@ -182,15 +182,15 @@ int process_wait(tid_t child_tid) {
 	struct list_elem *e;
 	struct thread *t = thread_current();
 	struct list *list_ps = &t->list_ps;
-	int child;
+	struct process_status* child;
 
 	bool flag = false;
 //	int cnt = 0;
 //	int i=0;
 	for (e = list_begin(list_ps); e != list_end(list_ps); e = list_next(e)) {
 //		printf("PROCESSWAIT%d\n",i++);
-		child = list_entry(e, struct process_status, elem)->tid;
-		if (child == child_tid) {
+		child = list_entry(e, struct process_status, elem);
+		if (child->tid == child_tid) {
 			flag = true;
 			list_remove(e);
 			break;
@@ -199,7 +199,7 @@ int process_wait(tid_t child_tid) {
 	if (flag) {
 //		lock_acquire(&child->lock_child);
 		struct process_status *child_ps = child->ps;
-		while (!child->is_exit) {
+		while (!child->t->is_exit) {
 			barrier();
 		}
 		int status = child_ps->exit_status;
