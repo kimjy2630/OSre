@@ -125,8 +125,6 @@ static void exit(int status) {
 	struct thread *curr = thread_current();
 	curr->ps->exit_status = curr->exit_status = status;
 	curr->is_exit = true;
-//	lock_release(&curr->lock_child);
-//	process_exit();
 	thread_exit();
 }
 
