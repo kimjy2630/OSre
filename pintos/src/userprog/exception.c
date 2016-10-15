@@ -5,7 +5,7 @@
 #include "threads/interrupt.h"
 #include "threads/thread.h"
 ////
-#include "userprog/syscall.h"
+#include <syscall.h>
 ////
 
 
@@ -93,10 +93,11 @@ kill (struct intr_frame *f)
       printf ("%s: dying due to interrupt %#04x (%s).\n",
               thread_name (), f->vec_no, intr_name (f->vec_no));
       intr_dump_frame (f);
-      struct thread *curr = thread_current();
-      curr->ps->exit_status = curr->exit_status = -1;
-      curr->is_exit = true;
-      thread_exit();
+//      struct thread *curr = thread_current();
+//      curr->ps->exit_status = curr->exit_status = -1;
+//      curr->is_exit = true;
+//      thread_exit();
+      exit(-1);
 
     case SEL_KCSEG:
       /* Kernel's code segment, which indicates a kernel bug.
@@ -105,9 +106,6 @@ kill (struct intr_frame *f)
          here.)  Panic the kernel to make the point.  */
       intr_dump_frame (f);
       PANIC ("Kernel bug - unexpected interrupt in kernel");
-//    	thread_current()->exit_status = -1;
-//    	thread_current()->is_exit = true;
-//    	thread_exit();
 
     default:
       /* Some other code segment?  Shouldn't happen.  Panic the
@@ -171,11 +169,11 @@ page_fault (struct intr_frame *f)
   else{
 	  f->eip = (void *) f->eax;
 	  f->eax = 0xffffffff;
-//	  exit (-1);
-	  struct thread *curr = thread_current();
-	  curr->ps->exit_status = curr->exit_status = -1;
-	  curr->is_exit = true;
-	  thread_exit();
+	  exit (-1);
+//	  struct thread *curr = thread_current();
+//	  curr->ps->exit_status = curr->exit_status = -1;
+//	  curr->is_exit = true;
+//	  thread_exit();
   }
 }
 
