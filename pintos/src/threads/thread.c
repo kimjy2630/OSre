@@ -178,6 +178,10 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 //	lock_init(t->lock_child);
 //	lock_acquire(t->lock_child);
 	t->fd_cnt = 3;
+
+	t->ps = (struct process_status*) malloc(sizeof (struct process_status));
+	t->ps->t = t;
+	t->ps->tid = t->tid;
 	#endif
 
 	/* Stack frame for kernel_thread(). */
@@ -520,9 +524,6 @@ static void init_thread(struct thread *t, const char *name, int priority) {
 	t->is_exit = false;
 	list_init(&t->list_pf);
 	list_init(&t->list_ps);
-	t->ps = (struct process_status*) malloc(sizeof (struct process_status));
-	t->ps->t = t;
-	t->ps->tid = t->tid;
 #endif
 	////
 }
