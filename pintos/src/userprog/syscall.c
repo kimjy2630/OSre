@@ -191,6 +191,13 @@ static bool remove(const char *file) {
 	return filesys_remove(file);
 }
 static int open(const char *file) {
+	if (!read_validity(file, strlen(file) + 1)) {
+		//		printf("invalid user pointer read\n");
+		thread_current()->exit_status = -1;
+		thread_exit();
+		return false;
+	}
+
 	struct file* f;
 
 	f = filesys_open(file);
