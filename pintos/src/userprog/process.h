@@ -14,7 +14,7 @@ struct process_file {
 	struct list_elem elem;
 	int fd;
 	struct file *file;
-	const char *filename;
+//	const char *filename;
 };
 
 struct process_file*

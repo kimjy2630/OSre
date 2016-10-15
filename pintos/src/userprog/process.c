@@ -609,11 +609,11 @@ add_process_file(struct thread* t, struct file* file, const char* filename) {
 		return -1;
 	pf->fd = t->fd_cnt++;
 	pf->file = file;
-	pf->filename = strdup(filename);
-	if (pf->filename == NULL) {
-		free(pf);
-		return -1;
-	}
+//	pf->filename = strdup(filename);
+//	if (pf->filename == NULL) {
+//		free(pf);
+//		return -1;
+//	}
 	list_push_back(list_pf, &pf->elem);
 	return pf->fd;
 }
@@ -624,6 +624,6 @@ remove_process_file_from_fd(struct thread* t, int fd) {
 	if (pf == NULL)
 		return;
 	list_remove(&pf->elem);
-	free(pf->filename);
+//	free(pf->filename);
 	free(pf);
 }
