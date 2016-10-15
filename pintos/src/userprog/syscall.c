@@ -7,7 +7,7 @@
 #include "threads/init.h"
 #include "threads/vaddr.h"
 #include "lib/kernel/console.h"
-#include "lib/user/syscall.h"
+//#include "lib/user/syscall.h"
 #include "userprog/process.h"
 #include "lib/string.h"
 ////
