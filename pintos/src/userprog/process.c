@@ -74,10 +74,12 @@ tid_t process_execute(const char *file_name) {
 	////
 //	printf("{thread_create} fun_name: [%s], fn_copy: [%s]\n", fun_name, fn_copy);
 	tid = thread_create(fun_name, PRI_DEFAULT, start_process, fn_copy);
+//	tid = thread_create(fn_copy, PRI_DEFAULT, start_process, fn_copy);
 	free(last);
 	free(buffer);
 	if (tid == TID_ERROR)
 		palloc_free_page(fn_copy);
+//	printf("process exec fin\n");
 	return tid;
 }
 
@@ -99,6 +101,9 @@ static void start_process(void *f_name) {
 	if_.eflags = FLAG_IF | FLAG_MBS;
 	success = load(file_name, &if_.eip, &if_.esp);
 
+	////
+//	printf("success? [%d]\n", success);
+
 	/* If load failed, quit. */
 	palloc_free_page(file_name);
 	if (!success)
@@ -106,6 +111,7 @@ static void start_process(void *f_name) {
 
 	//TODO
 //	printf("THREAD_EXIT END\n");
+//	printf("load success\n");
 
 	/* Start the user process by simulating a return from an
 	 interrupt, implemented by intr_exit (in
@@ -113,6 +119,8 @@ static void start_process(void *f_name) {
 	 arguments on the stack in the form of a `struct intr_frame',
 	 we just point the stack pointer (%esp) to our stack frame
 	 and jump to it. */
+//	void **esp = if_.esp;
+//	printf("esp: [%p], *esp: [%p]\n", esp, *esp);
 	asm volatile ("movl %0, %%esp; jmp intr_exit" : : "g" (&if_) : "memory");
 //	printf("NOT_REACHED\n");
 	NOT_REACHED();
@@ -128,6 +136,7 @@ static void start_process(void *f_name) {
  This function will be implemented in problem 2-2.  For now, it
  does nothing. */
 int process_wait(tid_t child_tid) {
+//	printf("start process wait\n");
 	int i = 0;
 	struct list_elem *e;
 	struct thread *t = thread_current();
@@ -177,9 +186,9 @@ int process_wait(tid_t child_tid) {
 /* Free the current process's resources. */
 void process_exit(void) {
 	//TODO
+//	printf("start process exit\n");
 	int tid = thread_current()->tid;
 	enum intr_level old = intr_disable();
-//	printf("PROCESS_EXIT %d\n", tid);
 
 	struct thread *curr = thread_current();
 	uint32_t *pd;
@@ -414,7 +423,9 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 
 	////
 	//TODO
+//	printf("start put args in stack\n");
 	push_argument(argc, last, esp);
+//	printf("end put args in stack\n");
 	////
 
 	/* Start address. */
@@ -441,7 +452,7 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 ////
 
 void push_argument(int argc, char *last, void **esp) {
-//	printf("PUSH_ARGUMENT\n");
+//	printf("PUSH_ARGUMENT, argc: [%d], last: [%s], esp: [%p]\n", argc, last, esp);
 	int i;
 	size_t size;
 //	void *argv[argc];

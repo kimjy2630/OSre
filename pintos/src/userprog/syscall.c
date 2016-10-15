@@ -11,14 +11,13 @@
 #include <string.h>
 ////
 
-static void syscall_handler (struct intr_frame *);
+static void syscall_handler(struct intr_frame *);
 ////
-static int get_user (const uint8_t *uaddr);
-static bool put_user (uint8_t *udst, uint8_t byte);
-static bool read_validity (const void *uaddr, int size);
+static int get_user(const uint8_t *uaddr);
+static bool put_user(uint8_t *udst, uint8_t byte);
+static bool read_validity(const void *uaddr, int size);
 static bool write_validity(const void* udst, int size);
-static void* get_argument (void *ptr, int pos);
-
+static void* get_argument(void *ptr, int pos);
 
 static void halt(void);
 static void exit(int status);
@@ -35,17 +34,14 @@ static unsigned tell(int fd);
 static void close(int fd);
 ////
 
-void
-syscall_init (void) 
-{
-  intr_register_int (0x30, 3, INTR_ON, syscall_handler, "syscall");
+void syscall_init(void) {
+	intr_register_int(0x30, 3, INTR_ON, syscall_handler, "syscall");
 }
 
 static void*
-get_argument (void *ptr, int pos)
-{
+get_argument(void *ptr, int pos) {
 	if (!read_validity(((int*) ptr) + pos, 4)) {
-		printf("invalid user pointer read\n");
+//		printf("invalid user pointer read\n");
 		thread_current()->exit_status = -1;
 		thread_exit();
 		return NULL;
@@ -53,70 +49,68 @@ get_argument (void *ptr, int pos)
 	return ((int*) ptr) + pos;
 }
 
-static int get_argument_int (void *ptr, int pos)
-{
+static int get_argument_int(void *ptr, int pos) {
 	return *((int*) get_argument(ptr, pos));
 }
 
-static int get_argument_ptr (void *ptr, int pos)
-{
+static int get_argument_ptr(void *ptr, int pos) {
 	return *((void**) get_argument(ptr, pos));
 }
 
 static void
-syscall_handler (struct intr_frame *f UNUSED) 
+syscall_handler (struct intr_frame *f UNUSED)
 {
 //	printf("SYSCALL_HANDLER\n");
-  /* original code
-  printf ("system call!\n");
-  thread_exit ();
-  */
+	/* original code
+	 printf ("system call!\n");
+	 thread_exit ();
+	 */
 ////
 //  int syscall_num = *((int *) (f->esp));
 	void *ptr = (void *) f->esp;
 	if (!read_validity(ptr, 4)) {
-		printf("invalid user pointer read\n");
+//		printf("invalid user pointer read\n");
 		thread_exit();
 	}
 //	printf("SYSNUM %d\n", *((int*) ptr));
 	switch (*((int*) ptr)) {
-	case SYS_HALT:
+		case SYS_HALT:
 		halt();
 		break;
-	case SYS_EXIT:
+		case SYS_EXIT:
 		// int type arg
 		exit(get_argument_int(ptr, 1));
 		break;
-	case SYS_EXEC:
+		case SYS_EXEC:
 		// char* type arg
 		f->eax = exec(get_argument_ptr(ptr, 1));
 		break;
-	case SYS_WAIT:
+		case SYS_WAIT:
 		// pid_t type arg
 		f->eax = wait(get_argument_int(ptr, 1));
 		break;
-	case SYS_CREATE:
+		case SYS_CREATE:
 		// char*, unsigned type arg
 		f->eax = create(get_argument_ptr(ptr, 1), get_argument_int(ptr, 2));
 		break;
-	case SYS_REMOVE:
+		case SYS_REMOVE:
 		// char* type arg
 		f->eax = remove(get_argument_ptr(ptr, 1));
 		break;
-	case SYS_OPEN:
+		case SYS_OPEN:
 		// char* type arg
 		f->eax = open(get_argument_ptr(ptr, 1));
 		break;
-	case SYS_FILESIZE:
+		case SYS_FILESIZE:
 		// int type arg
 		f->eax = filesize(get_argument_int(ptr, 1));
 		break;
-	case SYS_READ:
+		case SYS_READ:
 		// int, void*, unsigned type arg
 		f->eax = read(get_argument_int(ptr, 1), get_argument_ptr(ptr, 2),
 				get_argument_int(ptr, 3));
 		break;
-	case SYS_WRITE:
+		case SYS_WRITE:
 		// int, void*, unsigned type arg
 //		printf("SYSWRITE %d_%p_%s_%u\n", get_argument_int(ptr, 1),
 //				get_argument_ptr(ptr, 2), get_argument_ptr(ptr, 2),
@@ -125,19 +119,20 @@ syscall_handler (struct intr_frame *f UNUSED)
 				get_argument_int(ptr, 3));
 //		printf("\n\nSYSWRITE RET %d\n", f->eax);
 		break;
-	case SYS_SEEK:
-		// int, unsigned type arg
+		case SYS_SEEK:
+// int, unsigned type arg
 		seek(get_argument_int(ptr, 1), get_argument_int(ptr, 2));
 		break;
-	case SYS_TELL:
+		case SYS_TELL:
 		// unsigned type arg
 		f->eax = tell(get_argument_int(ptr, 1));
 		break;
-	case SYS_CLOSE:
+		case SYS_CLOSE:
 		// unsigned type arg
 		close(get_argument_int(ptr, 1));
 		break;
 	}
+//	printf("exit syscall handler\n");
 //  thread_exit();
 ////
 }
@@ -153,12 +148,13 @@ static void exit(int status) {
 	curr->exit_status = status;
 	curr->is_exit = true;
 //	lock_release(&curr->lock_child);
+//	process_exit();
 	thread_exit();
 }
 
 static pid_t exec(const char *file) {
 	if (!read_validity(file, strlen(file) + 1)) {
-		printf("invalid user pointer read\n");
+//		printf("invalid user pointer read\n");
 		thread_current()->exit_status = -1;
 		thread_exit();
 		return -1;
@@ -173,7 +169,7 @@ static int wait(pid_t pid) {
 
 static bool create(const char *file, unsigned initial_size) {
 	if (!read_validity(file, strlen(file) + 1)) {
-		printf("invalid user pointer read\n");
+//		printf("invalid user pointer read\n");
 		thread_current()->exit_status = -1;
 		thread_exit();
 		return false;
@@ -182,7 +178,7 @@ static bool create(const char *file, unsigned initial_size) {
 }
 static bool remove(const char *file) {
 	if (!read_validity(file, strlen(file) + 1)) {
-		printf("invalid user pointer read\n");
+//		printf("invalid user pointer read\n");
 		thread_current()->exit_status = -1;
 		thread_exit();
 		return false;
@@ -215,7 +211,7 @@ static int filesize(int fd) {
 }
 static int read(int fd, void *buffer, unsigned length) {
 	if (!read_validity(buffer, length) || !write_validity(buffer, length)) {
-		printf("invalid user pointer read\n");
+//		printf("invalid user pointer read\n");
 		thread_current()->exit_status = -1;
 		thread_exit();
 		return -1;
@@ -259,15 +255,17 @@ static int read(int fd, void *buffer, unsigned length) {
 }
 static int write(int fd, const void *buffer, unsigned length) {
 	if (!read_validity(buffer, length)) {
-		printf("invalid user pointer read\n");
+//		printf("invalid user pointer read\n");
 		thread_current()->exit_status = -1;
 		thread_exit();
 		return -1;
 	}
 
 	if (fd == 1) { // write to console
-//			printf("WRITE FD 1\n");
+//		printf("WRITE FD 1\n");
+//		printf("buffer: [%s] [%p]\n", buffer);
 		putbuf(buffer, (size_t) length);
+//		printf("write return lenght: [%zu]\n", length);
 		return length;
 	}
 
@@ -317,37 +315,31 @@ static void close(int fd) {
 	remove_process_file_from_fd(thread_current(), fd);
 }
 
-
-static int
-get_user (const uint8_t *uaddr){
+static int get_user(const uint8_t *uaddr) {
 	int result;
 	asm ("movl $1f, %0; movzbl %1, %0; 1:"
 			: "=&a" (result) : "m" (*uaddr));
 	return result;
 }
-static bool
-put_user (uint8_t *udst, uint8_t byte){
+static bool put_user(uint8_t *udst, uint8_t byte) {
 	int error_code;
 	asm ("movl $1f, %0; movb %b2, %1; 1:"
 			: "=&a" (error_code), "=m" (*udst) : "q" (byte));
 	return error_code != -1;
 }
 
-static bool
-read_validity (const void *uaddr, int size){
+static bool read_validity(const void *uaddr, int size) {
 	int i;
 	if (((uint8_t *) uaddr) + size > PHYS_BASE)
 		return false;
-	for (i = 0; i < size; i++)
-	{
+	for (i = 0; i < size; i++) {
 		if (get_user(((uint8_t *) uaddr) + i) == -1)
 			return false;
 	}
 	return true;
 }
 
-static bool write_validity(const void* udst, int size)
-{
+static bool write_validity(const void* udst, int size) {
 	if (((uint8_t*) udst) + size > PHYS_BASE)
 		return false;
 	int i;
