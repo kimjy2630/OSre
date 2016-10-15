@@ -81,7 +81,7 @@ tid_t process_execute(const char *file_name) {
 //	printf("{thread_create} fun_name: [%s], fn_copy: [%s]\n", fun_name, fn_copy);
 	tid = thread_create(fun_name, PRI_DEFAULT, start_process, fn_copy);
 	int success = fn_copy[0];
-	if(!(*((int*)fn_copy)))
+	if(fn_copy[0] == 'a')
 		tid = -1;
 //	if (!as->success)
 //		tid = -1;
@@ -114,7 +114,10 @@ static void start_process(void *f_name) {
 	if_.cs = SEL_UCSEG;
 	if_.eflags = FLAG_IF | FLAG_MBS;
 	success = load(file_name, &if_.eip, &if_.esp);
-	*((int*)file_name) = success;
+	if(success)
+		file_name[0] = 'b';
+	else
+		file_name[0] = 'a';
 
 //	((struct arg_success *) f_name)->success = success;
 
