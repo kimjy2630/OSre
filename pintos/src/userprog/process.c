@@ -51,7 +51,7 @@ tid_t process_execute(const char *file_name) {
 	struct arg_success *as = malloc(sizeof(struct arg_success));
 	if (as == NULL)
 		return TID_ERROR;
-	sema_init(&as->loading);
+	sema_init(&as->loading, 0);
 
 	/* Make a copy of FILE_NAME.
 	 Otherwise there's a race between the caller and load(). */
