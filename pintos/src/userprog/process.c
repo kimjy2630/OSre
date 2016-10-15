@@ -601,7 +601,7 @@ get_process_file_from_fd(struct thread* t, int fd) {
 	return NULL;
 }
 
-int
+static int
 add_process_file(struct thread* t, struct file* file, const char* filename) {
 	struct list *list_pf = &t->list_pf;
 	struct process_file *pf = malloc(sizeof(struct process_file));
@@ -618,7 +618,7 @@ add_process_file(struct thread* t, struct file* file, const char* filename) {
 	return pf->fd;
 }
 
-void
+static void
 remove_process_file_from_fd(struct thread* t, int fd) {
 	struct process_file* pf = get_process_file_from_fd(t, fd);
 	if (pf == NULL)

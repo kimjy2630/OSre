@@ -17,9 +17,9 @@ struct process_file {
 
 static struct process_file*
 get_process_file_from_fd(struct thread* t, int fd);
-int
+static int
 add_process_file(struct thread* t, struct file* file, const char* filename);
-void
+static void
 remove_process_file_from_fd(struct thread* t, int fd);
 
 #endif /* userprog/process.h */
