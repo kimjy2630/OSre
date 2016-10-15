@@ -61,7 +61,10 @@ tid_t process_execute(const char *file_name) {
 //	fn_copy = palloc_get_page(0);
 //	if (fn_copy == NULL)
 	if(as->fn_copy)
+	{
+		free(as);
 		return TID_ERROR;
+	}
 //	strlcpy(fn_copy, file_name, PGSIZE);
 	strlcpy(as->fn_copy, file_name, PGSIZE);
 //	as->fn_copy = fn_copy;
