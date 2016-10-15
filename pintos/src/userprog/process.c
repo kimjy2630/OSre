@@ -46,7 +46,7 @@ tid_t process_execute(const char *file_name) {
 	//TODO
 //	printf("PROCESS+EXECUTE\n");
 	tid_t tid;
-//	char *fn_copy;
+	char *fn_copy;
 
 	struct arg_success *as = malloc(sizeof(struct arg_success));
 	if (as == NULL)
@@ -58,14 +58,14 @@ tid_t process_execute(const char *file_name) {
 	 Otherwise there's a race between the caller and load(). */
 
 	as->fn_copy = palloc_get_page(0);
-//	fn_copy = palloc_get_page(0);
+	fn_copy = palloc_get_page(0);
 //	if (fn_copy == NULL)
 	if(as->fn_copy)
 	{
 		free(as);
 		return TID_ERROR;
 	}
-//	strlcpy(fn_copy, file_name, PGSIZE);
+	strlcpy(fn_copy, file_name, PGSIZE);
 	strlcpy(as->fn_copy, file_name, PGSIZE);
 //	as->fn_copy = fn_copy;
 
@@ -89,9 +89,9 @@ tid_t process_execute(const char *file_name) {
 	 */
 	////
 	printf("CCCCCCCCCCC%s\n", as->fn_copy);
-	char* fn_copy = palloc_get_page(0);
+//	char* fn_copy = palloc_get_page(0);
 //	strlcpy(fn_copy, as->fn_copy, PGSIZE);
-	strlcpy(fn_copy, file_name, PGSIZE);
+//	strlcpy(fn_copy, file_name, PGSIZE);
 //	printf("{thread_create} fun_name: [%s], fn_copy: [%s]\n", fun_name, fn_copy);
 	tid = thread_create(fun_name, PRI_DEFAULT, start_process, fn_copy);
 //	tid = thread_create(fun_name, PRI_DEFAULT, start_process, as);
