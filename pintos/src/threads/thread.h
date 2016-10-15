@@ -111,6 +111,8 @@ struct thread
     int fd_cnt;
     struct process_status* ps;
     struct list list_ps;
+
+    struct file* f;
     ////
 #endif
 

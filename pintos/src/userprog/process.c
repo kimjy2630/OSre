@@ -216,6 +216,13 @@ void process_exit(void) {
 	//TODO
 //	printf("LOCK RELEASE END\n");
 	printf("%s: exit(%d)\n", thread_current()->name, thread_current()->exit_status);
+
+	if(curr->f != NULL)
+	{
+		file_allow_write(curr->f);
+		close(curr->f);
+	}
+
 	intr_set_level(old);
 }
 
