@@ -13,6 +13,7 @@
 #include "threads/vaddr.h"
 #ifdef USERPROG
 #include "userprog/process.h"
+#include <stdlib.h>
 #endif
 
 /* Random value for struct thread's `magic' member.
@@ -173,7 +174,7 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 
 	#ifdef USERPROG
 
-	list_push_back(&thread_current()->list_children, &t->elem_child);
+	list_push_back(&thread_current()->list_ps, &t->ps->elem);
 //	lock_init(t->lock_child);
 //	lock_acquire(t->lock_child);
 	t->fd_cnt = 3;
@@ -288,14 +289,6 @@ void thread_exit(void) {
 		struct lock* lock = list_entry(list_pop_front(list_lock), struct lock, elem);
 		lock_release(lock);
 	}
-
-#ifdef USERPROG
-	while(!list_empty(&thread_current()->list_children))
-	{
-		struct lock lock = list_entry(list_pop_front(&thread_current()->list_children), struct thread, elem_child)->lock_child;
-		lock_release(&lock);
-	}
-#endif
 
 //	printf("THREAD_EXIT SCHEDULE\n");
 
@@ -525,10 +518,11 @@ static void init_thread(struct thread *t, const char *name, int priority) {
 #ifdef USERPROG
 	t->user_thread = false;
 	t->is_exit = false;
-	list_init(&t->list_children);
 	list_init(&t->list_pf);
-	lock_init(&t->lock_child);
-	lock_acquire(&t->lock_child);
+	list_init(&t->list_ps);
+	t->ps = (struct process_status*) malloc(sizeof (struct process_status));
+	t->ps->t = t;
+	t->ps->tid = t->tid;
 #endif
 	////
 }

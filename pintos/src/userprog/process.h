@@ -21,7 +21,7 @@ struct process_status {
 	struct list_elem elem;
 	tid_t tid;
 	struct thread* t;
-	//TODO
+	int exit_status;
 };
 
 struct process_file*

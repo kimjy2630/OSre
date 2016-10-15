@@ -106,11 +106,11 @@ struct thread
     bool user_thread;
     int exit_status;					/* Exit status */
     bool is_exit;						/* Check whether the thread run exit code */
-    struct list list_children;			/* List of child threads */
-    struct list_elem elem_child;		/* List element for children_list */
     struct lock lock_child;
     struct list list_pf;
     int fd_cnt;
+    struct process_status* ps;
+    struct list list_ps;
     ////
 #endif
 
