@@ -48,9 +48,9 @@ tid_t process_execute(const char *file_name) {
 	tid_t tid;
 	char *fn_copy;
 
-//	struct arg_success *as = malloc(sizeof(struct arg_success));
-//	if (as == NULL)
-//		return TID_ERROR;
+	struct arg_success *as = malloc(sizeof(struct arg_success));
+	if (as == NULL)
+		return TID_ERROR;
 //	memset (as, 0, sizeof (struct arg_success));
 //	sema_init(&as->loading, 0);
 
