@@ -98,7 +98,7 @@ tid_t process_execute(const char *file_name) {
 	free(buffer);
 	if (tid == TID_ERROR)
 //		palloc_free_page(fn_copy);
-//		palloc_free_page(as->fn_copy);
+		palloc_free_page(as->fn_copy);
 	free(as);
 
 //	printf("process exec fin\n");
