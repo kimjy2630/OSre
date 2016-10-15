@@ -107,7 +107,7 @@ static void start_process(void *f_name) {
 	if_.eflags = FLAG_IF | FLAG_MBS;
 	success = load(file_name, &if_.eip, &if_.esp);
 
-	((struct arg_success *) f_name)->succees = success;
+	((struct arg_success *) f_name)->success = success;
 
 	////
 //	printf("success? [%d]\n", success);
