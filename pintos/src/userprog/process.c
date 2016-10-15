@@ -90,7 +90,8 @@ tid_t process_execute(const char *file_name) {
 	////
 	printf("CCCCCCCCCCC%s\n", as->fn_copy);
 	char* fn_copy = palloc_get_page(0);
-	strlcpy(fn_copy, as->fn_copy, PGSIZE);
+//	strlcpy(fn_copy, as->fn_copy, PGSIZE);
+	strlcpy(fn_copy, file_name, PGSIZE);
 //	printf("{thread_create} fun_name: [%s], fn_copy: [%s]\n", fun_name, fn_copy);
 	tid = thread_create(fun_name, PRI_DEFAULT, start_process, fn_copy);
 //	tid = thread_create(fun_name, PRI_DEFAULT, start_process, as);
