@@ -176,6 +176,7 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 	list_push_back(&thread_current()->list_children, &t->elem_child);
 //	lock_init(t->lock_child);
 //	lock_acquire(t->lock_child);
+	t->fd_cnt = 2;
 	#endif
 
 	/* Stack frame for kernel_thread(). */
@@ -516,6 +517,7 @@ static void init_thread(struct thread *t, const char *name, int priority) {
 	t->user_thread = false;
 	t->is_exit = false;
 	list_init(&t->list_children);
+	list_init(&t->list_pf);
 #endif
 	////
 }

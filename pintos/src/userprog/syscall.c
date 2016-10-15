@@ -146,55 +146,173 @@ void halt (void){
 	power_off();
 }
 void exit (int status){
-//	printf("SYS_EXIT %d\n", status);
+	printf("SYS_EXIT %d\n", status);
 	struct thread *curr = thread_current();
 	curr->exit_status = status;
 	curr->is_exit = true;
 	lock_release(&curr->lock_child);
-	printf("%s: exit(%d)\n", curr->name, status);
 	thread_exit();
 }
-pid_t exec (const char *file){
-	return -1;
+pid_t exec(const char *file) {
+	if (!read_validity(file, strlen(file) + 1)) {
+		printf("invalid user pointer read\n");
+		thread_current()->exit_status = -1;
+		thread_exit();
+		return -1;
+	}
+	return process_execute(file);
 }
-int wait (pid_t pid){
+int wait(pid_t pid) {
 	//TODO
 	return process_wait(pid);
 //	return -1;
 }
-bool create (const char *file, unsigned initial_size){
-	return false;
+bool create(const char *file, unsigned initial_size) {
+	if (!read_validity(file, strlen(file) + 1)) {
+		printf("invalid user pointer read\n");
+		thread_current()->exit_status = -1;
+		thread_exit();
+		return false;
+	}
+	return filesys_create(file, initial_size);
 }
-bool remove (const char *file){
-	return false;
+bool remove(const char *file) {
+	if (!read_validity(file, strlen(file) + 1)) {
+		printf("invalid user pointer read\n");
+		thread_current()->exit_status = -1;
+		thread_exit();
+		return false;
+	}
+
+	struct file* f = filesys_open(file);
+	if (f == NULL)
+		return false;
+	file_close(f);
+	return filesys_remove(file);
 }
-int open (const char *file){
-	return -1;
+int open(const char *file) {
+	struct file* f;
+
+	f = filesys_open(file);
+	if (f == NULL)
+		return -1;
+
+	int fd = add_process_file(thread_current(), f, file);
+
+	return fd;
 }
-int filesize (int fd){
-	return -1;
+int filesize(int fd) {
+	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
+	if (pf == NULL)
+		return -1;
+
+	int len = file_length(pf->file);
+	return len;
 }
-int read (int fd, void *buffer, unsigned length){
-	return -1;
+int read(int fd, void *buffer, unsigned length) {
+	if (!read_validity(buffer, length) || !write_validity(buffer, length)) {
+		printf("invalid user pointer read\n");
+		thread_current()->exit_status = -1;
+		thread_exit();
+		return -1;
+	}
+
+	int result = -1;
+
+	/* Special case for reading from the keyboard */
+	if (fd == 0) {
+		size_t read_size = 0;
+		while (read_size < length)
+			buffer[read_size++] = input_getc();
+
+		return read_size;
+	}
+	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
+	if (pf == NULL)
+		return -1;
+
+	size_t cnt = 0;
+
+	char *tmp_buf = malloc(PGSIZE);
+	if (tmp_buf == NULL)
+		return -1;
+
+	while (cnt < length) {
+		int cur_size = length - cnt;
+		if (cur_size > PGSIZE)
+			cur_size = PGSIZE;
+
+		char *cur_buff = buffer + cnt;
+		int op_result = file_read(pf->file, tmp_buf, cur_size);
+		memcpy(cur_buff, tmp_buf, cur_size);
+
+		cnt += op_result;
+		if (op_result != cur_size)
+			break;
+	}
+	free(tmp_buf);
+	return cnt;
 }
-int write (int fd, const void *buffer, unsigned length){
-	if (read_validity(buffer, length))
-		if (fd == 1) { // write to console
+int write(int fd, const void *buffer, unsigned length) {
+	if (!read_validity(buffer, length)) {
+		printf("invalid user pointer read\n");
+		thread_current()->exit_status = -1;
+		thread_exit();
+		return -1;
+	}
+
+	if (fd == 1) { // write to console
 //			printf("WRITE FD 1\n");
-			putbuf(buffer, (size_t) length);
-			return length;
-		}
-	return -1;
-}
-void seek (int fd, unsigned position){
+		putbuf(buffer, (size_t) length);
+		return length;
+	}
 
-}
-unsigned tell (int fd){
-	return 0;
-}
-void close (int fd){
+	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
+	if (pf == NULL)
+		return 0;
 
+	size_t cnt = 0;
+
+	char *tmp_buf = malloc(PGSIZE);
+	if (tmp_buf == NULL)
+		return -1;
+
+	while (cnt < length) {
+		int cur_size = length - cnt;
+		if (cur_size > PGSIZE)
+			cur_size = PGSIZE;
+
+		char *cur_buff = buffer + cnt;
+		memcpy(tmp_buf, cur_buff, cur_size);
+		int op_result = file_write(pf->file, tmp_buf, cur_size);
+		cnt += op_result;
+		if (op_result != cur_size)
+			break;
+	}
+	free(tmp_buf);
+	return cnt;
 }
+void seek(int fd, unsigned position) {
+	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
+	if (pf == NULL)
+		return;
+	file_seek(pf->file, position);
+}
+unsigned tell(int fd) {
+	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
+	if (pf == NULL)
+		return -1;
+	return file_tell(pf->file);
+}
+void close(int fd) {
+	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
+	if (pf == NULL)
+		return;
+
+	file_close(pf->file);
+	remove_process_file_from_fd(thread_current(), fd);
+}
+
 
 static int
 get_user (const uint8_t *uaddr){

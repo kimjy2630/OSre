@@ -588,3 +588,42 @@ static bool install_page(void *upage, void *kpage, bool writable) {
 	 address, then map our page there. */
 	return (pagedir_get_page(t->pagedir, upage) == NULL && pagedir_set_page(t->pagedir, upage, kpage, writable));
 }
+
+static struct process_file*
+get_process_file_from_fd(struct thread* t, int fd) {
+	struct list *list_pf = &t->list_pf;
+	struct list_elem *e;
+	for (e = list_begin(list_pf); e != list_end(list_pf); e = list_next(e)) {
+		struct process_file *pf = list_entry(e, struct process_file, elem);
+		if (pf->fd == fd)
+			return pf;
+	}
+	return NULL;
+}
+
+int
+add_process_file(struct thread* t, struct file* file, const char* filename) {
+	struct list *list_pf = &t->list_pf;
+	struct process_file *pf = malloc(sizeof(struct process_file));
+	if (pf == NULL)
+		return -1;
+	pf->fd = t->fd_cnt++;
+	pf->file = file;
+	pf->filename = strdup(filename);
+	if (pf->filename == NULL) {
+		free(pf);
+		return -1;
+	}
+	list_push_back(list_pf, &pf->elem);
+	return pf->fd;
+}
+
+void
+remove_process_file_from_fd(struct thread* t, int fd) {
+	struct process_file* pf = get_process_file_from_fd(t, fd);
+	if (pf == NULL)
+		return;
+	list_remove(&pf->elem);
+	free(pf->filename);
+	free(pf);
+}
