@@ -48,9 +48,9 @@ tid_t process_execute(const char *file_name) {
 	tid_t tid;
 	char *fn_copy;
 
-	struct arg_success *as = malloc(sizeof(struct arg_success));
-	if (as == NULL)
-		return TID_ERROR;
+//	struct arg_success *as = malloc(sizeof(struct arg_success));
+//	if (as == NULL)
+//		return TID_ERROR;
 	/* Make a copy of FILE_NAME.
 	 Otherwise there's a race between the caller and load(). */
 
@@ -58,7 +58,7 @@ tid_t process_execute(const char *file_name) {
 	if (fn_copy == NULL)
 		return TID_ERROR;
 	strlcpy(fn_copy, file_name, PGSIZE);
-	as->fn_copy = fn_copy;
+//	as->fn_copy = fn_copy;
 
 	////
 	char **last;
@@ -68,6 +68,7 @@ tid_t process_execute(const char *file_name) {
 //	printf("fn_copy: [%s]\n", fn_copy);
 	char *fun_name = parse_name(fn_copy, last, buffer);
 	////
+//	as->f = filesys_open(fun_name);
 
 	/* Create a new thread to execute FILE_NAME. */
 	/* original code
@@ -78,15 +79,18 @@ tid_t process_execute(const char *file_name) {
 	 */
 	////
 //	printf("{thread_create} fun_name: [%s], fn_copy: [%s]\n", fun_name, fn_copy);
-	tid = thread_create(fun_name, PRI_DEFAULT, start_process, as);
-	if (!as->success)
+	tid = thread_create(fun_name, PRI_DEFAULT, start_process, fn_copy);
+	int success = fn_copy[0];
+	if(!success)
 		tid = -1;
+//	if (!as->success)
+//		tid = -1;
 //	tid = thread_create(fn_copy, PRI_DEFAULT, start_process, fn_copy);
 	free(last);
 	free(buffer);
 	if (tid == TID_ERROR)
 		palloc_free_page(fn_copy);
-	free(as);
+//	free(as);
 
 //	printf("process exec fin\n");
 	return tid;
@@ -95,7 +99,8 @@ tid_t process_execute(const char *file_name) {
 /* A thread function that loads a user process and makes it start
  running. */
 static void start_process(void *f_name) {
-	char *file_name = ((struct arg_success *) f_name)->fn_copy;
+//	char *file_name = ((struct arg_success *) f_name)->fn_copy;
+	char *file_name = f_name;
 	struct intr_frame if_;
 	bool success;
 
@@ -109,14 +114,15 @@ static void start_process(void *f_name) {
 	if_.cs = SEL_UCSEG;
 	if_.eflags = FLAG_IF | FLAG_MBS;
 	success = load(file_name, &if_.eip, &if_.esp);
+	file_name[0] = success;
 
-	((struct arg_success *) f_name)->success = success;
+//	((struct arg_success *) f_name)->success = success;
 
 	////
 //	printf("success? [%d]\n", success);
 
 	/* If load failed, quit. */
-	palloc_free_page(file_name);
+//	palloc_free_page(file_name);
 	if (!success) {
 		struct thread *curr = thread_current();
 		curr->ps->exit_status = curr->exit_status = -1;
