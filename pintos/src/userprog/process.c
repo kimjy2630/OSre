@@ -214,6 +214,11 @@ int process_wait(tid_t child_tid) {
 		return status;
 	} else {
 		printf("ASDFASDFASDF %d\n", child_tid);
+		for (e = list_begin(list_ps); e != list_end(list_ps);
+				e = list_next(e)) {
+			child = list_entry(e, struct process_status, elem)->t;
+			printf("ZZZZ %d %d\n", child->tid, child_tid);
+		}
 		return -1;
 	}
 }
