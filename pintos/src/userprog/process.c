@@ -22,8 +22,21 @@ static thread_func start_process NO_RETURN;
 static bool load(const char *cmdline, void (**eip)(void), void **esp);
 /////
 static void push_stack(void **esp, void *data, size_t size);
-static void push_argument (int argc, char *last, void **esp);
+static void push_argument(int argc, char *last, void **esp);
+static char* parse_name(char *file_name, char **last, char *buffer);
 ////
+
+static char* parse_name(char *file_name, char **last, char *buffer) {
+//	printf("(parse_name) file_name: [%s]\n", file_name);
+	strlcpy(buffer, file_name, strlen(file_name) + 1);
+//	printf("(parse_name) buffer: [%s]\n", buffer);
+
+	char *token;
+
+	token = strtok_r(buffer, " ", last);
+//	printf("(parse_name) token: [%s], *last: [%s]\n", token, *last);
+	return token;
+}
 
 /* Starts a new thread running a user program loaded from
  FILENAME.  The new thread may be scheduled (and may even exit)
@@ -42,8 +55,27 @@ tid_t process_execute(const char *file_name) {
 		return TID_ERROR;
 	strlcpy(fn_copy, file_name, PGSIZE);
 
+	////
+	char **last;
+	char *buffer;
+	last = (char **) malloc(100);
+	buffer = (char *) malloc(100);
+//	printf("fn_copy: [%s]\n", fn_copy);
+	char *fun_name = parse_name(fn_copy, last, buffer);
+	////
+
 	/* Create a new thread to execute FILE_NAME. */
-	tid = thread_create(fn_copy, PRI_DEFAULT, start_process, fn_copy);
+	/* original code
+	 tid = thread_create(fn_copy, PRI_DEFAULT, start_process, fn_copy);
+	 if (tid == TID_ERROR)
+	 palloc_free_page(fn_copy);
+	 return tid;
+	 */
+	////
+//	printf("{thread_create} fun_name: [%s], fn_copy: [%s]\n", fun_name, fn_copy);
+	tid = thread_create(fun_name, PRI_DEFAULT, start_process, fn_copy);
+	free(last);
+	free(buffer);
 	if (tid == TID_ERROR)
 		palloc_free_page(fn_copy);
 	return tid;
@@ -95,9 +127,7 @@ static void start_process(void *f_name) {
 
  This function will be implemented in problem 2-2.  For now, it
  does nothing. */
-int
-process_wait (tid_t child_tid)
-{
+int process_wait(tid_t child_tid) {
 	int i = 0;
 	struct list_elem *e;
 	struct thread *t = thread_current();
@@ -105,9 +135,9 @@ process_wait (tid_t child_tid)
 	struct thread *child;
 
 	bool flag = false;
+//	int cnt = 0;
 //	int i=0;
-	for (e = list_begin(list_child); e != list_end(list_child);
-			e = list_next(e)) {
+	for (e = list_begin(list_child); e != list_end(list_child); e = list_next(e)) {
 //		printf("PROCESSWAIT%d\n",i++);
 		child = list_entry(e, struct thread, elem_child);
 		if (child->tid == child_tid) {
@@ -116,26 +146,25 @@ process_wait (tid_t child_tid)
 			break;
 		}
 	}
-	if(flag)
-	{
+	if (flag) {
 //		lock_acquire(&child->lock_child);
-		while(!child->is_exit){
+		while (!child->is_exit) {
+//			cnt++;
 			barrier();
 		}
 		int status = child->exit_status;
 //		lock_release(&child->lock_child);
-//		int i = 10000000;
-//		int j;
-//		for(j=i;j>0;j--)
-//			for(;i>0;i--)
-//				barrier();
+		/*
+		 int i = 10000000;
+		 int j;
+		 for(j=i;j>0;j--)
+		 for(;i>0;i--)
+		 barrier();
+		 */
 //		for(;i>0;--i);
-//		while(i);
-
+//		while(i); */
 		return status;
-	}
-	else
-	{
+	} else {
 		return -1;
 	}
 
@@ -181,13 +210,10 @@ void process_exit(void) {
 	//			release lock_child of child
 	// release list of children
 
-
-
 //	lock_release(&curr->lock_child);
 	//TODO
 //	printf("LOCK RELEASE END\n");
-	printf("%s: exit(%d)\n", thread_current()->name,
-			thread_current()->exit_status);
+	printf("%s: exit(%d)\n", thread_current()->name, thread_current()->exit_status);
 	intr_set_level(old);
 }
 
@@ -299,10 +325,12 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 	 */
 	////
 	//TODO
-//	char buffer[strlen(file_name)];
-	char buffer[200];
-//	strcpy(buffer, file_name);
-	strlcpy(buffer, file_name, strlen(file_name)+1);
+//	printf("start parsing\n");
+	char *buffer;
+	buffer = (char *) malloc(100);
+//	printf("file_name = [%s]\n", file_name);
+	strlcpy(buffer, file_name, strlen(file_name) + 1);
+//	printf("after strlcpy\n");
 
 	char *token, *last;
 	int argc = 0;
@@ -404,13 +432,15 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 //		printf("LOAD SUCCESS\n");
 //	else
 //		printf("LOAD FAIL\n");
+	////
+	free(buffer);
 	return success;
 }
 
 
 ////
 
-void push_argument (int argc, char *last, void **esp){
+void push_argument(int argc, char *last, void **esp) {
 //	printf("PUSH_ARGUMENT\n");
 	int i;
 	size_t size;
@@ -435,7 +465,7 @@ void push_argument (int argc, char *last, void **esp){
 	// word-align
 //	int align_size = (int)(*esp) % 4;
 	i = 0;
-	while( (*((unsigned int*) esp)) % 4)
+	while ((*((unsigned int*) esp)) % 4)
 		push_stack(esp, &i, 1);
 
 	// null pointer argv[argc]
@@ -453,17 +483,15 @@ void push_argument (int argc, char *last, void **esp){
 	push_stack(esp, &argc, 4);
 //	printf("argc %d %p\n", argc, *esp);
 	// return address
-	i=0;
+	i = 0;
 	push_stack(esp, &i, 4);
 }
 
-
-static void push_stack(void **esp, void *data, size_t size){
+static void push_stack(void **esp, void *data, size_t size) {
 	*esp = *esp - size;
 	memcpy(*esp, data, size);
 }
 ////
-
 
 /* load() helpers. */
 
@@ -604,15 +632,15 @@ get_process_file_from_fd(struct thread* t, int fd) {
 	struct list *list_pf = &t->list_pf;
 	struct list_elem *e;
 	for (e = list_begin(list_pf); e != list_end(list_pf); e = list_next(e)) {
-		struct process_file *pf = list_entry(e, struct process_file, elem);
+		struct process_file
+		*pf = list_entry(e, struct process_file, elem);
 		if (pf->fd == fd)
 			return pf;
 	}
 	return NULL;
 }
 
-int
-add_process_file(struct thread* t, struct file* file, const char* filename) {
+int add_process_file(struct thread* t, struct file* file, const char* filename) {
 	struct list *list_pf = &t->list_pf;
 	struct process_file *pf = malloc(sizeof(struct process_file));
 	if (pf == NULL)
@@ -628,8 +656,7 @@ add_process_file(struct thread* t, struct file* file, const char* filename) {
 	return pf->fd;
 }
 
-void
-remove_process_file_from_fd(struct thread* t, int fd) {
+void remove_process_file_from_fd(struct thread* t, int fd) {
 	struct process_file* pf = get_process_file_from_fd(t, fd);
 	if (pf == NULL)
 		return;
