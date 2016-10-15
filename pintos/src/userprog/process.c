@@ -61,7 +61,7 @@ tid_t process_execute(const char *file_name) {
 	fn_copy = palloc_get_page(0);
 	if (fn_copy == NULL)
 		return TID_ERROR;
-	if(as->fn_copy)
+	if(as->fn_copy==NULL)
 	{
 		free(as);
 		return TID_ERROR;
