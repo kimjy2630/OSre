@@ -300,7 +300,8 @@ void thread_exit(void) {
 	while (!list_empty(list_ps)) {
 			struct process_status* ps =
 					list_entry(list_pop_front(list_ps), struct process_status, elem);
-			free(ps->t->ps);
+			if(ps != NULL)
+				free(ps);
 //		list_pop_front(list_ps);
 		}
 //	t->ps = (struct process_status*) malloc(sizeof (struct process_status));

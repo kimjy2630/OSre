@@ -89,9 +89,7 @@ kill (struct intr_frame *f)
       printf ("%s: dying due to interrupt %#04x (%s).\n",
               thread_name (), f->vec_no, intr_name (f->vec_no));
       intr_dump_frame (f);
-      thread_current()->exit_status = -1;
-      thread_current()->is_exit = true;
-      thread_exit ();
+      exit (-1);
 
 
     case SEL_KCSEG:
@@ -167,9 +165,7 @@ page_fault (struct intr_frame *f)
   else{
 	  f->eip = (void *) f->eax;
 	  f->eax = 0xffffffff;
-	  thread_current()->exit_status = -1;
-	  thread_current()->is_exit = true;
-	  thread_exit ();
+	  exit (-1);
   }
 }
 
