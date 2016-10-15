@@ -94,8 +94,8 @@ tid_t process_execute(const char *file_name) {
 //	strlcpy(fn_copy, as->fn_copy, PGSIZE);
 //	strlcpy(fn_copy, file_name, PGSIZE);
 //	printf("{thread_create} fun_name: [%s], fn_copy: [%s]\n", fun_name, fn_copy);
-	tid = thread_create(fun_name, PRI_DEFAULT, start_process, fn_copy);
-//	tid = thread_create(fun_name, PRI_DEFAULT, start_process, as);
+//	tid = thread_create(fun_name, PRI_DEFAULT, start_process, fn_copy);
+	tid = thread_create(fun_name, PRI_DEFAULT, start_process, as);
 //	tid = thread_create(fun_name, PRI_DEFAULT, start_process, as->fn_copy);
 //	int success = fn_copy[0];
 //	if(fn_copy[0] == 'a')
@@ -118,8 +118,8 @@ tid_t process_execute(const char *file_name) {
 /* A thread function that loads a user process and makes it start
  running. */
 static void start_process(void *f_name) {
-//	char *file_name = ((struct arg_success *) f_name)->fn_copy;
-	char *file_name = f_name;
+	char *file_name = ((struct arg_success *) f_name)->fn_copy;
+//	char *file_name = f_name;
 	struct intr_frame if_;
 	bool success;
 
@@ -136,8 +136,8 @@ static void start_process(void *f_name) {
 	if_.eflags = FLAG_IF | FLAG_MBS;
 	success = load(file_name, &if_.eip, &if_.esp);
 
-//	((struct arg_success *) f_name)->success = success;
-//	sema_up(&((struct arg_success *) f_name)->loading);
+	((struct arg_success *) f_name)->success = success;
+	sema_up(&((struct arg_success *) f_name)->loading);
 	////
 //	printf("success? [%d]\n", success);
 
