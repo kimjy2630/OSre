@@ -123,7 +123,7 @@ static void start_process(void *f_name) {
 	success = load(file_name, &if_.eip, &if_.esp);
 
 	((struct arg_success *) f_name)->success = success;
-	sema_up(((struct arg_success *) f_name)->loading);
+	sema_up(&((struct arg_success *) f_name)->loading);
 	////
 //	printf("success? [%d]\n", success);
 
