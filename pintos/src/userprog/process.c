@@ -48,7 +48,7 @@ tid_t process_execute(const char *file_name) {
 	tid_t tid;
 
 	struct arg_success *as = malloc(sizeof(struct arg_success));
-	if(as == NULL)
+	if (as == NULL)
 		return TID_ERROR;
 	/* Make a copy of FILE_NAME.
 	 Otherwise there's a race between the caller and load(). */
@@ -75,16 +75,16 @@ tid_t process_execute(const char *file_name) {
 	 */
 	////
 //	printf("{thread_create} fun_name: [%s], fn_copy: [%s]\n", fun_name, fn_copy);
-
 	tid = thread_create(fun_name, PRI_DEFAULT, start_process, as);
-	if(!as->success)
+	if (!as->success)
 		tid = -1;
 //	tid = thread_create(fn_copy, PRI_DEFAULT, start_process, fn_copy);
 	free(last);
 	free(buffer);
-	free(as);
 	if (tid == TID_ERROR)
-		palloc_free_page(fn_copy);
+		palloc_free_page(as->fn_copy);
+	free(as);
+
 //	printf("process exec fin\n");
 	return tid;
 }
@@ -114,7 +114,7 @@ static void start_process(void *f_name) {
 
 	/* If load failed, quit. */
 	palloc_free_page(file_name);
-	if (!success){
+	if (!success) {
 		struct thread *curr = thread_current();
 		curr->ps->exit_status = curr->exit_status = -1;
 		curr->is_exit = true;
@@ -229,8 +229,7 @@ void process_exit(void) {
 //	printf("LOCK RELEASE END\n");
 	printf("%s: exit(%d)\n", thread_current()->name, thread_current()->exit_status);
 
-	if(curr->f != NULL)
-	{
+	if (curr->f != NULL) {
 //		file_allow_write(curr->f);
 		file_close(curr->f);
 	}
@@ -450,7 +449,6 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 	/* We arrive here whether the load is successful or not. */
 //	if (file != NULL)
 //		file_close(file);
-
 	//TODO
 //	if(success)
 //		printf("LOAD SUCCESS\n");
