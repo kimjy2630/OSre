@@ -124,7 +124,8 @@ process_wait (tid_t child_tid)
 		int i = 100000;
 		int j;
 		for(j=i;j>0;j--)
-			for(;i>0;i--);
+			for(;i>0;i--)
+				barrier();
 //		for(;i>0;--i);
 //		while(i);
 
