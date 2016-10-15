@@ -152,7 +152,7 @@ static void exit(int status) {
 	struct thread *curr = thread_current();
 	curr->exit_status = status;
 	curr->is_exit = true;
-	lock_release(&curr->lock_child);
+//	lock_release(&curr->lock_child);
 	thread_exit();
 }
 

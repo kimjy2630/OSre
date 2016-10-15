@@ -57,8 +57,8 @@ static void start_process(void *f_name) {
 	bool success;
 
 	thread_current()->user_thread = true;
-	lock_init(&thread_current()->lock_child);
-	lock_acquire(&thread_current()->lock_child);
+//	lock_init(&thread_current()->lock_child);
+//	lock_acquire(&thread_current()->lock_child);
 
 	/* Initialize interrupt frame and load executable. */
 	memset(&if_, 0, sizeof if_);
@@ -119,13 +119,16 @@ process_wait (tid_t child_tid)
 	if(flag)
 	{
 //		lock_acquire(&child->lock_child);
+		while(!child->is_exit){
+			barrier();
+		}
 		int status = child->exit_status;
 //		lock_release(&child->lock_child);
-		int i = 10000000;
-		int j;
-		for(j=i;j>0;j--)
-			for(;i>0;i--)
-				barrier();
+//		int i = 10000000;
+//		int j;
+//		for(j=i;j>0;j--)
+//			for(;i>0;i--)
+//				barrier();
 //		for(;i>0;--i);
 //		while(i);
 
