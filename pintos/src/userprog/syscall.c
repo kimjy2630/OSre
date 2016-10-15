@@ -154,7 +154,13 @@ void exit (int status){
 	thread_exit();
 }
 pid_t exec (const char *file){
-	return -1;
+	if (!read_validity(file, strlen(file) + 1)) {
+		printf("invalid user pointer read\n");
+		thread_current()->exit_status = -1;
+		thread_exit();
+		return -1;
+	}
+	return process_execute(file);
 }
 int wait (pid_t pid){
 	//TODO
@@ -204,25 +210,108 @@ int filesize (int fd){
 	return len;
 }
 int read (int fd, void *buffer, unsigned length){
-	return -1;
+	if (!read_validity(buffer, length) || !write_validity(buffer, length)) {
+		printf("invalid user pointer read\n");
+		thread_current()->exit_status = -1;
+		thread_exit();
+		return -1;
+	}
+
+	int result = -1;
+
+	/* Special case for reading from the keyboard */
+	if (fd == 0) {
+		size_t read_size = 0;
+		while (read_size < length)
+			buffer[read_size++] = input_getc();
+
+		return read_size;
+	}
+	struct process_fd *pfd = process_get_file(thread_current(), fd);
+	if (pfd == NULL)
+		return -1;
+
+	size_t cnt = 0;
+
+	char *tmp_buf = malloc(PGSIZE);
+	if (tmp_buf == NULL)
+		return -1;
+
+	while (cnt < length) {
+		int cur_size = length - cnt;
+		if (cur_size > PGSIZE)
+			cur_size = PGSIZE;
+
+		char *cur_buff = buffer + cnt;
+		int op_result = file_read(pfd->file, tmp_buf, cur_size);
+		memcpy(cur_buff, tmp_buf, cur_size);
+
+		cnt += op_result;
+		if (op_result != cur_size)
+			break;
+	}
+	free(tmp_buf);
+	return cnt;
 }
 int write (int fd, const void *buffer, unsigned length){
-	if (read_validity(buffer, length))
-		if (fd == 1) { // write to console
-			printf("WRITE FD 1\n");
-			putbuf(buffer, (size_t) length);
-			return length;
-		}
-	return -1;
+	if (!read_validity(buffer, length)) {
+		printf("invalid user pointer read\n");
+		thread_current()->exit_status = -1;
+		thread_exit();
+		return -1;
+	}
+
+	if (fd == 1) { // write to console
+//			printf("WRITE FD 1\n");
+		putbuf(buffer, (size_t) length);
+		return length;
+	}
+
+	struct process_fd *pfd = process_get_file(thread_current(), fd);
+	if (pfd == NULL)
+		return 0;
+
+	size_t cnt = 0;
+
+	char *tmp_buf = malloc(PGSIZE);
+	if (tmp_buf == NULL)
+		return -1;
+
+	while (cnt < length) {
+		int cur_size = length - cnt;
+		if (cur_size > PGSIZE)
+			cur_size = PGSIZE;
+
+		char *cur_buff = buffer + cnt;
+		memcpy(tmp_buf, cur_buff, cur_size);
+		int op_result = file_write(pfd->file, tmp_buf, cur_size);
+		cnt += op_result;
+		if (op_result != cur_size)
+			break;
+	}
+	free(tmp_buf);
+	return cnt;
 }
 void seek (int fd, unsigned position){
-
+	struct process_fd *pfd = process_get_file(thread_current(), fd);
+	if (pfd == NULL)
+		return;
+	file_seek(pfd->file, position);
 }
 unsigned tell (int fd){
-	return 0;
+	struct process_fd *pfd = process_get_file(thread_current(), fd);
+	if (pfd == NULL)
+		return -1;
+	return file_tell(pfd->file);
 }
 void close (int fd){
+	struct process_fd *pfd = process_get_file(thread_current(), fd);
+	if (pfd == NULL)
+		return;
 
+	file_close(pfd->file);
+
+	process_remove_file(thread_current(), fd);
 }
 
 static int
