@@ -173,15 +173,14 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 	tid = t->tid = allocate_tid();
 
 	#ifdef USERPROG
+	t->ps = (struct process_status*) malloc(sizeof (struct process_status));
+	t->ps->t = t;
+	t->ps->tid = t->tid;
 
 	list_push_back(&thread_current()->list_ps, &t->ps->elem);
 //	lock_init(t->lock_child);
 //	lock_acquire(t->lock_child);
 	t->fd_cnt = 3;
-
-	t->ps = (struct process_status*) malloc(sizeof (struct process_status));
-	t->ps->t = t;
-	t->ps->tid = t->tid;
 	#endif
 
 	/* Stack frame for kernel_thread(). */
