@@ -292,7 +292,7 @@ void thread_exit(void) {
 #ifdef USERPROG
 	while(!list_empty(&thread_current()->list_children))
 	{
-		struct lock* lock = list_entry(list_pop_front(&thread_current()->list_children), struct lock, elem_child));
+		struct lock* lock = list_entry(list_pop_front(&thread_current()->list_children), struct thread, elem_child))->lock_child;
 		lock_release(lock);
 	}
 #endif
