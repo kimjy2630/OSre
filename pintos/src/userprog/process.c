@@ -220,7 +220,7 @@ void process_exit(void) {
 	if(curr->f != NULL)
 	{
 		file_allow_write(curr->f);
-		close(curr->f);
+		file_close(curr->f);
 	}
 
 	intr_set_level(old);
