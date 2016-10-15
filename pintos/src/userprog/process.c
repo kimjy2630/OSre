@@ -75,8 +75,8 @@ tid_t process_execute(const char *file_name) {
 	last = (char **) malloc(100);
 	buffer = (char *) malloc(100);
 //	printf("fn_copy: [%s]\n", fn_copy);
-//	char *fun_name = parse_name(fn_copy, last, buffer);
-	char *fun_name = parse_name(as->fn_copy, last, buffer);
+	char *fun_name = parse_name(fn_copy, last, buffer);
+//	char *fun_name = parse_name(as->fn_copy, last, buffer);
 	////
 //	as->f = filesys_open(fun_name);
 
