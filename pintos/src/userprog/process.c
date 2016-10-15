@@ -123,8 +123,8 @@ process_wait (tid_t child_tid)
 //		lock_release(&child->lock_child);
 		int i = 10;
 		int j;
-		for(j=i;j--;)
-			for(;i--;);
+		for(j=i;j>0;j--)
+			for(;i>0;i--);
 //		for(;i>0;--i);
 //		while(i);
 
