@@ -213,6 +213,7 @@ int process_wait(tid_t child_tid) {
 		 */
 		return status;
 	} else {
+		printf("ASDF");
 		return -1;
 	}
 }
