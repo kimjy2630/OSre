@@ -7,7 +7,6 @@
 #include "threads/init.h"
 #include "threads/vaddr.h"
 #include "lib/kernel/console.h"
-#include "userprog/process.h"
 #include <string.h>
 ////
 
