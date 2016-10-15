@@ -73,10 +73,16 @@ tid_t process_execute(const char *file_name) {
 	 */
 	////
 //	printf("{thread_create} fun_name: [%s], fn_copy: [%s]\n", fun_name, fn_copy);
-	tid = thread_create(fun_name, PRI_DEFAULT, start_process, fn_copy);
+	struct arg_success *as;
+	as = malloc(sizeof(struct arg_success));
+	as->fn_copy = fn_copy;
+	tid = thread_create(fun_name, PRI_DEFAULT, start_process, as);
+	if(!as->success)
+		tid = -1;
 //	tid = thread_create(fn_copy, PRI_DEFAULT, start_process, fn_copy);
 	free(last);
 	free(buffer);
+	free(as);
 	if (tid == TID_ERROR)
 		palloc_free_page(fn_copy);
 //	printf("process exec fin\n");
@@ -86,7 +92,7 @@ tid_t process_execute(const char *file_name) {
 /* A thread function that loads a user process and makes it start
  running. */
 static void start_process(void *f_name) {
-	char *file_name = f_name;
+	char *file_name = ((as *) f_name)->fn_copy;
 	struct intr_frame if_;
 	bool success;
 
@@ -100,6 +106,8 @@ static void start_process(void *f_name) {
 	if_.cs = SEL_UCSEG;
 	if_.eflags = FLAG_IF | FLAG_MBS;
 	success = load(file_name, &if_.eip, &if_.esp);
+
+	((as *) f_name)->succees = success;
 
 	////
 //	printf("success? [%d]\n", success);

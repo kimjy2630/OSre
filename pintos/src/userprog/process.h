@@ -17,6 +17,11 @@ struct process_file {
 //	const char *filename;
 };
 
+struct arg_success {
+	char *fn_copy;
+	bool success;
+};
+
 struct process_status {
 	struct list_elem elem;
 	tid_t tid;
