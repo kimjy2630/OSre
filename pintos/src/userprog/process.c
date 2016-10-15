@@ -126,7 +126,7 @@ process_wait (tid_t child_tid)
 		for(j=i;j--;)
 			for(;i--;);
 //		for(;i>0;--i);
-		while(i);
+//		while(i);
 
 		return status;
 	}
