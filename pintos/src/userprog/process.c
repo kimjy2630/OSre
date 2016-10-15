@@ -589,7 +589,7 @@ static bool install_page(void *upage, void *kpage, bool writable) {
 	return (pagedir_get_page(t->pagedir, upage) == NULL && pagedir_set_page(t->pagedir, upage, kpage, writable));
 }
 
-static struct process_file*
+struct process_file*
 get_process_file_from_fd(struct thread* t, int fd) {
 	struct list *list_pf = &t->list_pf;
 	struct list_elem *e;
@@ -601,7 +601,7 @@ get_process_file_from_fd(struct thread* t, int fd) {
 	return NULL;
 }
 
-static int
+int
 add_process_file(struct thread* t, struct file* file, const char* filename) {
 	struct list *list_pf = &t->list_pf;
 	struct process_file *pf = malloc(sizeof(struct process_file));
@@ -618,7 +618,7 @@ add_process_file(struct thread* t, struct file* file, const char* filename) {
 	return pf->fd;
 }
 
-static void
+void
 remove_process_file_from_fd(struct thread* t, int fd) {
 	struct process_file* pf = get_process_file_from_fd(t, fd);
 	if (pf == NULL)
