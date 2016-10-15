@@ -113,6 +113,8 @@ static void start_process(void *f_name) {
 	struct intr_frame if_;
 	bool success;
 
+	printf("%s\n", file_name);
+
 	thread_current()->user_thread = true;
 //	lock_init(&thread_current()->lock_child);
 //	lock_acquire(&thread_current()->lock_child);
