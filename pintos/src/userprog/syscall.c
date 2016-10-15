@@ -162,16 +162,46 @@ int wait (pid_t pid){
 //	return -1;
 }
 bool create (const char *file, unsigned initial_size){
-	return false;
+	if (!read_validity(file, strlen(file) + 1)) {
+		printf("invalid user pointer read\n");
+		thread_current()->exit_status = -1;
+		thread_exit();
+		return false;
+	}
+	return filesys_create(file, initial_size);
 }
 bool remove (const char *file){
-	return false;
+	if (!read_validity(file, strlen(file) + 1)) {
+		printf("invalid user pointer read\n");
+		thread_current()->exit_status = -1;
+		thread_exit();
+		return false;
+	}
+
+	struct file* f = filesys_open(file);
+	if (f == NULL)
+		return false;
+	file_close(f);
+	return filesys_remove(file);
 }
 int open (const char *file){
-	return -1;
+	struct file* f;
+
+	f = filesys_open(file);
+	if (f == NULL)
+		return -1;
+
+	int fd = process_add_file(thread_current(), f, file);
+
+	return fd;
 }
 int filesize (int fd){
-	return -1;
+	struct process_fd *pfd = process_get_file(thread_current(), fd);
+	if (pfd == NULL)
+		return -1;
+
+	int len = file_length(pfd->file);
+	return len;
 }
 int read (int fd, void *buffer, unsigned length){
 	return -1;
