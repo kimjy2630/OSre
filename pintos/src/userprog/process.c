@@ -184,7 +184,8 @@ void process_exit(void) {
 //	lock_release(&curr->lock_child);
 	//TODO
 //	printf("LOCK RELEASE END\n");
-	printf ("%s: exit(%d)\n", thread_current()->exit_status);
+	printf("%s: exit(%d)\n", thread_current()->name,
+			thread_current()->exit_status);
 }
 
 /* Sets up the CPU for running user code in the current
