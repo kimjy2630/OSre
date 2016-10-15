@@ -8,6 +8,7 @@
 #include "threads/vaddr.h"
 #include "lib/kernel/console.h"
 #include "lib/user/syscall.h"
+#include "userprog/process.h"
 ////
 
 static void syscall_handler (struct intr_frame *);
@@ -219,11 +220,11 @@ int read(int fd, void *buffer, unsigned length) {
 
 	int result = -1;
 
-	/* Special case for reading from the keyboard */
 	if (fd == 0) {
 		size_t read_size = 0;
+		char* buf = (char*) buffer;
 		while (read_size < length)
-			buffer[read_size++] = input_getc();
+			buf[read_size++] = input_getc();
 
 		return read_size;
 	}
