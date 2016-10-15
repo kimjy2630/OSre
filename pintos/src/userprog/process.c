@@ -106,8 +106,12 @@ static void start_process(void *f_name) {
 
 	/* If load failed, quit. */
 	palloc_free_page(file_name);
-	if (!success)
+	if (!success){
+		struct thread *curr = thread_current();
+		curr->ps->exit_status = curr->exit_status = -1;
+		curr->is_exit = true;
 		thread_exit();
+	}
 
 	//TODO
 //	printf("THREAD_EXIT END\n");
