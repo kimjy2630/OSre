@@ -158,7 +158,6 @@ int process_wait(tid_t child_tid) {
 	if (flag) {
 //		lock_acquire(&child->lock_child);
 		while (!child->is_exit) {
-//			cnt++;
 			barrier();
 		}
 		int status = child->exit_status;
@@ -170,17 +169,10 @@ int process_wait(tid_t child_tid) {
 		 for(;i>0;i--)
 		 barrier();
 		 */
-//		for(;i>0;--i);
-//		while(i); */
 		return status;
 	} else {
 		return -1;
 	}
-
-//	while(true){
-//		//// 일단 무한 루프
-//	}
-//	return -1;
 }
 
 /* Free the current process's resources. */

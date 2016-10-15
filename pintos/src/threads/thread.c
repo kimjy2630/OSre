@@ -288,6 +288,15 @@ void thread_exit(void) {
 		struct lock* lock = list_entry(list_pop_front(list_lock), struct lock, elem);
 		lock_release(lock);
 	}
+
+#ifdef USERPROG
+	while(!list_empty(&thread_current()->list_children))
+	{
+		struct lock* lock = list_entry(list_pop_front(&thread_current()->list_children, struct lock, elem_child));
+		lock_release(lock);
+	}
+#endif
+
 //	printf("THREAD_EXIT SCHEDULE\n");
 
 	thread_current()->status = THREAD_DYING;
@@ -518,6 +527,8 @@ static void init_thread(struct thread *t, const char *name, int priority) {
 	t->is_exit = false;
 	list_init(&t->list_children);
 	list_init(&t->list_pf);
+	lock_init(&t->lock_child);
+	lock_acquire(&t->lock_child);
 #endif
 	////
 }

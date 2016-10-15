@@ -17,6 +17,13 @@ struct process_file {
 //	const char *filename;
 };
 
+struct process_status {
+	struct list_elem elem;
+	tid_t tid;
+	struct thread* t;
+	//TODO
+};
+
 struct process_file*
 get_process_file_from_fd(struct thread* t, int fd);
 int
