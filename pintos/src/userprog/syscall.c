@@ -144,10 +144,10 @@ syscall_handler (struct intr_frame *f UNUSED)
 }
 
 ////
-void halt (void){
+static void halt (void){
 	power_off();
 }
-void exit (int status){
+static void exit (int status){
 	printf("SYS_EXIT %d\n", status);
 	struct thread *curr = thread_current();
 	curr->exit_status = status;
@@ -155,7 +155,7 @@ void exit (int status){
 	lock_release(&curr->lock_child);
 	thread_exit();
 }
-pid_t exec(const char *file) {
+static pid_t exec(const char *file) {
 	if (!read_validity(file, strlen(file) + 1)) {
 		printf("invalid user pointer read\n");
 		thread_current()->exit_status = -1;
@@ -164,12 +164,12 @@ pid_t exec(const char *file) {
 	}
 	return process_execute(file);
 }
-int wait(pid_t pid) {
+static int wait(pid_t pid) {
 	//TODO
 	return process_wait(pid);
 //	return -1;
 }
-bool create(const char *file, unsigned initial_size) {
+static bool create(const char *file, unsigned initial_size) {
 	if (!read_validity(file, strlen(file) + 1)) {
 		printf("invalid user pointer read\n");
 		thread_current()->exit_status = -1;
@@ -178,7 +178,7 @@ bool create(const char *file, unsigned initial_size) {
 	}
 	return filesys_create(file, initial_size);
 }
-bool remove(const char *file) {
+static bool remove(const char *file) {
 	if (!read_validity(file, strlen(file) + 1)) {
 		printf("invalid user pointer read\n");
 		thread_current()->exit_status = -1;
@@ -192,7 +192,7 @@ bool remove(const char *file) {
 	file_close(f);
 	return filesys_remove(file);
 }
-int open(const char *file) {
+static int open(const char *file) {
 	struct file* f;
 
 	f = filesys_open(file);
@@ -203,7 +203,7 @@ int open(const char *file) {
 
 	return fd;
 }
-int filesize(int fd) {
+static int filesize(int fd) {
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if (pf == NULL)
 		return -1;
@@ -211,7 +211,7 @@ int filesize(int fd) {
 	int len = file_length(pf->file);
 	return len;
 }
-int read(int fd, void *buffer, unsigned length) {
+static int read(int fd, void *buffer, unsigned length) {
 	if (!read_validity(buffer, length) || !write_validity(buffer, length)) {
 		printf("invalid user pointer read\n");
 		thread_current()->exit_status = -1;
@@ -255,7 +255,7 @@ int read(int fd, void *buffer, unsigned length) {
 	free(tmp_buf);
 	return cnt;
 }
-int write(int fd, const void *buffer, unsigned length) {
+static int write(int fd, const void *buffer, unsigned length) {
 	if (!read_validity(buffer, length)) {
 		printf("invalid user pointer read\n");
 		thread_current()->exit_status = -1;
@@ -294,19 +294,19 @@ int write(int fd, const void *buffer, unsigned length) {
 	free(tmp_buf);
 	return cnt;
 }
-void seek(int fd, unsigned position) {
+static void seek(int fd, unsigned position) {
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if (pf == NULL)
 		return;
 	file_seek(pf->file, position);
 }
-unsigned tell(int fd) {
+static unsigned tell(int fd) {
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if (pf == NULL)
 		return -1;
 	return file_tell(pf->file);
 }
-void close(int fd) {
+static void close(int fd) {
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if (pf == NULL)
 		return;
