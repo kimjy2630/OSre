@@ -122,6 +122,9 @@ process_wait (tid_t child_tid)
 		int status = child->exit_status;
 //		lock_release(&child->lock_child);
 		int i = 100000000;
+		int j;
+		for(j=i;j--;)
+			for(;i--;);
 //		for(;i>0;--i);
 		while(i);
 
