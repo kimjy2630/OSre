@@ -181,7 +181,6 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 //	lock_init(t->lock_child);
 //	lock_acquire(t->lock_child);
 	t->fd_cnt = 3;
-	t->f = NULL;
 	#endif
 
 	/* Stack frame for kernel_thread(). */
