@@ -43,10 +43,7 @@ static char* parse_name(char *file_name, char **last, char *buffer) {
  before process_execute() returns.  Returns the new process's
  thread id, or TID_ERROR if the thread cannot be created. */
 tid_t process_execute(const char *file_name) {
-	//TODO
-//	printf("PROCESS+EXECUTE\n");
 	tid_t tid;
-//	char *fn_copy;
 
 	struct arg_success *as = malloc(sizeof(struct arg_success));
 	if (as == NULL)
@@ -58,28 +55,18 @@ tid_t process_execute(const char *file_name) {
 	 Otherwise there's a race between the caller and load(). */
 
 	as->fn_copy = palloc_get_page(0);
-//	fn_copy = palloc_get_page(0);
-//	if (fn_copy == NULL)
-//		return TID_ERROR;
 	if(as->fn_copy==NULL)
 	{
 		free(as);
 		return TID_ERROR;
 	}
-//	strlcpy(fn_copy, file_name, PGSIZE);
 	strlcpy(as->fn_copy, file_name, PGSIZE);
-//	as->fn_copy = fn_copy;
 
-	////
 	char **last;
 	char *buffer;
 	last = (char **) malloc(100);
 	buffer = (char *) malloc(100);
-//	printf("fn_copy: [%s]\n", fn_copy);
-//	char *fun_name = parse_name(fn_copy, last, buffer);
 	char *fun_name = parse_name(as->fn_copy, last, buffer);
-	////
-//	as->f = filesys_open(fun_name);
 
 	/* Create a new thread to execute FILE_NAME. */
 	/* original code
@@ -89,29 +76,16 @@ tid_t process_execute(const char *file_name) {
 	 return tid;
 	 */
 	////
-//	printf("CCCCCCCCCCC%s\n", as->fn_copy);
-//	char* fn_copy = palloc_get_page(0);
-//	strlcpy(fn_copy, as->fn_copy, PGSIZE);
-//	strlcpy(fn_copy, file_name, PGSIZE);
-//	printf("{thread_create} fun_name: [%s], fn_copy: [%s]\n", fun_name, fn_copy);
-//	tid = thread_create(fun_name, PRI_DEFAULT, start_process, fn_copy);
 	tid = thread_create(fun_name, PRI_DEFAULT, start_process, as);
-//	tid = thread_create(fun_name, PRI_DEFAULT, start_process, as->fn_copy);
-//	int success = fn_copy[0];
-//	if(fn_copy[0] == 'a')
-//		tid = -1;
 	sema_down(&as->loading);
 	if (!as->success)
 		tid = -1;
-//	printf("BBBBBBBB%s\n", as->fn_copy);
 	free(last);
 	free(buffer);
 	if (tid == TID_ERROR)
-//		palloc_free_page(fn_copy);
 		palloc_free_page(as->fn_copy);
 	free(as);
 
-//	printf("process exec fin\n");
 	return tid;
 }
 
@@ -119,15 +93,11 @@ tid_t process_execute(const char *file_name) {
  running. */
 static void start_process(void *f_name) {
 	char *file_name = ((struct arg_success *) f_name)->fn_copy;
-//	char *file_name = f_name;
 	struct intr_frame if_;
 	bool success;
 
-//	printf("AAAAAAAAAAAAA%s\n", file_name);
 
 	thread_current()->user_thread = true;
-//	lock_init(&thread_current()->lock_child);
-//	lock_acquire(&thread_current()->lock_child);
 
 	/* Initialize interrupt frame and load executable. */
 	memset(&if_, 0, sizeof if_);
@@ -138,21 +108,15 @@ static void start_process(void *f_name) {
 
 	((struct arg_success *) f_name)->success = success;
 	sema_up(&((struct arg_success *) f_name)->loading);
-	////
-//	printf("success? [%d]\n", success);
 
 	/* If load failed, quit. */
-//	palloc_free_page(file_name);
+	palloc_free_page(file_name);
 	if (!success) {
 		struct thread *curr = thread_current();
 		curr->ps->exit_status = curr->exit_status = -1;
 		curr->is_exit = true;
 		thread_exit();
 	}
-
-	//TODO
-//	printf("THREAD_EXIT END\n");
-//	printf("load success\n");
 
 	/* Start the user process by simulating a return from an
 	 interrupt, implemented by intr_exit (in
@@ -163,7 +127,6 @@ static void start_process(void *f_name) {
 //	void **esp = if_.esp;
 //	printf("esp: [%p], *esp: [%p]\n", esp, *esp);
 	asm volatile ("movl %0, %%esp; jmp intr_exit" : : "g" (&if_) : "memory");
-//	printf("NOT_REACHED\n");
 	NOT_REACHED();
 }
 
