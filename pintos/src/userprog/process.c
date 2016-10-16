@@ -27,14 +27,11 @@ static char* parse_name(char *file_name, char **last, char *buffer);
 ////
 
 static char* parse_name(char *file_name, char **last, char *buffer) {
-//	printf("(parse_name) file_name: [%s]\n", file_name);
 	strlcpy(buffer, file_name, strlen(file_name) + 1);
-//	printf("(parse_name) buffer: [%s]\n", buffer);
 
 	char *token;
 
 	token = strtok_r(buffer, " ", last);
-//	printf("(parse_name) token: [%s], *last: [%s]\n", token, *last);
 	return token;
 }
 
