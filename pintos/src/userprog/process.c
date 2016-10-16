@@ -148,10 +148,7 @@ int process_wait(tid_t child_tid) {
 	struct process_status* child;
 
 	bool flag = false;
-//	int cnt = 0;
-//	int i=0;
 	for (e = list_begin(list_ps); e != list_end(list_ps); e = list_next(e)) {
-//		printf("PROCESSWAIT%d\n",i++);
 		child = list_entry(e, struct process_status, elem);
 		if (child->tid == child_tid) {
 			flag = true;
@@ -160,37 +157,19 @@ int process_wait(tid_t child_tid) {
 		}
 	}
 	if (flag) {
-//		lock_acquire(&child->lock_child);
-//		struct process_status *child_ps = child->ps;
-		while (!child->t->is_exit) {
+		while (!child->t->is_exit)
 			barrier();
-		}
-//		int status = child_ps->exit_status;
 		int status = child->exit_status;
-//		lock_release(&child->lock_child);
-		/*
-		 int i = 10000000;
-		 int j;
-		 for(j=i;j>0;j--)
-		 for(;i>0;i--)
-		 barrier();
-		 */
+		if(child->t != NULL)
+			child->t->ps = NULL;
+		free(child);
 		return status;
-	} else {
-//		printf("ASDFASDFASDF %d\n", child_tid);
-//		for (e = list_begin(list_ps); e != list_end(list_ps);
-//				e = list_next(e)) {
-//			child = list_entry(e, struct process_status, elem)->t;
-//			printf("ZZZZ %d %d\n", child->tid, child_tid);
-//		}
-		return -1;
 	}
+	return -1;
 }
 
 /* Free the current process's resources. */
 void process_exit(void) {
-	//TODO
-//	printf("start process exit\n");
 	int tid = thread_current()->tid;
 	enum intr_level old = intr_disable();
 
@@ -215,6 +194,13 @@ void process_exit(void) {
 
 	struct list_elem *e;
 
+	while(!list_empty(&curr->list_ps))
+	{
+		struct process_status* ps = list_entry(list_pop_front(&curr->list_ps), struct process_status, elem);
+		if(ps->t != NULL)
+			ps->t->ps = NULL;
+		free(ps);
+	}
 	//TODO wait until all children die
 	// for each child
 	// 		if the child is alive
@@ -228,10 +214,8 @@ void process_exit(void) {
 //	printf("LOCK RELEASE END\n");
 	printf("%s: exit(%d)\n", thread_current()->name, thread_current()->exit_status);
 
-	if (curr->f != NULL) {
-//		file_allow_write(curr->f);
+	if (curr->f != NULL)
 		file_close(curr->f);
-	}
 
 	intr_set_level(old);
 }

@@ -305,9 +305,7 @@ void thread_exit(void) {
 					ps->t->ps = NULL;
 				free(ps);
 			}
-//		list_pop_front(list_ps);
 		}
-//	t->ps = (struct process_status*) malloc(sizeof (struct process_status));
 #endif
 	thread_current()->status = THREAD_DYING;
 	schedule();
