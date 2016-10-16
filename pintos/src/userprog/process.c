@@ -64,8 +64,8 @@ tid_t process_execute(const char *file_name) {
 
 	char **last;
 	char *buffer;
-	last = (char **) malloc(100);
-	buffer = (char *) malloc(100);
+	last = (char **) malloc(strlen(file_name) + 2);
+	buffer = (char *) malloc(strlen(file_name) + 2);
 	char *fun_name = parse_name(as->fn_copy, last, buffer);
 
 	/* Create a new thread to execute FILE_NAME. */
@@ -449,8 +449,6 @@ void push_argument(int argc, char *last, void **esp) {
 //	printf("PUSH_ARGUMENT, argc: [%d], last: [%s], esp: [%p]\n", argc, last, esp);
 	int i;
 	size_t size;
-//	void *argv[argc];
-//	void *argv[128];
 	void **argv = malloc(128);
 	// push arguments
 	for (i = argc - 1; i >= 0; --i) {
