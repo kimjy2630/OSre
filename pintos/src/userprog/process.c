@@ -431,7 +431,7 @@ void push_argument(int argc, char *last, void **esp) {
 	int i;
 	size_t size;
 
-	void **argv = malloc(128);
+	void *argv[128];
 	// push arguments
 	for (i = argc - 1; i >= 0; --i) {
 		while (*last != '\0')
@@ -467,7 +467,7 @@ void push_argument(int argc, char *last, void **esp) {
 	i = 0;
 	push_stack(esp, &i, 4);
 
-	free(argv);
+//	free(argv);
 }
 
 static void push_stack(void **esp, void *data, size_t size) {
