@@ -217,7 +217,7 @@ void process_exit(void) {
 			if (ps->t != NULL)
 			{
 				if(!ps->t->is_exit)
-					wait(ps->tid);
+					process_wait(ps->tid);
 			}
 		}
 	}
