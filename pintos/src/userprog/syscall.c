@@ -294,7 +294,9 @@ static void close(int fd) {
 	if (pf == NULL)
 		return;
 
-	file_close(pf->file);
+	if (pf->file != NULL)
+		file_close(pf->file);
+	pf->file = NULL;
 	remove_process_file_from_fd(thread_current(), fd);
 }
 

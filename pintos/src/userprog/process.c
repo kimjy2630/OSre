@@ -206,8 +206,10 @@ void process_exit(void) {
 
 	printf("%s: exit(%d)\n", thread_current()->name, thread_current()->exit_status);
 
-	if (curr->f != NULL)
+	if (curr->f != NULL) {
 		file_close(curr->f);
+		curr->f = NULL;
+	}
 
 	struct list* list_ps = &curr->list_ps;
 	while (!list_empty(list_ps)) {
