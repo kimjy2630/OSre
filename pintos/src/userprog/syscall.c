@@ -3,12 +3,10 @@
 #include <syscall-nr.h>
 #include "threads/interrupt.h"
 #include "threads/thread.h"
-////
 #include "threads/init.h"
 #include "threads/vaddr.h"
 #include "lib/kernel/console.h"
 #include <string.h>
-////
 
 static void syscall_handler(struct intr_frame *);
 
@@ -19,9 +17,7 @@ void syscall_init(void) {
 static void*
 get_argument(void *ptr, int pos) {
 	if (!read_validity(((int*) ptr) + pos, 4)) {
-//		printf("invalid user pointer read\n");
-		thread_current()->exit_status = -1;
-		thread_exit();
+		exit(-1);
 		return NULL;
 	}
 	return ((int*) ptr) + pos;
@@ -43,14 +39,10 @@ syscall_handler (struct intr_frame *f UNUSED)
 	 printf ("system call!\n");
 	 thread_exit ();
 	 */
-////
-//  int syscall_num = *((int *) (f->esp));
+
 	void *ptr = (void *) f->esp;
-	if (!read_validity(ptr, 4)) {
-//		printf("invalid user pointer read\n");
-		thread_exit();
-	}
-//	printf("SYSNUM %d\n", *((int*) ptr));
+	if (!read_validity(ptr, 4))
+		exit(-1);
 	switch (*((int*) ptr)) {
 		case SYS_HALT:
 		halt();
@@ -110,53 +102,43 @@ syscall_handler (struct intr_frame *f UNUSED)
 		close(get_argument_int(ptr, 1));
 		break;
 	}
-//	printf("exit syscall handler\n");
-//  thread_exit();
-////
 }
 
-////
 static void halt(void) {
 	power_off();
 }
 
 static void exit(int status) {
-//	printf("SYS_EXIT %d\n", status);
 	struct thread *curr = thread_current();
-	curr->ps->exit_status = curr->exit_status = status;
+	curr->exit_status = status;
+	if (curr->ps != NULL)
+		curr->ps->exit_status = status;
 	curr->is_exit = true;
 	thread_exit();
 }
 
 static pid_t exec(const char *file) {
 	if (!read_validity(file, strlen(file) + 1)) {
-//		printf("invalid user pointer read\n");
-		thread_current()->exit_status = -1;
-		thread_exit();
+		exit(-1);
 		return -1;
 	}
 	return process_execute(file);
 }
 
 static int wait(pid_t pid) {
-	//TODO
 	return process_wait(pid);
 }
 
 static bool create(const char *file, unsigned initial_size) {
 	if (!read_validity(file, strlen(file) + 1)) {
-//		printf("invalid user pointer read\n");
-		thread_current()->exit_status = -1;
-		thread_exit();
+		exit(-1);
 		return false;
 	}
 	return filesys_create(file, initial_size);
 }
 static bool remove(const char *file) {
 	if (!read_validity(file, strlen(file) + 1)) {
-//		printf("invalid user pointer read\n");
-		thread_current()->exit_status = -1;
-		thread_exit();
+		exit(-1);
 		return false;
 	}
 
@@ -168,9 +150,7 @@ static bool remove(const char *file) {
 }
 static int open(const char *file) {
 	if (!read_validity(file, strlen(file) + 1)) {
-		//		printf("invalid user pointer read\n");
-		thread_current()->exit_status = -1;
-		thread_exit();
+		exit(-1);
 		return false;
 	}
 
@@ -194,9 +174,7 @@ static int filesize(int fd) {
 }
 static int read(int fd, void *buffer, unsigned length) {
 	if (!read_validity(buffer, length) || !write_validity(buffer, length)) {
-//		printf("invalid user pointer read\n");
-		thread_current()->exit_status = -1;
-		thread_exit();
+		exit(-1);
 		return -1;
 	}
 
@@ -238,17 +216,12 @@ static int read(int fd, void *buffer, unsigned length) {
 }
 static int write(int fd, const void *buffer, unsigned length) {
 	if (!read_validity(buffer, length)) {
-//		printf("invalid user pointer read\n");
-		thread_current()->exit_status = -1;
-		thread_exit();
+		exit(-1);
 		return -1;
 	}
 
 	if (fd == 1) { // write to console
-//		printf("WRITE FD 1\n");
-//		printf("buffer: [%s] [%p]\n", buffer);
 		putbuf(buffer, (size_t) length);
-//		printf("write return lenght: [%zu]\n", length);
 		return length;
 	}
 
@@ -334,4 +307,3 @@ static bool write_validity(const void* udst, int size) {
 	}
 	return true;
 }
-////
