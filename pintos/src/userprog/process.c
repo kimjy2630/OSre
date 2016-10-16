@@ -23,17 +23,6 @@ static bool load(const char *cmdline, void (**eip)(void), void **esp);
 /////
 static void push_stack(void **esp, void *data, size_t size);
 static void push_argument(int argc, char *last, void **esp);
-static char* parse_name(char *file_name, char **last, char *buffer);
-////
-
-static char* parse_name(char *file_name, char **last, char *buffer) {
-	strlcpy(buffer, file_name, strlen(file_name) + 1);
-
-	char *token;
-
-	token = strtok_r(buffer, " ", last);
-	return token;
-}
 
 /* Starts a new thread running a user program loaded from
  FILENAME.  The new thread may be scheduled (and may even exit)
@@ -79,13 +68,11 @@ tid_t process_execute(const char *file_name) {
 	 */
 
 	tid = thread_create(fun_name, PRI_DEFAULT, start_process, as);
-
+	free(last);
+	free(buffer);
 	sema_down(&as->loading);
 	if (!as->success)
 		tid = -1;
-
-	free(last);
-	free(buffer);
 //	if (tid == TID_ERROR)
 //	palloc_free_page(fn_copy);
 	palloc_free_page(as->fn_copy);
