@@ -217,10 +217,21 @@ void process_exit(void) {
 				struct process_status, elem);
 		if (ps != NULL) {
 			if (ps->t != NULL)
-			{
-				if(!ps->t->is_exit)
+				if (!ps->t->is_exit)
 					process_wait(ps->tid);
-			}
+			free(ps);
+		}
+	}
+
+	struct list* list_pf = &curr->list_pf;
+	while (!list_empty(list_pf)) {
+		struct process_file* pf = list_entry(list_pop_front(list_pf),
+				struct process_file, elem);
+		if (pf != NULL) {
+			if (pf->file != NULL)
+				file_close(pf->file);
+			pf->file = NULL;
+			free(pf);
 		}
 	}
 

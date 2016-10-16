@@ -293,23 +293,8 @@ void thread_exit(void) {
 		lock_release(lock);
 	}
 
-//	printf("THREAD_EXIT SCHEDULE\n");
-
-#ifdef USERPROG
-	struct list* list_ps = &thread_current()->list_ps;
-	while (!list_empty(list_ps)) {
-		struct process_status* ps =
-		list_entry(list_pop_front(list_ps), struct process_status, elem);
-		if(ps != NULL) {
-			if(ps->t != NULL)
-			ps->t->ps = NULL;
-			free(ps);
-		}
-	}
-#endif
 	thread_current()->status = THREAD_DYING;
 	schedule();
-//	printf("THREAD_EXIT NOT REACHED\n");
 	NOT_REACHED ();
 }
 
