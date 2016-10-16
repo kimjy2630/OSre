@@ -192,27 +192,6 @@ void process_exit(void) {
 		pagedir_destroy(pd);
 	}
 
-	struct list* list_ps = &thread_current()->list_ps;
-	while (!list_empty(list_ps)) {
-		struct process_status* ps = list_entry(list_pop_front(list_ps),
-				struct process_status, elem);
-		if (ps != NULL) {
-			if (ps->t != NULL)
-				ps->t->ps = NULL;
-			free(ps);
-		}
-	}
-	struct list* list_pf = &thread_current()->list_pf;
-	while (!list_empty(list_pf)) {
-		struct process_file* pf = list_entry(list_pop_front(list_pf),
-				struct process_file, elem);
-		if (pf != NULL) {
-			if (pf->file != NULL)
-				file_close(pf->file);
-			pf->file = NULL;
-			free(pf);
-		}
-	}
 	//TODO wait until all children die
 	// for each child
 	// 		if the child is alive
