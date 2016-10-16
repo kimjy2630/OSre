@@ -419,7 +419,7 @@ void push_argument(int argc, char *last, void **esp) {
 	int i;
 	size_t size;
 
-	void **argv = malloc(128);
+	void *argv[128];
 	// push arguments
 	for (i = argc - 1; i >= 0; --i) {
 		while (*last != '\0')
@@ -433,6 +433,8 @@ void push_argument(int argc, char *last, void **esp) {
 		size = strlen(last) + 1;
 		push_stack(esp, last, size);
 		argv[i] = *esp;
+
+//		printf("argv[%d] %s %p\n", i, last, argv[i]);
 	}
 	// word-align
 //	int align_size = (int)(*esp) % 4;
@@ -445,12 +447,15 @@ void push_argument(int argc, char *last, void **esp) {
 	// argv[i]
 	for (i = argc - 1; i >= 0; i--) {
 		push_stack(esp, &argv[i], 4);
+//		printf("argv[%d] %p %p\n", i, argv[i], *esp);
 	}
 	// argv, argc
 	void *argv_ptr;
 	argv_ptr = *esp;
 	push_stack(esp, &argv_ptr, 4);
+//	printf("argv %p %p\n", argv_ptr, *esp);
 	push_stack(esp, &argc, 4);
+//	printf("argc %d %p\n", argc, *esp);
 	// return address
 	i = 0;
 	push_stack(esp, &i, 4);
@@ -460,6 +465,7 @@ static void push_stack(void **esp, void *data, size_t size) {
 	*esp = *esp - size;
 	memcpy(*esp, data, size);
 }
+////
 
 /* load() helpers. */
 
@@ -615,6 +621,11 @@ int add_process_file(struct thread* t, struct file* file, const char* filename) 
 		return -1;
 	pf->fd = t->fd_cnt++;
 	pf->file = file;
+//	pf->filename = strdup(filename);
+//	if (pf->filename == NULL) {
+//		free(pf);
+//		return -1;
+//	}
 	list_push_back(list_pf, &pf->elem);
 	return pf->fd;
 }
@@ -624,5 +635,6 @@ void remove_process_file_from_fd(struct thread* t, int fd) {
 	if (pf == NULL)
 		return;
 	list_remove(&pf->elem);
+//	free(pf->filename);
 	free(pf);
 }

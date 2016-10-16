@@ -19,10 +19,8 @@ void syscall_init(void) {
 static void*
 get_argument(void *ptr, int pos) {
 	if (!read_validity(((int*) ptr) + pos, 4)) {
-		struct thread* curr = thread_current();
-		curr->exit_status = -1;
-		if(curr->ps != NULL)
-			curr->ps->exit_status = -1;
+//		printf("invalid user pointer read\n");
+		thread_current()->exit_status = -1;
 		thread_exit();
 		return NULL;
 	}
