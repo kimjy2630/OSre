@@ -20,7 +20,6 @@ struct process_file {
 struct arg_success {
 	char *fn_copy;
 	bool success;
-	struct file *f;
 	struct semaphore loading;
 };
 
