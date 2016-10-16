@@ -178,8 +178,6 @@ int process_wait(tid_t child_tid) {
 
 /* Free the current process's resources. */
 void process_exit(void) {
-	//TODO
-//	printf("start process exit\n");
 	int tid = thread_current()->tid;
 	enum intr_level old = intr_disable();
 
@@ -212,15 +210,11 @@ void process_exit(void) {
 	//			release lock_child of child
 	// release list of children
 
-//	lock_release(&curr->lock_child);
 	//TODO
-//	printf("LOCK RELEASE END\n");
 	printf("%s: exit(%d)\n", thread_current()->name, thread_current()->exit_status);
 
-	if (curr->f != NULL) {
-//		file_allow_write(curr->f);
+	if (curr->f != NULL)
 		file_close(curr->f);
-	}
 
 	intr_set_level(old);
 }
@@ -233,7 +227,6 @@ void process_activate(void) {
 	//TODO
 	int tid = t->tid;
 	enum intr_level old = intr_disable();
-//	printf("PROCESS_ACTIVATE %d\n", tid);
 	intr_set_level(old);
 
 	/* Activate thread's page tables. */
@@ -333,19 +326,15 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 	 */
 	////
 	//TODO
-//	printf("start parsing\n");
 	char *buffer;
 	buffer = (char *) malloc(100);
-//	printf("file_name = [%s]\n", file_name);
 	strlcpy(buffer, file_name, strlen(file_name) + 1);
-//	printf("after strlcpy\n");
 
 	char *token, *last;
 	int argc = 0;
 
 	token = strtok_r(buffer, " ", &last);
 	file = filesys_open(token);
-//	printf("filesys_open(%s)\n", token);
 	while (token != NULL) {
 		token = strtok_r(NULL, " ", &last);
 		argc++;
