@@ -113,7 +113,9 @@ static void start_process(void *f_name) {
 	palloc_free_page(file_name);
 	if (!success) {
 		struct thread *curr = thread_current();
-		curr->ps->exit_status = curr->exit_status = -1;
+		curr->exit_status = -1;
+		if(curr->ps != NULL)
+			curr->ps->exit_status = -1;
 		curr->is_exit = true;
 		thread_exit();
 	}
