@@ -110,7 +110,7 @@ static void start_process(void *f_name) {
 	sema_up(&((struct arg_success *) f_name)->loading);
 
 	/* If load failed, quit. */
-	palloc_free_page(file_name);
+//	palloc_free_page(file_name);
 	if (!success) {
 		struct thread *curr = thread_current();
 		curr->exit_status = -1;
