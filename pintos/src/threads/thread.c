@@ -178,8 +178,7 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 	t->ps->tid = t->tid;
 
 	list_push_back(&thread_current()->list_ps, &t->ps->elem);
-//	lock_init(t->lock_child);
-//	lock_acquire(t->lock_child);
+	t->parent = thread_current();
 	t->fd_cnt = 3;
 	#endif
 

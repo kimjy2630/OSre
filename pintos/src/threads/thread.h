@@ -102,7 +102,7 @@ struct thread
 #ifdef USERPROG
     /* Owned by userprog/process.c. */
     uint32_t *pagedir;                  /* Page directory. */
-    ////
+    struct thread* parent;
     bool user_thread;
     int exit_status;					/* Exit status */
     bool is_exit;						/* Check whether the thread run exit code */

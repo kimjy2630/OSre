@@ -162,8 +162,10 @@ int process_wait(tid_t child_tid) {
 			barrier();
 		}
 		int status = child->exit_status;
-		if (child->t != NULL)
+		if (child->t != NULL){
 			child->t->ps = NULL;
+			child->t->parent = NULL;
+		}
 		free(child);
 		return status;
 	}
@@ -211,14 +213,22 @@ void process_exit(void) {
 		curr->f = NULL;
 	}
 
+	if (curr->parent == NULL)
+		if (curr->ps != NULL) {
+			free(curr->ps);
+			curr->ps = NULL;
+		}
+
 	struct list* list_ps = &curr->list_ps;
 	while (!list_empty(list_ps)) {
 		struct process_status* ps = list_entry(list_pop_front(list_ps),
 				struct process_status, elem);
 		if (ps != NULL) {
-			if (ps->t != NULL)
+			if (ps->t != NULL) {
+				ps->t->parent = NULL;
 				if (!ps->t->is_exit)
 					process_wait(ps->tid);
+			}
 			free(ps);
 		}
 	}
