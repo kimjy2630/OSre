@@ -41,7 +41,7 @@ static char* parse_name(char *file_name, char **last, char *buffer) {
  thread id, or TID_ERROR if the thread cannot be created. */
 tid_t process_execute(const char *file_name) {
 	tid_t tid;
-	char *fn_copy;
+//	char *fn_copy;
 
 	struct arg_success *as = malloc(sizeof(struct arg_success));
 	if (as == NULL)
@@ -53,9 +53,9 @@ tid_t process_execute(const char *file_name) {
 	 Otherwise there's a race between the caller and load(). */
 
 	as->fn_copy = palloc_get_page(0);
-	fn_copy = palloc_get_page(0);
-	if (fn_copy == NULL)
-		return TID_ERROR;
+//	fn_copy = palloc_get_page(0);
+//	if (fn_copy == NULL)
+//		return TID_ERROR;
 	if(as->fn_copy==NULL)
 	{
 		free(as);
@@ -67,7 +67,8 @@ tid_t process_execute(const char *file_name) {
 	char *buffer;
 	last = (char **) malloc(100);
 	buffer = (char *) malloc(100);
-	char *fun_name = parse_name(as->fn_copy, last, buffer);
+	strlcpy(buffer, file_name, strlen(file_name) + 1);
+	char *fun_name = strtok_r(buffer, " ", last);
 
 	/* Create a new thread to execute FILE_NAME. */
 	/* original code
@@ -86,7 +87,7 @@ tid_t process_execute(const char *file_name) {
 	free(last);
 	free(buffer);
 //	if (tid == TID_ERROR)
-	palloc_free_page(fn_copy);
+//	palloc_free_page(fn_copy);
 	palloc_free_page(as->fn_copy);
 	free(as);
 
@@ -174,10 +175,9 @@ int process_wait(tid_t child_tid) {
 
 /* Free the current process's resources. */
 void process_exit(void) {
-	int tid = thread_current()->tid;
 	enum intr_level old = intr_disable();
-
 	struct thread *curr = thread_current();
+	int tid = curr->tid;
 	uint32_t *pd;
 
 	/* Destroy the current process's page directory and switch back
