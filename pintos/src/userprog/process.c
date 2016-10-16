@@ -624,10 +624,5 @@ void remove_process_file_from_fd(struct thread* t, int fd) {
 	if (pf == NULL)
 		return;
 	list_remove(&pf->elem);
-	if(pf->file != NULL)
-	{
-		file_close(pf->file);
-		pf->file = NULL;
-	}
 	free(pf);
 }
