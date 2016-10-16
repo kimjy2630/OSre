@@ -173,8 +173,6 @@ int process_wait(tid_t child_tid) {
 
 /* Free the current process's resources. */
 void process_exit(void) {
-	//TODO
-//	printf("start process exit\n");
 	int tid = thread_current()->tid;
 	enum intr_level old = intr_disable();
 
@@ -207,15 +205,10 @@ void process_exit(void) {
 	//			release lock_child of child
 	// release list of children
 
-//	lock_release(&curr->lock_child);
-	//TODO
-//	printf("LOCK RELEASE END\n");
 	printf("%s: exit(%d)\n", thread_current()->name, thread_current()->exit_status);
 
-	if (curr->f != NULL) {
-//		file_allow_write(curr->f);
+	if (curr->f != NULL)
 		file_close(curr->f);
-	}
 
 	intr_set_level(old);
 }
@@ -225,10 +218,8 @@ void process_exit(void) {
  This function is called on every context switch. */
 void process_activate(void) {
 	struct thread *t = thread_current();
-	//TODO
 	int tid = t->tid;
 	enum intr_level old = intr_disable();
-//	printf("PROCESS_ACTIVATE %d\n", tid);
 	intr_set_level(old);
 
 	/* Activate thread's page tables. */
@@ -326,33 +317,25 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 	/* original code
 	 file = filesys_open (file_name);
 	 */
-	////
-	//TODO
-//	printf("start parsing\n");
 	char *buffer;
 	buffer = (char *) malloc(100);
-//	printf("file_name = [%s]\n", file_name);
 	strlcpy(buffer, file_name, strlen(file_name) + 1);
-//	printf("after strlcpy\n");
 
 	char *token, *last;
 	int argc = 0;
 
 	token = strtok_r(buffer, " ", &last);
 	file = filesys_open(token);
-//	printf("filesys_open(%s)\n", token);
 	while (token != NULL) {
 		token = strtok_r(NULL, " ", &last);
 		argc++;
 	}
-	//TODO
-	////
+
 	if (file == NULL) {
 		printf("load: %s: open failed\n", file_name);
 		goto done;
 	}
 
-	//TODO
 	file_deny_write(file);
 	thread_current()->f = file;
 
@@ -416,12 +399,7 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 	if (!setup_stack(esp))
 		goto done;
 
-	////
-	//TODO
-//	printf("start put args in stack\n");
 	push_argument(argc, last, esp);
-//	printf("end put args in stack\n");
-	////
 
 	/* Start address. */
 	*eip = (void (*)(void)) ehdr.e_entry;
@@ -430,14 +408,6 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 
 	done:
 	/* We arrive here whether the load is successful or not. */
-//	if (file != NULL)
-//		file_close(file);
-	//TODO
-//	if(success)
-//		printf("LOAD SUCCESS\n");
-//	else
-//		printf("LOAD FAIL\n");
-	////
 	free(buffer);
 	return success;
 }
@@ -446,11 +416,10 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 ////
 
 void push_argument(int argc, char *last, void **esp) {
-//	printf("PUSH_ARGUMENT, argc: [%d], last: [%s], esp: [%p]\n", argc, last, esp);
 	int i;
 	size_t size;
-//	void *argv[argc];
-	void *argv[128];
+
+	void **argv = malloc(128);
 	// push arguments
 	for (i = argc - 1; i >= 0; --i) {
 		while (*last != '\0')
@@ -464,8 +433,6 @@ void push_argument(int argc, char *last, void **esp) {
 		size = strlen(last) + 1;
 		push_stack(esp, last, size);
 		argv[i] = *esp;
-
-//		printf("argv[%d] %s %p\n", i, last, argv[i]);
 	}
 	// word-align
 //	int align_size = (int)(*esp) % 4;
@@ -478,15 +445,12 @@ void push_argument(int argc, char *last, void **esp) {
 	// argv[i]
 	for (i = argc - 1; i >= 0; i--) {
 		push_stack(esp, &argv[i], 4);
-//		printf("argv[%d] %p %p\n", i, argv[i], *esp);
 	}
 	// argv, argc
 	void *argv_ptr;
 	argv_ptr = *esp;
 	push_stack(esp, &argv_ptr, 4);
-//	printf("argv %p %p\n", argv_ptr, *esp);
 	push_stack(esp, &argc, 4);
-//	printf("argc %d %p\n", argc, *esp);
 	// return address
 	i = 0;
 	push_stack(esp, &i, 4);
@@ -496,7 +460,6 @@ static void push_stack(void **esp, void *data, size_t size) {
 	*esp = *esp - size;
 	memcpy(*esp, data, size);
 }
-////
 
 /* load() helpers. */
 
@@ -652,11 +615,6 @@ int add_process_file(struct thread* t, struct file* file, const char* filename) 
 		return -1;
 	pf->fd = t->fd_cnt++;
 	pf->file = file;
-//	pf->filename = strdup(filename);
-//	if (pf->filename == NULL) {
-//		free(pf);
-//		return -1;
-//	}
 	list_push_back(list_pf, &pf->elem);
 	return pf->fd;
 }
@@ -666,6 +624,10 @@ void remove_process_file_from_fd(struct thread* t, int fd) {
 	if (pf == NULL)
 		return;
 	list_remove(&pf->elem);
-//	free(pf->filename);
+	if(pf->file != NULL)
+	{
+		file_close(pf->file);
+		pf->file = NULL;
+	}
 	free(pf);
 }
