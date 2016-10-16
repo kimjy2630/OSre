@@ -306,6 +306,16 @@ void thread_exit(void) {
 				free(ps);
 			}
 		}
+	struct list* list_pf = &thread_current()->list_pf;
+	while (!list_empty(list_pf)) {
+		struct process_file* pf =
+		list_entry(list_pop_front(list_pf), struct process_file, elem);
+		if(pf != NULL) {
+			if(pf->file != NULL)
+				ps->file = NULL;
+			free(pf);
+		}
+	}
 #endif
 	thread_current()->status = THREAD_DYING;
 	schedule();
