@@ -330,7 +330,7 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 	//TODO
 //	printf("start parsing\n");
 	char *buffer;
-	buffer = (char *) malloc(100);
+	buffer = (char *) malloc(strlen(file_name) + 2);
 //	printf("file_name = [%s]\n", file_name);
 	strlcpy(buffer, file_name, strlen(file_name) + 1);
 //	printf("after strlcpy\n");
