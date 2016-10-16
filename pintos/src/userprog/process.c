@@ -166,9 +166,8 @@ int process_wait(tid_t child_tid) {
 			child->t->ps = NULL;
 		free(child);
 		return status;
-	} else {
-		return -1;
 	}
+	return -1;
 }
 
 /* Free the current process's resources. */
@@ -209,6 +208,19 @@ void process_exit(void) {
 
 	if (curr->f != NULL)
 		file_close(curr->f);
+
+	struct list* list_ps = &curr->list_ps;
+	while (!list_empty(list_ps)) {
+		struct process_status* ps = list_entry(list_pop_front(list_ps),
+				struct process_status, elem);
+		if (ps != NULL) {
+			if (ps->t != NULL)
+			{
+				if(!ps->t->is_exit)
+					wait(ps->tid);
+			}
+		}
+	}
 
 	intr_set_level(old);
 }
