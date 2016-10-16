@@ -208,7 +208,8 @@ void process_exit(void) {
 				struct process_file, elem);
 		if (pf != NULL) {
 			if (pf->file != NULL)
-				ps->file = NULL;
+				file_close(pf->file);
+			pf->file = NULL;
 			free(pf);
 		}
 	}
