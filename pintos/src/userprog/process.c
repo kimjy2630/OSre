@@ -41,7 +41,7 @@ static char* parse_name(char *file_name, char **last, char *buffer) {
  thread id, or TID_ERROR if the thread cannot be created. */
 tid_t process_execute(const char *file_name) {
 	tid_t tid;
-	char *fn_copy;
+//	char *fn_copy;
 
 	struct arg_success *as = malloc(sizeof(struct arg_success));
 	if (as == NULL)
@@ -53,9 +53,9 @@ tid_t process_execute(const char *file_name) {
 	 Otherwise there's a race between the caller and load(). */
 
 	as->fn_copy = palloc_get_page(0);
-	fn_copy = palloc_get_page(0);
-	if (fn_copy == NULL)
-		return TID_ERROR;
+//	fn_copy = palloc_get_page(0);
+//	if (fn_copy == NULL)
+//		return TID_ERROR;
 	if(as->fn_copy==NULL)
 	{
 		free(as);
@@ -86,7 +86,7 @@ tid_t process_execute(const char *file_name) {
 	free(last);
 	free(buffer);
 //	if (tid == TID_ERROR)
-	palloc_free_page(fn_copy);
+//	palloc_free_page(fn_copy);
 	palloc_free_page(as->fn_copy);
 	free(as);
 
