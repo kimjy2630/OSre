@@ -67,7 +67,6 @@ tid_t process_execute(const char *file_name) {
 	buffer = (char *) malloc(100);
 	char *fun_name = parse_name(as->fn_copy, last, buffer);
 	////
-//	as->f = filesys_open(fun_name);
 
 	/* Create a new thread to execute FILE_NAME. */
 	/* original code
@@ -76,19 +75,19 @@ tid_t process_execute(const char *file_name) {
 	 palloc_free_page(fn_copy);
 	 return tid;
 	 */
-	////
+
 	tid = thread_create(fun_name, PRI_DEFAULT, start_process, as);
+
 	sema_down(&as->loading);
 	if (!as->success)
 		tid = -1;
-//	printf("BBBBBBBB%s\n", as->fn_copy);
+
 	free(last);
 	free(buffer);
 	if (tid == TID_ERROR)
 		palloc_free_page(as->fn_copy);
 	free(as);
 
-//	printf("process exec fin\n");
 	return tid;
 }
 
@@ -96,15 +95,11 @@ tid_t process_execute(const char *file_name) {
  running. */
 static void start_process(void *f_name) {
 	char *file_name = ((struct arg_success *) f_name)->fn_copy;
-//	char *file_name = f_name;
 	struct intr_frame if_;
 	bool success;
 
-//	printf("AAAAAAAAAAAAA%s\n", file_name);
 
 	thread_current()->user_thread = true;
-//	lock_init(&thread_current()->lock_child);
-//	lock_acquire(&thread_current()->lock_child);
 
 	/* Initialize interrupt frame and load executable. */
 	memset(&if_, 0, sizeof if_);
@@ -115,21 +110,18 @@ static void start_process(void *f_name) {
 
 	((struct arg_success *) f_name)->success = success;
 	sema_up(&((struct arg_success *) f_name)->loading);
-	////
-//	printf("success? [%d]\n", success);
 
 	/* If load failed, quit. */
 //	palloc_free_page(file_name);
 	if (!success) {
 		struct thread *curr = thread_current();
-		curr->ps->exit_status = curr->exit_status = -1;
+		curr->exit_status = -1;
+		if(curr->ps != NULL)
+			curr->ps->exit_status = -1;
 		curr->is_exit = true;
 		thread_exit();
 	}
 
-	//TODO
-//	printf("THREAD_EXIT END\n");
-//	printf("load success\n");
 
 	/* Start the user process by simulating a return from an
 	 interrupt, implemented by intr_exit (in
@@ -140,7 +132,6 @@ static void start_process(void *f_name) {
 //	void **esp = if_.esp;
 //	printf("esp: [%p], *esp: [%p]\n", esp, *esp);
 	asm volatile ("movl %0, %%esp; jmp intr_exit" : : "g" (&if_) : "memory");
-//	printf("NOT_REACHED\n");
 	NOT_REACHED();
 }
 
@@ -154,7 +145,6 @@ static void start_process(void *f_name) {
  This function will be implemented in problem 2-2.  For now, it
  does nothing. */
 int process_wait(tid_t child_tid) {
-//	printf("start process wait\n");
 	int i = 0;
 	struct list_elem *e;
 	struct thread *t = thread_current();
@@ -162,10 +152,8 @@ int process_wait(tid_t child_tid) {
 	struct process_status* child;
 
 	bool flag = false;
-//	int cnt = 0;
-//	int i=0;
+
 	for (e = list_begin(list_ps); e != list_end(list_ps); e = list_next(e)) {
-//		printf("PROCESSWAIT%d\n",i++);
 		child = list_entry(e, struct process_status, elem);
 		if (child->tid == child_tid) {
 			flag = true;
@@ -179,24 +167,11 @@ int process_wait(tid_t child_tid) {
 		while (!child->t->is_exit) {
 			barrier();
 		}
-//		int status = child_ps->exit_status;
 		int status = child->exit_status;
-//		lock_release(&child->lock_child);
-		/*
-		 int i = 10000000;
-		 int j;
-		 for(j=i;j>0;j--)
-		 for(;i>0;i--)
-		 barrier();
-		 */
+		if(child != NULL)
+			free(child);
 		return status;
 	} else {
-//		printf("ASDFASDFASDF %d\n", child_tid);
-//		for (e = list_begin(list_ps); e != list_end(list_ps);
-//				e = list_next(e)) {
-//			child = list_entry(e, struct process_status, elem)->t;
-//			printf("ZZZZ %d %d\n", child->tid, child_tid);
-//		}
 		return -1;
 	}
 }
