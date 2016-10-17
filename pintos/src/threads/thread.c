@@ -177,8 +177,10 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 	//TODO
 //	printf("malloc ps tid=%d name=%s\n", t->parent->tid, t->parent->name);
 	t->ps = (struct process_status*) malloc_print(PS);
+	memset(ps, 0, sizeof(struct process_status));
 	t->ps->t = t;
 	t->ps->tid = t->tid;
+	printf("malloc ps t=%p tid=%d name=%s\n", t->ps->t, t->ps->tid, t->ps->t->name);
 
 	list_push_back(&thread_current()->list_ps, &t->ps->elem);
 	t->fd_cnt = 3;

@@ -160,8 +160,8 @@ int process_wait(tid_t child_tid) {
 		}
 		int status = child->exit_status;
 		//TODO
-		printf("free ps case 1 tid=%d name=%s user=%d\n", child->t->tid,
-				child->t->name, child->t->user_thread);
+		printf("free ps case 1 t=%p tid=%d name=%s user=%d\n", child->t,
+				child->t->tid, child->t->name, child->t->user_thread);
 		if (child->t != NULL){
 			child->t->ps = NULL;
 			child->t->parent = NULL;
@@ -680,6 +680,7 @@ int add_process_file(struct thread* t, struct file* file, const char* filename) 
 	struct process_file *pf = malloc_print(PF);
 	if (pf == NULL)
 		return -1;
+	memset(pf, 0, sizeof(struct process_file));
 	pf->fd = t->fd_cnt++;
 	pf->file = file;
 	list_push_back(list_pf, &pf->elem);
