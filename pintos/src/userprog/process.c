@@ -25,9 +25,6 @@ static void push_stack(void **esp, void *data, size_t size);
 static void push_argument(int argc, char *last, void **esp);
 
 
-//TODO
-int cnt_malloc = 0;
-
 /* Starts a new thread running a user program loaded from
  FILENAME.  The new thread may be scheduled (and may even exit)
  before process_execute() returns.  Returns the new process's
@@ -682,6 +679,8 @@ void remove_process_file_from_fd(struct thread* t, int fd) {
 void*
 malloc_print(enum struct_num num_struct)
 {
+	static int cnt_malloc = 0;
+
 	void* ptr;
 	switch (num_struct) {
 	case AS:
