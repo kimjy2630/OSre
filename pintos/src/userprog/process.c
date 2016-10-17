@@ -221,7 +221,7 @@ void process_exit(void) {
 		}
 	} else {
 		printf("free ps case 3 tid=%d name=%s\n", curr->parent->tid, curr->parent->name);
-		printf("free nothing\n")
+		printf("free nothing\n");
 	}
 
 	struct list* list_ps = &curr->list_ps;
