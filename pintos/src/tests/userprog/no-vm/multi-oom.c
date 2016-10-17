@@ -109,7 +109,7 @@ main (int argc, char *argv[])
 
   n = argc > 1 ? atoi (argv[1]) : 0;
   bool is_at_root = (n == 0);
-  printf("n = [%d], argc = [%d], argv[0] = [%s], argv[1] = [%d]\n", n, argc, argv[0], argv[1]);
+  msg("n = [%d], argc = [%d], argv[0] = [%s], argv[1] = [%d]\n", n, argc, argv[0], argv[1]);
   if (is_at_root)
     msg ("begin");
 
