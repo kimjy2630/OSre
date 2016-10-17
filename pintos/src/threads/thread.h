@@ -99,13 +99,11 @@ struct thread
     struct lock* lock_waiting;			/* Lock that this thread is waiting for. */
     int priority_eff;					/* Effective priority. */
 
-    bool user_thread;
-
 #ifdef USERPROG
     /* Owned by userprog/process.c. */
     uint32_t *pagedir;                  /* Page directory. */
     struct thread* parent;
-
+    bool user_thread;
     int exit_status;					/* Exit status */
     bool is_exit;						/* Check whether the thread run exit code */
     struct lock lock_child;

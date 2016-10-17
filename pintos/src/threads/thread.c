@@ -504,8 +504,6 @@ static void init_thread(struct thread *t, const char *name, int priority) {
 	list_init(&t->list_lock);
 	t->lock_waiting = NULL;
 
-	t->user_thread = true;
-
 #ifdef USERPROG
 	t->user_thread = false;
 	t->is_exit = false;
