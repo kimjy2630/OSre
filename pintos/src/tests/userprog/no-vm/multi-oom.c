@@ -169,7 +169,8 @@ main (int argc, char *argv[])
   if (n == 0)
     {
       if (expected_depth < EXPECTED_DEPTH_TO_PASS)
-        fail ("should have forked at least %d times.", EXPECTED_DEPTH_TO_PASS);
+//        fail ("should have forked at least %d times.", EXPECTED_DEPTH_TO_PASS);
+    	  fail ("should have forked at least %d times. but %d times", EXPECTED_DEPTH_TO_PASS, expected_depth);
       msg ("success. program forked %d times.", howmany);
       msg ("end");
     }
