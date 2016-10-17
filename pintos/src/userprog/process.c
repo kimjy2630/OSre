@@ -213,17 +213,18 @@ void process_exit(void) {
 
 //	if (curr->parent == NULL) {
 	if (curr->parent != NULL) {
-//		if (!(curr->parent->user_thread)) {
-		if (curr->ps != NULL) {
-			struct process_status* ps = curr->ps;
-			list_remove(&ps->elem);
-			//TODO
-			printf("free ps case 3 tid=%d name=%s user=%d\n", curr->parent->tid,
-					curr->parent->name, curr->parent->user_thread);
+		if (!(curr->parent->user_thread)) {
+			if (curr->ps != NULL) {
+				struct process_status* ps = curr->ps;
+				list_remove(&ps->elem);
+				//TODO
+				printf("free ps case 3 tid=%d name=%s user=%d\n",
+						curr->parent->tid, curr->parent->name,
+						curr->parent->user_thread);
 //			free_print(curr->ps, PS);
 //			free(curr->ps);
-			curr->ps = NULL;
-//			}
+				curr->ps = NULL;
+			}
 		}
 //	} else {
 //		printf("free ps case 3 tid=%d name=%s user=%d\n", curr->parent->tid,
