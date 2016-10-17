@@ -176,6 +176,7 @@ int process_wait(tid_t child_tid) {
 //		printf("free ps case 1\n");
 		free_print(child, PS);
 //		free(child);
+		printf("END PROCESS_WAIT wait=%d tid=%d\n", child_tid, t->tid);
 		return status;
 	}
 	return -1;
@@ -278,6 +279,9 @@ void process_exit(void) {
 //			free(pf);
 		}
 	}
+
+	//TODO
+	printf("END PROCESS_EXIT tid=%d\n", curr->tid);
 
 	intr_set_level(old);
 }
