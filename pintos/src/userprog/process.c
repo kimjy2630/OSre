@@ -37,7 +37,7 @@ void argument_stack(char ** parse, int count, void ** esp);
 tid_t process_execute(const char *file_name) {
 	tid_t tid;
 //	char *fn_copy;
-	printf("command = [%s]\n", file_name);
+//	printf("command = [%s]\n", file_name);
 
 	//TODO
 	struct arg_success *as = malloc(sizeof(struct arg_success));
@@ -100,7 +100,7 @@ tid_t process_execute(const char *file_name) {
  running. */
 static void start_process(void *f_name) {
 	char *file_name = ((struct arg_success *) f_name)->fn_copy;
-	printf("start [%s]\n", file_name);
+//	printf("start [%s]\n", file_name);
 	struct intr_frame if_;
 	bool success;
 
