@@ -209,13 +209,16 @@ void process_exit(void) {
 		curr->f = NULL;
 	}
 
-	if (curr->parent == NULL)
+	if (curr->parent == NULL) {
 		if (curr->ps != NULL) {
 			//TODO
 			free_print(curr->ps, PS);
 //			free(curr->ps);
 			curr->ps = NULL;
 		}
+	} else {
+		printf("free case 3 tid=%d\n", curr->parent->tid);
+	}
 
 	struct list* list_ps = &curr->list_ps;
 	while (!list_empty(list_ps)) {
