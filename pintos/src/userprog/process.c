@@ -738,6 +738,7 @@ free_print(void* ptr, enum struct_num num_struct)
 	ASSERT(ptr != NULL);
 	switch (num_struct) {
 	case AS:
+		struct arg_success* as;
 		printf("free as %d\n", ((struct arg_success*) ptr)->num);
 		break;
 	case PS:
