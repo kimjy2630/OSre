@@ -164,7 +164,7 @@ int process_wait(tid_t child_tid) {
 			child->t->parent = NULL;
 		}
 		//TODO
-		free(child, PS);
+		free_print(child, PS);
 //		free(child);
 		return status;
 	}
