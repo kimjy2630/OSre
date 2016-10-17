@@ -212,7 +212,7 @@ void process_exit(void) {
 	}
 
 //	if (curr->parent == ) {
-	if(!curr->parent->user_thread)
+	if(!curr->parent->user_thread){
 		if (curr->ps != NULL) {
 			//TODO
 			printf("free ps case 3 tid=%d name=%s\n", curr->parent->tid, curr->parent->name);
