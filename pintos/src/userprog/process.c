@@ -183,6 +183,9 @@ void process_exit(void) {
 	enum intr_level old = intr_disable();
 	struct thread *curr = thread_current();
 	int tid = curr->tid;
+	//TODO
+	printf("PROCESS_EXIT tid=%d name=%s user=%d\n", curr->tid, curr->name,
+			curr->user_thread);
 	uint32_t *pd;
 
 	/* Destroy the current process's page directory and switch back
