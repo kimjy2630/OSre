@@ -10,11 +10,13 @@ int process_wait (tid_t);
 void process_exit (void);
 void process_activate (void);
 
+int cnt_malloc = 0;
+
 struct process_file {
 	struct list_elem elem;
 	int fd;
 	struct file *file;
-//	const char *filename;
+	int num;
 };
 
 struct arg_success {
@@ -22,6 +24,7 @@ struct arg_success {
 	bool success;
 	struct file *f;
 	struct semaphore loading;
+	int num;
 };
 
 struct process_status {
@@ -29,6 +32,7 @@ struct process_status {
 	tid_t tid;
 	struct thread* t;
 	int exit_status;
+	int num;
 };
 
 struct process_file*

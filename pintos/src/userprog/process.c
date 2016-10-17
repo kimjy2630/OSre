@@ -35,6 +35,9 @@ tid_t process_execute(const char *file_name) {
 	struct arg_success *as = malloc(sizeof(struct arg_success));
 	if (as == NULL)
 		return TID_ERROR;
+	//TODO
+	as->num = cnt_malloc++;
+	printf("malloc as %d\n", as->num);
 	memset (as, 0, sizeof (struct arg_success));
 	sema_init(&as->loading, 0);
 
@@ -47,6 +50,8 @@ tid_t process_execute(const char *file_name) {
 //		return TID_ERROR;
 	if(as->fn_copy==NULL)
 	{
+		//TODO
+		printf("free as %d\n", as->num);
 		free(as);
 		return TID_ERROR;
 	}
@@ -76,6 +81,8 @@ tid_t process_execute(const char *file_name) {
 //	if (tid == TID_ERROR)
 //	palloc_free_page(fn_copy);
 	palloc_free_page(as->fn_copy);
+	//TODO
+	printf("free as %d\n", as->num);
 	free(as);
 
 	return tid;
@@ -154,6 +161,8 @@ int process_wait(tid_t child_tid) {
 			child->t->ps = NULL;
 			child->t->parent = NULL;
 		}
+		//TODO
+		printf("free ps %d\n", child->num);
 		free(child);
 		return status;
 	}
@@ -202,6 +211,8 @@ void process_exit(void) {
 
 	if (curr->parent == NULL)
 		if (curr->ps != NULL) {
+			//TODO
+			printf("free ps %d\n", curr->ps->num);
 			free(curr->ps);
 			curr->ps = NULL;
 		}
@@ -216,6 +227,8 @@ void process_exit(void) {
 				if (!ps->t->is_exit)
 					process_wait(ps->tid);
 			}
+			//TODO
+			printf("free ps %d\n", ps->num);
 			free(ps);
 		}
 	}
@@ -228,6 +241,8 @@ void process_exit(void) {
 			if (pf->file != NULL)
 				file_close(pf->file);
 			pf->file = NULL;
+			//TODO
+			printf("free pf %d\n", pf->num);
 			free(pf);
 		}
 	}
@@ -642,6 +657,9 @@ int add_process_file(struct thread* t, struct file* file, const char* filename) 
 		return -1;
 	pf->fd = t->fd_cnt++;
 	pf->file = file;
+	//TODO
+	pf->num = cnt_malloc++;
+	printf("malloc pf %d\n", pf->num);
 	list_push_back(list_pf, &pf->elem);
 	return pf->fd;
 }
@@ -654,5 +672,7 @@ void remove_process_file_from_fd(struct thread* t, int fd) {
 	if (pf->file != NULL)
 		file_close(pf->file);
 	pf->file = NULL;
+	//TODO
+	printf("free pf %d\n", pf->num);
 	free(pf);
 }
