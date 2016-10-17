@@ -171,14 +171,16 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 	tid = t->tid = allocate_tid();
 
 	#ifdef USERPROG
+	t->parent = thread_current();
+
 //	t->ps = (struct process_status*) malloc(sizeof (struct process_status));
 	//TODO
+	printf("malloc ps tid=%d name=%s\n", t->parent->tid, t->parent->name);
 	t->ps = (struct process_status*) malloc_print(PS);
 	t->ps->t = t;
 	t->ps->tid = t->tid;
 
 	list_push_back(&thread_current()->list_ps, &t->ps->elem);
-	t->parent = thread_current();
 	t->fd_cnt = 3;
 	#endif
 

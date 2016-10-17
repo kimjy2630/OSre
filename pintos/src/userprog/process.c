@@ -51,6 +51,7 @@ tid_t process_execute(const char *file_name) {
 	if(as->fn_copy==NULL)
 	{
 		//TODO
+		printf("free as case 1\n");
 		free_print(as, AS);
 //		free(as);
 		return TID_ERROR;
@@ -82,6 +83,7 @@ tid_t process_execute(const char *file_name) {
 //	palloc_free_page(fn_copy);
 	palloc_free_page(as->fn_copy);
 	//TODO
+	printf("free as case 2\n");
 	free_print(as, AS);
 //	free(as);
 
@@ -212,12 +214,13 @@ void process_exit(void) {
 	if (curr->parent == NULL) {
 		if (curr->ps != NULL) {
 			//TODO
+			printf("free ps case 3\n");
 			free_print(curr->ps, PS);
 //			free(curr->ps);
 			curr->ps = NULL;
 		}
 	} else {
-		printf("free case 3 tid=%d name=%s\n", curr->parent->tid, curr->parent->name);
+		printf("free ps case 3 tid=%d name=%s\n", curr->parent->tid, curr->parent->name);
 	}
 
 	struct list* list_ps = &curr->list_ps;
@@ -231,6 +234,7 @@ void process_exit(void) {
 					process_wait(ps->tid);
 			}
 			//TODO
+			printf("free ps case 2\n");
 			free_print(ps, PS);
 //			free(ps);
 		}
@@ -245,6 +249,7 @@ void process_exit(void) {
 				file_close(pf->file);
 			pf->file = NULL;
 			//TODO
+			printf("free pf case 1\n");
 			free_print(pf, PF);
 //			free(pf);
 		}
@@ -675,6 +680,7 @@ void remove_process_file_from_fd(struct thread* t, int fd) {
 		file_close(pf->file);
 	pf->file = NULL;
 	//TODO
+	printf("free pf case 2\n");
 	free_print(pf, PF);
 //	free(pf);
 }
