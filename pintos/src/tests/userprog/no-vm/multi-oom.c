@@ -72,18 +72,23 @@ consume_some_resources_and_die (int seed)
   switch (random_ulong () % 5)
     {
       case 0:
+    	  msg(0);
         *(int *) NULL = 42;
 
       case 1:
+    	  msg(1);
         return *(int *) NULL;
 
       case 2:
+    	  msg(2);
         return *PHYS_BASE;
 
       case 3:
+    	  msg(3);
         *PHYS_BASE = 42;
 
       case 4:
+    	  msg(4);
         open ((char *)PHYS_BASE);
         exit (-1);
 
@@ -109,7 +114,7 @@ main (int argc, char *argv[])
 
   n = argc > 1 ? atoi (argv[1]) : 0;
   bool is_at_root = (n == 0);
-  msg("n = [%d], argc = [%d], argv[0] = [%s], argv[1] = [%s]\n", n, argc, argv[0], argv[1]);
+  msg("n = [%d], argc = [%d], argv[0] = [%s], argv[1] = [%s]", n, argc, argv[0], argv[1]);
   if (is_at_root)
     msg ("begin");
 
