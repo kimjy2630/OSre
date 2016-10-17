@@ -173,15 +173,15 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 	#ifdef USERPROG
 	t->parent = thread_current();
 
-//	t->ps = (struct process_status*) malloc(sizeof (struct process_status));
+	t->ps = (struct process_status*) malloc(sizeof (struct process_status));
 	//TODO
 //	printf("malloc ps tid=%d name=%s\n", t->parent->tid, t->parent->name);
-	t->ps = (struct process_status*) malloc_print(PS);
+//	t->ps = (struct process_status*) malloc_print(PS);
 	memset(t->ps, 0, sizeof(struct process_status));
 	t->ps->t = t;
 	t->ps->tid = t->tid;
-	printf("malloc ps num=%d p=%p t=%p tid=%d name=%s\n",t->ps->num,t->ps, t->ps->t, t->ps->tid, t->ps->t->name);
-	printf("malloc ps parent tid=%d name=%s user=%d\n", t->parent->tid, t->parent->name, t->parent->user_thread);
+//	printf("malloc ps num=%d p=%p t=%p tid=%d name=%s\n",t->ps->num,t->ps, t->ps->t, t->ps->tid, t->ps->t->name);
+//	printf("malloc ps parent tid=%d name=%s user=%d\n", t->parent->tid, t->parent->name, t->parent->user_thread);
 	list_push_back(&thread_current()->list_ps, &t->ps->elem);
 	t->fd_cnt = 3;
 	#endif

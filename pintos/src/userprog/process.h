@@ -10,14 +10,14 @@ int process_wait (tid_t);
 void process_exit (void);
 void process_activate (void);
 
-enum struct_num {
-	AS,
-	PS,
-	PF
-};
-
-void* malloc_print(enum struct_num num_struct);
-void free_print(void* ptr, enum struct_num num_struct);
+//enum struct_num {
+//	AS,
+//	PS,
+//	PF
+//};
+//
+//void* malloc_print(enum struct_num num_struct);
+//void free_print(void* ptr, enum struct_num num_struct);
 
 
 struct process_file {

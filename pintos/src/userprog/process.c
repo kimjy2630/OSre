@@ -26,7 +26,7 @@ static void push_argument(int argc, char *last, void **esp);
 
 
 //TODO
-int cnt_mal_free = 0;
+//int cnt_mal_free = 0;
 
 /* Starts a new thread running a user program loaded from
  FILENAME.  The new thread may be scheduled (and may even exit)
@@ -37,8 +37,8 @@ tid_t process_execute(const char *file_name) {
 //	char *fn_copy;
 
 	//TODO
-//	struct arg_success *as = malloc(sizeof(struct arg_success));
-	struct arg_success *as = malloc_print(AS);
+	struct arg_success *as = malloc(sizeof(struct arg_success));
+//	struct arg_success *as = malloc_print(AS);
 	if (as == NULL)
 		return TID_ERROR;
 	memset (as, 0, sizeof (struct arg_success));
@@ -55,8 +55,8 @@ tid_t process_execute(const char *file_name) {
 	{
 		//TODO
 //		printf("free as case 1\n");
-		free_print(as, AS);
-//		free(as);
+//		free_print(as, AS);
+		free(as);
 		return TID_ERROR;
 	}
 	strlcpy(as->fn_copy, file_name, PGSIZE);
@@ -87,8 +87,8 @@ tid_t process_execute(const char *file_name) {
 	palloc_free_page(as->fn_copy);
 	//TODO
 //	printf("free as case 2\n");
-	free_print(as, AS);
-//	free(as);
+//	free_print(as, AS);
+	free(as);
 
 	return tid;
 }
@@ -166,19 +166,19 @@ int process_wait(tid_t child_tid) {
 		}
 		int status = child->exit_status;
 		//TODO
-		printf("free ps case 1 num=%d t=%p tid=%d\n", child->num, child->t,
-				child->tid);
-		printf("free parent tid=%d name=%s user=%d\n", t->tid, t->name,
-				t->user_thread);
+//		printf("free ps case 1 num=%d t=%p tid=%d\n", child->num, child->t,
+//				child->tid);
+//		printf("free parent tid=%d name=%s user=%d\n", t->tid, t->name,
+//				t->user_thread);
 		if (child->t != NULL){
 			child->t->ps = NULL;
 			child->t->parent = NULL;
 		}
 		//TODO
 //		printf("free ps case 1\n");
-		free_print(child, PS);
-//		free(child);
-		printf("END PROCESS_WAIT wait=%d tid=%d\n", child_tid, t->tid);
+//		free_print(child, PS);
+		free(child);
+//		printf("END PROCESS_WAIT wait=%d tid=%d\n", child_tid, t->tid);
 		return status;
 	}
 	return -1;
@@ -190,8 +190,8 @@ void process_exit(void) {
 	struct thread *curr = thread_current();
 	int tid = curr->tid;
 	//TODO
-	printf("PROCESS_EXIT tid=%d name=%s user=%d\n", curr->tid, curr->name,
-			curr->user_thread);
+//	printf("PROCESS_EXIT tid=%d name=%s user=%d\n", curr->tid, curr->name,
+//			curr->user_thread);
 	uint32_t *pd;
 
 	/* Destroy the current process's page directory and switch back
@@ -261,9 +261,9 @@ void process_exit(void) {
 				ps->t->ps = NULL;
 			}
 			//TODO
-			printf("free ps case 2\n");
-			free_print(ps, PS);
-//			free(ps);
+//			printf("free ps case 2\n");
+//			free_print(ps, PS);
+			free(ps);
 		}
 	}
 
@@ -277,13 +277,13 @@ void process_exit(void) {
 			pf->file = NULL;
 			//TODO
 //			printf("free pf case 1\n");
-			free_print(pf, PF);
-//			free(pf);
+//			free_print(pf, PF);
+			free(pf);
 		}
 	}
 
 	//TODO
-	printf("END PROCESS_EXIT tid=%d\n", curr->tid);
+//	printf("END PROCESS_EXIT tid=%d\n", curr->tid);
 
 	intr_set_level(old);
 }
@@ -691,8 +691,8 @@ get_process_file_from_fd(struct thread* t, int fd) {
 int add_process_file(struct thread* t, struct file* file, const char* filename) {
 	struct list *list_pf = &t->list_pf;
 	//TODO
-//	struct process_file *pf = malloc(sizeof(struct process_file));
-	struct process_file *pf = malloc_print(PF);
+	struct process_file *pf = malloc(sizeof(struct process_file));
+//	struct process_file *pf = malloc_print(PF);
 	if (pf == NULL)
 		return -1;
 	memset(pf, 0, sizeof(struct process_file));
@@ -712,10 +712,11 @@ void remove_process_file_from_fd(struct thread* t, int fd) {
 	pf->file = NULL;
 	//TODO
 //	printf("free pf case 2\n");
-	free_print(pf, PF);
-//	free(pf);
+//	free_print(pf, PF);
+	free(pf);
 }
 
+/*
 void*
 malloc_print(enum struct_num num_struct)
 {
@@ -768,4 +769,4 @@ free_print(void* ptr, enum struct_num num_struct)
 	--cnt_mal_free;
 	printf("CNT=%d\n", cnt_mal_free);
 }
-
+*/
