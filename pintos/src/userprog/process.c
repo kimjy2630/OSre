@@ -159,12 +159,15 @@ int process_wait(tid_t child_tid) {
 			barrier();
 		}
 		int status = child->exit_status;
+		//TODO
+		printf("free ps case 1 tid=%d name=%s user=%d\n", child->t->tid,
+				child->t->name, child->t->user_thread);
 		if (child->t != NULL){
 			child->t->ps = NULL;
 			child->t->parent = NULL;
 		}
 		//TODO
-		printf("free ps case 1\n");
+//		printf("free ps case 1\n");
 		free_print(child, PS);
 //		free(child);
 		return status;
