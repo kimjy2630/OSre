@@ -805,7 +805,7 @@ void argument_stack(char ** parse, int count, void ** esp) {
 	int * variable_index = (int *) malloc(sizeof(int) * count);
 
 	for (token = strtok_r(fn_copy, " ", &save_ptr); token; token = strtok_r(NULL, " ", &save_ptr)) {
-		printf("'%s'\n", token);
+//		printf("'%s'\n", token);
 		variable_index[i++] = token - fn_copy;
 	}
 
