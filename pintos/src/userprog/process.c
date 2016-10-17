@@ -688,24 +688,25 @@ malloc_print(enum struct_num num_struct)
 		ptr = malloc(sizeof(struct arg_success));
 		if (ptr == NULL)
 			return NULL;
-		((struct arg_success*) ptr)->num = cnt_malloc++;
+		((struct arg_success*) ptr)->num = cnt_malloc;
 		printf("malloc as %d\n", ((struct arg_success*) ptr)->num);
 		break;
 	case PS:
 		ptr = malloc(sizeof(struct process_status));
 		if (ptr == NULL)
 			return NULL;
-		((struct process_status*) ptr)->num = cnt_malloc++;
+		((struct process_status*) ptr)->num = cnt_malloc;
 		printf("malloc ps %d\n", ((struct process_status*) ptr)->num);
 		break;
 	case PF:
 		ptr = malloc(sizeof(struct process_file));
 		if (ptr == NULL)
 			return NULL;
-		((struct process_file*) ptr)->num = cnt_malloc++;
+		((struct process_file*) ptr)->num = cnt_malloc;
 		printf("malloc pf %d\n", ((struct process_file*) ptr)->num);
 		break;
 	}
+	++cnt_malloc;
 	return ptr;
 }
 
