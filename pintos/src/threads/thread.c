@@ -178,7 +178,6 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 	t->ps = (struct process_status*) malloc_print(PS);
 	t->ps->t = t;
 	t->ps->tid = t->tid;
-	t->ps->num == cnt_malloc++;
 
 	list_push_back(&thread_current()->list_ps, &t->ps->elem);
 	t->parent = thread_current();
