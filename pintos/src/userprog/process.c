@@ -160,8 +160,9 @@ int process_wait(tid_t child_tid) {
 		}
 		int status = child->exit_status;
 		//TODO
-		printf("free ps case 1 t=%p tid=%d name=%s user=%d\n", child->t,
-				child->t->tid, child->t->name, child->t->user_thread);
+		printf("free ps case 1 num=%d t=%p tid=%d name=%s user=%d\n",
+				child->num, child->t, child->t->tid, child->t->name,
+				child->t->user_thread);
 		if (child->t != NULL){
 			child->t->ps = NULL;
 			child->t->parent = NULL;
@@ -223,8 +224,8 @@ void process_exit(void) {
 				if (ps->elem.prev != NULL && ps->elem.next != NULL)
 					list_remove(&ps->elem);
 				//TODO
-				printf("free ps case 3 tid=%d name=%s user=%d\n",
-						curr->parent->tid, curr->parent->name,
+				printf("free ps case 3 num=%d tid=%d name=%s user=%d\n",
+						ps->num, curr->parent->tid, curr->parent->name,
 						curr->parent->user_thread);
 //				free_print(curr->ps, PS);
 //			free(curr->ps);
