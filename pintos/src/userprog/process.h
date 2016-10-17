@@ -16,8 +16,8 @@ enum struct_num {
 	PF
 };
 
-static void* malloc_print(enum struct_num num_struct);
-static void free_print(void* ptr, enum struct_num num_struct);
+void* malloc_print(enum struct_num num_struct);
+void free_print(void* ptr, enum struct_num num_struct);
 
 
 struct process_file {

@@ -679,7 +679,7 @@ void remove_process_file_from_fd(struct thread* t, int fd) {
 //	free(pf);
 }
 
-static void*
+void*
 malloc_print(enum struct_num num_struct)
 {
 	void* ptr;
@@ -709,7 +709,7 @@ malloc_print(enum struct_num num_struct)
 	return ptr;
 }
 
-static void
+void
 free_print(void* ptr, enum struct_num num_struct)
 {
 	ASSERT(ptr != NULL);
