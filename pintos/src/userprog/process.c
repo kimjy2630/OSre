@@ -24,6 +24,10 @@ static bool load(const char *cmdline, void (**eip)(void), void **esp);
 static void push_stack(void **esp, void *data, size_t size);
 static void push_argument(int argc, char *last, void **esp);
 
+
+//TODO
+int cnt_malloc = 0;
+
 /* Starts a new thread running a user program loaded from
  FILENAME.  The new thread may be scheduled (and may even exit)
  before process_execute() returns.  Returns the new process's
@@ -32,12 +36,11 @@ tid_t process_execute(const char *file_name) {
 	tid_t tid;
 //	char *fn_copy;
 
-	struct arg_success *as = malloc(sizeof(struct arg_success));
+	//TODO
+//	struct arg_success *as = malloc(sizeof(struct arg_success));
+	struct arg_success *as = malloc_print(AS);
 	if (as == NULL)
 		return TID_ERROR;
-	//TODO
-	as->num = cnt_malloc++;
-	printf("malloc as %d\n", as->num);
 	memset (as, 0, sizeof (struct arg_success));
 	sema_init(&as->loading, 0);
 
@@ -51,8 +54,8 @@ tid_t process_execute(const char *file_name) {
 	if(as->fn_copy==NULL)
 	{
 		//TODO
-		printf("free as %d\n", as->num);
-		free(as);
+		free_print(as, AS);
+//		free(as);
 		return TID_ERROR;
 	}
 	strlcpy(as->fn_copy, file_name, PGSIZE);
@@ -82,8 +85,8 @@ tid_t process_execute(const char *file_name) {
 //	palloc_free_page(fn_copy);
 	palloc_free_page(as->fn_copy);
 	//TODO
-	printf("free as %d\n", as->num);
-	free(as);
+	free_print(as, AS);
+//	free(as);
 
 	return tid;
 }
@@ -162,8 +165,8 @@ int process_wait(tid_t child_tid) {
 			child->t->parent = NULL;
 		}
 		//TODO
-		printf("free ps %d\n", child->num);
-		free(child);
+		free(child, PS);
+//		free(child);
 		return status;
 	}
 	return -1;
@@ -212,8 +215,8 @@ void process_exit(void) {
 	if (curr->parent == NULL)
 		if (curr->ps != NULL) {
 			//TODO
-			printf("free ps %d\n", curr->ps->num);
-			free(curr->ps);
+			free_print(curr->ps, PS);
+//			free(curr->ps);
 			curr->ps = NULL;
 		}
 
@@ -228,8 +231,8 @@ void process_exit(void) {
 					process_wait(ps->tid);
 			}
 			//TODO
-			printf("free ps %d\n", ps->num);
-			free(ps);
+			free_print(ps, PS);
+//			free(ps);
 		}
 	}
 
@@ -242,8 +245,8 @@ void process_exit(void) {
 				file_close(pf->file);
 			pf->file = NULL;
 			//TODO
-			printf("free pf %d\n", pf->num);
-			free(pf);
+			free_print(pf, PF);
+//			free(pf);
 		}
 	}
 
@@ -652,14 +655,13 @@ get_process_file_from_fd(struct thread* t, int fd) {
 
 int add_process_file(struct thread* t, struct file* file, const char* filename) {
 	struct list *list_pf = &t->list_pf;
-	struct process_file *pf = malloc(sizeof(struct process_file));
+	//TODO
+//	struct process_file *pf = malloc(sizeof(struct process_file));
+	struct process_file *pf = malloc_print(PF);
 	if (pf == NULL)
 		return -1;
 	pf->fd = t->fd_cnt++;
 	pf->file = file;
-	//TODO
-	pf->num = cnt_malloc++;
-	printf("malloc pf %d\n", pf->num);
 	list_push_back(list_pf, &pf->elem);
 	return pf->fd;
 }
@@ -673,6 +675,55 @@ void remove_process_file_from_fd(struct thread* t, int fd) {
 		file_close(pf->file);
 	pf->file = NULL;
 	//TODO
-	printf("free pf %d\n", pf->num);
-	free(pf);
+	free_print(pf, PF);
+//	free(pf);
 }
+
+static void*
+malloc_print(enum struct_num num_struct)
+{
+	void* ptr;
+	switch (num_struct) {
+	case AS:
+		ptr = malloc(sizeof(struct arg_success));
+		if (ptr == NULL)
+			return NULL;
+		((struct arg_success*) ptr)->num = cnt_malloc++;
+		printf("malloc as %d\n", ((struct arg_success*) ptr)->num);
+		break;
+	case PS:
+		ptr = malloc(sizeof(struct process_status));
+		if (ptr == NULL)
+			return NULL;
+		((struct process_status*) ptr)->num = cnt_malloc++;
+		printf("malloc ps %d\n", ((struct process_status*) ptr)->num);
+		break;
+	case PF:
+		ptr = malloc(sizeof(struct process_file));
+		if (ptr == NULL)
+			return NULL;
+		((struct process_file*) ptr)->num = cnt_malloc++;
+		printf("malloc pf %d\n", ((struct process_file*) ptr)->num);
+		break;
+	}
+	return ptr;
+}
+
+static void
+free_print(void* ptr, enum struct_num num_struct)
+{
+	ASSERT(ptr != NULL);
+	switch (num_struct) {
+	case AS:
+		printf("free as %d\n", ((struct arg_success*) ptr)->num);
+		break;
+	case PS:
+		printf("free ps %d\n", ((struct process_status*) ptr)->num);
+		break;
+	case PF:
+		printf("free pf %d\n", ((struct process_file*) ptr)->num);
+		break;
+	}
+	free(ptr);
+}
+

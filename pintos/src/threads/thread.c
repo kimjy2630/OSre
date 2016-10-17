@@ -173,12 +173,12 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 	tid = t->tid = allocate_tid();
 
 	#ifdef USERPROG
-	t->ps = (struct process_status*) malloc(sizeof (struct process_status));
+//	t->ps = (struct process_status*) malloc(sizeof (struct process_status));
+	//TODO
+	t->ps = (struct process_status*) malloc_print(PS);
 	t->ps->t = t;
 	t->ps->tid = t->tid;
-	//TODO
 	t->ps->num == cnt_malloc++;
-	printf("malloc ps %d\n", t->ps->num);
 
 	list_push_back(&thread_current()->list_ps, &t->ps->elem);
 	t->parent = thread_current();
@@ -272,10 +272,8 @@ tid_t thread_tid(void) {
 /* Deschedules the current thread and destroys it.  Never
  returns to the caller. */
 void thread_exit(void) {
-	//TODO
 	int tid = thread_current()->tid;
 	enum intr_level old = intr_disable();
-//	printf("THREAD_EXIT %d\n", tid);
 	intr_set_level(old);
 
 	ASSERT(!intr_context());
@@ -364,16 +362,6 @@ void thread_set_eff_priority(struct thread* t, int new_priority) {
 }
 
 int thread_get_eff_priority(struct thread* t) {
-	//TODO
-//	if(t == NULL)
-//		printf("THREAD_GET_EFF_PRIORITY NULL\n");
-//	else
-//	{
-//		printf("THREAD MAGIC %u\n", t->magic);
-//		printf("ORIGINAL MAGIC %u\n", THREAD_MAGIC);
-//		printf("ASSERT RESULT: %b\n", t != NULL && t->magic == THREAD_MAGIC);
-//	}
-	//TODO
 	ASSERT(is_thread(t));
 
 	return t->priority_eff;
