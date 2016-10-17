@@ -214,13 +214,14 @@ void process_exit(void) {
 	if (curr->parent == NULL) {
 		if (curr->ps != NULL) {
 			//TODO
-			printf("free ps case 3\n");
+			printf("free ps case 3 tid=%d name=%s\n", curr->parent->tid, curr->parent->name);
 			free_print(curr->ps, PS);
 //			free(curr->ps);
 			curr->ps = NULL;
 		}
 	} else {
 		printf("free ps case 3 tid=%d name=%s\n", curr->parent->tid, curr->parent->name);
+		printf("free nothing\n")
 	}
 
 	struct list* list_ps = &curr->list_ps;
