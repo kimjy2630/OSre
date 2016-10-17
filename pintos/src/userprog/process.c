@@ -241,6 +241,7 @@ void process_exit(void) {
 				ps->t->parent = NULL;
 				if (!ps->t->is_exit)
 					process_wait(ps->tid);
+				ps->t->ps = NULL;
 			}
 			//TODO
 //			printf("free ps case 2\n");
