@@ -175,7 +175,7 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 
 //	t->ps = (struct process_status*) malloc(sizeof (struct process_status));
 	//TODO
-	printf("malloc ps tid=%d name=%s\n", t->parent->tid, t->parent->name);
+//	printf("malloc ps tid=%d name=%s\n", t->parent->tid, t->parent->name);
 	t->ps = (struct process_status*) malloc_print(PS);
 	t->ps->t = t;
 	t->ps->tid = t->tid;
