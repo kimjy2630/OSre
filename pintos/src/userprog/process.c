@@ -222,7 +222,7 @@ void process_exit(void) {
 				printf("free ps case 3 tid=%d name=%s user=%d\n",
 						curr->parent->tid, curr->parent->name,
 						curr->parent->user_thread);
-				free_print(curr->ps, PS);
+//				free_print(curr->ps, PS);
 //			free(curr->ps);
 				curr->ps = NULL;
 			}
