@@ -223,7 +223,7 @@ void process_exit(void) {
 		file_close(curr->f);
 		curr->f = NULL;
 	}
-
+/*
 //	if (curr->parent == NULL) {
 	if (curr->parent != NULL) {
 		if (!(curr->parent->user_thread)) {
@@ -245,7 +245,7 @@ void process_exit(void) {
 //				curr->parent->name, curr->parent->user_thread);
 //		printf("free nothing\n");
 	}
-
+*/
 	struct list* list_ps = &curr->list_ps;
 	while (!list_empty(list_ps)) {
 		struct process_status* ps = list_entry(list_pop_front(list_ps),
