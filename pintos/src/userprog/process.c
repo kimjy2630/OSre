@@ -100,6 +100,7 @@ tid_t process_execute(const char *file_name) {
  running. */
 static void start_process(void *f_name) {
 	char *file_name = ((struct arg_success *) f_name)->fn_copy;
+	printf("start [%s]\n", file_name);
 	struct intr_frame if_;
 	bool success;
 
