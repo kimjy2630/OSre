@@ -25,6 +25,9 @@ static void push_stack(void **esp, void *data, size_t size);
 static void push_argument(int argc, char *last, void **esp);
 
 
+//TODO
+int cnt_mal_free = 0;
+
 /* Starts a new thread running a user program loaded from
  FILENAME.  The new thread may be scheduled (and may even exit)
  before process_execute() returns.  Returns the new process's
@@ -740,6 +743,8 @@ malloc_print(enum struct_num num_struct)
 		break;
 	}
 	++cnt_malloc;
+	++cnt_mal_free;
+	printf("CNT=%d\n", cnt_mal_free);
 	return ptr;
 }
 
@@ -760,5 +765,7 @@ free_print(void* ptr, enum struct_num num_struct)
 		break;
 	}
 	free(ptr);
+	--cnt_mal_free;
+	printf("CNT=%d\n", cnt_mal_free);
 }
 
