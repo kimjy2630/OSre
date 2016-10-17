@@ -164,6 +164,7 @@ int process_wait(tid_t child_tid) {
 			child->t->parent = NULL;
 		}
 		//TODO
+		printf("free ps case 1\n");
 		free_print(child, PS);
 //		free(child);
 		return status;
@@ -245,7 +246,7 @@ void process_exit(void) {
 				ps->t->ps = NULL;
 			}
 			//TODO
-//			printf("free ps case 2\n");
+			printf("free ps case 2\n");
 			free_print(ps, PS);
 //			free(ps);
 		}
