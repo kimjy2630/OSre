@@ -163,6 +163,8 @@ int process_wait(tid_t child_tid) {
 		printf("free ps case 1 num=%d t=%p tid=%d name=%s user=%d\n",
 				child->num, child->t, child->tid, child->t->name,
 				child->t->user_thread);
+		printf("free parent tid=%d name=%s user=%d\n", t->tid, t->name,
+				t->user_thread);
 		if (child->t != NULL){
 			child->t->ps = NULL;
 			child->t->parent = NULL;
