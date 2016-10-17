@@ -145,8 +145,8 @@ int process_wait(tid_t child_tid) {
 	struct list *list_ps = &t->list_ps;
 	struct process_status* child;
 
-	printf("PROCESS_WAIT tid=%d name=%s user=%d\n", t->tid, t->name,
-			t->user_thread);
+	printf("PROCESS_WAIT wait=%d tid=%d name=%s user=%d\n", child_tid, t->tid,
+			t->name, t->user_thread);
 
 	bool flag = false;
 	for (e = list_begin(list_ps); e != list_end(list_ps); e = list_next(e)) {
