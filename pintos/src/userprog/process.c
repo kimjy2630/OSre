@@ -115,8 +115,6 @@ int process_wait(tid_t child_tid) {
 	struct list *list_ps = &t->list_ps;
 	struct process_status* child;
 
-	enum intr_level old_level;
-
 	bool flag = false;
 	for (e = list_begin(list_ps); e != list_end(list_ps); e = list_next(e)) {
 		child = list_entry(e, struct process_status, elem);
@@ -129,10 +127,7 @@ int process_wait(tid_t child_tid) {
 	if (flag) {
 
 		while (child->t->user_thread && !child->t->is_exit) {
-//			barrier();
-			old_level = intr_disable();
-			thread_block();
-//			intr_set_level(old_level);
+			barrier();
 		}
 		int status = child->exit_status;
 		//TODO
