@@ -132,7 +132,7 @@ int process_wait(tid_t child_tid) {
 //			barrier();
 			old_level = intr_disable();
 			thread_block();
-			intr_set_level(old_level);
+//			intr_set_level(old_level);
 		}
 		int status = child->exit_status;
 		//TODO
