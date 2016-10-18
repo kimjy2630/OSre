@@ -64,12 +64,12 @@ tid_t process_execute(const char *file_name) {
 	}
 	strlcpy(as->fn_copy, file_name, PGSIZE);
 
-	char **last;
-	char *buffer;
-	last = (char **) malloc(100);
-	buffer = (char *) malloc(100);
-	strlcpy(buffer, file_name, strlen(file_name) + 1);
-	char *fun_name = strtok_r(buffer, " ", last);
+//	char **last;
+//	char *buffer;
+//	last = (char **) malloc(100);
+//	buffer = (char *) malloc(100);
+//	strlcpy(buffer, file_name, strlen(file_name) + 1);
+//	char *fun_name = strtok_r(buffer, " ", last);
 
 	/* Create a new thread to execute FILE_NAME. */
 	/* original code
@@ -79,9 +79,9 @@ tid_t process_execute(const char *file_name) {
 	 return tid;
 	 */
 
-	tid = thread_create(fun_name, PRI_DEFAULT, start_process, as);
-	free(last);
-	free(buffer);
+	tid = thread_create(file_name, PRI_DEFAULT, start_process, as);
+//	free(last);
+//	free(buffer);
 	sema_down(&as->loading);
 	if (!as->success)
 		tid = -1;
@@ -845,6 +845,7 @@ bool argument_stack(char ** parse, int count, void ** esp) {
 	*esp -= 4;
 	*(int*) (*esp) = 0;
 
+	palloc_free_page(fn_copy);
 	free(variable_index);
 	return true;
 }
