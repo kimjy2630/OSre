@@ -21,7 +21,6 @@
 static thread_func start_process NO_RETURN;
 static bool load(const char *cmdline, void (**eip)(void), void **esp);
 /////
-int get_argc(const char* file_name);
 bool push_argument(char ** file, int argc, void ** esp);
 
 
@@ -388,7 +387,6 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 	if (!setup_stack(esp))
 		goto done;
 
-//	int count = get_argc(file_name);
 	bool arg_stack = push_argument(&file_name, argc, esp);
 
 	/* Start address. */
@@ -629,19 +627,6 @@ free_print(void* ptr, enum struct_num num_struct)
 	printf("CNT=%d\n", cnt_mal_free);
 }
 */
-
-int get_argc(const char* file_name) {
-	char *fn_copy = (char *) malloc(sizeof(char) * (strlen(file_name) + 1));
-	strlcpy(fn_copy, file_name, strlen(file_name) + 1);
-
-	char *token, *last;
-	int argc = 0;
-	for (token = strtok_r(fn_copy, " ", &last); token; token = strtok_r(NULL, " ", &last)) {
-		argc++;
-	}
-	free(fn_copy);
-	return argc;
-}
 
 bool push_argument(char ** file, int argc, void ** esp) {
 
