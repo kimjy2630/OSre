@@ -127,10 +127,12 @@ int process_wait(tid_t child_tid) {
 		}
 	}
 	if (flag) {
-		old_level = intr_disable();
+
 		while (child->t->user_thread && !child->t->is_exit) {
 //			barrier();
+			old_level = intr_disable();
 			thread_block();
+			intr_set_level(old_level);
 		}
 		int status = child->exit_status;
 		//TODO
@@ -140,7 +142,7 @@ int process_wait(tid_t child_tid) {
 		}
 		//TODO
 		free(child);
-		intr_set_level(old_level);
+
 		return status;
 	}
 	return -1;
