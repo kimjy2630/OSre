@@ -22,7 +22,7 @@ static thread_func start_process NO_RETURN;
 static bool load(const char *cmdline, void (**eip)(void), void **esp);
 /////
 int get_argument_count(const char* string);
-bool argument_stack(char ** parse, int count, void ** esp);
+bool argument_stack(char ** file, int count, void ** esp);
 
 
 
@@ -641,60 +641,59 @@ int get_argument_count(const char* string) {
 	free(new_string);
 	return i;
 }
-bool argument_stack(char ** parse, int count, void ** esp) {
-	/* parse = sentence including 'process and arguments'
-	 count = argc(argument counts) through 'GetArgumentCount' func.
-	 esp = &if_.esp */
 
-	char * command_line = *parse; // like 'echo x y z'
+bool argument_stack(char ** file, int count, void ** esp) {
 
-	char * fn_copy;
-	fn_copy = palloc_get_page(PAL_USER);
+	char *fn_copy = palloc_get_page(PAL_USER);
 	if (fn_copy == NULL)
 		return false;
-	strlcpy(fn_copy, command_line, PGSIZE);
 
-	char * token, *save_ptr;
+	strlcpy(fn_copy, *file, PGSIZE);
+
+	char *token, *last;
 	int i = 0;
-	int * variable_index = (int *) malloc(sizeof(int) * count);
+	int *index = (int *) malloc((sizeof (int)) * count);
 
-	for (token = strtok_r(fn_copy, " ", &save_ptr); token; token = strtok_r(NULL, " ", &save_ptr)) {
-		variable_index[i++] = token - fn_copy;
+	for (token = strtok_r(fn_copy, " ", &last); token != NULL; token =
+			strtok_r(NULL, " ", &last)) {
+		index[i++] = token - fn_copy;
 	}
 
-	int size = strlen((char*) (*parse));
+	int size = strlen((char*) (*file));
 
 	*esp -= size + 1;
-	int command_position = (int) *esp; // stack pointer position for command line
+	int command_position = (int) *esp;
 
 	for (i = 0; i <= size; i++) {
-		*(char*) (*esp) = fn_copy[i];
+		*((char*) (*esp)) = fn_copy[i];
 		*esp += 1;
 	}
-	*esp = (int) command_position;
+	*esp = command_position;
 
-	*esp -= ((int) (*esp) % 4 < 0 ? (int) (*esp) % 4 + 4 : (int) (*esp) % 4);
+	while (((int) (*esp)) % 4)
+		*esp -= 1;
+//	*esp -= ((int) (*esp) % 4 < 0 ? (int) (*esp) % 4 + 4 : (int) (*esp) % 4);
 	*esp -= 4;
-	*(int*) (*esp) = 0;
+	*((int*) (*esp)) = 0;
 
-// argv[1,2,3,...]: arguments
+
 	for (i = count - 1; i >= 0; i--) {
 		*esp -= 4;
-		*(void**) (*esp) = command_position + variable_index[i];
+		*((void**) (*esp)) = command_position + index[i];
 	}
 
-// argv[0]: process_name
+
 	*esp -= 4;
-	*(char **) (*esp) = (*esp + 4);
-// argc: argument count
+	*((char **) (*esp)) = (*esp + 4);
+
 	*esp -= 4;
-	*(int *) (*esp) = count;
-// return address - fake (0)
+	*((int *) (*esp)) = count;
+
 	*esp -= 4;
-	*(int*) (*esp) = 0;
+	*((int*) (*esp)) = 0;
 
 	palloc_free_page(fn_copy);
-	free(variable_index);
+	free(index);
 	return true;
 }
 
