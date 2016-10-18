@@ -104,11 +104,11 @@ syscall_handler (struct intr_frame *f UNUSED)
 	}
 }
 
-static void halt(void) {
+void halt(void) {
 	power_off();
 }
 
-static void exit(int status) {
+void exit(int status) {
 	struct thread *curr = thread_current();
 	curr->exit_status = status;
 	if (curr->ps != NULL)
@@ -117,7 +117,7 @@ static void exit(int status) {
 	thread_exit();
 }
 
-static pid_t exec(const char *file) {
+pid_t exec(const char *file) {
 	if (!read_validity(file, strlen(file) + 1)) {
 		exit(-1);
 		return -1;
@@ -125,18 +125,18 @@ static pid_t exec(const char *file) {
 	return process_execute(file);
 }
 
-static int wait(pid_t pid) {
+int wait(pid_t pid) {
 	return process_wait(pid);
 }
 
-static bool create(const char *file, unsigned initial_size) {
+bool create(const char *file, unsigned initial_size) {
 	if (!read_validity(file, strlen(file) + 1)) {
 		exit(-1);
 		return false;
 	}
 	return filesys_create(file, initial_size);
 }
-static bool remove(const char *file) {
+bool remove(const char *file) {
 	if (!read_validity(file, strlen(file) + 1)) {
 		exit(-1);
 		return false;
@@ -148,7 +148,7 @@ static bool remove(const char *file) {
 	file_close(f);
 	return filesys_remove(file);
 }
-static int open(const char *file) {
+int open(const char *file) {
 	if (!read_validity(file, strlen(file) + 1)) {
 		exit(-1);
 		return false;
@@ -164,7 +164,7 @@ static int open(const char *file) {
 
 	return fd;
 }
-static int filesize(int fd) {
+int filesize(int fd) {
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if (pf == NULL)
 		return -1;
@@ -172,7 +172,7 @@ static int filesize(int fd) {
 	int len = file_length(pf->file);
 	return len;
 }
-static int read(int fd, void *buffer, unsigned length) {
+int read(int fd, void *buffer, unsigned length) {
 	if (!read_validity(buffer, length) || !write_validity(buffer, length)) {
 		exit(-1);
 		return -1;
@@ -214,7 +214,7 @@ static int read(int fd, void *buffer, unsigned length) {
 	free(tmp_buf);
 	return cnt;
 }
-static int write(int fd, const void *buffer, unsigned length) {
+int write(int fd, const void *buffer, unsigned length) {
 	if (!read_validity(buffer, length)) {
 		exit(-1);
 		return -1;
@@ -250,19 +250,19 @@ static int write(int fd, const void *buffer, unsigned length) {
 	free(tmp_buf);
 	return cnt;
 }
-static void seek(int fd, unsigned position) {
+void seek(int fd, unsigned position) {
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if (pf == NULL)
 		return;
 	file_seek(pf->file, position);
 }
-static unsigned tell(int fd) {
+unsigned tell(int fd) {
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if (pf == NULL)
 		return -1;
 	return file_tell(pf->file);
 }
-static void close(int fd) {
+void close(int fd) {
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if (pf == NULL)
 		return;
@@ -273,20 +273,20 @@ static void close(int fd) {
 	remove_process_file_from_fd(thread_current(), fd);
 }
 
-static int get_user(const uint8_t *uaddr) {
+int get_user(const uint8_t *uaddr) {
 	int result;
 	asm ("movl $1f, %0; movzbl %1, %0; 1:"
 			: "=&a" (result) : "m" (*uaddr));
 	return result;
 }
-static bool put_user(uint8_t *udst, uint8_t byte) {
+bool put_user(uint8_t *udst, uint8_t byte) {
 	int error_code;
 	asm ("movl $1f, %0; movb %b2, %1; 1:"
 			: "=&a" (error_code), "=m" (*udst) : "q" (byte));
 	return error_code != -1;
 }
 
-static bool read_validity(const void *uaddr, int size) {
+bool read_validity(const void *uaddr, int size) {
 	int i;
 	if (((uint8_t *) uaddr) + size > PHYS_BASE)
 		return false;
@@ -297,7 +297,7 @@ static bool read_validity(const void *uaddr, int size) {
 	return true;
 }
 
-static bool write_validity(const void* udst, int size) {
+bool write_validity(const void* udst, int size) {
 	if (((uint8_t*) udst) + size > PHYS_BASE)
 		return false;
 	int i;

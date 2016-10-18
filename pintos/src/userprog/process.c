@@ -24,7 +24,7 @@ static bool load(const char *cmdline, void (**eip)(void), void **esp);
 static void push_stack(void **esp, void *data, size_t size);
 static void push_argument(int argc, char *last, void **esp);
 int get_argument_count(const char* string);
-void argument_stack(char ** parse, int count, void ** esp);
+bool argument_stack(char ** parse, int count, void ** esp);
 
 
 //TODO
@@ -118,10 +118,11 @@ static void start_process(void *f_name) {
 
 	/* If load failed, quit. */
 	if (!success) {
-		struct thread *curr = thread_current();
-		curr->ps->exit_status = curr->exit_status = -1;
-		curr->is_exit = true;
-		thread_exit();
+//		struct thread *curr = thread_current();
+//		curr->ps->exit_status = curr->exit_status = -1;
+//		curr->is_exit = true;
+//		thread_exit();
+		exit(-1);
 	}
 
 	/* Start the user process by simulating a return from an
@@ -480,7 +481,7 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 
 //	push_argument(argc, last, esp);
 	int count = get_argument_count(file_name);
-	argument_stack(&file_name, count, esp);
+	bool arg_stack = argument_stack(&file_name, count, esp);
 
 	/* Start address. */
 	*eip = (void (*)(void)) ehdr.e_entry;
@@ -490,6 +491,8 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 	done:
 	/* We arrive here whether the load is successful or not. */
 	free(buffer);
+	if(!arg_stack)
+		success = false;
 	return success;
 }
 
@@ -789,7 +792,7 @@ int get_argument_count(const char* string) {
 	free(new_string);
 	return i;
 }
-void argument_stack(char ** parse, int count, void ** esp) {
+bool argument_stack(char ** parse, int count, void ** esp) {
 	/* parse = sentence including 'process and arguments'
 	 count = argc(argument counts) through 'GetArgumentCount' func.
 	 esp = &if_.esp */
@@ -799,7 +802,7 @@ void argument_stack(char ** parse, int count, void ** esp) {
 	char * fn_copy;
 	fn_copy = palloc_get_page(PAL_USER);
 	if (fn_copy == NULL)
-		thread_exit();
+		return false;
 	strlcpy(fn_copy, command_line, PGSIZE);
 
 	char * token, *save_ptr;
@@ -843,5 +846,6 @@ void argument_stack(char ** parse, int count, void ** esp) {
 	*(int*) (*esp) = 0;
 
 	free(variable_index);
+	return true;
 }
 
