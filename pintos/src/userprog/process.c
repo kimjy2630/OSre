@@ -21,8 +21,8 @@
 static thread_func start_process NO_RETURN;
 static bool load(const char *cmdline, void (**eip)(void), void **esp);
 /////
-int get_argument_count(const char* string);
-bool argument_stack(char ** file, int count, void ** esp);
+int get_argc(const char* file_name);
+bool push_argument(char ** file, int argc, void ** esp);
 
 
 
@@ -387,8 +387,8 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 	if (!setup_stack(esp))
 		goto done;
 
-	int count = get_argument_count(file_name);
-	bool arg_stack = argument_stack(&file_name, count, esp);
+//	int count = get_argc(file_name);
+	bool arg_stack = push_argument(&file_name, argc, esp);
 
 	/* Start address. */
 	*eip = (void (*)(void)) ehdr.e_entry;
@@ -629,20 +629,20 @@ free_print(void* ptr, enum struct_num num_struct)
 }
 */
 
-int get_argument_count(const char* string) {
-	char * new_string = (char *) malloc(sizeof(char) * (strlen(string) + 1));
-	strlcpy(new_string, string, strlen(string) + 1);
+int get_argc(const char* file_name) {
+	char *fn_copy = (char *) malloc(sizeof(char) * (strlen(file_name) + 1));
+	strlcpy(fn_copy, file_name, strlen(file_name) + 1);
 
-	char *token, *save_ptr;
-	int i = 0;
-	for (token = strtok_r(new_string, " ", &save_ptr); token; token = strtok_r(NULL, " ", &save_ptr)) {
-		i++;
+	char *token, *last;
+	int argc = 0;
+	for (token = strtok_r(fn_copy, " ", &last); token; token = strtok_r(NULL, " ", &last)) {
+		argc++;
 	}
-	free(new_string);
-	return i;
+	free(fn_copy);
+	return argc;
 }
 
-bool argument_stack(char ** file, int count, void ** esp) {
+bool push_argument(char ** file, int argc, void ** esp) {
 
 	char *fn_copy = palloc_get_page(PAL_USER);
 	if (fn_copy == NULL)
@@ -652,7 +652,7 @@ bool argument_stack(char ** file, int count, void ** esp) {
 
 	char *token, *last;
 	int i = 0;
-	int *index = (int *) malloc((sizeof (int)) * count);
+	int *index = (int *) malloc((sizeof (int)) *argc);
 
 	for (token = strtok_r(fn_copy, " ", &last); token != NULL; token =
 			strtok_r(NULL, " ", &last)) {
@@ -662,24 +662,23 @@ bool argument_stack(char ** file, int count, void ** esp) {
 	int size = strlen((char*) (*file));
 
 	*esp -= size + 1;
-	int command_position = (int) *esp;
+	int pos = (int) *esp;
 
 	for (i = 0; i <= size; i++) {
 		*((char*) (*esp)) = fn_copy[i];
 		*esp += 1;
 	}
-	*esp = command_position;
+	*esp = pos;
 
 	while (((int) (*esp)) % 4)
 		*esp -= 1;
-//	*esp -= ((int) (*esp) % 4 < 0 ? (int) (*esp) % 4 + 4 : (int) (*esp) % 4);
 	*esp -= 4;
 	*((int*) (*esp)) = 0;
 
 
-	for (i = count - 1; i >= 0; i--) {
+	for (i = argc - 1; i >= 0; i--) {
 		*esp -= 4;
-		*((void**) (*esp)) = command_position + index[i];
+		*((void**) (*esp)) = pos + index[i];
 	}
 
 
@@ -687,7 +686,7 @@ bool argument_stack(char ** file, int count, void ** esp) {
 	*((char **) (*esp)) = (*esp + 4);
 
 	*esp -= 4;
-	*((int *) (*esp)) = count;
+	*((int *) (*esp)) = argc;
 
 	*esp -= 4;
 	*((int*) (*esp)) = 0;
