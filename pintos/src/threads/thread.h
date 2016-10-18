@@ -113,7 +113,6 @@ struct thread
     struct list list_ps;
 
     struct file* f;
-    ////
 #endif
 
     /* Owned by thread.c. */

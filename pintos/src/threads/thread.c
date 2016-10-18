@@ -167,7 +167,6 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 		return TID_ERROR;
 
 	/* Initialize thread. */
-	////
 	char *last;
 	char *buffer;
 	buffer = (char *) malloc(100);
@@ -175,22 +174,16 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 	char *fun_name = strtok_r(buffer, " ", &last);
 	init_thread(t, fun_name, priority);
 	free(buffer);
-	////
-//	init_thread(t, name, priority);
+
 	tid = t->tid = allocate_tid();
 
 	#ifdef USERPROG
 	t->parent = thread_current();
 
 	t->ps = (struct process_status*) malloc(sizeof (struct process_status));
-	//TODO
-//	printf("malloc ps tid=%d name=%s\n", t->parent->tid, t->parent->name);
-//	t->ps = (struct process_status*) malloc_print(PS);
 	memset(t->ps, 0, sizeof(struct process_status));
 	t->ps->t = t;
 	t->ps->tid = t->tid;
-//	printf("malloc ps num=%d p=%p t=%p tid=%d name=%s\n",t->ps->num,t->ps, t->ps->t, t->ps->tid, t->ps->t->name);
-//	printf("malloc ps parent tid=%d name=%s user=%d\n", t->parent->tid, t->parent->name, t->parent->user_thread);
 	list_push_back(&thread_current()->list_ps, &t->ps->elem);
 	t->fd_cnt = 3;
 	#endif

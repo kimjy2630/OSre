@@ -24,7 +24,7 @@ struct process_file {
 	struct list_elem elem;
 	int fd;
 	struct file *file;
-	int num;
+//	int num;
 };
 
 struct arg_success {
@@ -32,7 +32,7 @@ struct arg_success {
 	bool success;
 	struct file *f;
 	struct semaphore loading;
-	int num;
+//	int num;
 };
 
 struct process_status {
@@ -40,7 +40,7 @@ struct process_status {
 	tid_t tid;
 	struct thread* t;
 	int exit_status;
-	int num;
+//	int num;
 };
 
 struct process_file*

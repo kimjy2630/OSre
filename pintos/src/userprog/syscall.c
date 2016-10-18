@@ -34,12 +34,6 @@ static int get_argument_ptr(void *ptr, int pos) {
 static void
 syscall_handler (struct intr_frame *f UNUSED)
 {
-//	printf("SYSCALL_HANDLER\n");
-	/* original code
-	 printf ("system call!\n");
-	 thread_exit ();
-	 */
-
 	void *ptr = (void *) f->esp;
 	if (!read_validity(ptr, 4))
 		exit(-1);
@@ -48,57 +42,41 @@ syscall_handler (struct intr_frame *f UNUSED)
 		halt();
 		break;
 		case SYS_EXIT:
-		// int type arg
 		exit(get_argument_int(ptr, 1));
 		break;
 		case SYS_EXEC:
-		// char* type arg
 		f->eax = exec(get_argument_ptr(ptr, 1));
 		break;
 		case SYS_WAIT:
-		// pid_t type arg
 		f->eax = wait(get_argument_int(ptr, 1));
 		break;
 		case SYS_CREATE:
-		// char*, unsigned type arg
 		f->eax = create(get_argument_ptr(ptr, 1), get_argument_int(ptr, 2));
 		break;
 		case SYS_REMOVE:
-		// char* type arg
 		f->eax = remove(get_argument_ptr(ptr, 1));
 		break;
 		case SYS_OPEN:
-		// char* type arg
 		f->eax = open(get_argument_ptr(ptr, 1));
 		break;
 		case SYS_FILESIZE:
-		// int type arg
 		f->eax = filesize(get_argument_int(ptr, 1));
 		break;
 		case SYS_READ:
-		// int, void*, unsigned type arg
 		f->eax = read(get_argument_int(ptr, 1), get_argument_ptr(ptr, 2),
 				get_argument_int(ptr, 3));
 		break;
 		case SYS_WRITE:
-		// int, void*, unsigned type arg
-//		printf("SYSWRITE %d_%p_%s_%u\n", get_argument_int(ptr, 1),
-//				get_argument_ptr(ptr, 2), get_argument_ptr(ptr, 2),
-//				get_argument_int(ptr, 3));
 		f->eax = write(get_argument_int(ptr, 1), get_argument_ptr(ptr, 2),
 				get_argument_int(ptr, 3));
-//		printf("\n\nSYSWRITE RET %d\n", f->eax);
 		break;
 		case SYS_SEEK:
-// int, unsigned type arg
 		seek(get_argument_int(ptr, 1), get_argument_int(ptr, 2));
 		break;
 		case SYS_TELL:
-		// unsigned type arg
 		f->eax = tell(get_argument_int(ptr, 1));
 		break;
 		case SYS_CLOSE:
-		// unsigned type arg
 		close(get_argument_int(ptr, 1));
 		break;
 	}

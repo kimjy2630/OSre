@@ -21,14 +21,10 @@
 static thread_func start_process NO_RETURN;
 static bool load(const char *cmdline, void (**eip)(void), void **esp);
 /////
-static void push_stack(void **esp, void *data, size_t size);
-static void push_argument(int argc, char *last, void **esp);
 int get_argument_count(const char* string);
 bool argument_stack(char ** parse, int count, void ** esp);
 
 
-//TODO
-//int cnt_mal_free = 0;
 
 /* Starts a new thread running a user program loaded from
  FILENAME.  The new thread may be scheduled (and may even exit)
@@ -36,12 +32,9 @@ bool argument_stack(char ** parse, int count, void ** esp);
  thread id, or TID_ERROR if the thread cannot be created. */
 tid_t process_execute(const char *file_name) {
 	tid_t tid;
-//	char *fn_copy;
-//	printf("command = [%s]\n", file_name);
 
 	//TODO
 	struct arg_success *as = malloc(sizeof(struct arg_success));
-//	struct arg_success *as = malloc_print(AS);
 	if (as == NULL)
 		return TID_ERROR;
 	memset (as, 0, sizeof (struct arg_success));
@@ -51,46 +44,22 @@ tid_t process_execute(const char *file_name) {
 	 Otherwise there's a race between the caller and load(). */
 
 	as->fn_copy = palloc_get_page(0);
-//	fn_copy = palloc_get_page(0);
-//	if (fn_copy == NULL)
-//		return TID_ERROR;
 	if(as->fn_copy==NULL)
 	{
-		//TODO
-//		printf("free as case 1\n");
-//		free_print(as, AS);
 		free(as);
 		return TID_ERROR;
 	}
 	strlcpy(as->fn_copy, file_name, PGSIZE);
 
-//	char **last;
-//	char *buffer;
-//	last = (char **) malloc(100);
-//	buffer = (char *) malloc(100);
-//	strlcpy(buffer, file_name, strlen(file_name) + 1);
-//	char *fun_name = strtok_r(buffer, " ", last);
 
 	/* Create a new thread to execute FILE_NAME. */
-	/* original code
-	 tid = thread_create(fn_copy, PRI_DEFAULT, start_process, fn_copy);
-	 if (tid == TID_ERROR)
-	 palloc_free_page(fn_copy);
-	 return tid;
-	 */
 
 	tid = thread_create(file_name, PRI_DEFAULT, start_process, as);
-//	free(last);
-//	free(buffer);
 	sema_down(&as->loading);
 	if (!as->success)
 		tid = -1;
-//	if (tid == TID_ERROR)
-//	palloc_free_page(fn_copy);
 	palloc_free_page(as->fn_copy);
 	//TODO
-//	printf("free as case 2\n");
-//	free_print(as, AS);
 	free(as);
 
 	return tid;
@@ -100,7 +69,6 @@ tid_t process_execute(const char *file_name) {
  running. */
 static void start_process(void *f_name) {
 	char *file_name = ((struct arg_success *) f_name)->fn_copy;
-//	printf("start [%s]\n", file_name);
 	struct intr_frame if_;
 	bool success;
 
@@ -118,10 +86,6 @@ static void start_process(void *f_name) {
 
 	/* If load failed, quit. */
 	if (!success) {
-//		struct thread *curr = thread_current();
-//		curr->ps->exit_status = curr->exit_status = -1;
-//		curr->is_exit = true;
-//		thread_exit();
 		exit(-1);
 	}
 
@@ -131,8 +95,6 @@ static void start_process(void *f_name) {
 	 arguments on the stack in the form of a `struct intr_frame',
 	 we just point the stack pointer (%esp) to our stack frame
 	 and jump to it. */
-//	void **esp = if_.esp;
-//	printf("esp: [%p], *esp: [%p]\n", esp, *esp);
 	asm volatile ("movl %0, %%esp; jmp intr_exit" : : "g" (&if_) : "memory");
 	NOT_REACHED();
 }
@@ -153,9 +115,6 @@ int process_wait(tid_t child_tid) {
 	struct list *list_ps = &t->list_ps;
 	struct process_status* child;
 
-//	printf("PROCESS_WAIT wait=%d tid=%d name=%s user=%d\n", child_tid, t->tid,
-//			t->name, t->user_thread);
-
 	bool flag = false;
 	for (e = list_begin(list_ps); e != list_end(list_ps); e = list_next(e)) {
 		child = list_entry(e, struct process_status, elem);
@@ -167,24 +126,17 @@ int process_wait(tid_t child_tid) {
 	}
 	if (flag) {
 		while (child->t->user_thread && !child->t->is_exit) {
-//			barrier();
-			thread_block();
+			barrier();
+//			thread_block();
 		}
 		int status = child->exit_status;
 		//TODO
-//		printf("free ps case 1 num=%d t=%p tid=%d\n", child->num, child->t,
-//				child->tid);
-//		printf("free parent tid=%d name=%s user=%d\n", t->tid, t->name,
-//				t->user_thread);
 		if (child->t != NULL){
 			child->t->ps = NULL;
 			child->t->parent = NULL;
 		}
 		//TODO
-//		printf("free ps case 1\n");
-//		free_print(child, PS);
 		free(child);
-//		printf("END PROCESS_WAIT wait=%d tid=%d\n", child_tid, t->tid);
 		return status;
 	}
 	return -1;
@@ -195,9 +147,6 @@ void process_exit(void) {
 	enum intr_level old = intr_disable();
 	struct thread *curr = thread_current();
 	int tid = curr->tid;
-	//TODO
-//	printf("PROCESS_EXIT tid=%d name=%s user=%d\n", curr->tid, curr->name,
-//			curr->user_thread);
 	uint32_t *pd;
 
 	/* Destroy the current process's page directory and switch back
@@ -216,45 +165,12 @@ void process_exit(void) {
 		pagedir_destroy(pd);
 	}
 
-	struct list_elem *e;
-
-	//TODO wait until all children die
-	// for each child
-	// 		if the child is alive
-	// 			wait the child: acquire lock_child of child
-	//			release
-	//			release lock_child of child
-	// release list of children
-
 	printf("%s: exit(%d)\n", thread_current()->name, thread_current()->exit_status);
 
 	if (curr->f != NULL) {
 		file_close(curr->f);
 		curr->f = NULL;
 	}
-/*
-//	if (curr->parent == NULL) {
-	if (curr->parent != NULL) {
-		if (!(curr->parent->user_thread)) {
-			if (curr->ps != NULL) {
-				struct process_status* ps = curr->ps;
-				if (ps->elem.prev != NULL && ps->elem.next != NULL)
-					list_remove(&ps->elem);
-				//TODO
-				printf("free ps case 3 num=%d tid=%d name=%s user=%d\n",
-						ps->num, curr->parent->tid, curr->parent->name,
-						curr->parent->user_thread);
-//				free_print(curr->ps, PS);
-//			free(curr->ps);
-				curr->ps = NULL;
-			}
-		}
-//	} else {
-//		printf("free ps case 3 tid=%d name=%s user=%d\n", curr->parent->tid,
-//				curr->parent->name, curr->parent->user_thread);
-//		printf("free nothing\n");
-	}
-*/
 	struct list* list_ps = &curr->list_ps;
 	while (!list_empty(list_ps)) {
 		struct process_status* ps = list_entry(list_pop_front(list_ps),
@@ -266,9 +182,6 @@ void process_exit(void) {
 					process_wait(ps->tid);
 				ps->t->ps = NULL;
 			}
-			//TODO
-//			printf("free ps case 2\n");
-//			free_print(ps, PS);
 			free(ps);
 		}
 	}
@@ -281,15 +194,9 @@ void process_exit(void) {
 			if (pf->file != NULL)
 				file_close(pf->file);
 			pf->file = NULL;
-			//TODO
-//			printf("free pf case 1\n");
-//			free_print(pf, PF);
 			free(pf);
 		}
 	}
-
-	//TODO
-//	printf("END PROCESS_EXIT tid=%d\n", curr->tid);
 
 	intr_set_level(old);
 }
@@ -480,7 +387,6 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 	if (!setup_stack(esp))
 		goto done;
 
-//	push_argument(argc, last, esp);
 	int count = get_argument_count(file_name);
 	bool arg_stack = argument_stack(&file_name, count, esp);
 
@@ -497,59 +403,6 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 	return success;
 }
 
-
-////
-
-void push_argument(int argc, char *last, void **esp) {
-	int i;
-	size_t size;
-
-//	void *argv[128];
-//	void **argv = malloc(128);
-	void **argv = palloc_get_page(0);
-	// push arguments
-	for (i = argc - 1; i >= 0; --i) {
-		while (*last != '\0')
-			--last;
-		last--;
-		while (*last != '\0')
-			--last;
-		++last;
-		while (*last == ' ')
-			++last;
-		size = strlen(last) + 1;
-		push_stack(esp, last, size);
-		argv[i] = *esp;
-	}
-	// word-align
-//	int align_size = (int)(*esp) % 4;
-	i = 0;
-	while ((*((unsigned int*) esp)) % 4)
-		push_stack(esp, &i, 1);
-
-	// null pointer argv[argc]
-	push_stack(esp, &i, 4);
-	// argv[i]
-	for (i = argc - 1; i >= 0; i--) {
-		push_stack(esp, &argv[i], 4);
-	}
-	// argv, argc
-	void *argv_ptr;
-	argv_ptr = *esp;
-	push_stack(esp, &argv_ptr, 4);
-	push_stack(esp, &argc, 4);
-	// return address
-	i = 0;
-	push_stack(esp, &i, 4);
-
-//	free(argv);
-	palloc_free_page(argv);
-}
-
-static void push_stack(void **esp, void *data, size_t size) {
-	*esp = *esp - size;
-	memcpy(*esp, data, size);
-}
 
 /* load() helpers. */
 
@@ -700,9 +553,7 @@ get_process_file_from_fd(struct thread* t, int fd) {
 
 int add_process_file(struct thread* t, struct file* file, const char* filename) {
 	struct list *list_pf = &t->list_pf;
-	//TODO
 	struct process_file *pf = malloc(sizeof(struct process_file));
-//	struct process_file *pf = malloc_print(PF);
 	if (pf == NULL)
 		return -1;
 	memset(pf, 0, sizeof(struct process_file));
@@ -720,9 +571,6 @@ void remove_process_file_from_fd(struct thread* t, int fd) {
 	if (pf->file != NULL)
 		file_close(pf->file);
 	pf->file = NULL;
-	//TODO
-//	printf("free pf case 2\n");
-//	free_print(pf, PF);
 	free(pf);
 }
 
@@ -811,7 +659,6 @@ bool argument_stack(char ** parse, int count, void ** esp) {
 	int * variable_index = (int *) malloc(sizeof(int) * count);
 
 	for (token = strtok_r(fn_copy, " ", &save_ptr); token; token = strtok_r(NULL, " ", &save_ptr)) {
-//		printf("'%s'\n", token);
 		variable_index[i++] = token - fn_copy;
 	}
 
