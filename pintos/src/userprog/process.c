@@ -42,7 +42,10 @@ tid_t process_execute(const char *file_name) {
 	/* Make a copy of FILE_NAME.
 	 Otherwise there's a race between the caller and load(). */
 
-	as->fn_copy = palloc_get_page(0);
+
+	// TODO
+//	as->fn_copy = palloc_get_page(0);
+	as->fn_copy = malloc(100);
 	if(as->fn_copy==NULL)
 	{
 		free(as);
@@ -57,7 +60,9 @@ tid_t process_execute(const char *file_name) {
 	sema_down(&as->loading);
 	if (!as->success)
 		tid = -1;
-	palloc_free_page(as->fn_copy);
+
+//	palloc_free_page(as->fn_copy);
+	free(as->fn_copy);
 	//TODO
 	free(as);
 
@@ -630,7 +635,8 @@ free_print(void* ptr, enum struct_num num_struct)
 
 bool push_argument(char ** file, int argc, void ** esp) {
 
-	char *fn_copy = palloc_get_page(PAL_USER);
+//	char *fn_copy = palloc_get_page(PAL_USER);
+	char *fn_copy = malloc(100);
 	if (fn_copy == NULL)
 		return false;
 
@@ -677,7 +683,8 @@ bool push_argument(char ** file, int argc, void ** esp) {
 	*esp -= 4;
 	*((int*) (*esp)) = 0;
 
-	palloc_free_page(fn_copy);
+//	palloc_free_page(fn_copy);
+	as(fn_copy);
 	free(index);
 	return true;
 }
