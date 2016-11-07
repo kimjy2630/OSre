@@ -684,7 +684,7 @@ bool push_argument(char ** file, int argc, void ** esp) {
 	*((int*) (*esp)) = 0;
 
 //	palloc_free_page(fn_copy);
-	as(fn_copy);
+	free(fn_copy);
 	free(index);
 	return true;
 }
