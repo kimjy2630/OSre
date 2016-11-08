@@ -129,12 +129,15 @@ int process_wait(tid_t child_tid) {
 		}
 	}
 	if (flag) {
-
+		//TODO
+		enum intr_level old_level = intr_disable();
 		while (child->t->user_thread && !child->t->is_exit) {
 			//TODO
 //			barrier();
 			thread_block();
 		}
+		//TODO
+		intr_set_level(old_level);
 		int status = child->exit_status;
 		//TODO
 		if (child->t != NULL){
