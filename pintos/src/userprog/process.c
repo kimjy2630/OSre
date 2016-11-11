@@ -550,9 +550,12 @@ static bool setup_stack(void **esp) {
 #endif
 	if (kpage != NULL) {
 		success = install_page(((uint8_t *) PHYS_BASE) - PGSIZE, kpage, true);
-		if (success)
+		if (success) {
 			*esp = PHYS_BASE;
-		else {
+#ifdef VM
+			struct supp_page_entry *spe = supp_page_add(((uint8_t *) PHYS_BASE) - PGSIZE, writable, false);
+#endif
+		} else {
 			palloc_free_page(kpage);
 #ifdef VM
 			free(fe);
