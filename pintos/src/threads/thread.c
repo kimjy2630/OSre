@@ -521,6 +521,7 @@ static void init_thread(struct thread *t, const char *name, int priority) {
 
 #ifdef VM
 	hash_init(&t->supp_page_table, hash_addr, hash_less_addr, NULL);
+	lock_init(&t->lock_hash);
 #endif
 }
 

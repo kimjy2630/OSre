@@ -10,7 +10,7 @@ struct supp_page_entry{
 };
 
 //void supp_page_init();
-struct supp_page_entry* supp_page_add();
+struct supp_page_entry* supp_page_add(uint8_t* addr);
 //void supp_page_get();
 bool supp_page_remove();
 

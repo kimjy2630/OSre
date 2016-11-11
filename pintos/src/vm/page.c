@@ -1,15 +1,24 @@
 #include "vm/page.h"
 #include "lib/kernel/hash.h"
 #include <stdlib.h>
-
-//struct hash supp_page;
-struct lock lock_supp_page;
+#include "threads/thread.h"
 
 //void supp_page_init() {
 //
 //}
-struct supp_page_entry* supp_page_add() {
+struct supp_page_entry* supp_page_add(uint8_t *addr, bool writable, bool is_file) {
+	struct thread* curr = thread_current();
+	struct hash supp_page_table = curr->supp_page_table;
 
+	struct supp_page_entry *spe = malloc(sizeof(struct supp_page_entry));
+	if(spe == NULL)
+		return NULL;
+	spe->addr = addr;
+	spe->writable = writable;
+	spe->is_file = is_file;
+
+	hash_insert(&supp_page_table, &spe->elem);
+	return spe;
 }
 bool supp_page_remove() {
 
