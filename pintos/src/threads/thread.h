@@ -8,6 +8,10 @@
 #include "threads/synch.h"
 //TODO
 
+#ifdef VM
+#include "vm/page.h"
+#endif
+
 /* States in a thread's life cycle. */
 enum thread_status
   {
