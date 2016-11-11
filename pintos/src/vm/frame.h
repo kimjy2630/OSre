@@ -1,3 +1,6 @@
+#ifndef VM_FRAME_H
+#define VM_FRAME_H
+
 #include "threads/thread.h"
 
 struct frame_entry {
@@ -13,4 +16,4 @@ struct frame_entry* frame_add(uint8_t* addr);
 void frame_free(uint8_t *addr);
 
 
-
+#endif /* vm/frame.h */
