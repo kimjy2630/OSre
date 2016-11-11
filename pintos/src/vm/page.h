@@ -13,7 +13,7 @@ struct supp_page_entry{
 };
 
 //void supp_page_init();
-struct supp_page_entry* supp_page_add(uint8_t* addr);
+struct supp_page_entry* supp_page_add(uint8_t* addr, bool writable, bool is_file);
 //void supp_page_get();
 bool supp_page_remove();
 
