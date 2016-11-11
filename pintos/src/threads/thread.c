@@ -171,16 +171,17 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 		return TID_ERROR;
 
 	/* Initialize thread. */
+#ifdef THREADS
 	init_thread (t, name, priority);
-
-//	char *last;
-//	char *buffer;
-//	buffer = (char *) malloc(100);
-//	strlcpy(buffer, name, strlen(name) + 1);
-//	char *fun_name = strtok_r(buffer, " ", &last);
-//	init_thread(t, fun_name, priority);
-//	free(buffer);
-
+#else
+	char *last;
+	char *buffer;
+	buffer = (char *) malloc(100);
+	strlcpy(buffer, name, strlen(name) + 1);
+	char *fun_name = strtok_r(buffer, " ", &last);
+	init_thread(t, fun_name, priority);
+	free(buffer);
+#endif
 	tid = t->tid = allocate_tid();
 
 	#ifdef USERPROG
