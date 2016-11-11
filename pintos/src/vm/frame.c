@@ -1,7 +1,7 @@
 #include "threads/thread.h"
+#include "threads/palloc.h"
 #include "vm/frame.h"
 #include <stdlib.h>
-#include "threads/palloc.h"
 #include "lib/kernel/debug.c"
 
 void frame_evict();
@@ -28,7 +28,7 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 			return NULL;
 		}
 		fe->addr = addr;
-		fe->thread = thread_current();
+		fe->t = thread_current();
 
 		lock_acquire(&lock_frame);
 		list_push_back(&frame, fe->elem);
@@ -54,6 +54,6 @@ void frame_free(uint8_t *addr) {
 }
 
 void frame_evict() {
-	debug_panic();
+	PANIC("FRAME_EVICT!");
 }
 
