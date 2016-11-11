@@ -488,18 +488,20 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 		uint8_t *kpage;
 		//TODO
 #ifdef VM
-		kpage = palloc_get_page(PAL_USER);
-		struct frame_entry *fe = frame_add(kpage);
+//		kpage = palloc_get_page(PAL_USER);
+//		struct frame_entry *fe = frame_add(kpage);
 //		struct frame_entry *fe = frame_add(PAL_USER);
-		if(fe == NULL)
-			return false;
+//		if(fe == NULL)
+//			return false;
 
-		kpage = fe->addr;
+//		kpage = fe->addr;
 
 //		struct supp_page_entry *spe;
 //		spe = malloc(sizeof(struct supp_page_entry));
 //		spe = supp_page_add(upage, writable, true);
+		struct supp_page_entry *spe = supp_page_add(upage, writable, true);
 #else
+
 		kpage = palloc_get_page(PAL_USER);
 
 		if (kpage == NULL)
@@ -509,7 +511,7 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 		if (file_read(file, kpage, page_read_bytes) != (int) page_read_bytes) {
 			palloc_free_page(kpage);
 #ifdef VM
-			free(fe);
+//			free(fe);
 #endif
 			return false;
 		}
