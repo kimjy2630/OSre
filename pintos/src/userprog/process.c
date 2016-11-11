@@ -553,7 +553,7 @@ static bool setup_stack(void **esp) {
 		if (success) {
 			*esp = PHYS_BASE;
 #ifdef VM
-			struct supp_page_entry *spe = supp_page_add(((uint8_t *) PHYS_BASE) - PGSIZE, writable, false);
+			struct supp_page_entry *spe = supp_page_add(((uint8_t *) PHYS_BASE) - PGSIZE, true, false);
 #endif
 		} else {
 			palloc_free_page(kpage);
