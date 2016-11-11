@@ -521,7 +521,7 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 		if (!install_page(upage, kpage, writable)) {
 			palloc_free_page(kpage);
 #ifdef VM
-			free(fe);
+//			free(fe);
 #endif
 			return false;
 		}
