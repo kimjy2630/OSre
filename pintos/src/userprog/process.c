@@ -481,13 +481,24 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 		size_t page_zero_bytes = PGSIZE - page_read_bytes;
 
 		/* Get a page of memory. */
-		uint8_t *kpage = palloc_get_page(PAL_USER);
-		if (kpage == NULL)
+#ifdef VM
+		struct frame_entry *fe = frame_add(PAL_USER);
+		if(fe == NULL)
 			return false;
 
+		uint8_t *kpage = fe->addr;
+#else
+		uint8_t *kpage = palloc_get_page(PAL_USER);
+
+		if (kpage == NULL)
+			return false;
+#endif
 		/* Load this page. */
 		if (file_read(file, kpage, page_read_bytes) != (int) page_read_bytes) {
 			palloc_free_page(kpage);
+#ifdef VM
+			free(fe);
+#endif
 			return false;
 		}
 		memset(kpage + page_read_bytes, 0, page_zero_bytes);

@@ -35,6 +35,10 @@
 #include "filesys/fsutil.h"
 #endif
 
+#ifdef VM
+#include "vm/frame.h"
+#endif
+
 /* Amount of physical memory, in 4 kB pages. */
 size_t ram_pages;
 
@@ -113,6 +117,11 @@ main (void)
   /* Initialize file system. */
   disk_init ();
   filesys_init (format_filesys);
+#endif
+
+#ifdef VM
+  /* frame init */
+  frame_init ();
 #endif
 
   printf ("Boot complete.\n");
