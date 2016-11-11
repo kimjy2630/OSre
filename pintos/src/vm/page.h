@@ -1,3 +1,6 @@
+#ifndef VM_PAGE_H
+#define VM_PAGE_H
+
 #include "lib/kernel/hash.h"
 
 struct supp_page_entry{
@@ -16,3 +19,5 @@ bool supp_page_remove();
 
 unsigned hash_addr(struct hash_elem *e, void *aux);
 bool hash_less_addr(const struct hash_elem *a, const struct hash_elem *b, void *aux);
+
+#endif /* vm/page.h */
