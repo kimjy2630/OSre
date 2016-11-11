@@ -13,6 +13,10 @@
 #include "threads/vaddr.h"
 #include "userprog/process.h"
 #include <stdlib.h>
+#ifdef VM
+#include "lib/kernel/hash.h"
+#include "vm/page.h"
+#endif
 
 /* Random value for struct thread's `magic' member.
  Used to detect stack overflow.  See the big comment at the top
@@ -514,7 +518,10 @@ static void init_thread(struct thread *t, const char *name, int priority) {
 	list_init(&t->list_pf);
 	list_init(&t->list_ps);
 #endif
-	////
+
+#ifdef VM
+	hash_init(&t->supp_page_table, hash_addr, hash_less_addr, NULL);
+#endif
 }
 
 /* Allocates a SIZE-byte frame at the top of thread T's stack and

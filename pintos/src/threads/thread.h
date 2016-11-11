@@ -115,6 +115,10 @@ struct thread
     struct file* f;
 #endif
 
+#ifdef VM
+    struct hash supp_page_table;
+#endif
+
     /* Owned by thread.c. */
     unsigned magic;                     /* Detects stack overflow. */
   };
