@@ -150,7 +150,7 @@ int process_wait(tid_t child_tid) {
 
 /* Free the current process's resources. */
 void process_exit(void) {
-//	enum intr_level old = intr_disable();
+	enum intr_level old = intr_disable();
 	struct thread *curr = thread_current();
 	int tid = curr->tid;
 	uint32_t *pd;
@@ -204,7 +204,7 @@ void process_exit(void) {
 		}
 	}
 
-//	intr_set_level(old);
+	intr_set_level(old);
 }
 
 /* Sets up the CPU for running user code in the current
