@@ -31,7 +31,7 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 		fe->t = thread_current();
 
 		lock_acquire(&lock_frame);
-		list_push_back(&frame, fe->elem);
+		list_push_back(&frame, &fe->elem);
 		lock_release(&lock_frame);
 		return fe;
 	} else {
