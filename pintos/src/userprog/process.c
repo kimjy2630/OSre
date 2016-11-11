@@ -506,6 +506,9 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 		/* Add the page to the process's address space. */
 		if (!install_page(upage, kpage, writable)) {
 			palloc_free_page(kpage);
+#ifdef VM
+			free(fe);
+#endif
 			return false;
 		}
 
@@ -523,13 +526,25 @@ static bool setup_stack(void **esp) {
 	uint8_t *kpage;
 	bool success = false;
 
+#ifdef VM
+	struct frame_entry *fe = frame_add(PAL_USER);
+			if(fe == NULL)
+				return false;
+
+			kpage = fe->addr;
+#else
 	kpage = palloc_get_page(PAL_USER | PAL_ZERO);
+#endif
 	if (kpage != NULL) {
 		success = install_page(((uint8_t *) PHYS_BASE) - PGSIZE, kpage, true);
 		if (success)
 			*esp = PHYS_BASE;
-		else
+		else {
 			palloc_free_page(kpage);
+#ifdef VM
+			free(fe);
+#endif
+		}
 	}
 	return success;
 }
