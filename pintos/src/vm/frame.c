@@ -3,6 +3,7 @@
 #include "vm/frame.h"
 #include <stdlib.h>
 #include "lib/debug.h"
+#include "threads/interrupt.h"
 
 void frame_evict();
 
