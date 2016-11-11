@@ -192,6 +192,11 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 	t->fd_cnt = 3;
 	#endif
 
+#ifdef VM
+	hash_init(&t->supp_page_table, hash_addr, hash_less_addr, NULL);
+	lock_init(&t->lock_hash);
+#endif
+
 	/* Stack frame for kernel_thread(). */
 	kf = alloc_frame(t, sizeof *kf);
 	kf->eip = NULL;
@@ -517,11 +522,6 @@ static void init_thread(struct thread *t, const char *name, int priority) {
 	t->is_exit = false;
 	list_init(&t->list_pf);
 	list_init(&t->list_ps);
-#endif
-
-#ifdef VM
-	hash_init(&t->supp_page_table, hash_addr, hash_less_addr, NULL);
-	lock_init(&t->lock_hash);
 #endif
 }
 
