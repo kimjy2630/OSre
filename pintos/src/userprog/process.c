@@ -485,8 +485,11 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 
 		/* Get a page of memory. */
 		uint8_t *kpage;
+		//TODO
 #ifdef VM
-		struct frame_entry *fe = frame_add(PAL_USER);
+		kpage = palloc_get_page(PAL_USER);
+		struct frame_entry *fe = frame_add(kpage);
+//		struct frame_entry *fe = frame_add(PAL_USER);
 		if(fe == NULL)
 			return false;
 
@@ -530,8 +533,11 @@ static bool setup_stack(void **esp) {
 	uint8_t *kpage;
 	bool success = false;
 
+	//TODO
 #ifdef VM
-	struct frame_entry *fe = frame_add(PAL_USER);
+	kpage = palloc_get_page(PAL_USER | PAL_ZERO);
+	struct frame_entry *fe = frame_add(kpage);
+//	struct frame_entry *fe = frame_add(PAL_USER);
 			if(fe == NULL)
 				return false;
 

@@ -20,8 +20,9 @@ void frame_init() {
  }
  */
 
-struct frame_entry* frame_add(enum palloc_flags flags) {
-	uint8_t *addr = palloc_get_page(flags);
+//struct frame_entry* frame_add(enum palloc_flags flags) {
+struct frame_entry* frame_add(uint8_t* addr) {
+//	uint8_t *addr = palloc_get_page(flags);
 	if (addr != NULL) {
 		struct frame_entry* fe = malloc(sizeof(struct frame_entry));
 		if (fe == NULL) {
@@ -36,7 +37,8 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 		return fe;
 	} else {
 		frame_evict();
-		return frame_add(flags);
+//		return frame_add(flags);
+		return frame_add(addr);
 	}
 }
 
