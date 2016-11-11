@@ -32,11 +32,9 @@ struct frame_entry* frame_add(uint8_t* addr) {
 		fe->addr = addr;
 		fe->t = thread_current();
 
-//		enum intr_level old_level = intr_disable();
-		lock_acquire(&lock_frame);
+		enum intr_level old_level = intr_disable();
 		list_push_back(&frame, &fe->elem);
-		lock_release(&lock_frame);
-//		intr_set_level(old_level);
+		intr_set_level(old_level);
 		return fe;
 	} else {
 		frame_evict();
