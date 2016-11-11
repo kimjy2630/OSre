@@ -155,6 +155,8 @@ void process_exit(void) {
 	int tid = curr->tid;
 	uint32_t *pd;
 
+	printf("%s: exit(%d)\n", thread_current()->name, thread_current()->exit_status);
+
 	/* Destroy the current process's page directory and switch back
 	 to the kernel-only page directory. */
 	pd = curr->pagedir;
@@ -170,8 +172,6 @@ void process_exit(void) {
 		pagedir_activate(NULL);
 		pagedir_destroy(pd);
 	}
-
-	printf("%s: exit(%d)\n", thread_current()->name, thread_current()->exit_status);
 
 	if (curr->f != NULL) {
 		file_close(curr->f);
