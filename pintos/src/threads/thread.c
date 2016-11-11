@@ -172,6 +172,7 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 
 	/* Initialize thread. */
 #ifdef THREADS
+	printf("now I'm in THREADS!\n");
 	init_thread (t, name, priority);
 #else
 	char *last;
