@@ -2,7 +2,7 @@
 #include "threads/palloc.h"
 #include "vm/frame.h"
 #include <stdlib.h>
-#include "lib/kernel/debug.c"
+#include "lib/debug.h"
 
 void frame_evict();
 
