@@ -171,10 +171,7 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 		return TID_ERROR;
 
 	/* Initialize thread. */
-#ifdef THREADS
-	printf("now I'm in THREADS!\n");
-	init_thread (t, name, priority);
-#else
+#ifdef USERPROG
 	char *last;
 	char *buffer;
 	buffer = (char *) malloc(100);
@@ -182,6 +179,8 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 	char *fun_name = strtok_r(buffer, " ", &last);
 	init_thread(t, fun_name, priority);
 	free(buffer);
+#else
+	init_thread (t, name, priority);
 #endif
 	tid = t->tid = allocate_tid();
 
