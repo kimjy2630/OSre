@@ -19,6 +19,7 @@
 #include "threads/vaddr.h"
 #ifdef VM
 #include "vm/frame.h"
+#include "vm/page.h"
 #endif
 
 static thread_func start_process NO_RETURN;
@@ -494,6 +495,10 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 			return false;
 
 		kpage = fe->addr;
+
+//		struct supp_page_entry *spe;
+//		spe = malloc(sizeof(struct supp_page_entry));
+//		spe = supp_page_add(upage, writable, true);
 #else
 		kpage = palloc_get_page(PAL_USER);
 
