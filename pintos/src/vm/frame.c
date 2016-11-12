@@ -84,9 +84,10 @@ void frame_evict() {
 //	printf("start evict\n");
 //	printf("&frame:%p\n",&frame);
 
-//	enum intr_level old_level;
+	enum intr_level old_level;
 
-	lock_acquire(&lock_frame);
+//	lock_acquire(&lock_frame);
+	old_level = intr_disable();
 	while(!list_empty(&frame)){
 //		printf("loop\n");
 //		printf("head:%p\n", frame.head.next);
@@ -125,7 +126,8 @@ void frame_evict() {
 				pagedir_clear_page(pd, uaddr);
 			frame_free(fe);
 //			printf("evict loop end\n");
-			lock_release(&lock_frame);
+//			lock_release(&lock_frame);
+			intr_set_level(old_level);
 			break;
 		}
 	}
