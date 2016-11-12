@@ -36,10 +36,10 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 		fe->t = thread_current();
 
 		enum intr_level old_level = intr_disable();
-		printf("aaa\n");
+//		printf("aaa\n");
 		list_push_back(&frame, &fe->elem);
 		intr_set_level(old_level);
-		printf("bbb, fe:%p\n");
+//		printf("bbb, fe:%p\n");
 
 		return fe;
 	} else {
@@ -66,6 +66,7 @@ void frame_free(struct frame_entry *fe){
 	list_remove(&fe->elem);
 
 //	free(fe->addr);
+	pagedir_clear_page(fe->t->pagedir, fe->spe->uaddr);
 	palloc_free_page(fe->addr);
 	free(fe);
 }
