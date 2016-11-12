@@ -5,7 +5,8 @@
 #include "threads/thread.h"
 #include "threads/vaddr.h"
 #include "threads/palloc.h"
-#include <stddef.h>
+#include "filesys/file.h"
+#include "filesys/filesys.h"
 
 //void supp_page_init() {
 //
