@@ -1,4 +1,5 @@
 #include "vm/page.h"
+#include "vm/frame.h"
 #include "lib/kernel/hash.h"
 #include <stdlib.h>
 #include "threads/thread.h"
@@ -132,7 +133,7 @@ bool stack_grow(void* fault_addr) {
 	spe->kaddr = fe->addr;
 	spe->page_read_bytes = 0;
 	spe->file = NULL;
-	spe->ofs = NULL;
+	spe->ofs = 0;
 	spe->type = MEMORY;
 
 	fe->spe = spe;
