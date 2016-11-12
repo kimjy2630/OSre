@@ -123,6 +123,8 @@ main (void)
 #ifdef VM
   /* frame init */
   frame_init ();
+
+  disk_init();
   swap_init();
 #endif
 
