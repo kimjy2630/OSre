@@ -506,6 +506,7 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 			spe->type = FILE;
 		spe->ofs = ofs;
 		spe->page_read_bytes = page_read_bytes;
+		spe->file = file;
 
 		ASSERT(pg_ofs(spe->uaddr) == 0);
 #else
