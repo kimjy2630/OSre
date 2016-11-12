@@ -2,7 +2,7 @@
 #include "lib/kernel/hash.h"
 #include <stdlib.h>
 #include "threads/thread.h"
-#include "userprog/pagedir.h"
+#include "threads/vaddr.h"
 
 //void supp_page_init() {
 //
