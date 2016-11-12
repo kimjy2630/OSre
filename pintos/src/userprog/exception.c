@@ -177,6 +177,7 @@ page_fault (struct intr_frame *f)
 			spe->uaddr = pg_round_down(spe->uaddr);
 			ASSERT(pg_ofs(spe->uaddr) == 0);
 			struct frame_entry *fe = frame_add(PAL_USER);
+			fe->spe = spe;
 			if (spe->type == FILE) {
 //				printf("FILE\n");
 				file_seek(spe->file, spe->ofs);
@@ -223,9 +224,7 @@ page_fault (struct intr_frame *f)
 //				printf("222 esp:%p\n", esp);
 			}
 			////
-			uint32_t *offset = ((uint32_t *) PHYS_BASE) - ((uint32_t *)fault_addr);
-//			printf("offset:%p\n");
-			if (offset > STACK_LIMIT){
+			if (((uint32_t *) PHYS_BASE) - ((uint32_t *)fault_addr) > STACK_LIMIT){
 //				printf("stack overflow\n");
 				f->eip = (void *) f->eax;
 				f->eax = 0xffffffff;
@@ -256,6 +255,7 @@ page_fault (struct intr_frame *f)
 				spe->ofs = NULL;
 				spe->type = MEMORY;
 
+				fe->spe = spe;
 				return;
 			}
 			/* Other case of stack extension */
@@ -277,6 +277,7 @@ page_fault (struct intr_frame *f)
 				spe->ofs = NULL;
 				spe->type = MEMORY;
 
+				fe->spe = spe;
 				return;
 			}
 			else{

@@ -4,7 +4,7 @@
 #include "lib/kernel/hash.h"
 
 enum page_type {
-	ZERO, MEMORY, FILE
+	ZERO, MEMORY, FILE, SWAP
 };
 
 struct supp_page_entry{

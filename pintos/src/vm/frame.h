@@ -2,9 +2,11 @@
 #define VM_FRAME_H
 
 #include "threads/thread.h"
+#include "vm/page.h"
 
 struct frame_entry {
 	void* addr;
+	struct supp_page_entry *spe;
 	struct thread* t;
 	struct list_elem elem;
 };

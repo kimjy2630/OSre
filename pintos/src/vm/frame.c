@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "lib/debug.h"
 #include "threads/interrupt.h"
+#include "vm/page.h"
 
 void frame_evict();
 
@@ -57,6 +58,29 @@ void frame_free(uint8_t *addr) {
 }
 
 void frame_evict() {
-	PANIC("FRAME_EVICT!");
+//	PANIC("FRAME_EVICT!");
+	struct list_elem *e;
+	struct frame_entry *fe;
+	uint32_t *pd;
+	uint8_t *uaddr;
+
+	ASSERT(!list_empty(&frame));
+	while(!list_empty(&frame)){
+		e = list_pop_front(&frame);
+		fe = list_entry(e, struct frame_entry, elem);
+		pd = fe->t->pagedir;
+		uaddr = fe->spe->uaddr;
+		if(fe->spe->type == SWAP){
+			list_push_back(&frame, e);
+		}
+		else if(pagedir_is_accessed(pd, uaddr)){
+			pagedir_set_accessed(pd, uaddr);
+			list_push_back(&frame, e);
+		}
+		else{
+//			swap
+			break;
+		}
+	}
 }
 
