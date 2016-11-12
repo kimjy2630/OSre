@@ -209,7 +209,7 @@ lock_acquire (struct lock *lock)
   ASSERT (!intr_context ());
   ASSERT (!lock_held_by_current_thread (lock));
 
-  enum intr_level old_level = intr_disable();
+//  enum intr_level old_level = intr_disable();
 
   thread_current()->lock_waiting = lock;
 
@@ -228,7 +228,7 @@ lock_acquire (struct lock *lock)
   lock->holder = thread_current ();
   list_push_back(&lock->holder->list_lock, &lock->elem);
 
-  intr_set_level(old_level);
+//  intr_set_level(old_level);
 }
 
 /* Tries to acquires LOCK and returns true if successful or false
