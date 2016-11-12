@@ -209,9 +209,10 @@ page_fault (struct intr_frame *f)
 //			printf("PAGE FAULT RETURN\n");
 			return;
 		} else {
-			printf("HASH NULL\n");
-			printf("fault_addr %p\n", fault_addr);
-			kill(f);
+//			printf("HASH NULL\n");
+//			printf("fault_addr %p\n", fault_addr);
+//			kill(f);
+			exit(-1);
 			// extend stack
 		}
 	} else {
