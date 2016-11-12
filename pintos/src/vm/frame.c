@@ -8,6 +8,7 @@
 #include "vm/page.h"
 #include "vm/frame.h"
 #include "vm/swap.h"
+#include "userprog/syscall.h"
 
 void frame_evict();
 
