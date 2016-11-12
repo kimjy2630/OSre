@@ -196,6 +196,7 @@ page_fault (struct intr_frame *f)
 					spe->writable)) {
 				kill(f);
 			}
+			return;
 		} else {
 			// extend stack
 		}
