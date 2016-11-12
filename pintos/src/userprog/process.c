@@ -499,9 +499,13 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 //		struct supp_page_entry *spe;
 //		spe = malloc(sizeof(struct supp_page_entry));
 //		spe = supp_page_add(upage, writable, true);
-		struct supp_page_entry *spe = supp_page_add(upage, writable, true);
-		spe->file = file;
+		struct supp_page_entry *spe = supp_page_add(upage, writable);
+		if(page_zero_bytes == PG_SIZE)
+			spe->type = ZERO;
+		else
+			spe->type = FILE;
 		spe->ofs = ofs;
+		spe->page_read_bytes = page_read_bytes;
 #else
 		kpage = palloc_get_page(PAL_USER);
 
@@ -543,12 +547,12 @@ static bool setup_stack(void **esp) {
 	//TODO
 #ifdef VM
 	kpage = palloc_get_page(PAL_USER | PAL_ZERO);
-	struct frame_entry *fe = frame_add(kpage);
-//	struct frame_entry *fe = frame_add(PAL_USER);
-			if(fe == NULL)
-				return false;
+//	struct frame_entry *fe = frame_add(kpage);
+	struct frame_entry *fe = frame_add(PAL_USER);
+	if(fe == NULL)
+	return false;
 
-			kpage = fe->addr;
+	kpage = fe->addr;
 #else
 	kpage = palloc_get_page(PAL_USER | PAL_ZERO);
 #endif
@@ -557,7 +561,8 @@ static bool setup_stack(void **esp) {
 		if (success) {
 			*esp = PHYS_BASE;
 #ifdef VM
-			struct supp_page_entry *spe = supp_page_add(((uint8_t *) PHYS_BASE) - PGSIZE, true, false);
+			struct supp_page_entry *spe = supp_page_add(((uint8_t *) PHYS_BASE) - PGSIZE, true);
+			spe->type = MEMORY;
 			spe->kaddr = fe->addr;
 #endif
 		} else {

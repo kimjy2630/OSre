@@ -8,6 +8,8 @@
 #include "userprog/process.h"
 ////
 #ifdef VM
+#include "threads/vaddr.h"
+#include "vm/frame.h"
 #include "vm/page.h"
 #endif
 
@@ -154,12 +156,47 @@ page_fault (struct intr_frame *f)
   write = (f->error_code & PF_W) != 0;
   user = (f->error_code & PF_U) != 0;
 
-if(not_present) {
-		struct supp_page_entry* spt;
-		spt->uaddr = fault_addr;
+	if (not_present) {
+		struct supp_page_entry spt_tmp;
+		spt_tmp.uaddr = pg_round_down(fault_addr);
 		struct thread *t = thread_current();
-		hash_find(t->supp_page_table)
-}
+		struct supp_page_entry* spt = hash_find(t->supp_page_table,
+				&spt_tmp.elem);
+
+		if (spt != NULL) {
+			struct frame_entry *fe = frame_add(PAL_USER);
+			if (spt->type == FILE) {
+				file_seek(spt->file, spt->ofs);
+
+				off_t bytes_read = file_read(spt->file, fe->addr,
+						spt->page_read_bytes);
+				ASSERT(bytes_read == spt->page_read_bytes);
+				memset(fe->addr + bytes_read, 0, PGSIZE - bytes_read);
+			} else if (spt->type == ZERO) {
+				memset(fe->addr, 0, PGSIZE);
+			}
+			/*
+			 else if (vma->pg_type == SWAP) {
+			 // Read in from swap into the new page.
+			 swap_remove(vma->swap_ind, new_page);
+			 vma->swap_ind = NULL;
+			 vma->pg_type = PMEM;
+			 }
+			 */
+
+			spt->kaddr = fe->addr;
+			if (!pagedir_set_page(t->pagedir, spt->uaddr, spt->kaddr,
+					spt->writable)) {
+				kill(f);
+			}
+		} else {
+			// extend stack
+		}
+	} else {
+		// invalid
+//		exit(-1);
+	}
+
 
 #ifdef VM
 #else

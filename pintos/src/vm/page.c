@@ -6,7 +6,7 @@
 //void supp_page_init() {
 //
 //}
-struct supp_page_entry* supp_page_add(uint8_t *addr, bool writable, bool is_file) {
+struct supp_page_entry* supp_page_add(uint8_t *addr, bool writable) {
 	struct thread* curr = thread_current();
 	struct hash supp_page_table = curr->supp_page_table;
 
@@ -15,7 +15,6 @@ struct supp_page_entry* supp_page_add(uint8_t *addr, bool writable, bool is_file
 		return NULL;
 	spe->uaddr = addr;
 	spe->writable = writable;
-	spe->is_file = is_file;
 
 	hash_insert(&supp_page_table, &spe->elem);
 	return spe;
