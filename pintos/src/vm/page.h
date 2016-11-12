@@ -15,6 +15,7 @@ struct supp_page_entry{
 	enum page_type type;
 	struct hash_elem elem;
 //	struct lock lock_using;
+	size_t swap_index;
 
 	/* used for file page */
 	struct file* file;

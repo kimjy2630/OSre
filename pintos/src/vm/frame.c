@@ -62,6 +62,7 @@ void frame_evict() {
 //	PANIC("FRAME_EVICT!");
 	struct list_elem *e;
 	struct frame_entry *fe;
+	struct supp_page_entry *spe;
 	uint32_t *pd;
 	uint8_t *uaddr;
 
@@ -70,8 +71,9 @@ void frame_evict() {
 		e = list_pop_front(&frame);
 		fe = list_entry(e, struct frame_entry, elem);
 		pd = fe->t->pagedir;
-		uaddr = fe->spe->uaddr;
-		if(fe->spe->type == SWAP){
+		spe = fe->spe;
+		uaddr = spe->uaddr;
+		if(spe->type == SWAP){
 			list_push_back(&frame, e);
 		}
 		else if(pagedir_is_accessed(pd, uaddr)){
@@ -79,7 +81,8 @@ void frame_evict() {
 			list_push_back(&frame, e);
 		}
 		else{
-			swap_load(uaddr);
+			spe->swap_index = swap_load(uaddr);
+			spe->type = SWAP;
 			break;
 		}
 	}
