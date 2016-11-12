@@ -98,7 +98,7 @@ void frame_evict() {
 		spe = fe->spe;
 //		printf("spe:%p\n",spe);
 		uaddr = spe->uaddr;
-		printf("uaddr:%p\n",uaddr);
+		printf("uaddr in loop:%p\n",uaddr);
 		if(spe->type == SWAP){
 			printf("swap page\n");
 			frame_free(fe);
