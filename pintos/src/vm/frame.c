@@ -90,13 +90,13 @@ void frame_evict() {
 		intr_set_level(old_level);
 		printf("e:%p\n",e);
 		fe = list_entry(e, struct frame_entry, elem);
-//		printf("fe:%p\n",fe);
+		printf("fe:%p\n",fe);
 		pd = fe->t->pagedir;
-//		printf("pd:%p\n",pd);
+		printf("pd:%p\n",pd);
 		spe = fe->spe;
-//		printf("spe:%p\n",spe);
+		printf("spe:%p\n",spe);
 		uaddr = spe->uaddr;
-//		printf("uaddr:%p\n",uaddr);
+		printf("uaddr:%p\n",uaddr);
 		if(spe->type == SWAP){
 			printf("swap page\n");
 			frame_free(fe);
