@@ -255,10 +255,10 @@ page_fault (struct intr_frame *f)
 				spe->ofs = NULL;
 				spe->type = MEMORY;
 			}
-			return;
 			else{
 				exit(-1);
 			}
+			return;
 		}
 	} else {
 		// invalid
