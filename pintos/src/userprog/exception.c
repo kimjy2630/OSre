@@ -256,6 +256,9 @@ page_fault (struct intr_frame *f)
 				spe->type = MEMORY;
 			}
 			return;
+			else{
+				exit(-1);
+			}
 		}
 	} else {
 		// invalid
