@@ -6,7 +6,7 @@
 #include "vm/page.h"
 #include "vm/frame.h"
 #include "vm/swap.h"
-#include <stddef.h>
+#include "threads/palloc.h"
 
 struct disk *swap_disk;
 struct bitmap *swap_bitmap;
