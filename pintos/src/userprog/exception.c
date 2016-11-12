@@ -221,6 +221,7 @@ page_fault (struct intr_frame *f)
 			else{
 				esp = thread_current()->esp;
 				printf("222 esp:%p\n", esp);
+				printf("222 esp at f:%p\n", f->esp);
 			}
 			if ((fault_addr == esp - 4) || (fault_addr == esp - 32)) {
 				printf("333\n");
