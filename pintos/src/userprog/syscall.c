@@ -34,17 +34,17 @@ static int get_argument_ptr(void *ptr, int pos) {
 static void
 syscall_handler (struct intr_frame *f UNUSED)
 {
-	printf("I'm in syscall,  esp:%p\n", f->esp);
+//	printf("I'm in syscall,  esp:%p\n", f->esp);
 	void *ptr = (void *) f->esp;
 #ifdef VM
 	thread_current()->esp = f->esp;
 #endif
-	printf("read validity\n");
+//	printf("read validity\n");
 	if (!read_validity(ptr, 4)){
-		printf("hahaha\n");
+//		printf("hahaha\n");
 		exit(-1);
 	}
-	printf("I'm valid!\n");
+//	printf("I'm valid!\n");
 	switch (*((int*) ptr)) {
 		case SYS_HALT:
 		halt();
