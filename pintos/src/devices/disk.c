@@ -236,6 +236,7 @@ disk_read (struct disk *d, disk_sector_t sec_no, void *buffer)
   printf("disk_read 4\n");
   if (!wait_while_busy (d))
     PANIC ("%s: disk read failed, sector=%"PRDSNu, d->name, sec_no);
+  printf("disk_read 4.5\n");
   input_sector (c, buffer);
   printf("disk_read 5\n");
   d->read_cnt++;
