@@ -37,6 +37,7 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 		enum intr_level old_level = intr_disable();
 		list_push_back(&frame, &fe->elem);
 		intr_set_level(old_level);
+
 		return fe;
 	} else {
 		frame_evict();
@@ -69,6 +70,8 @@ void frame_evict() {
 	ASSERT(!list_empty(&frame));
 //	printf("start evict\n");
 	printf("&frame:%p\n",&frame);
+
+	enum intr_level old_level = intr_disable();
 	while(!list_empty(&frame)){
 		printf("loop\n");
 		printf("head:%p\n", frame.head.next);
@@ -106,5 +109,6 @@ void frame_evict() {
 			break;
 		}
 	}
+	intr_set_level(old_level);
 }
 
