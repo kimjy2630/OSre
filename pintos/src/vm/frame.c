@@ -89,8 +89,9 @@ void frame_evict() {
 			spe->swap_index = swap_load(uaddr);
 			spe->type = SWAP;
 
-			printf("uaddr:%p\n", uaddr);
-			pagedir_clear_page(pd, uaddr);
+//			printf("uaddr:%p\n", uaddr);
+			if (spe->type == MEMORY)
+				pagedir_clear_page(pd, uaddr);
 			free(fe);
 			printf("evict loop end\n");
 			break;
