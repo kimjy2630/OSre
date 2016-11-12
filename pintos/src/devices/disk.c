@@ -260,7 +260,6 @@ disk_write (struct disk *d, disk_sector_t sec_no, const void *buffer)
   output_sector (c, buffer);
   sema_down (&c->completion_wait);
   d->write_cnt++;
-  printf("lock_rel  holder:%p, curr:%p\n", c->lock.holder, thread_current());
   lock_release (&c->lock);
 }
 
