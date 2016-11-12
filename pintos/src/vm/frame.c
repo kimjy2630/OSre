@@ -1,4 +1,5 @@
 #include "threads/thread.h"
+#include "threads/synch.h"
 #include "threads/palloc.h"
 #include "vm/frame.h"
 #include <stdlib.h>
@@ -83,14 +84,15 @@ void frame_evict() {
 //	printf("start evict\n");
 //	printf("&frame:%p\n",&frame);
 
-	enum intr_level old_level;
+//	enum intr_level old_level;
 
 	while(!list_empty(&frame)){
+		lock_acquire(&lock_frame);
 //		printf("loop\n");
 //		printf("head:%p\n", frame.head.next);
-		old_level = intr_disable();
+//		old_level = intr_disable();
 		e = list_pop_front(&frame);
-		intr_set_level(old_level);
+//		intr_set_level(old_level);
 //		printf("e:%p\n",e);
 		fe = list_entry(e, struct frame_entry, elem);
 //		printf("fe:%p\n",fe);
@@ -104,13 +106,15 @@ void frame_evict() {
 //			printf("swap page\n");
 			frame_free(fe);
 //			list_push_back(&frame, e);
+			lock_release(&lock_frame);
 		}
 		else if(pagedir_is_accessed(pd, uaddr)){
 //			printf("accessed page\n");
 			pagedir_set_accessed(pd, uaddr, 0);
-			old_level = intr_disable();
+//			old_level = intr_disable();
 			list_push_back(&frame, e);
-			intr_set_level(old_level);
+//			intr_set_level(old_level);
+			lock_release(&lock_frame);
 		}
 		else{
 //			printf("load page to swap\n");
@@ -123,6 +127,7 @@ void frame_evict() {
 				pagedir_clear_page(pd, uaddr);
 			frame_free(fe);
 //			printf("evict loop end\n");
+			lock_release(&lock_frame);
 			break;
 		}
 	}
