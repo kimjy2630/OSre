@@ -221,8 +221,16 @@ page_fault (struct intr_frame *f)
 			else{
 				esp = thread_current()->esp;
 				printf("222 esp:%p\n", esp);
-				printf("222 esp at f:%p\n", f->esp);
 			}
+			////
+			if (((uint32_t *) PHYS_BASE) - ((uint32_t *)fault_addr) > STACK_LIMIT){
+				printf("stack overflow\n");
+				f->eip = (void *) f->eax;
+				f->eax = 0xffffffff;
+				exit(-1);
+				return;
+			}
+
 			if ((fault_addr == esp - 4) || (fault_addr == esp - 32)) {
 				printf("333\n");
 				/* Check for stack overflow */
