@@ -70,6 +70,7 @@ void frame_free(struct frame_entry *fe){
 
 //	free(fe->addr);
 	pagedir_clear_page(fe->t->pagedir, fe->spe->uaddr);
+	printf("free %p ##############################\n", fe->spe->uaddr);
 	palloc_free_page(fe->addr);
 	free(fe);
 }
