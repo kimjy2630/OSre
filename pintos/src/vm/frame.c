@@ -70,7 +70,7 @@ void frame_evict() {
 	while(!list_empty(&frame)){
 //		printf("loop\n");
 		e = list_pop_front(&frame);
-		printf("e:%p\n", e);
+//		printf("e:%p\n", e);
 		fe = list_entry(e, struct frame_entry, elem);
 //		printf("fe:%p\n", fe);
 		pd = fe->t->pagedir;
@@ -93,6 +93,7 @@ void frame_evict() {
 			spe->swap_index = swap_load(uaddr);
 			spe->type = SWAP;
 			free(fe);
+			printf("evict loop end\n");
 			break;
 		}
 	}
