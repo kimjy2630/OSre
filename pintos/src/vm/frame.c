@@ -78,17 +78,17 @@ void frame_evict() {
 
 	ASSERT(!list_empty(&frame));
 //	printf("start evict\n");
-	printf("&frame:%p\n",&frame);
+//	printf("&frame:%p\n",&frame);
 
 	enum intr_level old_level;
 
 	while(!list_empty(&frame)){
 		printf("loop\n");
-//		printf("head:%p\n", frame.head.next);
+		printf("head:%p\n", frame.head.next);
 		old_level = intr_disable();
 		e = list_pop_front(&frame);
 		intr_set_level(old_level);
-//		printf("e:%p\n",e);
+		printf("e:%p\n",e);
 		fe = list_entry(e, struct frame_entry, elem);
 //		printf("fe:%p\n",fe);
 		pd = fe->t->pagedir;
@@ -103,14 +103,14 @@ void frame_evict() {
 //			list_push_back(&frame, e);
 		}
 		else if(pagedir_is_accessed(pd, uaddr)){
-			printf("accessed page\n");
+//			printf("accessed page\n");
 			pagedir_set_accessed(pd, uaddr, 0);
 			old_level = intr_disable();
 			list_push_back(&frame, e);
 			intr_set_level(old_level);
 		}
 		else{
-			printf("load page to swap\n");
+//			printf("load page to swap\n");
 			spe->kaddr = NULL;
 			spe->swap_index = swap_load(uaddr);
 			spe->type = SWAP;
@@ -119,7 +119,7 @@ void frame_evict() {
 			if (spe->type == MEMORY)
 				pagedir_clear_page(pd, uaddr);
 			frame_free(fe);
-			printf("evict loop end\n");
+//			printf("evict loop end\n");
 			break;
 		}
 	}
