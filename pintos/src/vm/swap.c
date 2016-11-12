@@ -17,7 +17,7 @@ void swap_init(){
 
 size_t swap_load(uint8_t *uaddr){ // mem -> disk
 	lock_acquire(&swap_lock);
-	size_t index = bitmap_scan_and_filp(swap_bitmap, 0, num_sector_in_page, 0);
+	size_t index = bitmap_scan_and_flip(swap_bitmap, 0, num_sector_in_page, 0);
 	if(index == BITMAP_ERROR)
 		PANIC("swap disk full");
 	int i;
