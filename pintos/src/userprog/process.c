@@ -508,12 +508,6 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 		spe->page_read_bytes = page_read_bytes;
 		spe->file = file;
 
-		if(spe->uaddr > PHYS_BASE) {
-			printf("uaddr:%p\n", spe->uaddr);
-			PANIC("kernel access!");
-			exit(-1);
-		}
-
 		ASSERT(pg_ofs(spe->uaddr) == 0);
 #else
 		kpage = palloc_get_page(PAL_USER);

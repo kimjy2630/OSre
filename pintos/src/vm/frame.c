@@ -111,13 +111,14 @@ void frame_evict() {
 		}
 		else{
 			printf("load page to swap\n");
+			printf("uaddr before:%p\n", uaddr);
 			spe->kaddr = NULL;
 			lock_acquire(&lock_frame);
 			spe->swap_index = swap_load(uaddr);
 			lock_release(&lock_frame);
 			spe->type = SWAP;
 
-			printf("uaddr:%p\n", uaddr);
+			printf("uaddr after:%p\n", uaddr);
 			if (spe->type == MEMORY)
 				pagedir_clear_page(pd, uaddr);
 			frame_free(fe);
