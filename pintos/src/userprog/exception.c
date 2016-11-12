@@ -8,13 +8,13 @@
 ////
 #include "userprog/process.h"
 ////
-#ifdef VM
+//#ifdef VM
 #include "threads/vaddr.h"
 #include "vm/frame.h"
 #include "vm/page.h"
 #include "filesys/file.h"
 #include "filesys/filesys.h"
-#endif
+//#endif
 
 /* Number of page faults processed. */
 static long long page_fault_cnt;
@@ -159,7 +159,7 @@ page_fault (struct intr_frame *f)
   write = (f->error_code & PF_W) != 0;
   user = (f->error_code & PF_U) != 0;
 
-#ifdef VM
+//#ifdef VM
 //printf("PAGE FAULT\n");
 	if (not_present) {
 //		printf("NOT PRESENT\n");
@@ -209,11 +209,52 @@ page_fault (struct intr_frame *f)
 //			printf("PAGE FAULT RETURN\n");
 			return;
 		} else {
-//			printf("HASH NULL\n");
-//			printf("fault_addr %p\n", fault_addr);
-//			kill(f);
-			exit(-1);
 			// extend stack
+			void* esp;
+			if(user)
+				esp = f->esp;
+			else
+				esp = thread_current()->esp;
+			if ((fault_addr == esp - 4) || (fault_addr == esp - 32)) {
+				/* Check for stack overflow */
+				if (fault_addr < STACK_MIN) {
+					exit(-1);
+				}
+
+				/* If we're here, let's give this process another page */
+				struct frame_entry *fe = frame_add(PAL_ZERO | PAL_USER);
+
+				if (!pagedir_set_page(t->pagedir, pg_round_down(fault_addr), fe->addr, true)) {
+					kill(f);
+				}
+				/* Record the new stack page in the supplemental page table and
+				 the frame table. */
+				struct supp_page_entry *spe = supp_page_add(
+						pg_round_down(fault_addr), true);
+				spe->kaddr = fe->addr;
+				spe->page_read_bytes = 0;
+				spe->file = NULL;
+				spe->ofs = NULL;
+				spe->type = MEMORY;
+			}
+			/* Other case of stack extension */
+			else if (fault_addr >= esp) {
+				struct frame_entry *fe = frame_add(PAL_ZERO | PAL_USER);
+
+				if (!pagedir_set_page(t->pagedir, pg_round_down(fault_addr), fe->addr, true)) {
+					kill(f);
+				}
+
+				/* Record the new stack page in the supplemental page table and
+				 the frame table. */
+				struct supp_page_entry *spe = supp_page_add(
+						pg_round_down(fault_addr), true);
+				spe->kaddr = fe->addr;
+				spe->page_read_bytes = 0;
+				spe->file = NULL;
+				spe->ofs = NULL;
+				spe->type = MEMORY;
+			}
 		}
 	} else {
 		// invalid
@@ -227,7 +268,7 @@ page_fault (struct intr_frame *f)
 		exit(-1);
 	}
 //	kill (f);
-#else
+//#else
 
 
 
