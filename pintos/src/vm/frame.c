@@ -67,6 +67,7 @@ void frame_evict() {
 	uint8_t *uaddr;
 
 	ASSERT(!list_empty(&frame));
+	printf("start evict\n");
 	while(!list_empty(&frame)){
 //		printf("loop\n");
 		e = list_pop_front(&frame);
