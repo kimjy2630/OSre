@@ -94,11 +94,11 @@ void frame_evict() {
 		e = list_pop_front(&frame);
 //		printf("e:%p\n",e);
 		fe = list_entry(e, struct frame_entry, elem);
-		printf("fe:%p\n",fe);
+//		printf("fe:%p\n",fe);
 		pd = fe->t->pagedir;
 //		printf("pd:%p\n",pd);
 		spe = fe->spe;
-//		printf("spe:%p\n",spe);
+		printf("spe:%p\n",spe);
 		uaddr = spe->uaddr;
 		printf("uaddr in loop:%p\n",uaddr);
 		if(uaddr > PHYS_BASE){
