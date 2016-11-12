@@ -217,9 +217,9 @@ page_fault (struct intr_frame *f)
 				esp = thread_current()->esp;
 			if ((fault_addr == esp - 4) || (fault_addr == esp - 32)) {
 				/* Check for stack overflow */
-				if (fault_addr < STACK_MIN) {
-					exit(-1);
-				}
+//				if (fault_addr < STACK_MIN) {
+//					exit(-1);
+//				}
 
 				/* If we're here, let's give this process another page */
 				struct frame_entry *fe = frame_add(PAL_ZERO | PAL_USER);
