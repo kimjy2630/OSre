@@ -251,6 +251,10 @@ page_fault (struct intr_frame *f)
 				 the frame table. */
 				struct supp_page_entry *spe = supp_page_add(
 						pg_round_down(fault_addr), true);
+				if(spe == NULL){
+					printf("spe null aaa, fe:%p\n", fe);
+				}
+
 				spe->kaddr = fe->addr;
 				spe->page_read_bytes = 0;
 				spe->file = NULL;
