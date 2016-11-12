@@ -167,7 +167,7 @@ page_fault (struct intr_frame *f)
 		spe_tmp.uaddr = pg_round_down(fault_addr);
 		struct thread *t = thread_current();
 		struct hash_elem *he = hash_find(&t->supp_page_table, &spe_tmp.elem);
-		printf("aaa fault_addr:%p\n", fault_addr);
+//		printf("aaa fault_addr:%p\n", fault_addr);
 
 
 		if (he != NULL) {
