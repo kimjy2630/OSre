@@ -213,10 +213,10 @@ page_fault (struct intr_frame *f)
 //		exit(-1);
 	}
 	if (user) {
-//		printf("CCC\n");
+		printf("CCC\n");
 		kill(f);
 	} else {
-//		printf("DDD\n");
+		printf("DDD\n");
 		f->eip = (void *) f->eax;
 		f->eax = 0xffffffff;
 		exit(-1);
@@ -309,6 +309,8 @@ bool stack_grow(void* fault_addr) {
 					pg_round_down(fault_addr), fe->addr, true)) {
 		pagedir_clear_page(thread_current()->pagedir,
 				pg_round_down(fault_addr));
+		palloc_free_page(fe->addr);
+		free(fe);
 		return false;
 	}
 	/* Record the new stack page in the supplemental page table and
