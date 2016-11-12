@@ -80,7 +80,7 @@ void frame_evict() {
 		}
 		else if(pagedir_is_accessed(pd, uaddr)){
 			printf("accessed page\n");
-			pagedir_set_accessed(pd, uaddr);
+			pagedir_set_accessed(pd, uaddr, 0);
 			list_push_back(&frame, e);
 		}
 		else{
