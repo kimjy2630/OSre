@@ -167,7 +167,7 @@ page_fault (struct intr_frame *f)
 		spe_tmp.uaddr = pg_round_down(fault_addr);
 		struct thread *t = thread_current();
 		struct hash_elem *he = hash_find(&t->supp_page_table, &spe_tmp.elem);
-//		printf("aaa fault_addr:%p\n", fault_addr);
+		printf("aaa fault_addr:%p\n", fault_addr);
 
 
 		if (he != NULL) {
@@ -222,17 +222,17 @@ page_fault (struct intr_frame *f)
 			void* esp;
 			if(user){
 				esp = f->esp;
-//				printf("111 esp:%p\n", esp);
+				printf("111 esp:%p\n", esp);
 			}
 			else{
 				esp = thread_current()->esp;
-//				printf("222 esp:%p\n", esp);
+				printf("222 esp:%p\n", esp);
 			}
 			////
 			uint32_t offset = ((uint32_t *) PHYS_BASE) - ((uint32_t *)fault_addr);
-//			printf("offset:%p\n", offset);
+			printf("offset:%p\n", offset);
 			if (offset > STACK_LIMIT){
-//				printf("stack overflow\n");
+				printf("stack overflow\n");
 				f->eip = (void *) f->eax;
 				f->eax = 0xffffffff;
 				exit(-1);
@@ -240,7 +240,7 @@ page_fault (struct intr_frame *f)
 			}
 
 			if ((fault_addr == esp - 4) || (fault_addr == esp - 32)) {
-//				printf("333\n");
+				printf("333\n");
 				/* Check for stack overflow */
 //				if (fault_addr < STACK_MIN) {
 //					exit(-1);
@@ -267,7 +267,7 @@ page_fault (struct intr_frame *f)
 			}
 			/* Other case of stack extension */
 			else if (fault_addr >= esp) {
-//				printf("444\n");
+				printf("444\n");
 				struct frame_entry *fe = frame_add(PAL_ZERO | PAL_USER);
 
 				if (!pagedir_set_page(t->pagedir, pg_round_down(fault_addr), fe->addr, true)) {
@@ -288,7 +288,7 @@ page_fault (struct intr_frame *f)
 				return;
 			}
 			else{
-//				printf("AAA\n");
+				printf("AAA\n");
 				f->eip = (void *) f->eax;
 				f->eax = 0xffffffff;
 				exit(-1);
