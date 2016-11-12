@@ -39,10 +39,6 @@ size_t swap_load(uint8_t *uaddr){ // mem -> disk
 }
 
 void swap_unload(size_t index, uint8_t *uaddr){ // disk -> mem
-	lock_acquire(&swap_lock);
-	bitmap_set_multiple(swap_bitmap, index, num_sector_in_page, 0);
-//	printf("bit set mul\n");
-
 	struct frame_entry *fe = frame_add(PAL_USER);
 	struct supp_page_entry spe_tmp;
 	spe_tmp.uaddr = pg_round_down(uaddr);
@@ -51,6 +47,10 @@ void swap_unload(size_t index, uint8_t *uaddr){ // disk -> mem
 	spe->uaddr = pg_round_down(spe->uaddr);
 	spe->kaddr = fe->addr;
 	pagedir_set_page(thread_current()->pagedir, spe->uaddr, fe->addr, true);
+
+	lock_acquire(&swap_lock);
+	bitmap_set_multiple(swap_bitmap, index, num_sector_in_page, 0);
+//	printf("bit set mul\n");
 
 	int i;
 	for(i=0; i<num_sector_in_page; i++){
