@@ -11,6 +11,10 @@ struct supp_page_entry{
 	bool is_file;
 	struct hash_elem elem;
 //	struct lock lock_using;
+
+	/* used for file page */
+	struct file* file;
+	uint32_t ofs;
 };
 
 //void supp_page_init();

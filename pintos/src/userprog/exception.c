@@ -7,7 +7,9 @@
 ////
 #include "userprog/process.h"
 ////
-
+#ifdef VM
+#include "vm/page.h"
+#endif
 
 /* Number of page faults processed. */
 static long long page_fault_cnt;
@@ -152,7 +154,12 @@ page_fault (struct intr_frame *f)
   write = (f->error_code & PF_W) != 0;
   user = (f->error_code & PF_U) != 0;
 
-
+if(not_present) {
+		struct supp_page_entry* spt;
+		spt->uaddr = fault_addr;
+		struct thread *t = thread_current();
+		hash_find(t->supp_page_table)
+}
 
 #ifdef VM
 #else

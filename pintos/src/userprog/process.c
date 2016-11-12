@@ -500,8 +500,9 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 //		spe = malloc(sizeof(struct supp_page_entry));
 //		spe = supp_page_add(upage, writable, true);
 		struct supp_page_entry *spe = supp_page_add(upage, writable, true);
+		spe->file = file;
+		spe->ofs = ofs;
 #else
-
 		kpage = palloc_get_page(PAL_USER);
 
 		if (kpage == NULL)
@@ -526,6 +527,9 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 		read_bytes -= page_read_bytes;
 		zero_bytes -= page_zero_bytes;
 		upage += PGSIZE;
+#ifdef VM
+		ofs += PGSIZE;
+#endif
 	}
 	return true;
 }
