@@ -219,9 +219,13 @@ page_fault (struct intr_frame *f)
 		// invalid
 //		exit(-1);
 	}
-
-	f->eip = (void *) f->eax;
-	f->eax = 0xffffffff;
+	if(user)
+		kill(f);
+	else {
+		f->eip = (void *) f->eax;
+		f->eax = 0xffffffff;
+		exit(-1);
+	}
 //	kill (f);
 #else
 
