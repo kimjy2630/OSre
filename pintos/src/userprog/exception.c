@@ -208,6 +208,7 @@ page_fault (struct intr_frame *f)
 				swap_unload(spe->swap_index, spe->uaddr);
 				spe->swap_index = NULL;
 				spe->type = MEMORY;
+				printf("swap sfad\n");
 			}
 
 ////			printf("PASS\n");
