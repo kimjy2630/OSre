@@ -11,6 +11,8 @@
 #include "threads/vaddr.h"
 #include "vm/frame.h"
 #include "vm/page.h"
+#include "filesys/file.h"
+#include "filesys/filesys.h"
 #endif
 
 /* Number of page faults processed. */
