@@ -206,7 +206,7 @@ page_fault (struct intr_frame *f)
 
 	f->eip = (void *) f->eax;
 	f->eax = 0xffffffff;
-	kill (f);
+//	kill (f);
 #else
 
 
