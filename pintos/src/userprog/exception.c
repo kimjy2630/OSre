@@ -256,6 +256,8 @@ page_fault (struct intr_frame *f)
 				spe->type = MEMORY;
 			}
 			else{
+				f->eip = (void *) f->eax;
+				f->eax = 0xffffffff;
 				exit(-1);
 			}
 			return;
