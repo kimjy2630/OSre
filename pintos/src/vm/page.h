@@ -4,7 +4,8 @@
 #include "lib/kernel/hash.h"
 
 struct supp_page_entry{
-	uint8_t *addr;
+	uint8_t *uaddr;
+	uint8_t* kaddr;
 	bool writable;
 //	struct frame_entry *fe;
 	bool is_file;

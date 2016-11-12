@@ -554,6 +554,7 @@ static bool setup_stack(void **esp) {
 			*esp = PHYS_BASE;
 #ifdef VM
 			struct supp_page_entry *spe = supp_page_add(((uint8_t *) PHYS_BASE) - PGSIZE, true, false);
+			spe->kaddr = fe->addr;
 #endif
 		} else {
 			palloc_free_page(kpage);
