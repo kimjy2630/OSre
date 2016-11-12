@@ -92,9 +92,9 @@ void frame_evict() {
 //		printf("loop\n");
 //		printf("head:%p\n", frame.head.next);
 		e = list_pop_front(&frame);
-//		printf("e:%p\n",e);
+		printf("e:%p\n",e);
 		fe = list_entry(e, struct frame_entry, elem);
-//		printf("fe:%p\n",fe);
+		printf("fe:%p\n",fe);
 		pd = fe->t->pagedir;
 //		printf("pd:%p\n",pd);
 		spe = fe->spe;
