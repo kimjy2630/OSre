@@ -108,6 +108,7 @@ void frame_evict() {
 //			printf("accessed page\n");
 			pagedir_set_accessed(pd, uaddr, 0);
 			list_push_back(&frame, e);
+			printf("uaddr after check:%p\n", uaddr);
 		}
 		else{
 			printf("load page to swap\n");
