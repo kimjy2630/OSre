@@ -160,7 +160,7 @@ page_fault (struct intr_frame *f)
   user = (f->error_code & PF_U) != 0;
 
 #ifdef VM
-printf("PAGE FAULT\n");
+//printf("PAGE FAULT\n");
 	if (not_present) {
 //		printf("NOT PRESENT\n");
 		struct supp_page_entry spe_tmp;
