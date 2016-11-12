@@ -237,7 +237,7 @@ page_fault (struct intr_frame *f)
 			}
 			////
 			if((uint32_t *)fault_addr > (uint32_t *)PHYS_BASE){
-				printf("access to kernel memory");
+				printf("access to kernel memory\n");
 				f->eip = (void *) f->eax;
 				f->eax = 0xffffffff;
 				exit(-1);

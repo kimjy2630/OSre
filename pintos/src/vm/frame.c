@@ -81,7 +81,7 @@ void frame_evict() {
 	uint8_t *uaddr;
 
 	ASSERT(!list_empty(&frame));
-//	printf("start evict\n");
+	printf("start evict\n");
 //	printf("&frame:%p\n",&frame);
 
 
@@ -100,17 +100,17 @@ void frame_evict() {
 		uaddr = spe->uaddr;
 //		printf("uaddr:%p\n",uaddr);
 		if(spe->type == SWAP){
-//			printf("swap page\n");
+			printf("swap page\n");
 			frame_free(fe);
 //			list_push_back(&frame, e);
 		}
 		else if(pagedir_is_accessed(pd, uaddr)){
-//			printf("accessed page\n");
+			printf("accessed page\n");
 			pagedir_set_accessed(pd, uaddr, 0);
 			list_push_back(&frame, e);
 		}
 		else{
-//			printf("load page to swap\n");
+			printf("load page to swap\n");
 			spe->kaddr = NULL;
 			lock_acquire(&lock_frame);
 			spe->swap_index = swap_load(uaddr);
@@ -121,7 +121,7 @@ void frame_evict() {
 			if (spe->type == MEMORY)
 				pagedir_clear_page(pd, uaddr);
 			frame_free(fe);
-//			printf("evict loop end\n");
+			printf("evict loop end\n");
 //			lock_release(&lock_frame);
 			break;
 		}
