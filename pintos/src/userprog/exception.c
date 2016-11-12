@@ -161,23 +161,23 @@ page_fault (struct intr_frame *f)
 
 #ifdef VM
 	if (not_present) {
-		struct supp_page_entry spt_tmp;
-		spt_tmp.uaddr = pg_round_down(fault_addr);
+		struct supp_page_entry spe_tmp;
+		spe_tmp.uaddr = pg_round_down(fault_addr);
 		struct thread *t = thread_current();
-		struct supp_page_entry* spt = hash_find(&t->supp_page_table,
-				&spt_tmp.elem);
+		struct supp_page_entry* spe = hash_find(&t->supp_page_table,
+				&spe_tmp.elem);
 
-		if (spt != NULL) {
-			ASSERT(pg_ofs(spt->uaddr) == 0);
+		if (spe != NULL) {
+			ASSERT(pg_ofs(spe->uaddr) == 0);
 			struct frame_entry *fe = frame_add(PAL_USER);
-			if (spt->type == FILE) {
-				file_seek(spt->file, spt->ofs);
+			if (spe->type == FILE) {
+				file_seek(spe->file, spe->ofs);
 
-				off_t bytes_read = file_read(spt->file, fe->addr,
-						spt->page_read_bytes);
-				ASSERT(bytes_read == spt->page_read_bytes);
+				off_t bytes_read = file_read(spe->file, fe->addr,
+						spe->page_read_bytes);
+				ASSERT(bytes_read == spe->page_read_bytes);
 				memset(fe->addr + bytes_read, 0, PGSIZE - bytes_read);
-			} else if (spt->type == ZERO) {
+			} else if (spe->type == ZERO) {
 				memset(fe->addr, 0, PGSIZE);
 			}
 			/*
@@ -189,9 +189,9 @@ page_fault (struct intr_frame *f)
 			 }
 			 */
 
-			spt->kaddr = fe->addr;
-			if (!pagedir_set_page(t->pagedir, spt->uaddr, spt->kaddr,
-					spt->writable)) {
+			spe->kaddr = fe->addr;
+			if (!pagedir_set_page(t->pagedir, spe->uaddr, spe->kaddr,
+					spe->writable)) {
 				kill(f);
 			}
 		} else {
