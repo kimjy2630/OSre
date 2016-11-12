@@ -25,7 +25,7 @@ void frame_init() {
 
 struct frame_entry* frame_add(enum palloc_flags flags) {
 	//TODO
-	printf("FRAME ADD\n");
+//	printf("FRAME ADD\n");
 //struct frame_entry* frame_add(uint8_t* addr) {
 	uint8_t *addr = palloc_get_page(flags);
 	if (addr != NULL) {
