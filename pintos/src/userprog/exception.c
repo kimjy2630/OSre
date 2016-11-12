@@ -168,15 +168,15 @@ page_fault (struct intr_frame *f)
 		void* esp;
 		if (user) {
 			esp = f->esp;
-			printf("111 esp:%p\n", esp);
+//			printf("111 esp:%p\n", esp);
 		} else {
 			esp = thread_current()->esp;
-			printf("222 esp:%p\n", esp);
+//			printf("222 esp:%p\n", esp);
 		}
 		////
-		printf("fault_addr:%p\n", fault_addr);
+//		printf("fault_addr:%p\n", fault_addr);
 		uint32_t offset = ((uint32_t *) PHYS_BASE) - ((uint32_t *) fault_addr);
-		printf("offset:%p\n", offset);
+//		printf("offset:%p\n", offset);
 //		if (offset > STACK_LIMIT) {
 //			printf("stack overflow\n");
 //			f->eip = (void *) f->eax;

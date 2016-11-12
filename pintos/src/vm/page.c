@@ -109,7 +109,8 @@ bool page_load(void* fault_addr) {
 
 bool stack_grow(void* fault_addr) {
 	struct thread *t = thread_current();
-	printf("333\n");
+//	printf("333\n");
+
 	/* Check for stack overflow */
 //	if (fault_addr < STACK_MIN) {
 //		exit(-1);
@@ -128,7 +129,7 @@ bool stack_grow(void* fault_addr) {
 	struct supp_page_entry *spe = supp_page_add(pg_round_down(fault_addr),
 			true);
 	if (spe == NULL) {
-		printf("spe null aaa, fe:%p\n", fe);
+//		printf("spe null aaa, fe:%p\n", fe);
 		return false;
 	}
 
