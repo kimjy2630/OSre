@@ -119,6 +119,7 @@ void frame_evict() {
 			spe->kaddr = NULL;
 			printf("call swap_load\n");
 			spe->swap_index = swap_load(uaddr);
+			printf("end swap_load\n");
 			spe->type = SWAP;
 
 //			printf("uaddr:%p\n", uaddr);
