@@ -23,8 +23,9 @@ size_t swap_load(uint8_t *uaddr){ // mem -> disk
 	if(index == BITMAP_ERROR)
 		PANIC("swap disk full");
 	int i;
-	for(i=0; i<num_sector_in_page; i++){
+	for (i = 0; i < num_sector_in_page; i++) {
 		disk_write(swap_disk, index + i, uaddr + i * DISK_SECTOR_SIZE);
+		ASSERT(swap_disk->channel->lock.holder == NULL);
 	}
 //	lock_release(&swap_lock);
 	return index;
@@ -34,9 +35,8 @@ void swap_unload(size_t index, uint8_t *uaddr){ // disk -> mem
 //	lock_acquire(&swap_lock);
 	bitmap_set_multiple(swap_bitmap, index, num_sector_in_page, 0);
 	int i;
-	for(i=0; i<num_sector_in_page; i++){
+	for (i = 0; i < num_sector_in_page; i++)
 		disk_read(swap_disk, index + i, uaddr + i * DISK_SECTOR_SIZE);
-	}
 //	lock_release(&swap_lock);
 }
 
