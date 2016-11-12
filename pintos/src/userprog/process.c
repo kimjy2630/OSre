@@ -506,6 +506,8 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 			spe->type = FILE;
 		spe->ofs = ofs;
 		spe->page_read_bytes = page_read_bytes;
+
+		ASSERT(pg_ofs(spt->uaddr) == 0);
 #else
 		kpage = palloc_get_page(PAL_USER);
 
@@ -564,6 +566,8 @@ static bool setup_stack(void **esp) {
 			struct supp_page_entry *spe = supp_page_add(((uint8_t *) PHYS_BASE) - PGSIZE, true);
 			spe->type = MEMORY;
 			spe->kaddr = fe->addr;
+
+			ASSERT(pg_ofs(spt->uaddr) == 0);
 #endif
 		} else {
 			palloc_free_page(kpage);
