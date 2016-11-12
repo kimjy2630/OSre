@@ -179,7 +179,7 @@ page_fault (struct intr_frame *f)
 			struct frame_entry *fe = frame_add(PAL_USER);
 			fe->spe = spe;
 
-			printf("PASS\n");
+//			printf("PASS\n");
 			spe->kaddr = fe->addr;
 			pagedir_clear_page(t->pagedir, pg_round_down(fault_addr));
 			if (!pagedir_set_page(t->pagedir, pg_round_down(fault_addr), spe->kaddr,
