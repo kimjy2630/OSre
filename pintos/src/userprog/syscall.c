@@ -38,7 +38,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 #ifdef VM
 	thread_current()->esp = f->esp;
 #endif
-//	printf("read validity\n");
+	printf("read validity:%p\n", ptr);
 	if (!read_validity(ptr, 4)){
 //		printf("hahaha\n");
 		exit(-1);
@@ -272,7 +272,6 @@ bool put_user(uint8_t *udst, uint8_t byte) {
 }
 
 bool read_validity(const void *uaddr, int size) {
-	printf("read uaddr:%p\n", uaddr);
 	int i;
 	if (((uint8_t *) uaddr) + size > PHYS_BASE)
 		return false;
