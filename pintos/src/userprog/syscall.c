@@ -38,8 +38,10 @@ syscall_handler (struct intr_frame *f UNUSED)
 #ifdef VM
 	thread_current()->esp = f->esp;
 #endif
-	if (!read_validity(ptr, 4))
+	if (!read_validity(ptr, 4)){
+		printf("hahaha\n");
 		exit(-1);
+	}
 	switch (*((int*) ptr)) {
 		case SYS_HALT:
 		halt();
