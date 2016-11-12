@@ -175,6 +175,9 @@ page_fault (struct intr_frame *f)
 			struct supp_page_entry* spe = hash_entry(he,struct supp_page_entry,elem);
 //			printf("NOT NULL\n");
 			spe->uaddr = pg_round_down(spe->uaddr);
+			if(spe->uaddr > PHYS_BASE){
+				PANIC("kernel access!");
+			}
 			ASSERT(pg_ofs(spe->uaddr) == 0);
 			struct frame_entry *fe = frame_add(PAL_USER);
 			fe->spe = spe;
