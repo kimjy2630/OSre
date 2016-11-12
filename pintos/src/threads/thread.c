@@ -198,6 +198,7 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 #ifdef VM
 	hash_init(&t->supp_page_table, hash_addr, hash_less_addr, NULL);
 //	lock_init(&t->lock_hash);
+	t->esp = NULL;
 #endif
 
 	/* Stack frame for kernel_thread(). */

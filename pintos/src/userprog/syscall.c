@@ -35,6 +35,9 @@ static void
 syscall_handler (struct intr_frame *f UNUSED)
 {
 	void *ptr = (void *) f->esp;
+#ifdef VM
+	thread_current()->esp = f->esp;
+#endif
 	if (!read_validity(ptr, 4))
 		exit(-1);
 	switch (*((int*) ptr)) {
