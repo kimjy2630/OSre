@@ -211,22 +211,22 @@ lock_acquire (struct lock *lock)
 
   enum intr_level old_level = intr_disable();
 
-//  thread_current()->lock_waiting = lock;
+  thread_current()->lock_waiting = lock;
 
-//  if(lock->holder != NULL)
-//	  if(thread_get_eff_priority(lock->holder) < thread_get_priority())
-//	  {
-//		  thread_set_eff_priority(lock->holder, thread_get_priority());
-//		  struct lock* lock_nested = lock->holder->lock_waiting;
-//		  if(lock_nested != NULL)
-//			  thread_calc_eff_priority(lock_nested->holder);
-//	  }
+  if(lock->holder != NULL)
+	  if(thread_get_eff_priority(lock->holder) < thread_get_priority())
+	  {
+		  thread_set_eff_priority(lock->holder, thread_get_priority());
+		  struct lock* lock_nested = lock->holder->lock_waiting;
+		  if(lock_nested != NULL)
+			  thread_calc_eff_priority(lock_nested->holder);
+	  }
 
   sema_down (&lock->semaphore);
 
-//  thread_current()->lock_waiting = NULL;
+  thread_current()->lock_waiting = NULL;
   lock->holder = thread_current ();
-//  list_push_back(&lock->holder->list_lock, &lock->elem);
+  list_push_back(&lock->holder->list_lock, &lock->elem);
 
   intr_set_level(old_level);
 }
@@ -266,9 +266,9 @@ lock_release (struct lock *lock)
   enum intr_level old_level = intr_disable();
 
   lock->holder = NULL;
-//  list_remove(&lock->elem);
+  list_remove(&lock->elem);
 
-//  thread_calc_eff_priority(thread_current());
+  thread_calc_eff_priority(thread_current());
 
   sema_up (&lock->semaphore);
 
