@@ -44,6 +44,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 		printf("hahaha\n");
 		exit(-1);
 	}
+	printf("I'm valid!\n");
 	switch (*((int*) ptr)) {
 		case SYS_HALT:
 		halt();
