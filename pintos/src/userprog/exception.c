@@ -308,7 +308,7 @@ page_fault (struct intr_frame *f)
 			}
 		}
 	} else {
-//		printf("BBB\n");
+		printf("present\n");
 		// invalid
 //		exit(-1);
 	}
