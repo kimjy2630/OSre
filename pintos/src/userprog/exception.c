@@ -215,12 +215,12 @@ page_fault (struct intr_frame *f)
 			printf("ccc\n");
 			void* esp;
 			if(user){
-				printf("111\n");
 				esp = f->esp;
+				printf("111 esp:%p\n", esp);
 			}
 			else{
-				printf("222\n");
 				esp = thread_current()->esp;
+				printf("222 esp:%p\n", esp);
 			}
 			if ((fault_addr == esp - 4) || (fault_addr == esp - 32)) {
 				printf("333\n");
