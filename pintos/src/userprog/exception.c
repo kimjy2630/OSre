@@ -199,6 +199,7 @@ page_fault (struct intr_frame *f)
 			}
 			pagedir_set_dirty (t->pagedir, pg_round_down(fault_addr), false);
 			pagedir_set_accessed (t->pagedir, pg_round_down(fault_addr), true);
+			printf("PAGE FAULT RETURN\n");
 			return;
 		} else {
 			// extend stack
