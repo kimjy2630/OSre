@@ -167,7 +167,7 @@ page_fault (struct intr_frame *f)
 		spe_tmp.uaddr = pg_round_down(fault_addr);
 		struct thread *t = thread_current();
 		struct hash_elem *he = hash_find(&t->supp_page_table, &spe_tmp.elem);
-//		printf("aaa fault_addr:%p\n", fault_addr);
+		printf("aaa fault_addr:%p\n", fault_addr);
 
 
 		if (he != NULL) {
@@ -225,18 +225,18 @@ page_fault (struct intr_frame *f)
 			return;
 		} else {
 			// extend stack
-			printf("ccc\n");
+//			printf("ccc\n");
 			void* esp;
 			if(user){
 				esp = f->esp;
-//				printf("111 esp:%p\n", esp);
+				printf("111 esp:%p\n", esp);
 			}
 			else{
 				esp = thread_current()->esp;
-//				printf("222 esp:%p\n", esp);
+				printf("222 esp:%p\n", esp);
 			}
 			////
-//			printf("fault_addr:%p\n", fault_addr);
+			printf("fault_addr:%p\n", fault_addr);
 			uint32_t offset = ((uint32_t *) PHYS_BASE) - ((uint32_t *)fault_addr);
 //			printf("offset:%p\n", offset);
 			if (offset > STACK_LIMIT){
