@@ -70,7 +70,7 @@ void frame_evict() {
 	while(!list_empty(&frame)){
 //		printf("loop\n");
 		e = list_pop_front(&frame);
-//		printf("");
+		printf("e:%p\n", e);
 		fe = list_entry(e, struct frame_entry, elem);
 //		printf("fe:%p\n", fe);
 		pd = fe->t->pagedir;
