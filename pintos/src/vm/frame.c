@@ -98,14 +98,14 @@ void frame_evict() {
 		spe = fe->spe;
 //		printf("spe:%p\n",spe);
 		uaddr = spe->uaddr;
-//		printf("uaddr:%p\n",uaddr);
+		printf("uaddr:%p\n",uaddr);
 		if(spe->type == SWAP){
 			printf("swap page\n");
 			frame_free(fe);
 //			list_push_back(&frame, e);
 		}
 		else if(pagedir_is_accessed(pd, uaddr)){
-			printf("accessed page\n");
+//			printf("accessed page\n");
 			pagedir_set_accessed(pd, uaddr, 0);
 			list_push_back(&frame, e);
 		}
