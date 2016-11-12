@@ -5,6 +5,7 @@
 #include "threads/thread.h"
 #include "threads/vaddr.h"
 #include "threads/palloc.h"
+#include <stddef.h>
 
 //void supp_page_init() {
 //
