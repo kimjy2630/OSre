@@ -209,6 +209,7 @@ printf("PAGE FAULT\n");
 			printf("PAGE FAULT RETURN\n");
 			return;
 		} else {
+			printf("HASH NULL\n");
 			// extend stack
 		}
 	} else {
