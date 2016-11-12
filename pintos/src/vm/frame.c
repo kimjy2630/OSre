@@ -9,6 +9,7 @@
 #include "vm/frame.h"
 #include "vm/swap.h"
 #include "userprog/syscall.h"
+#include "threads/vaddr.h"
 
 void frame_evict();
 
