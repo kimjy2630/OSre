@@ -268,9 +268,8 @@ struct list_elem *
 list_pop_front (struct list *list)
 {
   struct list_elem *front = list_front (list);
-  printf("a\n");
   list_remove (front);
-  printf("b\n");
+  printf("front:%p\n", front);
   return front;
 }
 
