@@ -236,6 +236,8 @@ page_fault (struct intr_frame *f)
 				spe->file = NULL;
 				spe->ofs = NULL;
 				spe->type = MEMORY;
+
+				return;
 			}
 			/* Other case of stack extension */
 			else if (fault_addr >= esp) {
@@ -254,21 +256,27 @@ page_fault (struct intr_frame *f)
 				spe->file = NULL;
 				spe->ofs = NULL;
 				spe->type = MEMORY;
+
+				return;
 			}
 			else{
+				printf("AAA\n");
 				f->eip = (void *) f->eax;
 				f->eax = 0xffffffff;
 				exit(-1);
 			}
-			return;
 		}
 	} else {
+		printf("BBB\n");
 		// invalid
 //		exit(-1);
 	}
-	if(user)
+	if(user){
+		printf("CCC\n");
 		kill(f);
+	}
 	else {
+		printf("DDD\n");
 		f->eip = (void *) f->eax;
 		f->eax = 0xffffffff;
 		exit(-1);
