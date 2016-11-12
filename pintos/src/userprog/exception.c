@@ -8,13 +8,13 @@
 ////
 #include "userprog/process.h"
 ////
-//#ifdef VM
+#ifdef VM
 #include "threads/vaddr.h"
 #include "vm/frame.h"
 #include "vm/page.h"
 #include "filesys/file.h"
 #include "filesys/filesys.h"
-//#endif
+#endif
 
 /* Number of page faults processed. */
 static long long page_fault_cnt;
@@ -159,7 +159,7 @@ page_fault (struct intr_frame *f)
   write = (f->error_code & PF_W) != 0;
   user = (f->error_code & PF_U) != 0;
 
-//#ifdef VM
+#ifdef VM
 //printf("PAGE FAULT\n");
 	if (not_present) {
 //		printf("NOT PRESENT\n");
@@ -268,7 +268,7 @@ page_fault (struct intr_frame *f)
 		exit(-1);
 	}
 //	kill (f);
-//#else
+#else
 
 
 
