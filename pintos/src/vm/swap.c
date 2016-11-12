@@ -29,6 +29,7 @@ size_t swap_load(uint8_t *uaddr){ // mem -> disk
 	}
 	printf("swp_lock_rel  holder:%p, curr:%p\n", swap_lock.holder, thread_current());
 	lock_release(&swap_lock);
+	printf("after_rel  holder:%p, curr:%p\n", swap_lock.holder, thread_current());
 	return index;
 }
 
