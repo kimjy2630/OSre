@@ -86,8 +86,8 @@ void frame_evict() {
 
 //	enum intr_level old_level;
 
+	lock_acquire(&lock_frame);
 	while(!list_empty(&frame)){
-		lock_acquire(&lock_frame);
 //		printf("loop\n");
 //		printf("head:%p\n", frame.head.next);
 //		old_level = intr_disable();
@@ -106,7 +106,6 @@ void frame_evict() {
 //			printf("swap page\n");
 			frame_free(fe);
 //			list_push_back(&frame, e);
-			lock_release(&lock_frame);
 		}
 		else if(pagedir_is_accessed(pd, uaddr)){
 //			printf("accessed page\n");
@@ -114,7 +113,6 @@ void frame_evict() {
 //			old_level = intr_disable();
 			list_push_back(&frame, e);
 //			intr_set_level(old_level);
-			lock_release(&lock_frame);
 		}
 		else{
 //			printf("load page to swap\n");
