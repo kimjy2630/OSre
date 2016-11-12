@@ -251,7 +251,7 @@ disk_write (struct disk *d, disk_sector_t sec_no, const void *buffer)
   ASSERT (buffer != NULL);
 
   c = d->channel;
-  printf("holder:%p, curr:%p\n", c->lock.holder, thread_current());
+  printf("lock_acq  holder:%p, curr:%p\n", c->lock.holder, thread_current());
   lock_acquire (&c->lock);
   select_sector (d, sec_no);
   issue_pio_command (c, CMD_WRITE_SECTOR_RETRY);
@@ -260,6 +260,7 @@ disk_write (struct disk *d, disk_sector_t sec_no, const void *buffer)
   output_sector (c, buffer);
   sema_down (&c->completion_wait);
   d->write_cnt++;
+  printf("lock_rel  holder:%p, curr:%p\n", c->lock.holder, thread_current());
   lock_release (&c->lock);
 }
 
