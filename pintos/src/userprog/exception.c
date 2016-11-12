@@ -210,6 +210,7 @@ printf("PAGE FAULT\n");
 			return;
 		} else {
 			printf("HASH NULL\n");
+			kill(f);
 			// extend stack
 		}
 	} else {
