@@ -168,6 +168,7 @@ page_fault (struct intr_frame *f)
 				&spe_tmp.elem);
 
 		if (spe != NULL) {
+			spe->uaddr = pg_round_down(spe->uaddr);
 			ASSERT(pg_ofs(spe->uaddr) == 0);
 			struct frame_entry *fe = frame_add(PAL_USER);
 			if (spe->type == FILE) {
