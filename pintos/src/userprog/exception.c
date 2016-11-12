@@ -236,6 +236,14 @@ page_fault (struct intr_frame *f)
 				printf("222 esp:%p\n", esp);
 			}
 			////
+			if((uint32_t *)fault_addr > (uint32_t *)PHYS_BASE){
+				printf("access to kernel memory");
+				f->eip = (void *) f->eax;
+				f->eax = 0xffffffff;
+				exit(-1);
+				return;
+			}
+
 			printf("fault_addr:%p\n", fault_addr);
 			uint32_t offset = ((uint32_t *) PHYS_BASE) - ((uint32_t *)fault_addr);
 //			printf("offset:%p\n", offset);

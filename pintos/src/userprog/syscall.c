@@ -272,6 +272,7 @@ bool put_user(uint8_t *udst, uint8_t byte) {
 }
 
 bool read_validity(const void *uaddr, int size) {
+	printf("read uaddr:%p\n", uaddr);
 	int i;
 	if (((uint8_t *) uaddr) + size > PHYS_BASE)
 		return false;
