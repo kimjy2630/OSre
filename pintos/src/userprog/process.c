@@ -484,33 +484,21 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 		size_t page_read_bytes = read_bytes < PGSIZE ? read_bytes : PGSIZE;
 		size_t page_zero_bytes = PGSIZE - page_read_bytes;
 
-		/* Get a page of memory. */
-		uint8_t *kpage;
-		//TODO
 #ifdef VM
-//		kpage = palloc_get_page(PAL_USER);
-//		struct frame_entry *fe = frame_add(kpage);
-//		struct frame_entry *fe = frame_add(PAL_USER);
-//		if(fe == NULL)
-//			return false;
-
-//		kpage = fe->addr;
-
-//		struct supp_page_entry *spe;
-//		spe = malloc(sizeof(struct supp_page_entry));
-//		spe = supp_page_add(upage, writable, true);
 		struct supp_page_entry *spe = supp_page_add(upage, writable);
 		if(page_zero_bytes == PGSIZE)
 			spe->type = ZERO;
 		else
 			spe->type = FILE;
+		spe->kaddr = NULL;
 		spe->ofs = ofs;
 		spe->page_read_bytes = page_read_bytes;
 		spe->file = file;
 
 		ASSERT(pg_ofs(spe->uaddr) == 0);
 #else
-		kpage = palloc_get_page(PAL_USER);
+		/* Get a page of memory. */
+		uint8_t *kpage = palloc_get_page(PAL_USER);
 
 		if (kpage == NULL)
 			return false;
@@ -527,9 +515,7 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 			palloc_free_page(kpage);
 			return false;
 		}
-
 #endif
-
 		/* Advance. */
 		read_bytes -= page_read_bytes;
 		zero_bytes -= page_zero_bytes;
@@ -549,11 +535,9 @@ static bool setup_stack(void **esp) {
 
 	//TODO
 #ifdef VM
-	kpage = palloc_get_page(PAL_USER | PAL_ZERO);
-//	struct frame_entry *fe = frame_add(kpage);
-	struct frame_entry *fe = frame_add(PAL_USER);
-	if(fe == NULL)
-	return false;
+	struct frame_entry *fe = frame_add(PAL_USER | PAL_ZERO);
+	if (fe == NULL)
+		return false;
 
 	kpage = fe->addr;
 #else

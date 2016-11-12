@@ -40,9 +40,8 @@ bool supp_page_remove(uint8_t *addr) {
 }
 
 unsigned hash_addr(struct hash_elem *e, void *aux) {
-	struct supp_page_entry *spe;
-	spe = hash_entry(e, struct supp_page_entry, elem);
-	return hash_int(spe->uaddr);
+	struct supp_page_entry *spe = hash_entry(e, struct supp_page_entry, elem);
+	return hash_int((int) (spe->uaddr));
 }
 
 bool hash_less_addr(const struct hash_elem *a, const struct hash_elem *b, void *aux){
