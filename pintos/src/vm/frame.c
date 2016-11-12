@@ -59,7 +59,7 @@ void frame_free(uint8_t *addr) {
 }
 
 void frame_evict() {
-//	PANIC("FRAME_EVICT!");
+	PANIC("FRAME_EVICT!");
 	struct list_elem *e;
 	struct frame_entry *fe;
 	struct supp_page_entry *spe;
