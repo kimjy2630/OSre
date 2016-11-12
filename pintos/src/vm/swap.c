@@ -27,6 +27,7 @@ size_t swap_load(uint8_t *uaddr){ // mem -> disk
 	for(i=0; i<num_sector_in_page; i++){
 		disk_write(swap_disk, index + i, uaddr + i * DISK_SECTOR_SIZE);
 	}
+	printf("swp_lock_rel  holder:%p, curr:%p\n", swap_lock.holder, thread_current());
 	lock_release(&swap_lock);
 	return index;
 }
