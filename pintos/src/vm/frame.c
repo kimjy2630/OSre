@@ -76,7 +76,7 @@ void frame_evict() {
 	while(!list_empty(&frame)){
 		printf("loop\n");
 		printf("head:%p\n", frame.head.next);
-		old_level = intr_diable();
+		old_level = intr_disable();
 		e = list_pop_front(&frame);
 		intr_set_level(old_level);
 		printf("e:%p\n",e);
@@ -96,7 +96,7 @@ void frame_evict() {
 		else if(pagedir_is_accessed(pd, uaddr)){
 //			printf("accessed page\n");
 			pagedir_set_accessed(pd, uaddr, 0);
-			old_level = intr_diable();
+			old_level = intr_disable();
 			list_push_back(&frame, e);
 			intr_set_level(old_level);
 		}
