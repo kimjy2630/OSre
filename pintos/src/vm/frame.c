@@ -112,7 +112,9 @@ void frame_evict() {
 		else{
 //			printf("load page to swap\n");
 			spe->kaddr = NULL;
+			lock_acquire(&lock_frame);
 			spe->swap_index = swap_load(uaddr);
+			lock_release(&lock_frame);
 			spe->type = SWAP;
 
 //			printf("uaddr:%p\n", uaddr);
