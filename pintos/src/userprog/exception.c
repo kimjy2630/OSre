@@ -160,155 +160,16 @@ page_fault (struct intr_frame *f)
   user = (f->error_code & PF_U) != 0;
 
 #ifdef VM
-//printf("PAGE FAULT\n");
-	if (not_present) {
-//		printf("NOT PRESENT\n");
-		struct supp_page_entry spe_tmp;
-		spe_tmp.uaddr = pg_round_down(fault_addr);
-		struct thread *t = thread_current();
-		struct hash_elem *he = hash_find(&t->supp_page_table, &spe_tmp.elem);
-//		printf("aaa fault_addr:%p\n", fault_addr);
-
-
-		if (he != NULL) {
-//			printf("bbb\n");
-			struct supp_page_entry* spe = hash_entry(he,struct supp_page_entry,elem);
-//			printf("NOT NULL\n");
-			spe->uaddr = pg_round_down(spe->uaddr);
-			ASSERT(pg_ofs(spe->uaddr) == 0);
-			struct frame_entry *fe = frame_add(PAL_USER);
-			fe->spe = spe;
-			if (spe->type == FILE) {
-//				printf("FILE\n");
-				file_seek(spe->file, spe->ofs);
-
-				off_t bytes_read = file_read(spe->file, fe->addr,
-						spe->page_read_bytes);
-				ASSERT(bytes_read == spe->page_read_bytes);
-				memset(fe->addr + bytes_read, 0, PGSIZE - bytes_read);
-				spe->type = MEMORY;
-			} else if (spe->type == ZERO) {
-//				printf("ZERO\n");
-				memset(fe->addr, 0, PGSIZE);
-			}
-			else if(spe->type == SWAP){
-				swap_unload(spe->swap_index, spe->uaddr);
-				spe->swap_index = NULL;
-				spe->type = MEMORY;
-			}
-
-//			printf("PASS\n");
-			spe->kaddr = fe->addr;
-			pagedir_clear_page(t->pagedir, pg_round_down(fault_addr));
-			if (!pagedir_set_page(t->pagedir, pg_round_down(fault_addr), spe->kaddr,
-					spe->writable)) {
-//				printf("KILL\n");
-				kill(f);
-			}
-			pagedir_set_dirty (t->pagedir, pg_round_down(fault_addr), false);
-			pagedir_set_accessed (t->pagedir, pg_round_down(fault_addr), true);
-//			printf("PAGE FAULT RETURN\n");
+	if(user)
+	thread_current()->esp = fault_addr;
+	if(not_present && is_user_vaddr(fault_addr)) {
+		if(page_load(&thread_current()->page_table, fault_addr, thread_current()->pagedir))
+		return;
+		if(fault_addr >= f->esp - 32 && PHYS_BASE - fault_addr <= STACK_SIZE) {
+			if(stack_growth(&thread_current()->page_table, pg_round_down(fault_addr), thread_current()->pagedir))
 			return;
-		} else {
-			// extend stack
-//			printf("ccc\n");
-			void* esp;
-			if(user){
-				esp = f->esp;
-				printf("111 esp:%p\n", esp);
-			}
-			else{
-				esp = thread_current()->esp;
-				printf("222 esp:%p\n", esp);
-			}
-			////
-			printf("fault_addr:%p\n", fault_addr);
-			uint32_t offset = ((uint32_t *) PHYS_BASE) - ((uint32_t *)fault_addr);
-			printf("offset:%p\n", offset);
-			if (offset > STACK_LIMIT){
-				printf("stack overflow\n");
-				f->eip = (void *) f->eax;
-				f->eax = 0xffffffff;
-				exit(-1);
-				return;
-			}
-
-			if ((fault_addr == esp - 4) || (fault_addr == esp - 32) || fault_addr >= esp) {
-				printf("333\n");
-				/* Check for stack overflow */
-//				if (fault_addr < STACK_MIN) {
-//					exit(-1);
-//				}
-
-				/* If we're here, let's give this process another page */
-				struct frame_entry *fe = frame_add(PAL_ZERO | PAL_USER);
-
-				if (pagedir_get_page(t->pagedir, pg_round_down(fault_addr))!= NULL || !pagedir_set_page(t->pagedir, pg_round_down(fault_addr), fe->addr, true)) {
-					frame_free(fe);
-					kill(f);
-				}
-				/* Record the new stack page in the supplemental page table and
-				 the frame table. */
-				struct supp_page_entry *spe = supp_page_add(
-						pg_round_down(fault_addr), true);
-				if(spe == NULL){
-					printf("spe null aaa, fe:%p\n", fe);
-				}
-
-				spe->kaddr = fe->addr;
-				spe->page_read_bytes = 0;
-				spe->file = NULL;
-				spe->ofs = NULL;
-				spe->type = MEMORY;
-
-				fe->spe = spe;
-				return;
-			}
-			/* Other case of stack extension */
-//			else if (fault_addr >= esp) {
-//				printf("444\n");
-//				struct frame_entry *fe = frame_add(PAL_ZERO | PAL_USER);
-//
-//				if (pagedir_get_page(t->pagedir, pg_round_down(fault_addr))!= NULL || !pagedir_set_page(t->pagedir, pg_round_down(fault_addr), fe->addr, true)) {
-//					kill(f);
-//				}
-//
-//				/* Record the new stack page in the supplemental page table and
-//				 the frame table. */
-//				struct supp_page_entry *spe = supp_page_add(
-//						pg_round_down(fault_addr), true);
-//				spe->kaddr = fe->addr;
-//				spe->page_read_bytes = 0;
-//				spe->file = NULL;
-//				spe->ofs = NULL;
-//				spe->type = MEMORY;
-//
-//				fe->spe = spe;
-//				return;
-//			}
-			else{
-				printf("AAA\n");
-				f->eip = (void *) f->eax;
-				f->eax = 0xffffffff;
-				exit(-1);
-			}
 		}
-	} else {
-//		printf("BBB\n");
-		// invalid
-//		exit(-1);
 	}
-	if(user){
-//		printf("CCC\n");
-		kill(f);
-	}
-	else {
-//		printf("DDD\n");
-		f->eip = (void *) f->eax;
-		f->eax = 0xffffffff;
-		exit(-1);
-	}
-//	kill (f);
 #else
 
 

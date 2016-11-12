@@ -1,130 +1,90 @@
-#include "threads/thread.h"
-#include "threads/palloc.h"
-#include "vm/frame.h"
-#include <stdlib.h>
-#include "lib/debug.h"
-#include "threads/interrupt.h"
-#include "vm/page.h"
-#include "vm/frame.h"
 #include "vm/swap.h"
+#include "vm/frame.h"
+#include "threads/synch.h"
+#include "threads/malloc.h"
+#include "threads/thread.h"
+#include "threads/vaddr.h"
+#include "userprog/pagedir.h"
+#include <list.h>
+#include <debug.h>
 
-void frame_evict();
-
-struct list frame;
-struct lock lock_frame;
+struct list frame_table;
+struct lock frame_lock;
 
 void frame_init() {
-	list_init(&frame);
-	lock_init(&lock_frame);
+	list_init(&frame_table);
+	lock_init(&frame_lock);
 }
 
-/*
- struct frame_entry* frame_get(uint8_t *addr){
-
- }
- */
-
-struct frame_entry* frame_add(enum palloc_flags flags) {
-//struct frame_entry* frame_add(uint8_t* addr) {
-	uint8_t *addr = palloc_get_page(flags);
-	if (addr != NULL) {
-		struct frame_entry* fe = malloc(sizeof(struct frame_entry));
-		if (fe == NULL) {
+void *frame_alloc(enum palloc_flags flags, struct page_entry *p) {
+	ASSERT((flags & PAL_USER) != 0);
+	lock_acquire(&frame_lock);
+	void *frame = palloc_get_page(flags);
+	struct frame_entry *f = malloc(sizeof(struct frame_entry));
+	while (frame == NULL) {
+		if (!frame_evict(flags)) {
+			lock_release(&frame_lock);
 			return NULL;
 		}
-		fe->addr = addr;
-		fe->t = thread_current();
-
-		enum intr_level old_level = intr_disable();
-//		printf("aaa\n");
-		list_push_back(&frame, &fe->elem);
-		intr_set_level(old_level);
-//		printf("bbb, fe:%p\n");
-
-		return fe;
-	} else {
-		frame_evict();
-		return frame_add(flags);
-//		return frame_add(addr);
+		frame = palloc_get_page(flags);
 	}
+	f->frame = frame;
+	f->page = p;
+	f->page->pin = true;
+	f->thread = thread_current();
+	list_push_back(&frame_table, &f->elem);
+	lock_release(&frame_lock);
+	return frame;
 }
 
-//void frame_free(uint8_t *addr) {
-//	struct list_elem *e;
-//	struct frame_entry *fe;
-//
-//	for(e = list_begin(&frame); e != list_end(&frame); e = list_next(e)){
-//		fe = list_entry(e, struct frame_entry, elem);
-//		if(fe->addr == addr){
-//			// free page
-//			free(fe);
-//		}
-//	}
-//}
-
-void frame_free(struct frame_entry *fe){
-	list_remove(&fe->elem);
-
-//	free(fe->addr);
-	pagedir_clear_page(fe->t->pagedir, fe->spe->uaddr);
-	palloc_free_page(fe->addr);
-	free(fe);
-}
-
-void frame_evict() {
-//	PANIC("FRAME_EVICT!");
+void frame_free(void *frame) {
 	struct list_elem *e;
-	struct frame_entry *fe;
-	struct supp_page_entry *spe;
-	uint32_t *pd;
-	uint8_t *uaddr;
-
-	ASSERT(!list_empty(&frame));
-//	printf("start evict\n");
-//	printf("&frame:%p\n",&frame);
-
-	enum intr_level old_level;
-
-	while(!list_empty(&frame)){
-		printf("loop\n");
-//		printf("head:%p\n", frame.head.next);
-		old_level = intr_disable();
-		e = list_pop_front(&frame);
-		intr_set_level(old_level);
-		printf("e:%p\n",e);
-		fe = list_entry(e, struct frame_entry, elem);
-		printf("fe:%p\n",fe);
-		pd = fe->t->pagedir;
-		printf("pd:%p\n",pd);
-		spe = fe->spe;
-		printf("spe:%p\n",spe);
-		uaddr = spe->uaddr;
-		printf("uaddr:%p\n",uaddr);
-		if(spe->type == SWAP){
-			printf("swap page\n");
-			frame_free(fe);
-//			list_push_back(&frame, e);
-		}
-		else if(pagedir_is_accessed(pd, uaddr)){
-			printf("accessed page\n");
-			pagedir_set_accessed(pd, uaddr, 0);
-			old_level = intr_disable();
-			list_push_back(&frame, e);
-			intr_set_level(old_level);
-		}
-		else{
-			printf("load page to swap\n");
-			spe->kaddr = NULL;
-			spe->swap_index = swap_load(uaddr);
-			spe->type = SWAP;
-
-//			printf("uaddr:%p\n", uaddr);
-			if (spe->type == MEMORY)
-				pagedir_clear_page(pd, uaddr);
-			frame_free(fe);
-			printf("evict loop end\n");
+	lock_acquire(&frame_lock);
+	for (e = list_begin(&frame_table); e != list_end(&frame_table); e =
+			list_next(e)) {
+		if (list_entry(e, struct frame_entry, elem)->frame == frame) {
+			list_remove(e);
+			free(list_entry(e, struct frame_entry, elem));
+			palloc_free_page(frame);
 			break;
 		}
 	}
+	lock_release(&frame_lock);
 }
 
+bool frame_evict(enum palloc_flags flags) {
+	struct list_elem *e;
+	struct frame_entry *f;
+	for (e = list_begin(&frame_table); e != list_end(&frame_table); e =
+			list_next(e)) {
+		f = list_entry(e, struct frame_entry, elem);
+		if (!f->page->pin) {
+			lock_acquire(&f->thread->pagedir_lock);
+			if (f->thread->pagedir == NULL) {
+				lock_release(&f->thread->pagedir_lock);
+				continue;
+			}
+			pagedir_clear_page(f->thread->pagedir, f->page->page);
+			if (f->page->status == FRAME_MMAP) {
+				struct page_entry *p = f->page;
+				p->pin = true;
+				lock_acquire(&file_lock);
+				if (pagedir_is_dirty(f->thread->pagedir, p->page))
+					file_write_at(p->file, p->page, p->read_bytes, p->offset);
+				lock_release(&file_lock);
+				p->status = MMAP;
+				p->pin = false;
+			} else if (f->page->file == NULL || f->page->writable) {
+				f->page->status = SWAP_SLOT;
+				f->page->swap_index = swap_out(f->frame);
+			} else
+				f->page->status = FILE_SYS;
+			lock_release(&f->thread->pagedir_lock);
+			list_remove(e);
+			palloc_free_page(f->frame);
+			free(f);
+			break;
+		}
+	}
+	return true;
+}

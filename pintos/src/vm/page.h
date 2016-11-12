@@ -1,34 +1,50 @@
 #ifndef VM_PAGE_H
 #define VM_PAGE_H
+#include <hash.h>
+#include <list.h>
+#include "filesys/file.h"
+#include "userprog/syscall.h"
 
-#include "lib/kernel/hash.h"
-
-enum page_type {
-	ZERO, MEMORY, FILE, SWAP
+enum page_stat {
+	FRAME, SWAP_SLOT, FILE_SYS, MMAP, FRAME_MMAP
 };
 
-struct supp_page_entry{
-	void* uaddr;
-	void* kaddr;
-	bool writable;
-//	struct frame_entry *fe;
-	enum page_type type;
-	struct hash_elem elem;
-//	struct lock lock_using;
-	size_t swap_index;
+struct page_entry {
+	/* common */
+	void *page; /* virtual address */
+	enum page_stat status; /* FILE, SWAP */
+	bool writable; /* writable page */
+	bool pin; /* pinning */
 
-	/* used for file page */
-	struct file* file;
-	uint32_t ofs;
-	uint32_t page_read_bytes;
+	/* filesys */
+	struct file *file; /* reading file */
+	off_t offset; /* file offset */
+	uint32_t read_bytes; /* read bytes from file */
+	uint32_t zero_bytes; /* zero bytes */
+
+	size_t swap_index; /* start index of swap disk */
+
+	struct hash_elem hash_elem; /* hash element */
 };
 
-//void supp_page_init();
-struct supp_page_entry* supp_page_add(uint8_t* addr, bool writable);
-//void supp_page_get();
-bool supp_page_remove();
+struct mmap_entry {
+	mapid_t mmap_id;
+	struct file *file;
+	void *addr;
+	uint32_t size;
+	struct list_elem elem;
+};
 
-unsigned hash_addr(struct hash_elem *e, void *aux);
-bool hash_less_addr(const struct hash_elem *a, const struct hash_elem *b, void *aux);
+bool page_table_init(struct hash *page_table);
+void page_table_destroy(struct hash *page_table);
+struct page_entry *page_create(struct hash *page_table, void *addr,
+		bool writable);
+struct page_entry *page_create_file(struct hash *page_table, void *addr,
+		bool writable, struct file *file, off_t offset, uint32_t read_bytes,
+		uint32_t zero_bytes);
+struct page_entry *page_find(struct hash *page_table, void *addr);
+void page_delete(struct hash *page_table, struct page_entry *p);
+bool page_load(struct hash *page_table, void *addr, uint32_t *pagedir);
+bool stack_growth(struct hash *page_table, void *addr, uint32_t *pagedir);
 
-#endif /* vm/page.h */
+#endif

@@ -488,27 +488,15 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 		uint8_t *kpage;
 		//TODO
 #ifdef VM
-//		kpage = palloc_get_page(PAL_USER);
-//		struct frame_entry *fe = frame_add(kpage);
-//		struct frame_entry *fe = frame_add(PAL_USER);
-//		if(fe == NULL)
-//			return false;
-
-//		kpage = fe->addr;
-
-//		struct supp_page_entry *spe;
-//		spe = malloc(sizeof(struct supp_page_entry));
-//		spe = supp_page_add(upage, writable, true);
-		struct supp_page_entry *spe = supp_page_add(upage, writable);
-		if(page_zero_bytes == PGSIZE)
-			spe->type = ZERO;
-		else
-			spe->type = FILE;
-		spe->ofs = ofs;
-		spe->page_read_bytes = page_read_bytes;
-		spe->file = file;
-
-		ASSERT(pg_ofs(spe->uaddr) == 0);
+		struct page_entry *p = page_create_file(&thread_current()->page_table, upage, writable, file, ofs, page_read_bytes, page_zero_bytes);
+		if(p == NULL) {
+			while(read_bytes != size) {
+				read_bytes += PGSIZE;
+				upage -= PGSIZE;
+				page_delete(&thread_current()->page_table, page_find(&thread_current()->page_table, upage));
+			}
+			return false;
+		}
 #else
 		kpage = palloc_get_page(PAL_USER);
 
@@ -549,13 +537,10 @@ static bool setup_stack(void **esp) {
 
 	//TODO
 #ifdef VM
-	kpage = palloc_get_page(PAL_USER | PAL_ZERO);
-//	struct frame_entry *fe = frame_add(kpage);
-	struct frame_entry *fe = frame_add(PAL_USER);
-	if(fe == NULL)
+	struct page_entry *p = page_create(&thread_current()->page_table, ((uint8_t *) PHYS_BASE) - PGSIZE, true);
+	if(p == NULL)
 	return false;
-
-	kpage = fe->addr;
+	kpage = frame_alloc (PAL_USER | PAL_ZERO, p);
 #else
 	kpage = palloc_get_page(PAL_USER | PAL_ZERO);
 #endif
@@ -563,21 +548,19 @@ static bool setup_stack(void **esp) {
 		success = install_page(((uint8_t *) PHYS_BASE) - PGSIZE, kpage, true);
 		if (success) {
 			*esp = PHYS_BASE;
-#ifdef VM
-			struct supp_page_entry *spe = supp_page_add(((uint8_t *) PHYS_BASE) - PGSIZE, true);
-			spe->type = MEMORY;
-			spe->kaddr = fe->addr;
-			fe->spe = spe;
-
-			ASSERT(pg_ofs(spe->uaddr) == 0);
-#endif
 		} else {
-			palloc_free_page(kpage);
 #ifdef VM
-			frame_free(fe);
+			page_delete(&thread_current()->page_table, p);
+		    frame_free (kpage);
+#else
+			palloc_free_page(kpage);
 #endif
 		}
 	}
+#ifdef VM
+	else
+	page_delete(&thread_current()->page_table, p);
+#endif
 	return success;
 }
 
