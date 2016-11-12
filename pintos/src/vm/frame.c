@@ -77,9 +77,7 @@ void frame_evict() {
 //		printf("loop\n");
 //		printf("head:%p\n", frame.head.next);
 		old_level = intr_disable();
-		printf("a\n");
 		e = list_pop_front(&frame);
-		printf("b\n");
 		intr_set_level(old_level);
 //		printf("e:%p\n",e);
 		fe = list_entry(e, struct frame_entry, elem);
