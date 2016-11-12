@@ -1,5 +1,6 @@
 #include "devices/disk.h"
 #include "threads/vaddr.h"
+#include "threads/synch.h"
 #include "lib/kernel/bitmap.h"
 
 struct disk *swap_disk;
