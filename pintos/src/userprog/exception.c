@@ -190,10 +190,10 @@ page_fault (struct intr_frame *f)
 				if (stack_grow(fault_addr))
 					return;
 			} else {
-				printf("AAA\n");
-				f->eip = (void *) f->eax;
-				f->eax = 0xffffffff;
-				exit(-1);
+//				printf("AAA\n");
+//				f->eip = (void *) f->eax;
+//				f->eax = 0xffffffff;
+//				exit(-1);
 			}
 	} else {
 //		printf("BBB\n");

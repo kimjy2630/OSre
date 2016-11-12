@@ -205,6 +205,9 @@ lock_init (struct lock *lock)
 void
 lock_acquire (struct lock *lock)
 {
+	//TODO
+	printf("lock holder %p\n", lock->holder);
+	printf("current thread %p\n", thread_current());
   ASSERT (lock != NULL);
   ASSERT (!intr_context ());
   ASSERT (!lock_held_by_current_thread (lock));
