@@ -230,7 +230,7 @@ page_fault (struct intr_frame *f)
 			}
 			////
 			if (((uint32_t *) PHYS_BASE) - ((uint32_t *)fault_addr) > STACK_LIMIT){
-				printf("stack overflow\n");
+//				printf("stack overflow\n");
 				f->eip = (void *) f->eax;
 				f->eax = 0xffffffff;
 				exit(-1);
@@ -286,7 +286,7 @@ page_fault (struct intr_frame *f)
 				return;
 			}
 			else{
-				printf("AAA\n");
+//				printf("AAA\n");
 				f->eip = (void *) f->eax;
 				f->eax = 0xffffffff;
 				exit(-1);
@@ -302,7 +302,7 @@ page_fault (struct intr_frame *f)
 		kill(f);
 	}
 	else {
-		printf("DDD\n");
+//		printf("DDD\n");
 		f->eip = (void *) f->eax;
 		f->eax = 0xffffffff;
 		exit(-1);
