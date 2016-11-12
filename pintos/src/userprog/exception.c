@@ -167,9 +167,11 @@ page_fault (struct intr_frame *f)
 		spe_tmp.uaddr = pg_round_down(fault_addr);
 		struct thread *t = thread_current();
 		struct hash_elem *he = hash_find(&t->supp_page_table, &spe_tmp.elem);
+		printf("aaa\n");
 
 
 		if (he != NULL) {
+			printf("bbb\n");
 			struct supp_page_entry* spe = hash_entry(he,struct supp_page_entry,elem);
 //			printf("NOT NULL\n");
 			spe->uaddr = pg_round_down(spe->uaddr);
@@ -210,6 +212,7 @@ page_fault (struct intr_frame *f)
 			return;
 		} else {
 			// extend stack
+			printf("ccc\n");
 			void* esp;
 			if(user)
 				esp = f->esp;
