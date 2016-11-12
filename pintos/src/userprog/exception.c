@@ -156,6 +156,7 @@ page_fault (struct intr_frame *f)
   write = (f->error_code & PF_W) != 0;
   user = (f->error_code & PF_U) != 0;
 
+#ifdef VM
 	if (not_present) {
 		struct supp_page_entry spt_tmp;
 		spt_tmp.uaddr = pg_round_down(fault_addr);
@@ -196,10 +197,10 @@ page_fault (struct intr_frame *f)
 		// invalid
 //		exit(-1);
 	}
-
-
-#ifdef VM
 #else
+
+
+
 
   /* To implement virtual memory, delete the rest of the function
      body, and replace it with code that brings in the page to
