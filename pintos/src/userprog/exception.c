@@ -199,9 +199,29 @@ page_fault (struct intr_frame *f)
 				ASSERT(bytes_read == spe->page_read_bytes);
 				memset(fe->addr + bytes_read, 0, PGSIZE - bytes_read);
 				spe->type = MEMORY;
+
+				spe->kaddr = fe->addr;
+				pagedir_clear_page(t->pagedir, pg_round_down(fault_addr));
+				if (!pagedir_set_page(t->pagedir, pg_round_down(fault_addr), spe->kaddr,
+								spe->writable)) {
+					printf("KILL\n");
+					kill(f);
+				}
+				pagedir_set_dirty (t->pagedir, pg_round_down(fault_addr), false);
+				pagedir_set_accessed (t->pagedir, pg_round_down(fault_addr), true);
 			} else if (spe->type == ZERO) {
 				printf("ZERO\n");
 				memset(fe->addr, 0, PGSIZE);
+
+				spe->kaddr = fe->addr;
+				pagedir_clear_page(t->pagedir, pg_round_down(fault_addr));
+				if (!pagedir_set_page(t->pagedir, pg_round_down(fault_addr), spe->kaddr,
+								spe->writable)) {
+					printf("KILL\n");
+					kill(f);
+				}
+				pagedir_set_dirty (t->pagedir, pg_round_down(fault_addr), false);
+				pagedir_set_accessed (t->pagedir, pg_round_down(fault_addr), true);
 			}
 			else if(spe->type == SWAP){
 				printf("SWAP\n");
@@ -212,15 +232,15 @@ page_fault (struct intr_frame *f)
 			}
 
 //			printf("PASS\n");
-			spe->kaddr = fe->addr;
-			pagedir_clear_page(t->pagedir, pg_round_down(fault_addr));
-			if (!pagedir_set_page(t->pagedir, pg_round_down(fault_addr), spe->kaddr,
-					spe->writable)) {
-				printf("KILL\n");
-				kill(f);
-			}
-			pagedir_set_dirty (t->pagedir, pg_round_down(fault_addr), false);
-			pagedir_set_accessed (t->pagedir, pg_round_down(fault_addr), true);
+//			spe->kaddr = fe->addr;
+//			pagedir_clear_page(t->pagedir, pg_round_down(fault_addr));
+//			if (!pagedir_set_page(t->pagedir, pg_round_down(fault_addr), spe->kaddr,
+//					spe->writable)) {
+//				printf("KILL\n");
+//				kill(f);
+//			}
+//			pagedir_set_dirty (t->pagedir, pg_round_down(fault_addr), false);
+//			pagedir_set_accessed (t->pagedir, pg_round_down(fault_addr), true);
 //			printf("PAGE FAULT RETURN\n");
 			return;
 		} else {
