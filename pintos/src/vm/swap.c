@@ -50,13 +50,13 @@ void swap_unload(size_t index, uint8_t *uaddr){ // disk -> mem
 
 	lock_acquire(&swap_lock);
 	bitmap_set_multiple(swap_bitmap, index, num_sector_in_page, 0);
-//	printf("bit set mul\n");
+	printf("bit set mul\n");
 
 	int i;
 	for(i=0; i<num_sector_in_page; i++){
 		disk_read(swap_disk, index + i, uaddr + i * DISK_SECTOR_SIZE);
 	}
-//	printf("disk_read\n");
+	printf("disk_read\n");
 	lock_release(&swap_lock);
 }
 
