@@ -240,7 +240,7 @@ page_fault (struct intr_frame *f)
 				return;
 			}
 
-			if ((fault_addr == esp - 4) || (fault_addr == esp - 32)) {
+			if ((fault_addr == esp - 4) || (fault_addr == esp - 32) || fault_addr >= esp) {
 				printf("333\n");
 				/* Check for stack overflow */
 //				if (fault_addr < STACK_MIN) {
@@ -250,7 +250,8 @@ page_fault (struct intr_frame *f)
 				/* If we're here, let's give this process another page */
 				struct frame_entry *fe = frame_add(PAL_ZERO | PAL_USER);
 
-				if (!pagedir_set_page(t->pagedir, pg_round_down(fault_addr), fe->addr, true)) {
+				if (pagedir_get_page(t->pagedir, pg_round_down(fault_addr))!= NULL || !pagedir_set_page(t->pagedir, pg_round_down(fault_addr), fe->addr, true)) {
+					free(fe);
 					kill(f);
 				}
 				/* Record the new stack page in the supplemental page table and
@@ -267,27 +268,27 @@ page_fault (struct intr_frame *f)
 				return;
 			}
 			/* Other case of stack extension */
-			else if (fault_addr >= esp) {
-				printf("444\n");
-				struct frame_entry *fe = frame_add(PAL_ZERO | PAL_USER);
-
-				if (!pagedir_set_page(t->pagedir, pg_round_down(fault_addr), fe->addr, true)) {
-					kill(f);
-				}
-
-				/* Record the new stack page in the supplemental page table and
-				 the frame table. */
-				struct supp_page_entry *spe = supp_page_add(
-						pg_round_down(fault_addr), true);
-				spe->kaddr = fe->addr;
-				spe->page_read_bytes = 0;
-				spe->file = NULL;
-				spe->ofs = NULL;
-				spe->type = MEMORY;
-
-				fe->spe = spe;
-				return;
-			}
+//			else if (fault_addr >= esp) {
+//				printf("444\n");
+//				struct frame_entry *fe = frame_add(PAL_ZERO | PAL_USER);
+//
+//				if (pagedir_get_page(t->pagedir, pg_round_down(fault_addr))!= NULL || !pagedir_set_page(t->pagedir, pg_round_down(fault_addr), fe->addr, true)) {
+//					kill(f);
+//				}
+//
+//				/* Record the new stack page in the supplemental page table and
+//				 the frame table. */
+//				struct supp_page_entry *spe = supp_page_add(
+//						pg_round_down(fault_addr), true);
+//				spe->kaddr = fe->addr;
+//				spe->page_read_bytes = 0;
+//				spe->file = NULL;
+//				spe->ofs = NULL;
+//				spe->type = MEMORY;
+//
+//				fe->spe = spe;
+//				return;
+//			}
 			else{
 				printf("AAA\n");
 				f->eip = (void *) f->eax;
