@@ -24,6 +24,8 @@ void frame_init() {
  */
 
 struct frame_entry* frame_add(enum palloc_flags flags) {
+	//TODO
+	printf("FRAME ADD\n");
 //struct frame_entry* frame_add(uint8_t* addr) {
 	uint8_t *addr = palloc_get_page(flags);
 	if (addr != NULL) {
@@ -59,7 +61,9 @@ void frame_free(uint8_t *addr) {
 }
 
 void frame_evict() {
-	PANIC("FRAME_EVICT!");
+	//TODO
+	printf("FRAME EVICT\n");
+//	PANIC("FRAME_EVICT!");
 //	return;
 	struct list_elem *e;
 	struct frame_entry *fe;
