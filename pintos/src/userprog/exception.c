@@ -165,6 +165,11 @@ page_fault (struct intr_frame *f)
 //		printf("NOT PRESENT\n");
 		struct supp_page_entry spe_tmp;
 		spe_tmp.uaddr = pg_round_down(fault_addr);
+		if(fault_addr > PHYS_BASE){
+			printf("fault_addr:%p\n", fault_addr);
+			printf("kernel access!\n");
+			exit(-1);
+		}
 		struct thread *t = thread_current();
 		struct hash_elem *he = hash_find(&t->supp_page_table, &spe_tmp.elem);
 		printf("aaa fault_addr:%p\n", fault_addr);
@@ -177,7 +182,8 @@ page_fault (struct intr_frame *f)
 			spe->uaddr = pg_round_down(spe->uaddr);
 			if(spe->uaddr > PHYS_BASE) {
 				printf("uaddr:%p\n", spe->uaddr);
-				PANIC("kernel access!");
+				printf("kernel access in page fault!\n");
+				exit(-1);
 			}
 			ASSERT(pg_ofs(spe->uaddr) == 0);
 			struct frame_entry *fe = frame_add(PAL_USER);
