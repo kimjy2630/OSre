@@ -8,8 +8,8 @@ enum page_type {
 };
 
 struct supp_page_entry{
-	uint8_t *uaddr;
-	uint8_t* kaddr;
+	void* uaddr;
+	void* kaddr;
 	bool writable;
 //	struct frame_entry *fe;
 	enum page_type type;

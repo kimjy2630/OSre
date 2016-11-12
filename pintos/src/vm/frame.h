@@ -4,7 +4,7 @@
 #include "threads/thread.h"
 
 struct frame_entry {
-	uint8_t *addr;
+	void* addr;
 	struct thread* t;
 	struct list_elem elem;
 };
