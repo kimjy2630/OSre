@@ -43,7 +43,7 @@ void swap_unload(size_t index, uint8_t *uaddr){ // disk -> mem
 	bitmap_set_multiple(swap_bitmap, index, num_sector_in_page, 0);
 
 	struct frame_entry *fe = frame_add(PAL_USER);
-	struct supp_page_entry *spe_tmp;
+	struct supp_page_entry spe_tmp;
 	spe_tmp.uaddr = pg_round_down(uaddr);
 	struct hash_elem *he = hash_find(&thread_current()->supp_page_table, &spe_tmp.elem);
 	struct supp_page_entry *spe = hash_entry(he, struct supp_page_entry, elem);
