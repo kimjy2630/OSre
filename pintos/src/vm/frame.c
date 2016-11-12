@@ -76,16 +76,17 @@ void frame_evict() {
 		spe = fe->spe;
 		uaddr = spe->uaddr;
 		if(spe->type == SWAP){
-//			printf("swap page\n");
-			list_push_back(&frame, e);
+			printf("swap page\n");
+			free(fe);
+//			list_push_back(&frame, e);
 		}
 		else if(pagedir_is_accessed(pd, uaddr)){
-//			printf("accessed page\n");
+			printf("accessed page\n");
 			pagedir_set_accessed(pd, uaddr, 0);
 			list_push_back(&frame, e);
 		}
 		else{
-//			printf("load page to swap\n");
+			printf("load page to swap\n");
 			spe->kaddr = NULL;
 			spe->swap_index = swap_load(uaddr);
 			spe->type = SWAP;
