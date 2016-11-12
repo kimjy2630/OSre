@@ -15,7 +15,6 @@ void swap_init(){
 		PANIC("no swap disk\n");
 	swap_bitmap = bitmap_create(disk_size(swap_disk));
 //	lock_init(&swap_lock);
-
 }
 
 size_t swap_load(uint8_t *uaddr){ // mem -> disk
