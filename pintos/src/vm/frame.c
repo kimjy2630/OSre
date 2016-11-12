@@ -84,9 +84,9 @@ void frame_evict() {
 //	printf("start evict\n");
 //	printf("&frame:%p\n",&frame);
 
-//	enum intr_level old_level;
+	enum intr_level old_level;
 
-	lock_acquire(&lock_frame);
+//	lock_acquire(&lock_frame);
 	while(!list_empty(&frame)){
 //		printf("loop\n");
 //		printf("head:%p\n", frame.head.next);
@@ -110,16 +110,18 @@ void frame_evict() {
 		else if(pagedir_is_accessed(pd, uaddr)){
 //			printf("accessed page\n");
 			pagedir_set_accessed(pd, uaddr, 0);
-//			old_level = intr_disable();
+			old_level = intr_disable();
 			list_push_back(&frame, e);
-//			intr_set_level(old_level);
+			intr_set_level(old_level);
 		}
 		else{
 //			printf("load page to swap\n");
 			spe->kaddr = NULL;
+			old_level = intr_disable();
 			printf("call swap_load\n");
 			spe->swap_index = swap_load(uaddr);
 			printf("end swap_load\n");
+			intr_set_level(old_level);
 			spe->type = SWAP;
 
 //			printf("uaddr:%p\n", uaddr);
@@ -127,7 +129,7 @@ void frame_evict() {
 				pagedir_clear_page(pd, uaddr);
 			frame_free(fe);
 //			printf("evict loop end\n");
-			lock_release(&lock_frame);
+//			lock_release(&lock_frame);
 			break;
 		}
 	}
