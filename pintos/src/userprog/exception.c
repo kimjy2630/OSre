@@ -159,7 +159,9 @@ page_fault (struct intr_frame *f)
   write = (f->error_code & PF_W) != 0;
   user = (f->error_code & PF_U) != 0;
 
+  esp = f->esp;
 #ifdef VM
+
 	if (not_present) {
 		struct supp_page_entry spe_tmp;
 		spe_tmp.uaddr = pg_round_down(fault_addr);
@@ -202,6 +204,10 @@ page_fault (struct intr_frame *f)
 		// invalid
 //		exit(-1);
 	}
+
+	f->eip = (void *) f->eax;
+	f->eax = 0xffffffff;
+	kill (f);
 #else
 
 
