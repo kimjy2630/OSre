@@ -214,11 +214,16 @@ page_fault (struct intr_frame *f)
 			// extend stack
 			printf("ccc\n");
 			void* esp;
-			if(user)
+			if(user){
+				printf("111\n");
 				esp = f->esp;
-			else
+			}
+			else{
+				printf("222\n");
 				esp = thread_current()->esp;
+			}
 			if ((fault_addr == esp - 4) || (fault_addr == esp - 32)) {
+				printf("333\n");
 				/* Check for stack overflow */
 //				if (fault_addr < STACK_MIN) {
 //					exit(-1);
@@ -244,6 +249,7 @@ page_fault (struct intr_frame *f)
 			}
 			/* Other case of stack extension */
 			else if (fault_addr >= esp) {
+				printf("444\n");
 				struct frame_entry *fe = frame_add(PAL_ZERO | PAL_USER);
 
 				if (!pagedir_set_page(t->pagedir, pg_round_down(fault_addr), fe->addr, true)) {
