@@ -5,6 +5,7 @@
 #include "lib/debug.h"
 #include "threads/interrupt.h"
 #include "vm/page.h"
+#include "vm/swap.h"
 
 void frame_evict();
 
@@ -78,7 +79,7 @@ void frame_evict() {
 			list_push_back(&frame, e);
 		}
 		else{
-//			swap
+			swap_load(uaddr);
 			break;
 		}
 	}
