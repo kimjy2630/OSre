@@ -190,6 +190,11 @@ page_fault (struct intr_frame *f)
 //				printf("ZERO\n");
 				memset(fe->addr, 0, PGSIZE);
 			}
+			else if(spe->type == SWAP){
+				swap_unload(spe->swap_index, spe->uaddr);
+				spe->swap_index = NULL;
+				spe->type = MEMOERY;
+			}
 			/*
 			 else if (vma->pg_type == SWAP) {
 			 // Read in from swap into the new page.
