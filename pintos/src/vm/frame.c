@@ -99,6 +99,10 @@ void frame_evict() {
 //		printf("spe:%p\n",spe);
 		uaddr = spe->uaddr;
 		printf("uaddr in loop:%p\n",uaddr);
+		if(uaddr > PHYS_BASE){
+			printf("kernel access!\n");
+			exit(-1);
+		}
 		if(spe->type == SWAP){
 			printf("swap page\n");
 			frame_free(fe);
@@ -108,7 +112,7 @@ void frame_evict() {
 //			printf("accessed page\n");
 			pagedir_set_accessed(pd, uaddr, 0);
 			list_push_back(&frame, e);
-			printf("uaddr after check:%p\n", uaddr);
+//			printf("uaddr after check:%p\n", uaddr);
 		}
 		else{
 			printf("load page to swap\n");
