@@ -292,6 +292,7 @@ bool page_load(void* fault_addr) {
 }
 
 bool stack_grow(void* fault_addr) {
+	struct thread *t = thread_current();
 	printf("333\n");
 	/* Check for stack overflow */
 //	if (fault_addr < STACK_MIN) {
