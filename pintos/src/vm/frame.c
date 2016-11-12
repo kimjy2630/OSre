@@ -90,8 +90,11 @@ void frame_evict() {
 		}
 		else{
 //			printf("load page to swap\n");
+			spe->kaddr = NULL;
 			spe->swap_index = swap_load(uaddr);
 			spe->type = SWAP;
+
+			pagedir_clear_page(pd, uaddr);
 			free(fe);
 			printf("evict loop end\n");
 			break;
