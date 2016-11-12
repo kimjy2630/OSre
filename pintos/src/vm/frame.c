@@ -70,14 +70,15 @@ void frame_evict() {
 	while(!list_empty(&frame)){
 //		printf("loop\n");
 		e = list_pop_front(&frame);
+//		printf("");
 		fe = list_entry(e, struct frame_entry, elem);
-		printf("fe:%p\n", fe);
+//		printf("fe:%p\n", fe);
 		pd = fe->t->pagedir;
-		printf("pd:%p\n", pd);
+//		printf("pd:%p\n", pd);
 		spe = fe->spe;
-		printf("spe:%p\n", spe);
+//		printf("spe:%p\n", spe);
 		uaddr = spe->uaddr;
-		printf("uaddr:%p\n", uaddr);
+//		printf("uaddr:%p\n", uaddr);
 		if(spe->type == SWAP){
 //			printf("swap page\n");
 			list_push_back(&frame, e);
@@ -91,6 +92,7 @@ void frame_evict() {
 //			printf("load page to swap\n");
 			spe->swap_index = swap_load(uaddr);
 			spe->type = SWAP;
+			free(fe);
 			break;
 		}
 	}
