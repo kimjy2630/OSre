@@ -71,7 +71,6 @@ void frame_evict() {
 //	printf("start evict\n");
 	printf("&frame:%p\n",&frame);
 
-	enum intr_level old_level = intr_disable();
 	while(!list_empty(&frame)){
 		printf("loop\n");
 		printf("head:%p\n", frame.head.next);
@@ -109,6 +108,5 @@ void frame_evict() {
 			break;
 		}
 	}
-	intr_set_level(old_level);
 }
 

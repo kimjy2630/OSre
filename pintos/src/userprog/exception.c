@@ -186,6 +186,7 @@ page_fault (struct intr_frame *f)
 						spe->page_read_bytes);
 				ASSERT(bytes_read == spe->page_read_bytes);
 				memset(fe->addr + bytes_read, 0, PGSIZE - bytes_read);
+				spe->type = MEMORY;
 			} else if (spe->type == ZERO) {
 //				printf("ZERO\n");
 				memset(fe->addr, 0, PGSIZE);
@@ -195,14 +196,6 @@ page_fault (struct intr_frame *f)
 				spe->swap_index = NULL;
 				spe->type = MEMORY;
 			}
-			/*
-			 else if (vma->pg_type == SWAP) {
-			 // Read in from swap into the new page.
-			 swap_remove(vma->swap_ind, new_page);
-			 vma->swap_ind = NULL;
-			 vma->pg_type = PMEM;
-			 }
-			 */
 
 //			printf("PASS\n");
 			spe->kaddr = fe->addr;
