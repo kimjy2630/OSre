@@ -84,10 +84,15 @@ merge (void)
   for (i = 0; i < CHUNK_CNT; i++)
     mp[i] = buf1 + CHUNK_SIZE * i;
 
+  //TODO
+  msg("mp_left");
+
   /* Merge. */
   op = buf2;
   while (mp_left > 0) 
     {
+	  //TODO
+	  msg("op=buf2");
       /* Find smallest value. */
       size_t min = 0;
       for (i = 1; i < mp_left; i++)
