@@ -41,6 +41,7 @@ size_t swap_load(uint8_t *uaddr){ // mem -> disk
 void swap_unload(size_t index, uint8_t *uaddr){ // disk -> mem
 	lock_acquire(&swap_lock);
 	bitmap_set_multiple(swap_bitmap, index, num_sector_in_page, 0);
+	printf("bit set mul\n");
 
 //	struct frame_entry *fe = frame_add(PAL_USER);
 //	struct supp_page_entry spe_tmp;
@@ -55,6 +56,7 @@ void swap_unload(size_t index, uint8_t *uaddr){ // disk -> mem
 	for(i=0; i<num_sector_in_page; i++){
 		disk_read(swap_disk, index + i, uaddr + i * DISK_SECTOR_SIZE);
 	}
+	printf("disk_read\n");
 	lock_release(&swap_lock);
 }
 
