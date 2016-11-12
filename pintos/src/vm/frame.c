@@ -69,12 +69,17 @@ void frame_evict() {
 	ASSERT(!list_empty(&frame));
 	printf("start evict\n");
 	while(!list_empty(&frame)){
-//		printf("loop\n");
+		printf("loop\n");
 		e = list_pop_front(&frame);
+		printf("e:%p\n",e);
 		fe = list_entry(e, struct frame_entry, elem);
+		printf("fe:%p\n",fe);
 		pd = fe->t->pagedir;
+		printf("pd:%p\n",pd);
 		spe = fe->spe;
+		printf("spe:%p\n",spe);
 		uaddr = spe->uaddr;
+		printf("uaddr:%p\n",uaddr);
 		if(spe->type == SWAP){
 			printf("swap page\n");
 			free(fe);
