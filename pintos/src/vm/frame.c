@@ -68,23 +68,23 @@ void frame_evict() {
 
 	ASSERT(!list_empty(&frame));
 	while(!list_empty(&frame)){
-		printf("loop\n");
+//		printf("loop\n");
 		e = list_pop_front(&frame);
 		fe = list_entry(e, struct frame_entry, elem);
 		pd = fe->t->pagedir;
 		spe = fe->spe;
 		uaddr = spe->uaddr;
 		if(spe->type == SWAP){
-			printf("swap page\n");
+//			printf("swap page\n");
 			list_push_back(&frame, e);
 		}
 		else if(pagedir_is_accessed(pd, uaddr)){
-			printf("accessed page\n");
+//			printf("accessed page\n");
 			pagedir_set_accessed(pd, uaddr, 0);
 			list_push_back(&frame, e);
 		}
 		else{
-			printf("load page to swap\n");
+//			printf("load page to swap\n");
 			spe->swap_index = swap_load(uaddr);
 			spe->type = SWAP;
 			break;
