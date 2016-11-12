@@ -23,7 +23,7 @@ void swap_init(){
 }
 
 size_t swap_load(uint8_t *uaddr){ // mem -> disk
-	printf("swp_lock_acq  holder:%p, curr:%p\n", swap_lock.holder, thread_current());
+//	printf("swp_lock_acq  holder:%p, curr:%p\n", swap_lock.holder, thread_current());
 	lock_acquire(&swap_lock);
 	size_t index = bitmap_scan_and_flip(swap_bitmap, 0, num_sector_in_page, 0);
 	if(index == BITMAP_ERROR)
@@ -32,9 +32,9 @@ size_t swap_load(uint8_t *uaddr){ // mem -> disk
 	for(i=0; i<num_sector_in_page; i++){
 		disk_write(swap_disk, index + i, uaddr + i * DISK_SECTOR_SIZE);
 	}
-	printf("swp_lock_rel  holder:%p, curr:%p\n", swap_lock.holder, thread_current());
+//	printf("swp_lock_rel  holder:%p, curr:%p\n", swap_lock.holder, thread_current());
 	lock_release(&swap_lock);
-	printf("after_rel  holder:%p, curr:%p\n", swap_lock.holder, thread_current());
+//	printf("after_rel  holder:%p, curr:%p\n", swap_lock.holder, thread_current());
 	return index;
 }
 
