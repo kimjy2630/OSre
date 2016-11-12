@@ -192,10 +192,13 @@ page_fault (struct intr_frame *f)
 			 */
 
 			spe->kaddr = fe->addr;
+			pagedir_clear_oage(t->pagedir, pg_round_down(fault_addr));
 			if (!pagedir_set_page(t->pagedir, pg_round_down(fault_addr), spe->kaddr,
 					spe->writable)) {
 				kill(f);
 			}
+			pagedir_set_dirty (t->pagedir, pg_round_down(fault_addr), false);
+			pagedir_set_accessed (t->pagedir, pg_round_down(fault_addr), true);
 			return;
 		} else {
 			// extend stack
