@@ -34,6 +34,7 @@ static int get_argument_ptr(void *ptr, int pos) {
 static void
 syscall_handler (struct intr_frame *f UNUSED)
 {
+	printf("I'm in syscall\n");
 	void *ptr = (void *) f->esp;
 #ifdef VM
 	thread_current()->esp = f->esp;
