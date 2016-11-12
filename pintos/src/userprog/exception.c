@@ -168,6 +168,7 @@ page_fault (struct intr_frame *f)
 				&spt_tmp.elem);
 
 		if (spt != NULL) {
+			ASSERT(pg_ofs(spt->uaddr) == 0);
 			struct frame_entry *fe = frame_add(PAL_USER);
 			if (spt->type == FILE) {
 				file_seek(spt->file, spt->ofs);
