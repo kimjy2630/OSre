@@ -38,8 +38,8 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 		return fe;
 	} else {
 		frame_evict();
-//		return frame_add(flags);
-		return frame_add(addr);
+		return frame_add(flags);
+//		return frame_add(addr);
 	}
 }
 
