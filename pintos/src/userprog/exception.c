@@ -167,7 +167,7 @@ page_fault (struct intr_frame *f)
 #ifdef VM
 //printf("PAGE FAULT\n");
 	if (not_present) {
-		if (page_load(f, fault_addr))
+		if (page_load(fault_addr))
 			return;
 
 		// extend stack
@@ -199,7 +199,7 @@ page_fault (struct intr_frame *f)
 //					exit(-1);
 //				}
 			/* If we're here, let's give this process another page */
-			if (stack_grow())
+			if (stack_grow(fault_addr))
 				return;
 		} else {
 			printf("AAA\n");
