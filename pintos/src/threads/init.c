@@ -124,7 +124,7 @@ main (void)
   /* frame init */
   frame_init ();
 
-//  disk_init();
+  disk_init();
   swap_init();
 #endif
 
