@@ -192,7 +192,7 @@ page_fault (struct intr_frame *f)
 			 */
 
 			spe->kaddr = fe->addr;
-			pagedir_clear_oage(t->pagedir, pg_round_down(fault_addr));
+			pagedir_clear_page(t->pagedir, pg_round_down(fault_addr));
 			if (!pagedir_set_page(t->pagedir, pg_round_down(fault_addr), spe->kaddr,
 					spe->writable)) {
 				kill(f);
