@@ -61,7 +61,7 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 //}
 
 void frame_free(struct frame_entry *fe){
-	list_remove(fe->elem);
+	list_remove(&fe->elem);
 
 //	free(fe->addr);
 	palloc_free_page(fe->addr);
