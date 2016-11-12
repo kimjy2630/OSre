@@ -567,14 +567,14 @@ static bool setup_stack(void **esp) {
 			struct supp_page_entry *spe = supp_page_add(((uint8_t *) PHYS_BASE) - PGSIZE, true);
 			spe->type = MEMORY;
 			spe->kaddr = fe->addr;
+			fe->spe = spe;
 
-			fe->spe;
 			ASSERT(pg_ofs(spe->uaddr) == 0);
 #endif
 		} else {
 			palloc_free_page(kpage);
 #ifdef VM
-			free(fe);
+			frame_free(fe);
 #endif
 		}
 	}
