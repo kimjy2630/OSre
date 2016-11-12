@@ -90,9 +90,9 @@ void frame_evict() {
 	while(!list_empty(&frame)){
 //		printf("loop\n");
 //		printf("head:%p\n", frame.head.next);
-//		old_level = intr_disable();
+		old_level = intr_disable();
 		e = list_pop_front(&frame);
-//		intr_set_level(old_level);
+		intr_set_level(old_level);
 //		printf("e:%p\n",e);
 		fe = list_entry(e, struct frame_entry, elem);
 //		printf("fe:%p\n",fe);
