@@ -166,10 +166,11 @@ printf("PAGE FAULT\n");
 		struct supp_page_entry spe_tmp;
 		spe_tmp.uaddr = pg_round_down(fault_addr);
 		struct thread *t = thread_current();
-		struct supp_page_entry* spe = hash_find(&t->supp_page_table,
-				&spe_tmp.elem);
+		struct hash_elem *he = hash_find(&t->supp_page_table, &spe_tmp.elem);
 
-		if (spe != NULL) {
+
+		if (he != NULL) {
+			struct supp_page_entry* spe = hash_entry(he,struct supp_page_entry,elem);
 			printf("NOT NULL\n");
 			spe->uaddr = pg_round_down(spe->uaddr);
 			ASSERT(pg_ofs(spe->uaddr) == 0);
