@@ -11,6 +11,8 @@ size_t num_sector_in_page = PGSIZE/DISK_SECTOR_SIZE;
 
 void swap_init(){
 	swap_disk = disk_get(1,1);
+	if(swap_disk == NULL)
+		PANIC("no swap disk\n");
 	swap_bitmap = bitmap_create(disk_size(swap_disk));
 	lock_init(&swap_lock);
 }
