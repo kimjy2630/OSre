@@ -250,6 +250,7 @@ disk_write (struct disk *d, disk_sector_t sec_no, const void *buffer)
   ASSERT (buffer != NULL);
 
   c = d->channel;
+  printf(c->lock->holder);
   lock_acquire (&c->lock);
   select_sector (d, sec_no);
   issue_pio_command (c, CMD_WRITE_SECTOR_RETRY);
