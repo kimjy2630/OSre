@@ -59,7 +59,7 @@ void frame_free(uint8_t *addr) {
 }
 
 void frame_evict() {
-	PANIC("FRAME_EVICT!");
+//	PANIC("FRAME_EVICT!");
 	struct list_elem *e;
 	struct frame_entry *fe;
 	struct supp_page_entry *spe;
@@ -71,9 +71,13 @@ void frame_evict() {
 //		printf("loop\n");
 		e = list_pop_front(&frame);
 		fe = list_entry(e, struct frame_entry, elem);
+		printf("fe:%p\n", fe);
 		pd = fe->t->pagedir;
+		printf("pd:%p\n", pd);
 		spe = fe->spe;
+		printf("spe:%p\n", spe);
 		uaddr = spe->uaddr;
+		printf("uaddr:%p\n", uaddr);
 		if(spe->type == SWAP){
 //			printf("swap page\n");
 			list_push_back(&frame, e);
