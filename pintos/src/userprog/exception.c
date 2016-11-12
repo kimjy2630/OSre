@@ -160,8 +160,9 @@ page_fault (struct intr_frame *f)
   user = (f->error_code & PF_U) != 0;
 
 #ifdef VM
-
+printf("PAGE FAULT\n");
 	if (not_present) {
+		printf("NOT PRESENT\n");
 		struct supp_page_entry spe_tmp;
 		spe_tmp.uaddr = pg_round_down(fault_addr);
 		struct thread *t = thread_current();
@@ -169,10 +170,12 @@ page_fault (struct intr_frame *f)
 				&spe_tmp.elem);
 
 		if (spe != NULL) {
+			printf("NOT NULL\n");
 			spe->uaddr = pg_round_down(spe->uaddr);
 			ASSERT(pg_ofs(spe->uaddr) == 0);
 			struct frame_entry *fe = frame_add(PAL_USER);
 			if (spe->type == FILE) {
+				printf("FILE\n");
 				file_seek(spe->file, spe->ofs);
 
 				off_t bytes_read = file_read(spe->file, fe->addr,
@@ -180,6 +183,7 @@ page_fault (struct intr_frame *f)
 				ASSERT(bytes_read == spe->page_read_bytes);
 				memset(fe->addr + bytes_read, 0, PGSIZE - bytes_read);
 			} else if (spe->type == ZERO) {
+				printf("ZERO\n");
 				memset(fe->addr, 0, PGSIZE);
 			}
 			/*
@@ -191,10 +195,12 @@ page_fault (struct intr_frame *f)
 			 }
 			 */
 
+			printf("PASS\n");
 			spe->kaddr = fe->addr;
 			pagedir_clear_page(t->pagedir, pg_round_down(fault_addr));
 			if (!pagedir_set_page(t->pagedir, pg_round_down(fault_addr), spe->kaddr,
 					spe->writable)) {
+				printf("KILL\n");
 				kill(f);
 			}
 			pagedir_set_dirty (t->pagedir, pg_round_down(fault_addr), false);
