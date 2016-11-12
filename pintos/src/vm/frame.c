@@ -65,16 +65,7 @@ bool frame_evict(enum palloc_flags flags) {
 				continue;
 			}
 			pagedir_clear_page(f->thread->pagedir, f->page->page);
-			if (f->page->status == FRAME_MMAP) {
-				struct page_entry *p = f->page;
-				p->pin = true;
-				lock_acquire(&file_lock);
-				if (pagedir_is_dirty(f->thread->pagedir, p->page))
-					file_write_at(p->file, p->page, p->read_bytes, p->offset);
-				lock_release(&file_lock);
-				p->status = MMAP;
-				p->pin = false;
-			} else if (f->page->file == NULL || f->page->writable) {
+			if (f->page->file == NULL || f->page->writable) {
 				f->page->status = SWAP_SLOT;
 				f->page->swap_index = swap_out(f->frame);
 			} else

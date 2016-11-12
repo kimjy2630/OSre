@@ -24,14 +24,6 @@ void page_action_func(struct hash_elem *hash_elem, void *aux UNUSED) {
 	struct page_entry *p = hash_entry(hash_elem, struct page_entry, hash_elem);
 	if (p->status == SWAP_SLOT)
 		swap_free(p->swap_index);
-	else if (p->status == FRAME_MMAP) {
-		p->pin = true;
-		lock_acquire(&file_lock);
-		if (thread_current()->pagedir != NULL
-				&& pagedir_is_dirty(thread_current()->pagedir, p->page))
-			file_write_at(p->file, p->page, p->read_bytes, p->offset);
-		lock_release(&file_lock);
-	}
 	free(p);
 }
 
@@ -146,33 +138,6 @@ bool page_load(struct hash *page_table, void *addr, uint32_t *pagedir) {
 		p->pin = false;
 		break;
 	}
-	case MMAP: {
-		uint8_t *kpage;
-		if (p->zero_bytes == PGSIZE)
-			kpage = frame_alloc(PAL_USER | PAL_ZERO, p);
-		else
-			kpage = frame_alloc(PAL_USER, p);
-		if (kpage == NULL)
-			return false;
-
-		file_seek(p->file, p->offset);
-		if (file_read(p->file, kpage, p->read_bytes) != (int) p->read_bytes) {
-			frame_free(kpage);
-			return false;
-		}
-		memset(kpage + p->read_bytes, 0, p->zero_bytes);
-
-		if (pagedir_get_page(pagedir, p->page) != NULL
-				|| !pagedir_set_page(pagedir, p->page, kpage, p->writable)) {
-			frame_free(kpage);
-			return false;
-		}
-		p->status = FRAME_MMAP;
-		p->pin = false;
-		break;
-	}
-	case FRAME_MMAP:
-		break;
 	default:
 		PANIC("WHAT STATUS OF LOAD?");
 	}
