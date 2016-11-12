@@ -227,22 +227,14 @@ disk_read (struct disk *d, disk_sector_t sec_no, void *buffer)
 
   c = d->channel;
   lock_acquire (&c->lock);
-  printf("disk_read 1\n");
   select_sector (d, sec_no);
-  printf("disk_read 2\n");
   issue_pio_command (c, CMD_READ_SECTOR_RETRY);
-  printf("disk_read 3\n");
   sema_down (&c->completion_wait);
-  printf("disk_read 4\n");
   if (!wait_while_busy (d))
     PANIC ("%s: disk read failed, sector=%"PRDSNu, d->name, sec_no);
-  printf("disk_read 4.5\n");
   input_sector (c, buffer);
-  printf("disk_read 5\n");
   d->read_cnt++;
-  printf("disk_read 6\n");
   lock_release (&c->lock);
-  printf("disk_read 7\n");
 }
 
 /* Write sector SEC_NO to disk D from BUFFER, which must contain

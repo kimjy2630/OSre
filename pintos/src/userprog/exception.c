@@ -167,11 +167,11 @@ page_fault (struct intr_frame *f)
 		spe_tmp.uaddr = pg_round_down(fault_addr);
 		struct thread *t = thread_current();
 		struct hash_elem *he = hash_find(&t->supp_page_table, &spe_tmp.elem);
-		printf("aaa fault_addr:%p\n", fault_addr);
+//		printf("aaa fault_addr:%p\n", fault_addr);
 
 
 		if (he != NULL) {
-			printf("bbb\n");
+//			printf("bbb\n");
 			struct supp_page_entry* spe = hash_entry(he,struct supp_page_entry,elem);
 //			printf("NOT NULL\n");
 			spe->uaddr = pg_round_down(spe->uaddr);
@@ -184,14 +184,14 @@ page_fault (struct intr_frame *f)
 			pagedir_clear_page(t->pagedir, pg_round_down(fault_addr));
 			if (!pagedir_set_page(t->pagedir, pg_round_down(fault_addr), spe->kaddr,
 							spe->writable)) {
-				printf("KILL\n");
+//				printf("KILL\n");
 				kill(f);
 			}
 			pagedir_set_dirty (t->pagedir, pg_round_down(fault_addr), false);
 			pagedir_set_accessed (t->pagedir, pg_round_down(fault_addr), true);
 
 			if (spe->type == FILE) {
-				printf("FILE\n");
+//				printf("FILE\n");
 				file_seek(spe->file, spe->ofs);
 
 				off_t bytes_read = file_read(spe->file, fe->addr,
@@ -200,15 +200,15 @@ page_fault (struct intr_frame *f)
 				memset(fe->addr + bytes_read, 0, PGSIZE - bytes_read);
 				spe->type = MEMORY;
 			} else if (spe->type == ZERO) {
-				printf("ZERO\n");
+//				printf("ZERO\n");
 				memset(fe->addr, 0, PGSIZE);
 			}
 			else if(spe->type == SWAP){
-				printf("SWAP\n");
+//				printf("SWAP\n");
 				swap_unload(spe->swap_index, spe->uaddr);
 				spe->swap_index = NULL;
 				spe->type = MEMORY;
-				printf("swap sfad\n");
+//				printf("swap sfad\n");
 			}
 
 ////			printf("PASS\n");
@@ -229,18 +229,18 @@ page_fault (struct intr_frame *f)
 			void* esp;
 			if(user){
 				esp = f->esp;
-				printf("111 esp:%p\n", esp);
+//				printf("111 esp:%p\n", esp);
 			}
 			else{
 				esp = thread_current()->esp;
-				printf("222 esp:%p\n", esp);
+//				printf("222 esp:%p\n", esp);
 			}
 			////
-			printf("fault_addr:%p\n", fault_addr);
+//			printf("fault_addr:%p\n", fault_addr);
 			uint32_t offset = ((uint32_t *) PHYS_BASE) - ((uint32_t *)fault_addr);
-			printf("offset:%p\n", offset);
+//			printf("offset:%p\n", offset);
 			if (offset > STACK_LIMIT){
-				printf("stack overflow\n");
+//				printf("stack overflow\n");
 				f->eip = (void *) f->eax;
 				f->eax = 0xffffffff;
 				exit(-1);
@@ -248,7 +248,7 @@ page_fault (struct intr_frame *f)
 			}
 
 			if ((fault_addr == esp - 4) || (fault_addr == esp - 32) || fault_addr >= esp) {
-				printf("333\n");
+//				printf("333\n");
 				/* Check for stack overflow */
 //				if (fault_addr < STACK_MIN) {
 //					exit(-1);
@@ -265,9 +265,9 @@ page_fault (struct intr_frame *f)
 				 the frame table. */
 				struct supp_page_entry *spe = supp_page_add(
 						pg_round_down(fault_addr), true);
-				if(spe == NULL){
-					printf("spe null aaa, fe:%p\n", fe);
-				}
+//				if(spe == NULL){
+//					printf("spe null aaa, fe:%p\n", fe);
+//				}
 
 				spe->kaddr = fe->addr;
 				spe->page_read_bytes = 0;
@@ -301,14 +301,15 @@ page_fault (struct intr_frame *f)
 //				return;
 //			}
 			else{
-				printf("AAA\n");
+//				printf("AAA\n");
 				f->eip = (void *) f->eax;
 				f->eax = 0xffffffff;
 				exit(-1);
 			}
 		}
 	} else {
-		printf("present\n");
+//		printf("present\n");
+
 		// invalid
 //		exit(-1);
 	}
