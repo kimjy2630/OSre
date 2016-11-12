@@ -36,6 +36,7 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 		fe->t = thread_current();
 
 		enum intr_level old_level = intr_disable();
+		printf("aaa\n");
 		list_push_back(&frame, &fe->elem);
 		intr_set_level(old_level);
 
