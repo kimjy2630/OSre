@@ -38,7 +38,6 @@
 #ifdef VM
 #include "vm/frame.h"
 #include "vm/swap.h"
-#include "devices/disk.h"
 #endif
 
 /* Amount of physical memory, in 4 kB pages. */
@@ -125,7 +124,7 @@ main (void)
   /* frame init */
   frame_init ();
 
-  disk_init();
+//  disk_init();
   swap_init();
 #endif
 
