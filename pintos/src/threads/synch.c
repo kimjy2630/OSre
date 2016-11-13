@@ -272,8 +272,9 @@ lock_release (struct lock *lock)
 
   sema_up (&lock->semaphore);
 
-  ASSERT(lock->holder == NULL);
   intr_set_level(old_level);
+  ASSERT(lock->holder == NULL);
+
 }
 
 /* Returns true if the current thread holds LOCK, false
