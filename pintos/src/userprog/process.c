@@ -509,15 +509,6 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 		spe->file = file;
 
 		ASSERT(pg_ofs(spe->uaddr) == 0);
-		}
-//		pagedir_clear_page(fe->t->pagedir, upage);
-//		// TODO
-//		if (!pagedir_set_page(fe->t->pagedir, pg_round_down(fault_addr), spe->kaddr, spe->writable)) {
-//			//				printf("KILL\n");
-//			kill(f);
-//		}
-//		pagedir_set_dirty (t->pagedir, pg_round_down(fault_addr), false);
-//		pagedir_set_accessed (t->pagedir, pg_round_down(fault_addr), true);
 #else
 		kpage = palloc_get_page(PAL_USER);
 
