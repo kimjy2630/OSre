@@ -28,7 +28,7 @@ struct frame_entry* frame_lookup(uint8_t *kaddr){
 	enum intr_level old_level = intr_disable();
 	for(e = list_begin(&frame); e != list_begin(&frame); e = list_next(e)){
 		fe = list_entry(e, struct frame_entry, elem);
-		if(fe->kaddr == kaddr)
+		if(fe->addr == kaddr)
 			return fe;
 	}
 	intr_set_level(old_level);
