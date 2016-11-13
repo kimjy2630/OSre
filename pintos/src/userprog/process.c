@@ -597,6 +597,7 @@ static bool setup_stack(void **esp) {
 			spe->type = MEMORY;
 			spe->kaddr = fe->addr;
 			fe->spe = spe;
+			spe->fe = fe;
 
 			ASSERT(pg_ofs(spe->uaddr) == 0);
 #endif

@@ -18,6 +18,7 @@ struct supp_page_entry* supp_page_add(uint8_t *addr, bool writable) {
 		return NULL;
 	spe->uaddr = pg_round_down(addr);
 	spe->writable = writable;
+	spe->fe = NULL;
 
 	hash_insert(&supp_page_table, &spe->elem);
 	return spe;

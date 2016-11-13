@@ -2,6 +2,7 @@
 #define VM_PAGE_H
 
 #include "lib/kernel/hash.h"
+#include "vm/frame.h"
 
 enum page_type {
 	ZERO, MEMORY, FILE, SWAP
@@ -16,6 +17,7 @@ struct supp_page_entry{
 	struct hash_elem elem;
 //	struct lock lock_using;
 	size_t swap_index;
+	struct frame_entry *fe;
 
 	/* used for file page */
 	struct file* file;

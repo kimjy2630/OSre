@@ -180,6 +180,7 @@ static void page_fault(struct intr_frame *f) {
 			ASSERT(pg_ofs(spe->uaddr) == 0);
 			struct frame_entry *fe = frame_add(PAL_USER);
 			fe->spe = spe;
+			spe->fe = fe;
 
 			spe->kaddr = fe->addr;
 			pagedir_clear_page(t->pagedir, pg_round_down(fault_addr));
@@ -297,6 +298,7 @@ static void page_fault(struct intr_frame *f) {
 				spe->type = MEMORY;
 
 				fe->spe = spe;
+				spe->fe = fe;
 				return;
 			}
 			/* Other case of stack extension */
