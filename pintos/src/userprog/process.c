@@ -178,14 +178,13 @@ void process_exit(void) {
 		struct supp_page_entry *spe;
 
 		hash_first(&i, &supp_page_table);
-		while(i->elem != NULL) {
-			spe = hash_entry(i->elem, struct supp_page_entry, elem);
+		while(hash_next(&i)) {
+			spe = hash_entry(i.elem, struct supp_page_entry, elem);
 			kaddr = spe->kaddr;
 			fe = frame_lookup(kaddr);
 			pagedir_clear_page(pd, spe->uaddr);
 			frame_free(fe);
 			free(spe);
-			hash_next(i);
 		}
 		hash_destroy(&supp_page_table, NULL);
 #endif
