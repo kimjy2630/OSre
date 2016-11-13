@@ -213,7 +213,7 @@ static void page_fault(struct intr_frame *f) {
 			}
 			return;
 		} else {
-			// extend stack
+			/* extend stack */
 //			printf("ccc\n");
 			void* esp;
 			if(user) {
@@ -223,14 +223,6 @@ static void page_fault(struct intr_frame *f) {
 			else {
 				esp = thread_current()->esp;
 //				printf("222 esp:%p\n", esp);
-			}
-			////
-			if((uint32_t *)fault_addr > (uint32_t *)PHYS_BASE) {
-				printf("access to kernel memory\n");
-				f->eip = (void *) f->eax;
-				f->eax = 0xffffffff;
-				exit(-1);
-				return;
 			}
 
 //			printf("fault_addr:%p\n", fault_addr);
