@@ -174,6 +174,7 @@ void process_exit(void) {
 		struct hash_iterator *i;
 		uint8_t *kaddr;
 		struct frame_entry *fe;
+		struct supp_page_entry *spe;
 
 		hash_first(i, &supp_page_table);
 		while(i->elem != NULL) {
