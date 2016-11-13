@@ -187,6 +187,9 @@ static void page_fault(struct intr_frame *f) {
 			// TODO
 			if (!pagedir_set_page(t->pagedir, pg_round_down(fault_addr), spe->kaddr, spe->writable)) {
 //				printf("KILL\n");
+				palloc_page_free(fe->addr);
+				frame_free(fe);
+				spe->fe = NULL;
 				kill(f);
 			}
 			pagedir_set_dirty (t->pagedir, pg_round_down(fault_addr), false);
