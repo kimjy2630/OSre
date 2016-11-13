@@ -171,7 +171,7 @@ void process_exit(void) {
 		 directory, or our active page directory will be one
 		 that's been freed (and cleared). */
 #ifdef VM
-		struct hash supp_page_table = curr.supp_page_table;
+		struct hash supp_page_table = curr->supp_page_table;
 		struct hash_iterator *i;
 		uint8_t *kaddr;
 		struct frame_entry *fe;
