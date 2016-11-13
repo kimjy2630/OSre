@@ -147,7 +147,7 @@ static void page_fault(struct intr_frame *f) {
 
 #ifdef VM
 //printf("PAGE FAULT\n");
-	printf("fault_addr:%p\n", fault_addr);
+	printf("fault_addr:%p, &fault_addr:%p\n", fault_addr, &fault_addr);
 	if (not_present) {
 //		printf("NOT PRESENT\n");
 		struct supp_page_entry spe_tmp;
