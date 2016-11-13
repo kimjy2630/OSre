@@ -20,6 +20,7 @@
 #ifdef VM
 #include "vm/frame.h"
 #include "vm/page.h"
+#include "lib/kernel/hash.h"
 #endif
 
 static thread_func start_process NO_RETURN;
