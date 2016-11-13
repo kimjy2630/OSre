@@ -272,8 +272,8 @@ lock_release (struct lock *lock)
 
   sema_up (&lock->semaphore);
 
-  intr_set_level(old_level);
   ASSERT(lock->holder == NULL);
+  intr_set_level(old_level);
 
 }
 
