@@ -322,7 +322,8 @@ static void page_fault(struct intr_frame *f) {
 		}
 	} else {
 		printf("present\n");
-
+		printf("write %d\n", write);
+		printf("user %d\n", user);
 		// invalid
 //		exit(-1);
 	}
