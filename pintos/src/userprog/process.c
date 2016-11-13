@@ -524,23 +524,22 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 //		pagedir_set_dirty (t->pagedir, pg_round_down(fault_addr), false);
 //		pagedir_set_accessed (t->pagedir, pg_round_down(fault_addr), true);
 
+		/*
 		kpage = fe->addr;
 		if (file_read(file, kpage, page_read_bytes) != (int) page_read_bytes) {
-//			palloc_free_page(kpage);
 			palloc_free_page(kpage);
 			frame_free(fe);
 			return false;
 		}
 		memset(kpage + page_read_bytes, 0, page_zero_bytes);
 
-		/* Add the page to the process's address space. */
 		if (!install_page(upage, kpage, writable)) {
-//			palloc_free_page(kpage);
 			pagedir_clear_page(fe->t->pagedir, upage);
 			palloc_free_page(kpage);
 			frame_free(fe);
 			return false;
 		}
+		*/
 #else
 		kpage = palloc_get_page(PAL_USER);
 
