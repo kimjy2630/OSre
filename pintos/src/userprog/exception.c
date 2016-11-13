@@ -170,6 +170,7 @@ static void page_fault(struct intr_frame *f) {
 		if (he != NULL) {
 			printf("bbb\n");
 			struct supp_page_entry* spe = hash_entry(he,struct supp_page_entry,elem);
+			printf("exception not_present spe uaddr:%p\n", spe->uaddr);
 //			printf("NOT NULL\n");
 //			spe->uaddr = pg_round_down(spe->uaddr);
 			if(spe->uaddr > PHYS_BASE) {
@@ -285,6 +286,7 @@ static void page_fault(struct intr_frame *f) {
 				 the frame table. */
 				struct supp_page_entry *spe = supp_page_add(
 						pg_round_down(fault_addr), true);
+				printf("exception extend stack spe uaddr:%p\n", spe->uaddr);
 //				if(spe == NULL){
 //					printf("spe null aaa, fe:%p\n", fe);
 //				}
