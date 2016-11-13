@@ -52,3 +52,19 @@ bool hash_less_addr(const struct hash_elem *a, const struct hash_elem *b, void *
 	return spe_a->uaddr < spe_b->uaddr;
 }
 
+void supp_page_entry_destroy(struct hash_elem *e, void *aux){
+	struct supp_page_entry *spe;
+	uint8_t *kaddr;
+	struct frame_entry *fe;
+
+	spe = hash_entry(e, struct supp_page_entry, elem);
+	kaddr = spe->kaddr;
+	fe = frame_lookup(kaddr);
+	pagedir_clear_page(fe->t->pagedir, spe->uaddr);
+	frame_free(fe);
+	free(spe);
+}
+
+void supp_page_table_destroy(struct hash *supp_page_table){
+	hash_destroy(supp_page_table, supp_page_entry_destroy);
+}

@@ -30,5 +30,6 @@ bool supp_page_remove();
 
 unsigned hash_addr(struct hash_elem *e, void *aux);
 bool hash_less_addr(const struct hash_elem *a, const struct hash_elem *b, void *aux);
+void supp_page_table_destroy(struct hash *supp_page_table);
 
 #endif /* vm/page.h */
