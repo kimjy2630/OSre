@@ -218,7 +218,7 @@ static void page_fault(struct intr_frame *f) {
 			else if(spe->type == SWAP) {
 //				printf("SWAP\n");
 //				swap_unload(spe->swap_index, spe->uaddr);
-				swap_unload(spe->swap_index, spe, fe);
+				swap_unload(spe->swap_index, spe);
 				spe->swap_index = NULL;
 				spe->type = MEMORY;
 //				printf("swap sfad\n");
