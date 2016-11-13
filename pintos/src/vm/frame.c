@@ -117,7 +117,8 @@ void frame_evict() {
 //			printf("load page to swap\n");
 //			printf("uaddr before:%p\n", uaddr);
 			pagedir_clear_page(pd, uaddr);
-			pagedir_set_page(pd, uaddr, fe->addr, true);
+			frame_free(fe);
+			palloc_free_page(fe->addr);
 
 			spe->kaddr = NULL;
 			spe->swap_index = swap_load(uaddr);
