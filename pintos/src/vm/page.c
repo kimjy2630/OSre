@@ -60,23 +60,26 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 	uint8_t *kaddr;
 	struct frame_entry *fe;
 
-//	printf("aaaa\n");
+	/*
 	spe = hash_entry(e, struct supp_page_entry, elem);
 	if(spe->type == MEMORY){
-//	printf("bbbb\n");
 		kaddr = spe->kaddr;
-//	printf("cccc\n");
 		fe = frame_lookup(kaddr);
 		if (fe != NULL) {
-//		printf("dddd\n");
 			pagedir_clear_page(fe->t->pagedir, spe->uaddr);
-//		printf("eeee\n");
 			frame_free(fe);
 		}
 	}
-//	printf("ffff\n");
 	free(spe);
-//	printf("gggg\n");
+	*/
+
+	spe = hash_entry(e, struct supp_page_entry, elem);
+	fe = spe->fe;
+	if (spe->type == MEMORY && fe != NULL) {
+		pagedir_clear_page(fe->t->pagedir, spe->uaddr);
+		frame_free(fe);
+	}
+	free(spe);
 }
 
 void supp_page_table_destroy(struct hash *supp_page_table) {
