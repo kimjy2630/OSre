@@ -1,7 +1,6 @@
 #include "threads/thread.h"
 #include "threads/synch.h"
 #include "threads/palloc.h"
-#include "vm/frame.h"
 #include <stdlib.h>
 #include "lib/debug.h"
 #include "threads/interrupt.h"
