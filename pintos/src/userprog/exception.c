@@ -148,15 +148,17 @@ static void page_fault(struct intr_frame *f) {
 #ifdef VM
 //printf("PAGE FAULT\n");
 	printf("fault_addr:%p, &fault_addr:%p\n", fault_addr, &fault_addr);
+	if(fault_addr > PHYS_BASE) {
+		f->eip = (void *) f->eax;
+		f->eax = 0xffffffff;
+		exit(-1);
+	}
+
 	if (not_present) {
 //		printf("NOT PRESENT\n");
 		struct supp_page_entry spe_tmp;
 		spe_tmp.uaddr = pg_round_down(fault_addr);
-		if(fault_addr > PHYS_BASE) {
-			printf("fault_addr:%p\n", fault_addr);
-			printf("kernel access!\n");
-			exit(-1);
-		}
+
 		struct thread *t = thread_current();
 		struct hash_elem *he = hash_find(&t->supp_page_table, &spe_tmp.elem);
 		printf("aaa\n");
