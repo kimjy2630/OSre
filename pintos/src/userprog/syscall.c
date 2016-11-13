@@ -38,7 +38,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 #ifdef VM
 	thread_current()->esp = f->esp;
 #endif
-	printf("read validity:%p\n", ptr);
+//	printf("read validity:%p\n", ptr);
 	if (!read_validity(ptr, 4)){
 //		printf("hahaha\n");
 		exit(-1);
