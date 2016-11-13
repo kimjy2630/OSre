@@ -579,7 +579,7 @@ static bool setup_stack(void **esp) {
 #ifdef VM
 //	kpage = palloc_get_page(PAL_USER | PAL_ZERO); ????
 //	struct frame_entry *fe = frame_add(kpage);
-	struct frame_entry *fe = frame_add(PAL_USER);// | PAL_ZERO);
+	struct frame_entry *fe = frame_add(PAL_USER | PAL_ZERO);
 	if(fe == NULL)
 	return false;
 
