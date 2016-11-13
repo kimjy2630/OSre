@@ -13,7 +13,7 @@
 void frame_evict();
 
 struct list frame;
-//struct lock lock_frame;
+struct lock lock_frame;
 
 void frame_init() {
 	list_init(&frame);
@@ -46,15 +46,17 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 		fe->addr = addr;
 		fe->t = thread_current();
 
-//		lock_acquire(&lock_frame);
+		lock_acquire(&lock_frame);
 //		printf("aaa\n");
 		list_push_back(&frame, &fe->elem);
-//		lock_release(&lock_frame);
+		lock_release(&lock_frame);
 //		printf("bbb, fe:%p\n");
 
 		return fe;
 	} else {
+		lock_acquire(&lock_frame);
 		frame_evict();
+		lock_release(&lock_frame);
 		return frame_add(flags);
 //		return frame_add(addr);
 	}

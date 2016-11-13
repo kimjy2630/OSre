@@ -11,7 +11,6 @@ struct frame_entry {
 	struct list_elem elem;
 };
 
-struct lock lock_frame;
 
 void frame_init();
 struct frame_entry* frame_lookup(uint8_t *kddr);
