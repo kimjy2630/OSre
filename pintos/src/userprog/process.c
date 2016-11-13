@@ -171,21 +171,21 @@ void process_exit(void) {
 		 directory, or our active page directory will be one
 		 that's been freed (and cleared). */
 #ifdef VM
-//		struct hash supp_page_table = curr->supp_page_table;
-//		struct hash_iterator i;
-//		uint8_t *kaddr;
-//		struct frame_entry *fe;
-//		struct supp_page_entry *spe;
-//
-//		hash_first(&i, &supp_page_table);
-//		while(hash_next(&i)) {
-//			spe = hash_entry(hash_cur(&i), struct supp_page_entry, elem);
-//			kaddr = spe->kaddr;
-//			fe = frame_lookup(kaddr);
-//			pagedir_clear_page(pd, spe->uaddr);
-//			frame_free(fe);
-//			free(spe);
-//		}
+		struct hash supp_page_table = curr->supp_page_table;
+		struct hash_iterator i;
+		uint8_t *kaddr;
+		struct frame_entry *fe;
+		struct supp_page_entry *spe;
+
+		hash_first(&i, &supp_page_table);
+		while(hash_next(&i)) {
+			spe = hash_entry(hash_cur(&i), struct supp_page_entry, elem);
+			kaddr = spe->kaddr;
+			fe = frame_lookup(kaddr);
+			pagedir_clear_page(pd, spe->uaddr);
+			frame_free(fe);
+			free(spe);
+		}
 //		hash_destroy(&supp_page_table, NULL);
 #endif
 		curr->pagedir = NULL;
