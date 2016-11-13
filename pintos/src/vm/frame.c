@@ -21,11 +21,19 @@ void frame_init() {
 	lock_init(&lock_frame);
 }
 
-/*
- struct frame_entry* frame_get(uint8_t *addr){
+struct frame_entry* frame_lookup(uint8_t *kaddr){
+	struct list_elem *e;
+	struct frame_entry *fe;
 
- }
- */
+	enum intr_level old_level = intr_disable();
+	for(e = list_begin(&frame); e != list_begin(&frame); e = list_next(e)){
+		fe = list_entry(e, struct frame_entry, elem);
+		if(fe->kaddr == kaddr)
+			return fe;
+	}
+	intr_set_level(old_level);
+	return NULL;
+}
 
 struct frame_entry* frame_add(enum palloc_flags flags) {
 //struct frame_entry* frame_add(uint8_t* addr) {

@@ -169,6 +169,24 @@ void process_exit(void) {
 		 directory before destroying the process's page
 		 directory, or our active page directory will be one
 		 that's been freed (and cleared). */
+#ifdef VM
+		struct hash supp_page_table = curr.supp_page_table;
+		struct hash_iterator *i;
+		uint8_t *kaddr;
+		struct frame_entry *fe;
+
+		hash_first(i, &supp_page_table);
+		while(i->elem != NULL) {
+			spe = hash_entry(i->elem, struct supp_page_entry, elem);
+			kaddr = spe->kaddr;
+			fe = frame_lookup(kaddr);
+			pagedir_clear_page(pd, spe->uaddr);
+			frame_free(fe);
+			free(spe);
+			hash_next(i);
+		}
+		hash_destroy(&supp_page_table, NULL);
+#endif
 		curr->pagedir = NULL;
 		pagedir_activate(NULL);
 		pagedir_destroy(pd);
@@ -577,14 +595,14 @@ static bool setup_stack(void **esp) {
 			ASSERT(pg_ofs(spe->uaddr) == 0);
 #endif
 		} else {
-			palloc_free_page(kpage);
 #ifdef VM
 			pagedir_clear_page(fe->t->pagedir, spe->uaddr);
 			frame_free(fe);
 			free(spe);
+#else
+			palloc_free_page(kpage);
 #endif
-		}
-	}
+		}	}
 	return success;
 }
 
