@@ -52,6 +52,7 @@ void swap_unload(size_t index, struct supp_page_entry *spe) { // disk -> mem
 //	spe->kaddr = fe->addr;
 //	pagedir_set_page(fe->t->pagedir, spe->uaddr, fe->addr, true);
 
+	printf("unload start\n");
 	lock_acquire(&swap_lock);
 	bitmap_set_multiple(swap_bitmap, index, num_sector_in_page, 0);
 //	printf("bit set mul\n");
@@ -62,6 +63,7 @@ void swap_unload(size_t index, struct supp_page_entry *spe) { // disk -> mem
 	}
 //	printf("disk_read\n");
 	lock_release(&swap_lock);
+	printf("unload end\n");
 }
 
 void swap_free(size_t index){
