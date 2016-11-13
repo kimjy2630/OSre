@@ -117,7 +117,6 @@ void frame_evict() {
 			pagedir_clear_page(pd, uaddr);
 			palloc_free_page(fe->addr);
 			frame_free(fe);
-			lock_release(&lock_frame);
 //			printf("load page to swap\n");
 //			printf("uaddr before:%p\n", uaddr);
 			spe->kaddr = NULL;
@@ -128,6 +127,7 @@ void frame_evict() {
 //			if (spe->type == MEMORY)
 //				pagedir_clear_page(pd, uaddr);
 			spe->fe = NULL;
+			lock_release(&lock_frame);
 //			printf("evict loop end\n");
 			break;
 		}
