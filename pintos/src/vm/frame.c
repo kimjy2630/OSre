@@ -124,7 +124,7 @@ void frame_evict() {
 //			frame_free(fe);
 
 			spe->kaddr = NULL;
-			spe->swap_index = swap_load(fe->addr);
+			spe->swap_index = swap_load(uaddr);
 			spe->type = SWAP;
 
 			pagedir_clear_page(pd, uaddr);
