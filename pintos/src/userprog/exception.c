@@ -144,11 +144,10 @@ static void page_fault(struct intr_frame *f) {
 	not_present = (f->error_code & PF_P) == 0;
 	write = (f->error_code & PF_W) != 0;
 	user = (f->error_code & PF_U) != 0;
-
 #ifdef VM
 //printf("PAGE FAULT\n");
-	printf("fault_addr:%p, &fault_addr:%p\n", fault_addr, &fault_addr);
-	if(fault_addr > PHYS_BASE) {
+//	printf("fault_addr:%p, &fault_addr:%p\n", fault_addr, &fault_addr);
+	if(fault_addr >= PHYS_BASE) {
 		if (user)
 			kill(f);
 		else {
@@ -165,12 +164,12 @@ static void page_fault(struct intr_frame *f) {
 
 		struct thread *t = thread_current();
 		struct hash_elem *he = hash_find(&t->supp_page_table, &spe_tmp.elem);
-		printf("aaa\n");
+//		printf("aaa\n");
 
 		if (he != NULL) {
-			printf("bbb\n");
+//			printf("bbb\n");
 			struct supp_page_entry* spe = hash_entry(he,struct supp_page_entry,elem);
-			printf("exception not_present spe uaddr:%p\n", spe->uaddr);
+//			printf("exception not_present spe uaddr:%p\n", spe->uaddr);
 //			printf("NOT NULL\n");
 //			spe->uaddr = pg_round_down(spe->uaddr);
 			if(spe->uaddr > PHYS_BASE) {
@@ -186,7 +185,7 @@ static void page_fault(struct intr_frame *f) {
 			pagedir_clear_page(t->pagedir, pg_round_down(fault_addr));
 			if (!pagedir_set_page(t->pagedir, pg_round_down(fault_addr), spe->kaddr,
 							spe->writable)) {
-				printf("KILL\n");
+//				printf("KILL\n");
 				kill(f);
 			}
 			pagedir_set_dirty (t->pagedir, pg_round_down(fault_addr), false);
@@ -212,16 +211,16 @@ static void page_fault(struct intr_frame *f) {
 				memset(fe->addr + bytes_read, 0, PGSIZE - bytes_read);
 				spe->type = MEMORY;
 			} else if (spe->type == ZERO) {
-				printf("ZERO\n");
+//				printf("ZERO\n");
 				memset(fe->addr, 0, PGSIZE);
 			}
 			else if(spe->type == SWAP) {
-				printf("SWAP\n");
+//				printf("SWAP\n");
 //				swap_unload(spe->swap_index, spe->uaddr);
 				swap_unload(spe->swap_index, spe, fe);
 				spe->swap_index = NULL;
 				spe->type = MEMORY;
-				printf("swap sfad\n");
+//				printf("swap sfad\n");
 			}
 
 //			printf("PASS\n");
@@ -242,11 +241,11 @@ static void page_fault(struct intr_frame *f) {
 			void* esp;
 			if(user) {
 				esp = f->esp;
-				printf("111 esp:%p\n", esp);
+//				printf("111 esp:%p\n", esp);
 			}
 			else {
 				esp = thread_current()->esp;
-				printf("222 esp:%p\n", esp);
+//				printf("222 esp:%p\n", esp);
 			}
 			////
 			if((uint32_t *)fault_addr > (uint32_t *)PHYS_BASE) {
@@ -286,7 +285,7 @@ static void page_fault(struct intr_frame *f) {
 				 the frame table. */
 				struct supp_page_entry *spe = supp_page_add(
 						pg_round_down(fault_addr), true);
-				printf("exception extend stack spe uaddr:%p\n", spe->uaddr);
+//				printf("exception extend stack spe uaddr:%p\n", spe->uaddr);
 //				if(spe == NULL){
 //					printf("spe null aaa, fe:%p\n", fe);
 //				}
@@ -323,14 +322,14 @@ static void page_fault(struct intr_frame *f) {
 //				return;
 //			}
 			else {
-				printf("AAA\n");
+//				printf("AAA\n");
 				f->eip = (void *) f->eax;
 				f->eax = 0xffffffff;
 				exit(-1);
 			}
 		}
 	} else {
-		printf("present\n");
+//		printf("present\n");
 //		printf("write %d\n", write);
 //		printf("user %d\n", user);
 		// invalid
