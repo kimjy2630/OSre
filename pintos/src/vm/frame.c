@@ -57,10 +57,8 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 
 		return fe;
 	} else {
-		lock_acquire(&lock_frame);
 //		enum intr_level old_level = intr_disable();
 		frame_evict();
-		lock_release(&lock_frame);
 //		intr_set_level(old_level);
 		return frame_add(flags);
 //		return frame_add(addr);
@@ -87,7 +85,7 @@ void frame_evict() {
 //	printf("&frame:%p\n",&frame);
 
 
-//	lock_acquire(&lock_frame);
+	lock_acquire(&lock_frame);
 	while(!list_empty(&frame)){
 //		printf("loop\n");
 		e = list_pop_front(&frame);
@@ -119,6 +117,7 @@ void frame_evict() {
 			pagedir_clear_page(pd, uaddr);
 			palloc_free_page(fe->addr);
 			frame_free(fe);
+			lock_release(&lock_frame);
 //			printf("load page to swap\n");
 //			printf("uaddr before:%p\n", uaddr);
 			spe->kaddr = NULL;
@@ -130,7 +129,6 @@ void frame_evict() {
 //				pagedir_clear_page(pd, uaddr);
 			spe->fe = NULL;
 //			printf("evict loop end\n");
-//			lock_release(&lock_frame);
 			break;
 		}
 	}
