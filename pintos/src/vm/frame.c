@@ -41,7 +41,7 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 	if (addr != NULL) {
 		struct frame_entry* fe = malloc(sizeof(struct frame_entry));
 		if (fe == NULL) {
-			palloc_free_page(uaddr);
+			palloc_free_page(addr);
 			return NULL;
 		}
 		fe->addr = addr;
