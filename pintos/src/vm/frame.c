@@ -41,26 +41,27 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 	if (addr != NULL) {
 		struct frame_entry* fe = malloc(sizeof(struct frame_entry));
 		if (fe == NULL) {
+			palloc_free_page(uaddr);
 			return NULL;
 		}
 		fe->addr = addr;
 		fe->t = thread_current();
 
-//		lock_acquire(&lock_frame);
-		enum intr_level old_level = intr_disable();
+		lock_acquire(&lock_frame);
+//		enum intr_level old_level = intr_disable();
 //		printf("aaa\n");
 		list_push_back(&frame, &fe->elem);
-//		lock_release(&lock_frame);
-		intr_set_level(old_level);
+		lock_release(&lock_frame);
+//		intr_set_level(old_level);
 //		printf("bbb, fe:%p\n");
 
 		return fe;
 	} else {
-//		lock_acquire(&lock_frame);
-		enum intr_level old_level = intr_disable();
+		lock_acquire(&lock_frame);
+//		enum intr_level old_level = intr_disable();
 		frame_evict();
-//		lock_release(&lock_frame);
-		intr_set_level(old_level);
+		lock_release(&lock_frame);
+//		intr_set_level(old_level);
 		return frame_add(flags);
 //		return frame_add(addr);
 	}
