@@ -24,15 +24,18 @@ struct frame_entry* frame_lookup(uint8_t *kaddr){
 	struct list_elem *e;
 	struct frame_entry *fe;
 
-	enum intr_level old_level = intr_disable();
+//	enum intr_level old_level = intr_disable();
+	lock_acquire(&lock_frame);
 	for(e = list_begin(&frame); e != list_begin(&frame); e = list_next(e)){
 		fe = list_entry(e, struct frame_entry, elem);
 		if(fe->addr == kaddr){
-			intr_set_level(old_level);
+//			intr_set_level(old_level);
+			lock_release(&lock_frame);
 			return fe;
 		}
 	}
-	intr_set_level(old_level);
+	lock_release(&lock_frame);
+//	intr_set_level(old_level);
 	return NULL;
 }
 
@@ -46,10 +49,12 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 		fe->addr = addr;
 		fe->t = thread_current();
 
-		enum intr_level old_level = intr_disable();
+		lock_acquire(&lock_frame);
+//		enum intr_level old_level = intr_disable();
 //		printf("aaa\n");
 		list_push_back(&frame, &fe->elem);
-		intr_set_level(old_level);
+		lock_release(&lock_frame);
+//		intr_set_level(old_level);
 //		printf("bbb, fe:%p\n");
 
 		return fe;
@@ -81,7 +86,7 @@ void frame_evict() {
 //	printf("&frame:%p\n",&frame);
 
 
-//	lock_acquire(&lock_frame);
+	lock_acquire(&lock_frame);
 	while(!list_empty(&frame)){
 //		printf("loop\n");
 //		printf("head:%p\n", frame.head.next);
@@ -114,9 +119,9 @@ void frame_evict() {
 //			printf("load page to swap\n");
 //			printf("uaddr before:%p\n", uaddr);
 			spe->kaddr = NULL;
-			lock_acquire(&lock_frame);
+//			lock_acquire(&lock_frame);
 			spe->swap_index = swap_load(uaddr);
-			lock_release(&lock_frame);
+//			lock_release(&lock_frame);
 			spe->type = SWAP;
 
 //			printf("uaddr after:%p\n", uaddr);
@@ -127,7 +132,7 @@ void frame_evict() {
 			palloc_free_page(fe->addr);
 			frame_free(fe);
 //			printf("evict loop end\n");
-//			lock_release(&lock_frame);
+			lock_release(&lock_frame);
 			break;
 		}
 	}
