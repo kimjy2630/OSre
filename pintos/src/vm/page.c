@@ -66,12 +66,12 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 //	printf("cccc\n");
 	fe = frame_lookup(kaddr);
 	if (fe != NULL) {
-//		printf("dddd\n");
+		printf("dddd\n");
 		pagedir_clear_page(fe->t->pagedir, spe->uaddr);
-//		printf("eeee\n");
+		printf("eeee\n");
 		frame_free(fe);
 	}
-//	printf("ffff\n");
+	printf("ffff\n");
 	free(spe);
 	printf("gggg\n");
 }
