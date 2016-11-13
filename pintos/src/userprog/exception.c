@@ -271,6 +271,7 @@ static void page_fault(struct intr_frame *f) {
 				struct frame_entry *fe = frame_add(PAL_ZERO | PAL_USER);
 
 				if (pagedir_get_page(t->pagedir, pg_round_down(fault_addr))!= NULL || !pagedir_set_page(t->pagedir, pg_round_down(fault_addr), fe->addr, true)) {
+					pagedir_clear_page(>t->pagedir, pg_round_down(fault_addr));
 					frame_free(fe);
 					kill(f);
 				}
@@ -322,8 +323,8 @@ static void page_fault(struct intr_frame *f) {
 		}
 	} else {
 		printf("present\n");
-		printf("write %d\n", write);
-		printf("user %d\n", user);
+//		printf("write %d\n", write);
+//		printf("user %d\n", user);
 		// invalid
 //		exit(-1);
 	}

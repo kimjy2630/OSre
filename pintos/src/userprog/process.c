@@ -579,6 +579,7 @@ static bool setup_stack(void **esp) {
 		} else {
 			palloc_free_page(kpage);
 #ifdef VM
+			pagedir_clear_page(fe->t->pagedir, spe->uaddr);
 			frame_free(fe);
 #endif
 		}

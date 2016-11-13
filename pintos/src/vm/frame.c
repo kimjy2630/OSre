@@ -69,7 +69,6 @@ void frame_free(struct frame_entry *fe){
 	list_remove(&fe->elem);
 
 //	free(fe->addr);
-	pagedir_clear_page(fe->t->pagedir, fe->spe->uaddr);
 	palloc_free_page(fe->addr);
 	free(fe);
 }
