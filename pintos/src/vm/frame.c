@@ -38,7 +38,6 @@ struct frame_entry* frame_lookup(uint8_t *kaddr){
 }
 
 struct frame_entry* frame_add(enum palloc_flags flags) {
-//struct frame_entry* frame_add(uint8_t* addr) {
 	uint8_t *addr = palloc_get_page(flags);
 	if (addr != NULL) {
 		struct frame_entry* fe = malloc(sizeof(struct frame_entry));
