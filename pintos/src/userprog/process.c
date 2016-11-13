@@ -179,7 +179,7 @@ void process_exit(void) {
 
 		hash_first(&i, &supp_page_table);
 		while(hash_next(&i)) {
-			spe = hash_entry(i.elem, struct supp_page_entry, elem);
+			spe = hash_entry(hash_cur(&i), struct supp_page_entry, elem);
 			kaddr = spe->kaddr;
 			fe = frame_lookup(kaddr);
 			pagedir_clear_page(pd, spe->uaddr);
