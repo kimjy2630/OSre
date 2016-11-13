@@ -179,7 +179,7 @@ page_fault (struct intr_frame *f)
 			printf("bbb\n");
 			struct supp_page_entry* spe = hash_entry(he,struct supp_page_entry,elem);
 //			printf("NOT NULL\n");
-			spe->uaddr = pg_round_down(spe->uaddr);
+//			spe->uaddr = pg_round_down(spe->uaddr);
 			if(spe->uaddr > PHYS_BASE) {
 				printf("uaddr:%p\n", spe->uaddr);
 				printf("kernel access in page fault!\n");
@@ -189,6 +189,15 @@ page_fault (struct intr_frame *f)
 			struct frame_entry *fe = frame_add(PAL_USER);
 			fe->spe = spe;
 
+			spe->kaddr = fe->addr;
+			pagedir_clear_page(t->pagedir, pg_round_down(fault_addr));
+			if (!pagedir_set_page(t->pagedir, pg_round_down(fault_addr), spe->kaddr,
+							spe->writable)) {
+				printf("KILL\n");
+				kill(f);
+			}
+			pagedir_set_dirty (t->pagedir, pg_round_down(fault_addr), false);
+			pagedir_set_accessed (t->pagedir, pg_round_down(fault_addr), true);
 //			printf("PASS\n");
 //			spe->kaddr = fe->addr;
 //			pagedir_clear_page(t->pagedir, pg_round_down(fault_addr));
@@ -209,33 +218,14 @@ page_fault (struct intr_frame *f)
 				ASSERT(bytes_read == spe->page_read_bytes);
 				memset(fe->addr + bytes_read, 0, PGSIZE - bytes_read);
 				spe->type = MEMORY;
-
-				spe->kaddr = fe->addr;
-				pagedir_clear_page(t->pagedir, pg_round_down(fault_addr));
-				if (!pagedir_set_page(t->pagedir, pg_round_down(fault_addr), spe->kaddr,
-								spe->writable)) {
-					printf("KILL\n");
-					kill(f);
-				}
-				pagedir_set_dirty (t->pagedir, pg_round_down(fault_addr), false);
-				pagedir_set_accessed (t->pagedir, pg_round_down(fault_addr), true);
 			} else if (spe->type == ZERO) {
 				printf("ZERO\n");
 				memset(fe->addr, 0, PGSIZE);
-
-				spe->kaddr = fe->addr;
-				pagedir_clear_page(t->pagedir, pg_round_down(fault_addr));
-				if (!pagedir_set_page(t->pagedir, pg_round_down(fault_addr), spe->kaddr,
-								spe->writable)) {
-					printf("KILL\n");
-					kill(f);
-				}
-				pagedir_set_dirty (t->pagedir, pg_round_down(fault_addr), false);
-				pagedir_set_accessed (t->pagedir, pg_round_down(fault_addr), true);
 			}
 			else if(spe->type == SWAP){
 				printf("SWAP\n");
-				swap_unload(spe->swap_index, spe->uaddr);
+//				swap_unload(spe->swap_index, spe->uaddr);
+				swap_unload(spe->swap_index, spe, fe);
 				spe->swap_index = NULL;
 				spe->type = MEMORY;
 				printf("swap sfad\n");

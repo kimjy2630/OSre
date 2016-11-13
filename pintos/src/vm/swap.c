@@ -38,15 +38,19 @@ size_t swap_load(uint8_t *uaddr){ // mem -> disk
 	return index;
 }
 
-void swap_unload(size_t index, uint8_t *uaddr){ // disk -> mem
+//void swap_unload(size_t index, uint8_t *uaddr){ // disk -> mem
+void swap_unload(size_t index, struct supp_page_entry *spe, struct frame_entry *fe) { // disk -> mem
+	/*
 	struct frame_entry *fe = frame_add(PAL_USER);
 	struct supp_page_entry spe_tmp;
 	spe_tmp.uaddr = pg_round_down(uaddr);
 	struct hash_elem *he = hash_find(&thread_current()->supp_page_table, &spe_tmp.elem);
 	struct supp_page_entry *spe = hash_entry(he, struct supp_page_entry, elem);
-	spe->uaddr = pg_round_down(spe->uaddr);
-	spe->kaddr = fe->addr;
-	pagedir_set_page(thread_current()->pagedir, spe->uaddr, fe->addr, true);
+	*/
+
+//	spe->uaddr = pg_round_down(spe->uaddr);
+//	spe->kaddr = fe->addr;
+//	pagedir_set_page(fe->t->pagedir, spe->uaddr, fe->addr, true);
 
 	lock_acquire(&swap_lock);
 	bitmap_set_multiple(swap_bitmap, index, num_sector_in_page, 0);
