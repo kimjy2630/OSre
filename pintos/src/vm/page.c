@@ -59,21 +59,21 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 	uint8_t *kaddr;
 	struct frame_entry *fe;
 
-	printf("aaaa\n");
+//	printf("aaaa\n");
 	spe = hash_entry(e, struct supp_page_entry, elem);
-	printf("bbbb\n");
+//	printf("bbbb\n");
 	kaddr = spe->kaddr;
-	printf("cccc\n");
+//	printf("cccc\n");
 	fe = frame_lookup(kaddr);
 	if (fe != NULL) {
-		printf("dddd\n");
+//		printf("dddd\n");
 		pagedir_clear_page(fe->t->pagedir, spe->uaddr);
-		printf("eeee\n");
+//		printf("eeee\n");
 		frame_free(fe);
 	}
-	printf("ffff\n");
+//	printf("ffff\n");
 	free(spe);
-	printf("gggg\n");
+//	printf("gggg\n");
 }
 
 void supp_page_table_destroy(struct hash *supp_page_table) {
