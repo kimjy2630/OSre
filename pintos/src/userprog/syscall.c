@@ -134,19 +134,22 @@ bool remove(const char *file) {
 	return filesys_remove(file);
 }
 int open(const char *file) {
+	printf("aaa"\n);
 	if (!read_validity(file, strlen(file) + 1)) {
 		exit(-1);
 		return false;
 	}
 
-	struct file* f;
 
+	struct file* f;
+	printf("bbb"\n);
 	f = filesys_open(file);
 	if (f == NULL)
 		return -1;
 
+	printf("ccc"\n);
 	int fd = add_process_file(thread_current(), f, file);
-
+	printf("eee"\n);
 	return fd;
 }
 int filesize(int fd) {
