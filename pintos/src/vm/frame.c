@@ -61,19 +61,6 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 	}
 }
 
-//void frame_free(uint8_t *addr) {
-//	struct list_elem *e;
-//	struct frame_entry *fe;
-//
-//	for(e = list_begin(&frame); e != list_end(&frame); e = list_next(e)){
-//		fe = list_entry(e, struct frame_entry, elem);
-//		if(fe->addr == addr){
-//			// free page
-//			free(fe);
-//		}
-//	}
-//}
-
 void frame_free(struct frame_entry *fe){
 	list_remove(&fe->elem);
 	fe->spe->fe = NULL;
