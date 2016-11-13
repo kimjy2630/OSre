@@ -142,10 +142,8 @@ int open(const char *file) {
 
 	struct file* f;
 	f = filesys_open(file);
-	if (f == NULL){
-		printf("filesys_open fail\n");
+	if (f == NULL)
 		return -1;
-	}
 	int fd = add_process_file(thread_current(), f, file);
 	return fd;
 }
