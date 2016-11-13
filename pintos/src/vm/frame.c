@@ -90,7 +90,7 @@ void frame_evict() {
 	uint8_t *uaddr;
 
 	ASSERT(!list_empty(&frame));
-	printf("start evict\n");
+//	printf("start evict\n");
 //	printf("&frame:%p\n",&frame);
 
 
@@ -136,7 +136,7 @@ void frame_evict() {
 //			if (spe->type == MEMORY)
 //				pagedir_clear_page(pd, uaddr);
 			frame_free(fe);
-			printf("evict loop end\n");
+//			printf("evict loop end\n");
 //			lock_release(&lock_frame);
 			break;
 		}
