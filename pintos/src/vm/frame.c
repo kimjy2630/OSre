@@ -85,7 +85,7 @@ void frame_evict() {
 //	printf("&frame:%p\n",&frame);
 
 
-	lock_acquire(&lock_frame);
+//	lock_acquire(&lock_frame);
 	while(!list_empty(&frame)){
 //		printf("loop\n");
 		e = list_pop_front(&frame);
@@ -127,7 +127,7 @@ void frame_evict() {
 //			if (spe->type == MEMORY)
 //				pagedir_clear_page(pd, uaddr);
 			spe->fe = NULL;
-			lock_release(&lock_frame);
+//			lock_release(&lock_frame);
 //			printf("evict loop end\n");
 			break;
 		}
