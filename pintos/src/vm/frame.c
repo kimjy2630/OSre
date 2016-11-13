@@ -46,10 +46,10 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 		fe->addr = addr;
 		fe->t = thread_current();
 
-		lock_acquire(&lock_frame);
+//		lock_acquire(&lock_frame);
 //		printf("aaa\n");
 		list_push_back(&frame, &fe->elem);
-		lock_release(&lock_frame);
+//		lock_release(&lock_frame);
 //		printf("bbb, fe:%p\n");
 
 		return fe;
@@ -80,7 +80,7 @@ void frame_evict() {
 //	printf("&frame:%p\n",&frame);
 
 
-	lock_acquire(&lock_frame);
+//	lock_acquire(&lock_frame);
 	while(!list_empty(&frame)){
 //		printf("loop\n");
 		e = list_pop_front(&frame);
@@ -123,7 +123,7 @@ void frame_evict() {
 //				pagedir_clear_page(pd, uaddr);
 			spe->fe = NULL;
 //			printf("evict loop end\n");
-			lock_release(&lock_frame);
+//			lock_release(&lock_frame);
 			break;
 		}
 	}
