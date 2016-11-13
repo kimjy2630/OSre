@@ -122,7 +122,7 @@ void frame_evict() {
 //			printf("uaddr after:%p\n", uaddr);
 //			if (spe->type == MEMORY)
 //				pagedir_clear_page(pd, uaddr);
-			palloc_page_free(fe->addr);
+			palloc_free_page(fe->addr);
 			frame_free(fe);
 //			printf("evict loop end\n");
 //			lock_release(&lock_frame);
