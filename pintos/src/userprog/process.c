@@ -188,10 +188,9 @@ void process_exit(void) {
 //		}
 //		hash_destroy(&supp_page_table, NULL);
 		supp_page_table_destroy(&curr->supp_page_table);
-#else
-		pagedir_destroy(pd);
 #endif
 		pagedir_activate(NULL);
+		pagedir_destroy(pd);
 		curr->pagedir = NULL;
 
 	}

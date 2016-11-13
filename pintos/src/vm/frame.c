@@ -123,6 +123,7 @@ void frame_evict() {
 //			if (spe->type == MEMORY)
 //				pagedir_clear_page(pd, uaddr);
 			spe->fe = NULL;
+			pagedir_clear_page(pd, uaddr);
 			palloc_free_page(fe->addr);
 			frame_free(fe);
 //			printf("evict loop end\n");
