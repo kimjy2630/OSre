@@ -278,9 +278,9 @@ static void page_fault(struct intr_frame *f) {
 			}
 		}
 	} else {
-		printf("present\n");
-		printf("write %d\n", write);
-		printf("user %d\n", user);
+//		printf("present\n");
+//		printf("write %d\n", write);
+//		printf("user %d\n", user);
 		if (user)
 			kill(f);
 		else {
