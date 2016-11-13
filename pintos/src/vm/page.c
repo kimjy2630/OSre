@@ -59,7 +59,7 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 	uint8_t *kaddr;
 	struct frame_entry *fe;
 
-//	printf("aaaa\n");
+	printf("aaaa\n");
 	spe = hash_entry(e, struct supp_page_entry, elem);
 //	printf("bbbb\n");
 	kaddr = spe->kaddr;
@@ -73,7 +73,7 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 	}
 //	printf("ffff\n");
 	free(spe);
-//	printf("gggg\n");
+	printf("gggg\n");
 }
 
 void supp_page_table_destroy(struct hash *supp_page_table) {
