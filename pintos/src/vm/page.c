@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "threads/thread.h"
 #include "threads/vaddr.h"
+#include "userprog/pagedir.h"
 
 //void supp_page_init() {
 //
