@@ -1,4 +1,5 @@
 #include "vm/page.h"
+#include "vm/frame.h"
 #include "lib/kernel/hash.h"
 #include <stdlib.h>
 #include "threads/thread.h"
