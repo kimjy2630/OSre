@@ -57,9 +57,9 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 
 		return fe;
 	} else {
-		enum intr_level old_level = intr_disable();
+//		enum intr_level old_level = intr_disable();
 		frame_evict();
-		intr_set_level(old_level);
+//		intr_set_level(old_level);
 		return frame_add(flags);
 //		return frame_add(addr);
 	}
@@ -86,6 +86,7 @@ void frame_evict() {
 
 
 //	lock_acquire(&lock_frame);
+	enum intr_level old_level = intr_disable();
 	while(!list_empty(&frame)){
 //		printf("loop\n");
 		e = list_pop_front(&frame);
@@ -119,6 +120,8 @@ void frame_evict() {
 			frame_free(fe);
 //			printf("load page to swap\n");
 //			printf("uaddr before:%p\n", uaddr);
+			intr_set_level(old_level);
+
 			spe->kaddr = NULL;
 			spe->swap_index = swap_load(uaddr);
 			spe->type = SWAP;
