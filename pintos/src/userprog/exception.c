@@ -284,6 +284,13 @@ static void page_fault(struct intr_frame *f) {
 		}
 	} else {
 		printf("present\n");
+		if (user)
+			kill(f);
+		else {
+			f->eip = (void *) f->eax;
+			f->eax = 0xffffffff;
+			exit(-1);
+		}
 //		printf("write %d\n", write);
 //		printf("user %d\n", user);
 		// invalid
