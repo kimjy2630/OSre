@@ -24,18 +24,15 @@ struct frame_entry* frame_lookup(uint8_t *kaddr){
 	struct list_elem *e;
 	struct frame_entry *fe;
 
-//	enum intr_level old_level = intr_disable();
 	lock_acquire(&lock_frame);
 	for(e = list_begin(&frame); e != list_begin(&frame); e = list_next(e)){
 		fe = list_entry(e, struct frame_entry, elem);
 		if(fe->addr == kaddr){
-//			intr_set_level(old_level);
 			lock_release(&lock_frame);
 			return fe;
 		}
 	}
 	lock_release(&lock_frame);
-//	intr_set_level(old_level);
 	return NULL;
 }
 
@@ -50,11 +47,9 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 		fe->t = thread_current();
 
 		lock_acquire(&lock_frame);
-//		enum intr_level old_level = intr_disable();
 //		printf("aaa\n");
 		list_push_back(&frame, &fe->elem);
 		lock_release(&lock_frame);
-//		intr_set_level(old_level);
 //		printf("bbb, fe:%p\n");
 
 		return fe;
@@ -68,7 +63,6 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 void frame_free(struct frame_entry *fe){
 	list_remove(&fe->elem);
 	fe->spe->fe = NULL;
-//	free(fe->addr);
 //	palloc_free_page(fe->addr);
 	free(fe);
 }
