@@ -86,7 +86,6 @@ void frame_evict() {
 
 
 //	lock_acquire(&lock_frame);
-	enum intr_level old_level = intr_disable();
 	while(!list_empty(&frame)){
 //		printf("loop\n");
 		e = list_pop_front(&frame);
@@ -115,16 +114,16 @@ void frame_evict() {
 //			printf("uaddr after check:%p\n", uaddr);
 		}
 		else{
-			pagedir_clear_page(pd, uaddr);
-			palloc_free_page(fe->addr);
-			frame_free(fe);
 //			printf("load page to swap\n");
 //			printf("uaddr before:%p\n", uaddr);
-			intr_set_level(old_level);
 
 			spe->kaddr = NULL;
 			spe->swap_index = swap_load(uaddr);
 			spe->type = SWAP;
+
+			pagedir_clear_page(pd, uaddr);
+			palloc_free_page(fe->addr);
+			frame_free(fe);
 
 //			printf("uaddr after:%p\n", uaddr);
 //			if (spe->type == MEMORY)
