@@ -61,15 +61,17 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 
 //	printf("aaaa\n");
 	spe = hash_entry(e, struct supp_page_entry, elem);
+	if(spe->type == MEMORY){
 //	printf("bbbb\n");
-	kaddr = spe->kaddr;
+		kaddr = spe->kaddr;
 //	printf("cccc\n");
-	fe = frame_lookup(kaddr);
-	if (fe != NULL) {
+		fe = frame_lookup(kaddr);
+		if (fe != NULL) {
 //		printf("dddd\n");
-		pagedir_clear_page(fe->t->pagedir, spe->uaddr);
+			pagedir_clear_page(fe->t->pagedir, spe->uaddr);
 //		printf("eeee\n");
-		frame_free(fe);
+			frame_free(fe);
+		}
 	}
 //	printf("ffff\n");
 	free(spe);
