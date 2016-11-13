@@ -218,9 +218,9 @@ void process_exit(void) {
  This function is called on every context switch. */
 void process_activate(void) {
 	struct thread *t = thread_current();
-	int tid = t->tid;
-	enum intr_level old = intr_disable();
-	intr_set_level(old);
+//	int tid = t->tid;
+//	enum intr_level old = intr_disable();
+//	intr_set_level(old);
 
 	/* Activate thread's page tables. */
 	pagedir_activate(t->pagedir);
