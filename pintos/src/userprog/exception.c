@@ -284,6 +284,8 @@ static void page_fault(struct intr_frame *f) {
 		}
 	} else {
 		printf("present\n");
+		printf("write %d\n", write);
+		printf("user %d\n", user);
 		if (user)
 			kill(f);
 		else {
@@ -291,8 +293,7 @@ static void page_fault(struct intr_frame *f) {
 			f->eax = 0xffffffff;
 			exit(-1);
 		}
-//		printf("write %d\n", write);
-//		printf("user %d\n", user);
+
 		// invalid
 //		exit(-1);
 	}
