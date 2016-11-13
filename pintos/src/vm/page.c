@@ -67,7 +67,7 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux){
 	fe = frame_lookup(kaddr);
 	printf("dddd\n");
 //	pagedir_clear_page(fe->t->pagedir, spe->uaddr);
-//	printf("eeee\n");
+	printf("eeee\n");
 	frame_free(fe);
 	printf("ffff\n");
 	free(spe);
