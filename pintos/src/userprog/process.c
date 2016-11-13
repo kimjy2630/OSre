@@ -172,12 +172,12 @@ void process_exit(void) {
 		 that's been freed (and cleared). */
 #ifdef VM
 		struct hash supp_page_table = curr->supp_page_table;
-		struct hash_iterator *i;
+		struct hash_iterator i;
 		uint8_t *kaddr;
 		struct frame_entry *fe;
 		struct supp_page_entry *spe;
 
-		hash_first(i, &supp_page_table);
+		hash_first(&i, &supp_page_table);
 		while(i->elem != NULL) {
 			spe = hash_entry(i->elem, struct supp_page_entry, elem);
 			kaddr = spe->kaddr;
