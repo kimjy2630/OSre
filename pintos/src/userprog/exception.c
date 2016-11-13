@@ -179,9 +179,7 @@ static void page_fault(struct intr_frame *f) {
 			}
 			ASSERT(pg_ofs(spe->uaddr) == 0);
 
-			lock_acquire(&lock_frame);
 			struct frame_entry *fe = frame_add(PAL_USER);
-			lock_release(&lock_frame);
 
 			fe->spe = spe;
 			spe->fe = fe;
@@ -250,9 +248,7 @@ static void page_fault(struct intr_frame *f) {
 //					exit(-1);
 //				}
 				/* If we're here, let's give this process another page */
-				lock_acquire(&lock_frame);
 				struct frame_entry *fe = frame_add(PAL_ZERO | PAL_USER);
-				lock_release(&lock_frame);
 
 				if (pagedir_get_page(t->pagedir, pg_round_down(fault_addr))!= NULL || !pagedir_set_page(t->pagedir, pg_round_down(fault_addr), fe->addr, true)) {
 					pagedir_clear_page(t->pagedir, pg_round_down(fault_addr));

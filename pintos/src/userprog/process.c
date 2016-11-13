@@ -549,9 +549,7 @@ static bool setup_stack(void **esp) {
 
 	//TODO
 #ifdef VM
-	lock_acquire(&lock_frame);
 	struct frame_entry *fe = frame_add(PAL_USER | PAL_ZERO);
-	lock_release(&lock_frame);
 	if(fe == NULL)
 	return false;
 
