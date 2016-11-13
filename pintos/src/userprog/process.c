@@ -493,17 +493,6 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 		uint8_t *kpage;
 		//TODO
 #ifdef VM
-//		kpage = palloc_get_page(PAL_USER);
-//		struct frame_entry *fe = frame_add(kpage);
-//		struct frame_entry *fe = frame_add(PAL_USER);
-//		if(fe == NULL)
-//			return false;
-
-//		kpage = fe->addr;
-
-//		struct supp_page_entry *spe;
-//		spe = malloc(sizeof(struct supp_page_entry));
-//		spe = supp_page_add(upage, writable, true);
 		struct supp_page_entry *spe = supp_page_add(upage, writable);
 //		printf("load_segment spe uaddr:%p\n", upage);
 		if(upage >= PHYS_BASE){
@@ -560,8 +549,6 @@ static bool setup_stack(void **esp) {
 
 	//TODO
 #ifdef VM
-//	kpage = palloc_get_page(PAL_USER | PAL_ZERO);
-//	struct frame_entry *fe = frame_add(kpage);
 	struct frame_entry *fe = frame_add(PAL_USER | PAL_ZERO);
 	if(fe == NULL)
 	return false;
