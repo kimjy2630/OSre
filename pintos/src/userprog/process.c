@@ -603,6 +603,7 @@ static bool setup_stack(void **esp) {
 		} else {
 #ifdef VM
 //			pagedir_clear_page(fe->t->pagedir, spe->uaddr);
+			palloc_free_page(fe->addr);
 			frame_free(fe);
 //			free(spe);
 #else

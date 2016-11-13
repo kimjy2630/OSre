@@ -279,6 +279,7 @@ static void page_fault(struct intr_frame *f) {
 
 				if (pagedir_get_page(t->pagedir, pg_round_down(fault_addr))!= NULL || !pagedir_set_page(t->pagedir, pg_round_down(fault_addr), fe->addr, true)) {
 					pagedir_clear_page(t->pagedir, pg_round_down(fault_addr));
+					palloc_free_page(fe->addr);
 					frame_free(fe);
 					kill(f);
 				}
