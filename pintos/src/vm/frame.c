@@ -118,7 +118,7 @@ void frame_evict() {
 //			printf("uaddr before:%p\n", uaddr);
 
 			pagedir_clear_page(pd, uaddr);
-			palloc_set_page(pd, uaddr, fe->addr, true);
+			pagedir_set_page(pd, uaddr, fe->addr, true);
 //			frame_free(fe);
 
 			spe->kaddr = NULL;
