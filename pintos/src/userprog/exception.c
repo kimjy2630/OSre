@@ -196,8 +196,7 @@ static void page_fault(struct intr_frame *f) {
 //				printf("FILE\n");
 				file_seek(spe->file, spe->ofs);
 
-				off_t bytes_read = file_read(spe->file, fe->addr,
-						spe->page_read_bytes);
+				off_t bytes_read = file_read(spe->file, fe->addr, spe->page_read_bytes);
 				ASSERT(bytes_read == spe->page_read_bytes);
 				memset(fe->addr + bytes_read, 0, PGSIZE - bytes_read);
 				spe->type = MEMORY;
@@ -262,8 +261,7 @@ static void page_fault(struct intr_frame *f) {
 				}
 				/* Record the new stack page in the supplemental page table and
 				 the frame table. */
-				struct supp_page_entry *spe = supp_page_add(
-						pg_round_down(fault_addr), true);
+				struct supp_page_entry *spe = supp_page_add(pg_round_down(fault_addr), true);
 
 				spe->kaddr = fe->addr;
 				spe->page_read_bytes = 0;

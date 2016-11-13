@@ -509,6 +509,38 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 		spe->file = file;
 
 		ASSERT(pg_ofs(spe->uaddr) == 0);
+		//////
+		struct frame_entry *fe = frame_add(PAL_USER);
+		fe->spe = spe;
+		spe->fe = fe;
+
+		spe->kaddr = fe->addr;
+//		pagedir_clear_page(t->pagedir, upage);
+//		// TODO
+//		if (!pagedir_set_page(t->pagedir, pg_round_down(fault_addr), spe->kaddr, spe->writable)) {
+//			//				printf("KILL\n");
+//			kill(f);
+//		}
+//		pagedir_set_dirty (t->pagedir, pg_round_down(fault_addr), false);
+//		pagedir_set_accessed (t->pagedir, pg_round_down(fault_addr), true);
+
+		kpage = fe->addr;
+		if (file_read(file, kpage, page_read_bytes) != (int) page_read_bytes) {
+//			palloc_free_page(kpage);
+			palloc_free_page(kpage);
+			frame_free(fe);
+			return false;
+		}
+		memset(kpage + page_read_bytes, 0, page_zero_bytes);
+
+		/* Add the page to the process's address space. */
+		if (!install_page(upage, kpage, writable)) {
+//			palloc_free_page(kpage);
+			pagedir_clear_page(fe->t->pagedir, upage);
+			palloc_free_page(kpage);
+			frame_free(fe);
+			return false;
+		}
 #else
 		kpage = palloc_get_page(PAL_USER);
 
