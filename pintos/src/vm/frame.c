@@ -92,21 +92,21 @@ void frame_evict() {
 //		printf("loop\n");
 //		printf("head:%p\n", frame.head.next);
 		e = list_pop_front(&frame);
-		printf("e:%p\n",e);
+//		printf("e:%p\n",e);
 		fe = list_entry(e, struct frame_entry, elem);
-		printf("fe:%p\n",fe);
+//		printf("fe:%p\n",fe);
 		pd = fe->t->pagedir;
 //		printf("pd:%p\n",pd);
 		spe = fe->spe;
-		printf("spe:%p\n",spe);
+//		printf("spe:%p\n",spe);
 		uaddr = spe->uaddr;
-		printf("uaddr in loop:%p\n",uaddr);
+//		printf("uaddr in loop:%p\n",uaddr);
 		if(uaddr > PHYS_BASE){
 			printf("kernel access!\n");
 			exit(-1);
 		}
 		if(spe->type == SWAP){
-			printf("swap page\n");
+//			printf("swap page\n");
 			frame_free(fe);
 //			list_push_back(&frame, e);
 		}
@@ -117,15 +117,15 @@ void frame_evict() {
 //			printf("uaddr after check:%p\n", uaddr);
 		}
 		else{
-			printf("load page to swap\n");
-			printf("uaddr before:%p\n", uaddr);
+//			printf("load page to swap\n");
+//			printf("uaddr before:%p\n", uaddr);
 			spe->kaddr = NULL;
 			lock_acquire(&lock_frame);
 			spe->swap_index = swap_load(uaddr);
 			lock_release(&lock_frame);
 			spe->type = SWAP;
 
-			printf("uaddr after:%p\n", uaddr);
+//			printf("uaddr after:%p\n", uaddr);
 //			if (spe->type == MEMORY)
 //				pagedir_clear_page(pd, uaddr);
 			frame_free(fe);
