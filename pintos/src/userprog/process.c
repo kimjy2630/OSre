@@ -191,7 +191,9 @@ void process_exit(void) {
 #endif
 		curr->pagedir = NULL;
 		pagedir_activate(NULL);
+		printf("a\n");
 		pagedir_destroy(pd);
+		printf("b\n");
 	}
 
 	if (curr->f != NULL) {
