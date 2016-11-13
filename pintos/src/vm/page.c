@@ -23,6 +23,7 @@ struct supp_page_entry* supp_page_add(uint8_t *addr, bool writable) {
 	hash_insert(&supp_page_table, &spe->elem);
 	return spe;
 }
+/*
 bool supp_page_remove(uint8_t *addr) {
 	struct thread *curr = thread_current();
 	struct hash supp_page_table = curr->supp_page_table;
@@ -41,6 +42,7 @@ bool supp_page_remove(uint8_t *addr) {
 	return false;
 
 }
+*/
 
 unsigned hash_addr(struct hash_elem *e, void *aux) {
 	struct supp_page_entry *spe;
@@ -59,19 +61,6 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 	struct supp_page_entry *spe;
 	uint8_t *kaddr;
 	struct frame_entry *fe;
-
-	/*
-	spe = hash_entry(e, struct supp_page_entry, elem);
-	if(spe->type == MEMORY){
-		kaddr = spe->kaddr;
-		fe = frame_lookup(kaddr);
-		if (fe != NULL) {
-			pagedir_clear_page(fe->t->pagedir, spe->uaddr);
-			frame_free(fe);
-		}
-	}
-	free(spe);
-	*/
 
 	spe = hash_entry(e, struct supp_page_entry, elem);
 	fe = spe->fe;
