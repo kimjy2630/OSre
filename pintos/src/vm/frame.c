@@ -89,7 +89,6 @@ void frame_evict() {
 	lock_acquire(&lock_frame);
 	while(!list_empty(&frame)){
 //		printf("loop\n");
-//		printf("head:%p\n", frame.head.next);
 		e = list_pop_front(&frame);
 //		printf("e:%p\n",e);
 		fe = list_entry(e, struct frame_entry, elem);
@@ -119,9 +118,7 @@ void frame_evict() {
 //			printf("load page to swap\n");
 //			printf("uaddr before:%p\n", uaddr);
 			spe->kaddr = NULL;
-//			lock_acquire(&lock_frame);
 			spe->swap_index = swap_load(uaddr);
-//			lock_release(&lock_frame);
 			spe->type = SWAP;
 
 //			printf("uaddr after:%p\n", uaddr);
