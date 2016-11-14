@@ -232,8 +232,8 @@ static void page_fault(struct intr_frame *f) {
 			pagedir_set_accessed (t->pagedir, uaddr, true);
 
 			////
-			if(!spe->writable)
-				printf("uaddr:[%p] is not writable\n");
+//			if(!spe->writable)
+//				printf("uaddr:[%p] is not writable\n");
 
 			return;
 		} else {
