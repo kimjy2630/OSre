@@ -114,7 +114,9 @@ void frame_evict() {
 		else if(pagedir_is_accessed(pd, uaddr)){
 //			printf("accessed page\n");
 			pagedir_set_accessed(pd, uaddr, 0);
+			lock_acquire(&lock_frame);
 			list_push_back(&frame, e);
+			lock_release(&lock_frame);
 //			printf("uaddr after check:%p\n", uaddr);
 		}
 		else{
