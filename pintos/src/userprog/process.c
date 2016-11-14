@@ -171,6 +171,7 @@ void process_exit(void) {
 		 directory, or our active page directory will be one
 		 that's been freed (and cleared). */
 #ifdef VM
+		printf("clear supp page table\n");
 		supp_page_table_destroy(&curr->supp_page_table);
 #endif
 		pagedir_activate(NULL);
