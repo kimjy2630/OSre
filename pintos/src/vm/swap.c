@@ -30,9 +30,9 @@ size_t swap_load(uint8_t *uaddr){ // mem -> disk
 		PANIC("swap disk full");
 	int i;
 	for(i=0; i<num_sector_in_page; i++){
-//		lock_acquire(&swap_lock);
+		lock_acquire(&swap_lock);
 		disk_write(swap_disk, index + i, uaddr + i * DISK_SECTOR_SIZE);
-//		lock_release(&swap_lock);
+		lock_release(&swap_lock);
 	}
 	return index;
 }
