@@ -3,7 +3,7 @@
 #include <stddef.h>
 
 void swap_init();
-size_t swap_load(uint8_t *uaddr, uint32_t *pd);
+size_t swap_load(uint8_t *uaddr);
 void swap_unload(size_t index, struct supp_page_entry *spe);
 void swap_free(size_t index);
 
