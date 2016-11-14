@@ -189,7 +189,7 @@ static void page_fault(struct intr_frame *f) {
 			uint8_t *uaddr = spe->uaddr;
 			pagedir_clear_page(t->pagedir, uaddr);
 			// TODO
-			if (!pagedir_set_page(t->pagedir, uaddr, spe->kaddr, spe->writable)) {
+			if (!pagedir_set_page(t->pagedir, uaddr, spe->kaddr, true)) {
 //				printf("KILL\n");
 				palloc_free_page(fe->addr);
 				frame_free(fe);
@@ -199,8 +199,8 @@ static void page_fault(struct intr_frame *f) {
 			pagedir_set_dirty (t->pagedir, uaddr, false);
 			pagedir_set_accessed (t->pagedir, uaddr, true);
 			////
-			if(!spe->writable)
-				printf("uaddr:[%p] is not writable\n");
+//			if(!spe->writable)
+//				printf("uaddr:[%p] is not writable\n");
 
 			if (spe->type == FILE) {
 //				printf("FILE\n");
@@ -221,6 +221,19 @@ static void page_fault(struct intr_frame *f) {
 				spe->type = MEMORY;
 //				printf("swap sfad\n");
 			}
+
+			pagedir_clear_page(t->pagedir, uaddr);
+			// TODO
+			if (!pagedir_set_page(t->pagedir, uaddr, spe->kaddr, spe->writable)) {
+				//				printf("KILL\n");
+				palloc_free_page(fe->addr);
+				frame_free(fe);
+				spe->fe = NULL;
+				kill(f);
+			}
+			pagedir_set_dirty (t->pagedir, uaddr, false);
+			pagedir_set_accessed (t->pagedir, uaddr, true);
+
 			return;
 		} else {
 			/* extend stack */
@@ -286,7 +299,7 @@ static void page_fault(struct intr_frame *f) {
 //		printf("present\n");
 //		printf("write %d\n", write);
 //		printf("user %d\n", user);
-		printf("write to [%p]\n", pg_round_down(fault_addr));
+//		printf("write to [%p]\n", pg_round_down(fault_addr));
 		if (user)
 			kill(f);
 		else {
