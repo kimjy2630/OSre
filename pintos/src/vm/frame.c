@@ -46,6 +46,7 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 		}
 		fe->addr = addr;
 		fe->t = thread_current();
+		fe->spe = NULL;
 
 		lock_acquire(&lock_frame);
 //		enum intr_level old_level = intr_disable();
