@@ -73,7 +73,7 @@ void frame_free(void* addr){
 	lock_acquire(&lock_frame);
 	struct list_elem *e = NULL;
 	struct frame_entry *fe = NULL;
-	for (e = list_begin(frame); e != list_end(frame); e = list_next(e)) {
+	for (e = list_begin(&frame); e != list_end(&frame); e = list_next(e)) {
 		fe = list_entry(e, struct frame_entry, elem);
 		if (fe->addr == addr)
 			break;
