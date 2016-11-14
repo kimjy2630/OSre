@@ -71,7 +71,7 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 
 void frame_free(struct frame_entry *fe){
 	lock_acquire(&lock_frame);
-	if (is_interior(*fe->elem)) {
+	if (is_interior(&fe->elem)) {
 		list_remove(&fe->elem);
 
 		fe->spe->fe = NULL;
