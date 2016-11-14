@@ -77,7 +77,6 @@ void frame_free(struct frame_entry *fe){
 }
 
 void frame_evict() {
-//	PANIC("FRAME_EVICT!");
 	struct list_elem *e;
 	struct frame_entry *fe;
 	struct supp_page_entry *spe;
@@ -86,87 +85,54 @@ void frame_evict() {
 
 	ASSERT(&frame != NULL);
 	ASSERT(!list_empty(&frame));
-//	printf("start evict\n");
-//	printf("&frame:%p\n",&frame);
 
 
-//	lock_acquire(&lock_frame);
 	while(!list_empty(&frame)){
-//		printf("loop\n");
 		lock_acquire(&lock_frame);
 		e = list_pop_front(&frame);
 		lock_release(&lock_frame);
-//		printf("e:%p\n",e);
+
 		fe = list_entry(e, struct frame_entry, elem);
-//		printf("fe:%p\n",fe);
 		pd = fe->t->pagedir;
-//		printf("pd:%p\n",pd);
 		spe = fe->spe;
-//		printf("spe:%p\n",spe);
 		uaddr = spe->uaddr;
-//		ASSERT(spe->kaddr == fe->addr);
-//		printf("uaddr in loop:%p\n",uaddr);
 		if(uaddr > PHYS_BASE){
 			printf("kernel access!\n");
 			exit(-1);
 		}
 		if(spe->type == SWAP){
-//			printf("swap page\n");
-//			frame_free(fe);
 			lock_acquire(&lock_frame);
 			list_push_back(&frame, e);
 			lock_release(&lock_frame);
 		}
 		else if(pagedir_is_accessed(pd, uaddr)){
-//			printf("accessed page\n");
 			pagedir_set_accessed(pd, uaddr, 0);
+
 			lock_acquire(&lock_frame);
 			list_push_back(&frame, e);
 			lock_release(&lock_frame);
-//			printf("uaddr after check:%p\n", uaddr);
 		}
 		else{
-			if(fe->finned){
-				lock_acquire(&lock_frame);
-				list_push_back(&frame, e);
-				lock_release(&lock_frame);
-			} else {
-//			printf("load page to swap\n");
-//			printf("uaddr before:%p\n", uaddr);
-
-//			pagedir_clear_page(pd, uaddr);
-//			pagedir_set_page(pd, uaddr, fe->addr, true);
-//			frame_free(fe);
-				fe->finned = true;
+//			if(fe->finned){
+//				lock_acquire(&lock_frame);
+//				list_push_back(&frame, e);
+//				lock_release(&lock_frame);
+//
+//			} else {
+//				fe->finned = true;
 
 				spe->kaddr = NULL;
-				if (spe->type == MEMORY || spe->type == ZERO) {
-					spe->swap_index = swap_load(fe->addr);
-				}
-				else {
-					printf("spe type : %d\n", spe->type);
-				}
+//				if (spe->type == MEMORY || spe->type == ZERO)
+				spe->swap_index = swap_load(fe->addr);
 				spe->type = SWAP;
 
-//				if(pagedir_get_page(pd,uaddr) != NULL)
-					pagedir_clear_page(pd, uaddr);
+				pagedir_clear_page(pd, uaddr);
 				palloc_free_page(fe->addr);
 				frame_free(fe);
 
-				/*
-				 pagedir_clear_page(pd, uaddr);
-				 palloc_free_page(fe->addr);
-				 frame_free(fe);
-				 */
-
-//			printf("uaddr after:%p\n", uaddr);
-//			if (spe->type == MEMORY)
-//				pagedir_clear_page(pd, uaddr);
 				spe->fe = NULL;
-//			lock_release(&lock_frame);
-//			printf("evict loop end\n");
-				return;
-			}
+				break;
+//			}
 		}
 	}
 }
