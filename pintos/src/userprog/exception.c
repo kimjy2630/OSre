@@ -146,7 +146,7 @@ static void page_fault(struct intr_frame *f) {
 	user = (f->error_code & PF_U) != 0;
 #ifdef VM
 //printf("PAGE FAULT\n");
-	printf("fault_addr:%p, &fault_addr:%p\n", fault_addr, &fault_addr);
+//	printf("fault_addr:%p, &fault_addr:%p\n", fault_addr, &fault_addr);
 	if(fault_addr >= PHYS_BASE) {
 		if (user)
 			kill(f);
