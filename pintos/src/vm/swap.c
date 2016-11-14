@@ -29,12 +29,12 @@ size_t swap_load(uint8_t *uaddr){ // mem -> disk
 	if(index == BITMAP_ERROR)
 		PANIC("swap disk full");
 	int i;
+	lock_acquire(&swap_lock);
 	for(i=0; i<num_sector_in_page; i++){
-		lock_acquire(&swap_lock);
 		printf("disk write access %p\n", uaddr + i * DISK_SECTOR_SIZE);
 		disk_write(swap_disk, index + i, uaddr + i * DISK_SECTOR_SIZE);
-		lock_release(&swap_lock);
 	}
+	lock_release(&swap_lock);
 	return index;
 }
 
