@@ -59,11 +59,11 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 
 		return fe;
 	} else {
-//		enum intr_level old_level = intr_disable();
+		enum intr_level old_level = intr_disable();
 //		lock_acquire(&lock_frame);
 		frame_evict();
 //		lock_release(&lock_frame);
-//		intr_set_level(old_level);
+		intr_set_level(old_level);
 		return frame_add(flags);
 //		return frame_add(addr);
 	}
