@@ -70,13 +70,15 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 }
 
 void frame_free(struct frame_entry *fe){
-//	lock_acquire(&lock_frame);
-	list_remove(&fe->elem);
-//	lock_release(&lock_frame);
+	lock_acquire(&lock_frame);
+	if (is_interior(*fe->elem)) {
+		list_remove(&fe->elem);
 
-	fe->spe->fe = NULL;
+		fe->spe->fe = NULL;
 //	palloc_free_page(fe->addr);
-	free(fe);
+		free(fe);
+	}
+	lock_release(&lock_frame);
 }
 
 void frame_evict() {
