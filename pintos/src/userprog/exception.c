@@ -185,17 +185,19 @@ static void page_fault(struct intr_frame *f) {
 			spe->fe = fe;
 
 			spe->kaddr = fe->addr;
-			pagedir_clear_page(t->pagedir, pg_round_down(fault_addr));
+			ASSERT(pg_round_down(fault_addr) == spe->uaddr);
+			uint8_t *uaddr = spe->uaddr;
+			pagedir_clear_page(t->pagedir, uaddr);
 			// TODO
-			if (!pagedir_set_page(t->pagedir, pg_round_down(fault_addr), spe->kaddr, spe->writable)) {
+			if (!pagedir_set_page(t->pagedir, uaddr, spe->kaddr, spe->writable)) {
 //				printf("KILL\n");
 				palloc_free_page(fe->addr);
 				frame_free(fe);
 				spe->fe = NULL;
 				kill(f);
 			}
-			pagedir_set_dirty (t->pagedir, pg_round_down(fault_addr), false);
-			pagedir_set_accessed (t->pagedir, pg_round_down(fault_addr), true);
+			pagedir_set_dirty (t->pagedir, uaddr, false);
+			pagedir_set_accessed (t->pagedir, uaddr, true);
 
 			if (spe->type == FILE) {
 //				printf("FILE\n");
