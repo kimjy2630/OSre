@@ -187,11 +187,12 @@ static void page_fault(struct intr_frame *f) {
 			spe->kaddr = fe->addr;
 			ASSERT(pg_round_down(fault_addr) == spe->uaddr);
 			uint8_t *uaddr = spe->uaddr;
+			uint8_t *kaddr = fe->addr;
 			pagedir_clear_page(t->pagedir, uaddr);
 			// TODO
 			if (!pagedir_set_page(t->pagedir, uaddr, fe->addr, true)) {
 //				printf("KILL\n");
-				palloc_free_page(fe->addr);
+				palloc_free_page(kaddr);
 				frame_free(fe);
 				spe->fe = NULL;
 				kill(f);
@@ -203,13 +204,13 @@ static void page_fault(struct intr_frame *f) {
 //				printf("FILE\n");
 				file_seek(spe->file, spe->ofs);
 
-				off_t bytes_read = file_read(spe->file, fe->addr, spe->page_read_bytes);
+				off_t bytes_read = file_read(spe->file, kaddr, spe->page_read_bytes);
 				ASSERT(bytes_read == spe->page_read_bytes);
-				memset(fe->addr + bytes_read, 0, PGSIZE - bytes_read);
+				memset(kaddr + bytes_read, 0, PGSIZE - bytes_read);
 				spe->type = MEMORY;
 			} else if (spe->type == ZERO) {
 //				printf("ZERO\n");
-				memset(fe->addr, 0, PGSIZE);
+				memset(kaddr, 0, PGSIZE);
 			}
 			else if(spe->type == SWAP) {
 //				printf("SWAP\n");
@@ -221,9 +222,9 @@ static void page_fault(struct intr_frame *f) {
 
 			pagedir_clear_page(t->pagedir, uaddr);
 			// TODO
-			if (!pagedir_set_page(t->pagedir, uaddr, fe->addr, spe->writable)) {
+			if (!pagedir_set_page(t->pagedir, uaddr, kaddr, spe->writable)) {
 				//				printf("KILL\n");
-				palloc_free_page(fe->addr);
+				palloc_free_page(kaddr);
 				frame_free(fe);
 				spe->fe = NULL;
 				kill(f);
