@@ -198,9 +198,6 @@ static void page_fault(struct intr_frame *f) {
 			}
 			pagedir_set_dirty (t->pagedir, uaddr, false);
 			pagedir_set_accessed (t->pagedir, uaddr, true);
-			////
-//			if(!spe->writable)
-//				printf("uaddr:[%p] is not writable\n");
 
 			if (spe->type == FILE) {
 //				printf("FILE\n");
@@ -233,6 +230,10 @@ static void page_fault(struct intr_frame *f) {
 			}
 			pagedir_set_dirty (t->pagedir, uaddr, false);
 			pagedir_set_accessed (t->pagedir, uaddr, true);
+
+			////
+			if(!spe->writable)
+				printf("uaddr:[%p] is not writable\n");
 
 			return;
 		} else {
@@ -296,10 +297,10 @@ static void page_fault(struct intr_frame *f) {
 			}
 		}
 	} else {
-//		printf("present\n");
-//		printf("write %d\n", write);
-//		printf("user %d\n", user);
-//		printf("write to [%p]\n", pg_round_down(fault_addr));
+		printf("present\n");
+		printf("write %d\n", write);
+		printf("user %d\n", user);
+		printf("write to [%p]\n", pg_round_down(fault_addr));
 		if (user)
 			kill(f);
 		else {
