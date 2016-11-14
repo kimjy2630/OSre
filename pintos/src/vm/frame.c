@@ -132,7 +132,7 @@ void frame_evict() {
 			if(spe->type == MEMORY){
 				spe->swap_index = swap_load(uaddr);
 			}
-			else{
+			else if (spe->type != ZERO){
 				printf("spe type : %d\n", spe->type);
 			}
 			spe->type = SWAP;
