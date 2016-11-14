@@ -138,7 +138,7 @@ void frame_evict() {
 
 				spe->kaddr = NULL;
 				if (spe->type == MEMORY || spe->type == ZERO) {
-					spe->swap_index = swap_load(fe->kaddr);
+					spe->swap_index = swap_load(fe->addr);
 				}
 				else {
 					printf("spe type : %d\n", spe->type);
