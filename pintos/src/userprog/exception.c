@@ -265,33 +265,8 @@ static void page_fault(struct intr_frame *f) {
 			}
 
 			if ((fault_addr == esp - 4) || (fault_addr == esp - 32) || fault_addr >= esp) {
-//				printf("333\n");
-				/* Check for stack overflow */
-//				if (fault_addr < STACK_MIN) {
-//					exit(-1);
-//				}
-				/* If we're here, let's give this process another page */
-				struct frame_entry *fe = frame_add(PAL_ZERO | PAL_USER);
-
-				if (pagedir_get_page(t->pagedir, pg_round_down(fault_addr))!= NULL || !pagedir_set_page(t->pagedir, pg_round_down(fault_addr), fe->addr, true)) {
-					pagedir_clear_page(t->pagedir, pg_round_down(fault_addr));
-					palloc_free_page(fe->addr);
-					frame_free(fe);
+				if(!stack_grow(fault_addr))
 					kill(f);
-				}
-				/* Record the new stack page in the supplemental page table and
-				 the frame table. */
-				struct supp_page_entry *spe = supp_page_add(pg_round_down(fault_addr), true);
-
-				spe->kaddr = fe->addr;
-				spe->page_read_bytes = 0;
-				spe->file = NULL;
-				spe->ofs = NULL;
-				spe->type = MEMORY;
-
-				fe->spe = spe;
-				spe->fe = fe;
-				return;
 			}
 			else {
 //				printf("AAA\n");
@@ -346,4 +321,3 @@ static void page_fault(struct intr_frame *f) {
 	}
 #endif
 }
-

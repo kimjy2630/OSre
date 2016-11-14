@@ -74,3 +74,37 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 void supp_page_table_destroy(struct hash *supp_page_table) {
 	hash_destroy(supp_page_table, supp_page_entry_destroy);
 }
+
+bool stack_grow(void* addr) {
+//	printf("333\n");
+	/* Check for stack overflow */
+//	if (addr < STACK_MIN) {
+//		exit(-1);
+//	}
+	/* If we're here, let's give this process another page */
+	struct frame_entry *fe = frame_add(PAL_ZERO | PAL_USER);
+	struct thread* t = thread_current();
+
+	if (pagedir_get_page(t->pagedir, pg_round_down(addr)) != NULL
+			|| !pagedir_set_page(t->pagedir, pg_round_down(addr),
+					fe->addr, true)) {
+		pagedir_clear_page(t->pagedir, pg_round_down(addr));
+		palloc_free_page(fe->addr);
+		frame_free(fe);
+		return false;
+	}
+	/* Record the new stack page in the supplemental page table and
+	 the frame table. */
+	struct supp_page_entry *spe = supp_page_add(pg_round_down(addr),
+			true);
+
+	spe->kaddr = fe->addr;
+	spe->page_read_bytes = 0;
+	spe->file = NULL;
+	spe->ofs = NULL;
+	spe->type = MEMORY;
+
+	fe->spe = spe;
+	spe->fe = fe;
+	return true;
+}
