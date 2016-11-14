@@ -30,9 +30,9 @@ size_t swap_load(uint8_t *uaddr){ // mem -> disk
 		PANIC("swap disk full");
 	int i;
 	for(i=0; i<num_sector_in_page; i++){
-		lock_acquire(&swap_lock);
+//		lock_acquire(&swap_lock);
 		disk_write(swap_disk, index + i, uaddr + i * DISK_SECTOR_SIZE);
-		lock_release(&swap_lock);
+//		lock_release(&swap_lock);
 	}
 	return index;
 }
@@ -49,9 +49,9 @@ void swap_unload(size_t index, struct supp_page_entry *spe) { // disk -> mem
 	int i;
 	for(i=0; i<num_sector_in_page; i++){
 //		printf("access %p\n", uaddr + i * DISK_SECTOR_SIZE);
-		lock_acquire(&swap_lock);
+//		lock_acquire(&swap_lock);
 		disk_read(swap_disk, index + i, uaddr + i * DISK_SECTOR_SIZE);
-		lock_release(&swap_lock);
+//		lock_release(&swap_lock);
 	}
 //	printf("disk_read\n");
 //	printf("unload end\n");
