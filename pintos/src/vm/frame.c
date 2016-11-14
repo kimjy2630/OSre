@@ -130,12 +130,12 @@ void frame_evict() {
 
 			spe->kaddr = NULL;
 			spe->swap_index = swap_load(uaddr);
-//			if(spe->type == MEMORY){
-//				spe->swap_index = swap_load(uaddr);
-//			}
-//			else if (spe->type != ZERO){
-//				printf("spe type : %d\n", spe->type);
-//			}
+			if(spe->type == MEMORY || spe->type == ZERO){
+				spe->swap_index = swap_load(uaddr);
+			}
+			else{
+				printf("spe type : %d\n", spe->type);
+			}
 			spe->type = SWAP;
 
 			pagedir_clear_page(pd, uaddr);
