@@ -178,28 +178,28 @@ int read(int fd, void *buffer, unsigned length) {
 	if (pf == NULL)
 		return -1;
 
-//	size_t cnt = 0;
-//
-//	char *tmp_buf = malloc(PGSIZE);
-//	if (tmp_buf == NULL)
-//		return -1;
-//
-//	while (cnt < length) {
-//		int cur_size = length - cnt;
-//		if (cur_size > PGSIZE)
-//			cur_size = PGSIZE;
-//
-//		char *cur_buff = buffer + cnt;
-//		int op_result = file_read(pf->file, tmp_buf, cur_size);
-//		memcpy(cur_buff, tmp_buf, cur_size);
-//
-//		cnt += op_result;
-//		if (op_result != cur_size)
-//			break;
-//	}
-//	free(tmp_buf);
-//	return cnt;
+	size_t cnt = 0;
 
+	char *tmp_buf = malloc(PGSIZE);
+	if (tmp_buf == NULL)
+		return -1;
+
+	while (cnt < length) {
+		int cur_size = length - cnt;
+		if (cur_size > PGSIZE)
+			cur_size = PGSIZE;
+
+		char *cur_buff = buffer + cnt;
+		int op_result = file_read(pf->file, tmp_buf, cur_size);
+		memcpy(cur_buff, tmp_buf, cur_size);
+
+		cnt += op_result;
+		if (op_result != cur_size)
+			break;
+	}
+	free(tmp_buf);
+	return cnt;
+/*
 	void* tmp_buf = buffer;
 	unsigned rest = length;
 	int cnt = 0;
@@ -227,7 +227,7 @@ int read(int fd, void *buffer, unsigned length) {
 		tmp_buf += read_bytes;
 		spe->fe->finned = false;
 	}
-	return cnt;
+	return cnt;*/
 }
 int write(int fd, const void *buffer, unsigned length) {
 	if (!read_validity(buffer, length)) {
@@ -244,31 +244,30 @@ int write(int fd, const void *buffer, unsigned length) {
 	if (pf == NULL)
 		return 0;
 
-//	size_t cnt = 0;
-//
-//	char *tmp_buf = malloc(PGSIZE);
-//	if (tmp_buf == NULL)
-//		return -1;
-//
-//	while (cnt < length) {
-//		int cur_size = length - cnt;
-//		if (cur_size > PGSIZE)
-//			cur_size = PGSIZE;
-//
-//		char *cur_buff = buffer + cnt;
-//		memcpy(tmp_buf, cur_buff, cur_size);
-//		int op_result = file_write(pf->file, tmp_buf, cur_size);
-//		cnt += op_result;
-//		if (op_result != cur_size)
-//			break;
-//	}
-//	free(tmp_buf);
-//	return cnt;
-	unsigned rest = length;
+	size_t cnt = 0;
+
+	char *tmp_buf = malloc(PGSIZE);
+	if (tmp_buf == NULL)
+		return -1;
+
+	while (cnt < length) {
+		int cur_size = length - cnt;
+		if (cur_size > PGSIZE)
+			cur_size = PGSIZE;
+
+		char *cur_buff = buffer + cnt;
+		memcpy(tmp_buf, cur_buff, cur_size);
+		int op_result = file_write(pf->file, tmp_buf, cur_size);
+		cnt += op_result;
+		if (op_result != cur_size)
+			break;
+	}
+	free(tmp_buf);
+	return cnt;
+	/*unsigned rest = length;
 	void *tmp_buf = (void *) buffer;
 	int cnt = 0;
 	while (rest > 0) {
-		/* See sys_read for a detailed explanation of page loading. */
 		size_t ofs = tmp_buf - pg_round_down(tmp_buf);
 		struct supp_page_entry spe_tmp;
 		spe_tmp.uaddr = tmp_buf - ofs;
@@ -289,9 +288,9 @@ int write(int fd, const void *buffer, unsigned length) {
 		cnt += file_write(pf->file, tmp_buf, write_bytes);
 		rest -= write_bytes;
 		tmp_buf += write_bytes;
-		/* Unpin the frame after we are done. */
 		spe->fe->finned = false;
 	}
+*/
 }
 
 void seek(int fd, unsigned position) {
