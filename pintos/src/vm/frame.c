@@ -111,7 +111,7 @@ void frame_evict() {
 			exit(-1);
 		}
 		if(spe->type == SWAP){
-//			printf("swap page\n");
+			printf("swap page\n");
 			frame_free(fe);
 			break;
 //			list_push_back(&frame, e);
