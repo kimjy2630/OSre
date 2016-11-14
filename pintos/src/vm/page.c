@@ -11,12 +11,12 @@
 //
 //}
 struct supp_page_entry* supp_page_add(uint8_t *addr, bool writable) {
-	struct thread* curr = thread_current();
 	struct hash supp_page_table = curr->supp_page_table;
 
 	struct supp_page_entry *spe = malloc(sizeof(struct supp_page_entry));
 	if (spe == NULL)
 		return NULL;
+	spe->t = thread_current();
 	spe->uaddr = pg_round_down(addr);
 	spe->writable = writable;
 	spe->fe = NULL;
@@ -66,7 +66,7 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 	spe = hash_entry(e, struct supp_page_entry, elem);
 	fe = spe->fe;
 	if (spe->type == MEMORY && fe != NULL) {
-		pagedir_clear_page(fe->t->pagedir, spe->uaddr);
+		pagedir_clear_page(spe->t->pagedir, spe->uaddr);
 		frame_free(fe);
 	}
 	free(spe);
@@ -96,9 +96,9 @@ bool stack_grow(void* addr) {
 	}
 	/* Record the new stack page in the supplemental page table and
 	 the frame table. */
-	struct supp_page_entry *spe = supp_page_add(pg_round_down(addr),
-			true);
+	struct supp_page_entry *spe = supp_page_add(pg_round_down(addr), true);
 
+	spe->t = thread_current();
 	spe->kaddr = fe->addr;
 	spe->page_read_bytes = 0;
 	spe->file = NULL;

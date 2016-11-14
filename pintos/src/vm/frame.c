@@ -45,7 +45,7 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 			return NULL;
 		}
 		fe->addr = addr;
-		fe->t = thread_current();
+//		fe->t = thread_current();
 		fe->spe = NULL;
 		fe->finned = false;
 
@@ -94,8 +94,8 @@ void frame_evict() {
 //		lock_release(&lock_frame);
 
 		fe = list_entry(e, struct frame_entry, elem);
-		pd = fe->t->pagedir;
 		spe = fe->spe;
+		pd = spe->t->pagedir;
 		uaddr = spe->uaddr;
 		if(uaddr > PHYS_BASE){
 			printf("kernel access!\n");

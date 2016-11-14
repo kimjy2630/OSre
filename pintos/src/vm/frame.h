@@ -7,7 +7,7 @@
 struct frame_entry {
 	void* addr;
 	struct supp_page_entry *spe;
-	struct thread* t;
+//	struct thread* t;
 	struct list_elem elem;
 	bool finned;
 };

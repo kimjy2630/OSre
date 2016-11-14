@@ -18,6 +18,7 @@ struct supp_page_entry{
 //	struct lock lock_using;
 	size_t swap_index;
 	struct frame_entry *fe;
+	struct thread *t;
 
 	/* used for file page */
 	struct file* file;
