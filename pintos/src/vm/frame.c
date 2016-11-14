@@ -123,6 +123,7 @@ void frame_evict() {
 		pd = spe->t->pagedir;
 		uaddr = spe->uaddr;
 		if(uaddr > PHYS_BASE){
+			lock_release(&lock_frame);
 			printf("kernel access!\n");
 			exit(-1);
 		}
@@ -163,5 +164,7 @@ void frame_evict() {
 			}
 		}
 	}
+	if(lock_held_by_current_thread(&lock_frame))
+		lock_release(&lock_frame);
 }
 
