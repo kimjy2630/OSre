@@ -577,7 +577,9 @@ static bool setup_stack(void **esp) {
 			//TODO
 			pagedir_clear_page(thread_current()->pagedir, ((uint8_t *) PHYS_BASE) - PGSIZE);
 			palloc_free_page(fe->addr);
-			frame_free(fe);
+			//TODO
+//			frame_free(fe);
+			frame_free(fe->addr);
 //			free(spe);
 #else
 			palloc_free_page(kpage);

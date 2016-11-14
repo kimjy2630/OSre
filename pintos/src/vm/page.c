@@ -67,7 +67,9 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 	fe = spe->fe;
 	if (spe->type == MEMORY && fe != NULL) {
 		pagedir_clear_page(spe->t->pagedir, spe->uaddr);
-		frame_free(fe);
+		//TODO
+//		frame_free(fe);
+		frame_free(fe->addr);
 	}
 	free(spe);
 }
@@ -91,7 +93,9 @@ bool stack_grow(void* addr) {
 					fe->addr, true)) {
 		pagedir_clear_page(t->pagedir, pg_round_down(addr));
 		palloc_free_page(fe->addr);
-		frame_free(fe);
+		//TODO
+//		frame_free(fe);
+		frame_free(fe->addr);
 		return false;
 	}
 	/* Record the new stack page in the supplemental page table and

@@ -69,17 +69,35 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 	}
 }
 
-void frame_free(struct frame_entry *fe){
+void frame_free(void* addr){
 	lock_acquire(&lock_frame);
-	if (is_interior(&fe->elem)) {
-		list_remove(&fe->elem);
-
-		fe->spe->fe = NULL;
-//	palloc_free_page(fe->addr);
-		free(fe);
+	struct list_elem *e = NULL;
+	struct frame_entry *fe = NULL;
+	for (e = list_begin(frame); e != list_end(frame); e = list_next(e)) {
+		fe = list_entry(e, struct frame_entry, elem);
+		if (fe->addr == addr)
+			break;
 	}
+	if (fe == NULL)
+		return;
+
+	list_remove(&fe->elem);
+
+	fe->spe->fe = NULL;
+//	palloc_free_page(fe->addr);
+	free(fe);
 	lock_release(&lock_frame);
 }
+
+//void frame_free(struct frame_entry *fe){
+//	lock_acquire(&lock_frame);
+//	list_remove(&fe->elem);
+//
+//	fe->spe->fe = NULL;
+////	palloc_free_page(fe->addr);
+//	free(fe);
+//	lock_release(&lock_frame);
+//}
 
 void frame_evict() {
 	struct list_elem *e;
