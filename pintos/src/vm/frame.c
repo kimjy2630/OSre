@@ -84,8 +84,7 @@ void frame_evict() {
 	uint32_t *pd;
 	uint8_t *uaddr;
 
-	if(&frame == NULL)
-		PANIC("frame is NULL!");
+	ASSERT(&frame != NULL);
 	ASSERT(!list_empty(&frame));
 //	printf("start evict\n");
 //	printf("&frame:%p\n",&frame);
