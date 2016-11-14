@@ -86,6 +86,7 @@ void frame_evict() {
 	uint32_t *pd;
 	uint8_t *uaddr;
 
+	ASSERT(lock_held_by_current_thread(&lock_frame));
 	ASSERT(!list_empty(&frame));
 
 	while(!list_empty(&frame)){
