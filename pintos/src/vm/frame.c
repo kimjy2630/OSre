@@ -138,7 +138,7 @@ void frame_evict() {
 
 				spe->kaddr = NULL;
 				if (spe->type == MEMORY || spe->type == ZERO) {
-					if(pagedir_get_page(pd, uaddr) == NULL){
+					if(pagedir_get_page(thread_currunt()->pagedir, uaddr) == NULL){
 						printf("uaddr %p\n", uaddr);
 						PANIC("evict no frame");
 					}
