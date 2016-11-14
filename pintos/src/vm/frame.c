@@ -103,7 +103,7 @@ void frame_evict() {
 		spe = fe->spe;
 //		printf("spe:%p\n",spe);
 		uaddr = spe->uaddr;
-		ASSERT(spe->kaddr == fe->addr);
+//		ASSERT(spe->kaddr == fe->addr);
 //		printf("uaddr in loop:%p\n",uaddr);
 		if(uaddr > PHYS_BASE){
 			printf("kernel access!\n");
