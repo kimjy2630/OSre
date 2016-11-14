@@ -80,8 +80,10 @@ void frame_free(void* addr){
 		if (fe->addr == addr)
 			break;
 	}
-	if (fe == NULL)
+	if (fe == NULL){
+		lock_release(&lock_frame);
 		return;
+	}
 
 	list_remove(&fe->elem);
 
