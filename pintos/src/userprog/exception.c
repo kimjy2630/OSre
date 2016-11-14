@@ -146,7 +146,7 @@ static void page_fault(struct intr_frame *f) {
 	user = (f->error_code & PF_U) != 0;
 #ifdef VM
 //printf("PAGE FAULT\n");
-	printf("fault_addr:%p, &fault_addr:%p\n", fault_addr, &fault_addr);
+//	printf("fault_addr:%p, &fault_addr:%p\n", fault_addr, &fault_addr);
 	if(fault_addr >= PHYS_BASE) {
 //		printf("not user addr\n");
 //		printf("fault_addr:%p, &fault_addr:%p\n", fault_addr, &fault_addr);
@@ -170,7 +170,7 @@ static void page_fault(struct intr_frame *f) {
 //		printf("aaa\n");
 
 		if (he != NULL) {
-			printf("bbb\n");
+//			printf("bbb\n");
 			struct supp_page_entry* spe = hash_entry(he,struct supp_page_entry,elem);
 //			printf("exception not_present spe uaddr:%p\n", spe->uaddr);
 //			printf("NOT NULL\n");
@@ -204,7 +204,7 @@ static void page_fault(struct intr_frame *f) {
 			pagedir_set_accessed (t->pagedir, uaddr, true);
 
 			if (spe->type == FILE) {
-				printf("FILE\n");
+//				printf("FILE\n");
 				file_seek(spe->file, spe->ofs);
 
 				off_t bytes_read = file_read(spe->file, kaddr, spe->page_read_bytes);
@@ -212,15 +212,15 @@ static void page_fault(struct intr_frame *f) {
 				memset(kaddr + bytes_read, 0, PGSIZE - bytes_read);
 				spe->type = MEMORY;
 			} else if (spe->type == ZERO) {
-				printf("ZERO\n");
+//				printf("ZERO\n");
 				memset(kaddr, 0, PGSIZE);
 			}
 			else if(spe->type == SWAP) {
-				printf("SWAP\n");
+//				printf("SWAP\n");
 				swap_unload(spe->swap_index, spe);
 				spe->swap_index = NULL;
 				spe->type = MEMORY;
-				printf("swap sfad\n");
+//				printf("swap sfad\n");
 			}
 
 			pagedir_clear_page(t->pagedir, uaddr);
@@ -242,7 +242,7 @@ static void page_fault(struct intr_frame *f) {
 			return;
 		} else {
 			/* extend stack */
-			printf("ccc\n");
+//			printf("ccc\n");
 			void* esp;
 			if(user) {
 				esp = f->esp;
@@ -265,7 +265,7 @@ static void page_fault(struct intr_frame *f) {
 			}
 
 			if ((fault_addr == esp - 4) || (fault_addr == esp - 32) || fault_addr >= esp) {
-				printf("333\n");
+//				printf("333\n");
 				/* Check for stack overflow */
 //				if (fault_addr < STACK_MIN) {
 //					exit(-1);
@@ -294,7 +294,7 @@ static void page_fault(struct intr_frame *f) {
 				return;
 			}
 			else {
-				printf("AAA\n");
+//				printf("AAA\n");
 				f->eip = (void *) f->eax;
 				f->eax = 0xffffffff;
 				exit(-1);

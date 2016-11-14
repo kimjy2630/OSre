@@ -60,9 +60,9 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 		return fe;
 	} else {
 //		enum intr_level old_level = intr_disable();
-//		lock_acquire(&lock_frame);
+		lock_acquire(&lock_frame);
 		frame_evict();
-//		lock_release(&lock_frame);
+		lock_release(&lock_frame);
 //		intr_set_level(old_level);
 		return frame_add(flags);
 //		return frame_add(addr);
@@ -89,9 +89,9 @@ void frame_evict() {
 	ASSERT(!list_empty(&frame));
 
 	while(!list_empty(&frame)){
-		lock_acquire(&lock_frame);
+//		lock_acquire(&lock_frame);
 		e = list_pop_front(&frame);
-		lock_release(&lock_frame);
+//		lock_release(&lock_frame);
 
 		fe = list_entry(e, struct frame_entry, elem);
 		pd = fe->t->pagedir;
@@ -102,22 +102,22 @@ void frame_evict() {
 			exit(-1);
 		}
 		if(spe->type == SWAP){
-			lock_acquire(&lock_frame);
+//			lock_acquire(&lock_frame);
 			list_push_back(&frame, e);
-			lock_release(&lock_frame);
+//			lock_release(&lock_frame);
 		}
 		else if(pagedir_is_accessed(pd, uaddr)){
 			pagedir_set_accessed(pd, uaddr, 0);
 
-			lock_acquire(&lock_frame);
+//			lock_acquire(&lock_frame);
 			list_push_back(&frame, e);
-			lock_release(&lock_frame);
+//			lock_release(&lock_frame);
 		}
 		else{
 			if(fe->finned){
-				lock_acquire(&lock_frame);
+//				lock_acquire(&lock_frame);
 				list_push_back(&frame, e);
-				lock_release(&lock_frame);
+//				lock_release(&lock_frame);
 
 			} else {
 				fe->finned = true;
