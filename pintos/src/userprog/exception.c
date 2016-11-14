@@ -198,6 +198,9 @@ static void page_fault(struct intr_frame *f) {
 			}
 			pagedir_set_dirty (t->pagedir, uaddr, false);
 			pagedir_set_accessed (t->pagedir, uaddr, true);
+			////
+			if(!spe->writable)
+				printf("uaddr:[%p] is not writable\n");
 
 			if (spe->type == FILE) {
 //				printf("FILE\n");
