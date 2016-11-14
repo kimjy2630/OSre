@@ -32,6 +32,10 @@ size_t swap_load(uint8_t *uaddr){ // mem -> disk
 //	lock_acquire(&swap_lock);
 	for(i=0; i<num_sector_in_page; i++){
 //		printf("disk write access[%d] %p\n", i, uaddr + i * DISK_SECTOR_SIZE);
+		if(pagedir_get_page(thread_current()->pagedir, uaddr + i * DISK_SECTOR_SIZE) == NULL){
+			printf("access[%d] %p\n", i, uaddr + i * DISK_SECTOR_SIZE);
+			PANIC("disk write no get page");
+		}
 		disk_write(swap_disk, index + i, uaddr + i * DISK_SECTOR_SIZE);
 //		printf("disk write success %p\n", uaddr + i * DISK_SECTOR_SIZE);
 	}
