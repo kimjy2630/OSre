@@ -113,13 +113,13 @@ void frame_evict() {
 			lock_release(&lock_frame);
 		}
 		else{
-//			if(fe->finned){
-//				lock_acquire(&lock_frame);
-//				list_push_back(&frame, e);
-//				lock_release(&lock_frame);
-//
-//			} else {
-//				fe->finned = true;
+			if(fe->finned){
+				lock_acquire(&lock_frame);
+				list_push_back(&frame, e);
+				lock_release(&lock_frame);
+
+			} else {
+				fe->finned = true;
 
 				spe->kaddr = NULL;
 //				if (spe->type == MEMORY || spe->type == ZERO)
@@ -132,7 +132,7 @@ void frame_evict() {
 
 				spe->fe = NULL;
 				break;
-//			}
+			}
 		}
 	}
 }
