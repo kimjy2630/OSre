@@ -70,7 +70,10 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 }
 
 void frame_free(struct frame_entry *fe){
+	lock_acquire(&lock_frame);
 	list_remove(&fe->elem);
+	lock_release(&lock_frame);
+
 	fe->spe->fe = NULL;
 //	palloc_free_page(fe->addr);
 	free(fe);
@@ -83,9 +86,7 @@ void frame_evict() {
 	uint32_t *pd;
 	uint8_t *uaddr;
 
-	ASSERT(&frame != NULL);
 	ASSERT(!list_empty(&frame));
-
 
 	while(!list_empty(&frame)){
 		lock_acquire(&lock_frame);
