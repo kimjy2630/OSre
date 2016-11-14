@@ -146,14 +146,14 @@ static void page_fault(struct intr_frame *f) {
 	user = (f->error_code & PF_U) != 0;
 #ifdef VM
 //printf("PAGE FAULT\n");
-	printf("fault_addr:%p, &fault_addr:%p %s %d\n", fault_addr, &fault_addr, thread_current()->name, thread_current()->tid);
+//	printf("fault_addr:%p, &fault_addr:%p %s %d\n", fault_addr, &fault_addr, thread_current()->name, thread_current()->tid);
 	if(fault_addr >= PHYS_BASE) {
-		printf("not user addr\n");
+//		printf("not user addr\n");
 //		printf("fault_addr:%p, &fault_addr:%p\n", fault_addr, &fault_addr);
 		if (user)
 			kill(f);
 		else {
-			printf("fff\n");
+//			printf("fff\n");
 			f->eip = (void *) f->eax;
 			f->eax = 0xffffffff;
 			exit(-1);
@@ -176,8 +176,8 @@ static void page_fault(struct intr_frame *f) {
 //			printf("NOT NULL\n");
 //			spe->uaddr = pg_round_down(spe->uaddr);
 			if(spe->uaddr > PHYS_BASE) {
-				printf("uaddr:%p\n", spe->uaddr);
-				printf("kernel access in page fault!\n");
+//				printf("uaddr:%p\n", spe->uaddr);
+//				printf("kernel access in page fault!\n");
 				exit(-1);
 			}
 			ASSERT(pg_ofs(spe->uaddr) == 0);
@@ -263,7 +263,7 @@ static void page_fault(struct intr_frame *f) {
 			if (offset > STACK_LIMIT) {
 
 //				printf("offset:%p\n", offset);
-				printf("stack overflow\n");
+//				printf("stack overflow\n");
 				f->eip = (void *) f->eax;
 				f->eax = 0xffffffff;
 				exit(-1);
@@ -276,17 +276,17 @@ static void page_fault(struct intr_frame *f) {
 				kill(f);
 			}
 			else {
-				printf("AAA\n");
+//				printf("AAA\n");
 				f->eip = (void *) f->eax;
 				f->eax = 0xffffffff;
 				exit(-1);
 			}
 		}
 	} else {
-		printf("present\n");
-		printf("write %d\n", write);
-		printf("user %d\n", user);
-		printf("write to [%p]\n", pg_round_down(fault_addr));
+//		printf("present\n");
+//		printf("write %d\n", write);
+//		printf("user %d\n", user);
+//		printf("write to [%p]\n", pg_round_down(fault_addr));
 		if (user)
 			kill(f);
 		else {
@@ -303,7 +303,7 @@ static void page_fault(struct intr_frame *f) {
 		kill(f);
 	}
 	else {
-		printf("DDD\n");
+//		printf("DDD\n");
 		f->eip = (void *) f->eax;
 		f->eax = 0xffffffff;
 		exit(-1);
