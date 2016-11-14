@@ -149,7 +149,7 @@ static void page_fault(struct intr_frame *f) {
 //	printf("fault_addr:%p, &fault_addr:%p\n", fault_addr, &fault_addr);
 	if(fault_addr >= PHYS_BASE) {
 		printf("not user addr\n");
-		printf("fault_addr:%p, &fault_addr:%p\n", fault_addr, &fault_addr);
+//		printf("fault_addr:%p, &fault_addr:%p\n", fault_addr, &fault_addr);
 		if (user)
 			kill(f);
 		else {
