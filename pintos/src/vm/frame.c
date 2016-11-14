@@ -84,6 +84,7 @@ void frame_evict() {
 	uint32_t *pd;
 	uint8_t *uaddr;
 
+	ASSERT(frame != NULL);
 	ASSERT(!list_empty(&frame));
 //	printf("start evict\n");
 //	printf("&frame:%p\n",&frame);
@@ -112,6 +113,7 @@ void frame_evict() {
 		if(spe->type == SWAP){
 //			printf("swap page\n");
 			frame_free(fe);
+			break;
 //			list_push_back(&frame, e);
 		}
 		else if(pagedir_is_accessed(pd, uaddr)){
