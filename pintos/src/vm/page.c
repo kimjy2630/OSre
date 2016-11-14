@@ -78,7 +78,7 @@ void supp_page_table_destroy(struct hash *supp_page_table) {
 	hash_destroy(supp_page_table, supp_page_entry_destroy);
 }
 
-bool stack_grow(void* addr) {
+struct supp_page_entry* stack_grow(void* addr) {
 //	printf("333\n");
 	/* Check for stack overflow */
 //	if (addr < STACK_MIN) {
@@ -96,7 +96,7 @@ bool stack_grow(void* addr) {
 		//TODO
 //		frame_free(fe);
 		frame_free(fe->addr);
-		return false;
+		return NULL;
 	}
 	/* Record the new stack page in the supplemental page table and
 	 the frame table. */
@@ -111,5 +111,5 @@ bool stack_grow(void* addr) {
 
 	fe->spe = spe;
 	spe->fe = fe;
-	return true;
+	return spe;
 }

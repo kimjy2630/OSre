@@ -10,6 +10,8 @@
 
 static void syscall_handler(struct intr_frame *);
 
+void* esp;
+
 void syscall_init(void) {
 	intr_register_int(0x30, 3, INTR_ON, syscall_handler, "syscall");
 }
@@ -35,6 +37,7 @@ static void
 syscall_handler (struct intr_frame *f UNUSED)
 {
 	void *ptr = (void *) f->esp;
+	esp = f->esp;
 #ifdef VM
 	thread_current()->esp = f->esp;
 #endif
@@ -175,26 +178,55 @@ int read(int fd, void *buffer, unsigned length) {
 	if (pf == NULL)
 		return -1;
 
-	size_t cnt = 0;
+//	size_t cnt = 0;
+//
+//	char *tmp_buf = malloc(PGSIZE);
+//	if (tmp_buf == NULL)
+//		return -1;
+//
+//	while (cnt < length) {
+//		int cur_size = length - cnt;
+//		if (cur_size > PGSIZE)
+//			cur_size = PGSIZE;
+//
+//		char *cur_buff = buffer + cnt;
+//		int op_result = file_read(pf->file, tmp_buf, cur_size);
+//		memcpy(cur_buff, tmp_buf, cur_size);
+//
+//		cnt += op_result;
+//		if (op_result != cur_size)
+//			break;
+//	}
+//	free(tmp_buf);
+//	return cnt;
 
-	char *tmp_buf = malloc(PGSIZE);
-	if (tmp_buf == NULL)
-		return -1;
-
-	while (cnt < length) {
-		int cur_size = length - cnt;
-		if (cur_size > PGSIZE)
-			cur_size = PGSIZE;
-
-		char *cur_buff = buffer + cnt;
-		int op_result = file_read(pf->file, tmp_buf, cur_size);
-		memcpy(cur_buff, tmp_buf, cur_size);
-
-		cnt += op_result;
-		if (op_result != cur_size)
-			break;
+	void* tmp_buf = buffer;
+	unsigned rest = length;
+	int cnt = 0;
+	while (rest > 0) {
+		size_t ofs = tmp_buf - pg_round_down(tmp_buf);
+		struct supp_page_entry spe_tmp;
+		spe_tmp.uaddr = tmp_buf - ofs;
+		struct hash_elem* he = hash_find(thread_current()->pagedir,
+				&spe_tmp.elem);
+		struct supp_page_entry* spe;
+		if (he == NULL) {
+			if (tmp_buf >= (esp - 32)
+					&& (PHYS_BASE - pg_round_down(tmp_buf)) <= (1 << 23)) {
+				spe = stack_grow(tmp_buf - ofs, true);
+			} else {
+				exit(-1);
+				return -1;
+			}
+		} else {
+			spe = hash_entry(he,struct supp_page_entry,elem);
+		}
+		size_t read_bytes = ofs + cnt > PGSIZE ? PGSIZE - ofs : cnt;
+		cnt += file_read(pf->file, tmp_buf, read_bytes);
+		rest -= read_bytes;
+		tmp_buf += read_bytes;
+		spe->fe->finned = false;
 	}
-	free(tmp_buf);
 	return cnt;
 }
 int write(int fd, const void *buffer, unsigned length) {
@@ -212,27 +244,56 @@ int write(int fd, const void *buffer, unsigned length) {
 	if (pf == NULL)
 		return 0;
 
-	size_t cnt = 0;
-
-	char *tmp_buf = malloc(PGSIZE);
-	if (tmp_buf == NULL)
-		return -1;
-
-	while (cnt < length) {
-		int cur_size = length - cnt;
-		if (cur_size > PGSIZE)
-			cur_size = PGSIZE;
-
-		char *cur_buff = buffer + cnt;
-		memcpy(tmp_buf, cur_buff, cur_size);
-		int op_result = file_write(pf->file, tmp_buf, cur_size);
-		cnt += op_result;
-		if (op_result != cur_size)
-			break;
+//	size_t cnt = 0;
+//
+//	char *tmp_buf = malloc(PGSIZE);
+//	if (tmp_buf == NULL)
+//		return -1;
+//
+//	while (cnt < length) {
+//		int cur_size = length - cnt;
+//		if (cur_size > PGSIZE)
+//			cur_size = PGSIZE;
+//
+//		char *cur_buff = buffer + cnt;
+//		memcpy(tmp_buf, cur_buff, cur_size);
+//		int op_result = file_write(pf->file, tmp_buf, cur_size);
+//		cnt += op_result;
+//		if (op_result != cur_size)
+//			break;
+//	}
+//	free(tmp_buf);
+//	return cnt;
+	unsigned rest = length;
+	void *tmp_buf = (void *) buffer;
+	int cnt = 0;
+	while (rest > 0) {
+		/* See sys_read for a detailed explanation of page loading. */
+		size_t ofs = tmp_buf - pg_round_down(tmp_buf);
+		struct supp_page_entry spe_tmp;
+		spe_tmp.uaddr = tmp_buf - ofs;
+		struct hash_elem* he = hash_find(thread_current()->pagedir, &spe_tmp.elem);
+		struct supp_page_entry* spe;
+		if (he == NULL) {
+			if (tmp_buf >= (esp - 32)
+					&& (PHYS_BASE - pg_round_down(tmp_buf)) <= (1 << 23)) {
+				spe = stack_grow(tmp_buf - ofs, true);
+			} else {
+				exit(-1);
+				return -1;
+			}
+		} else {
+		spe = hash_entry(he,struct supp_page_entry,elem);
+		}
+		size_t write_bytes = ofs + cnt > PGSIZE ? PGSIZE - ofs : cnt;
+		cnt += file_write(pf->file, tmp_buf, write_bytes);
+		rest -= write_bytes;
+		tmp_buf += write_bytes;
+		/* Unpin the frame after we are done. */
+		spe->fe->finned = false;
 	}
-	free(tmp_buf);
-	return cnt;
 }
+
 void seek(int fd, unsigned position) {
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if (pf == NULL)
