@@ -47,6 +47,7 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 		fe->addr = addr;
 		fe->t = thread_current();
 		fe->spe = NULL;
+		fe->finned = false;
 
 		lock_acquire(&lock_frame);
 //		enum intr_level old_level = intr_disable();
@@ -121,6 +122,12 @@ void frame_evict() {
 //			printf("uaddr after check:%p\n", uaddr);
 		}
 		else{
+			if(fe->finned){
+				lock_acquire(&lock_frame);
+				list_push_back(&frame, e);
+				lock_release(&lock_frame);
+			} else {
+				fe->finned = true;
 //			printf("load page to swap\n");
 //			printf("uaddr before:%p\n", uaddr);
 
@@ -128,33 +135,33 @@ void frame_evict() {
 //			pagedir_set_page(pd, uaddr, fe->addr, true);
 //			frame_free(fe);
 
-			spe->kaddr = NULL;
+				spe->kaddr = NULL;
 //			spe->swap_index = swap_load(uaddr);
-			if(spe->type == MEMORY || spe->type == ZERO){
-				spe->swap_index = swap_load(uaddr);
-			}
-			else{
-				printf("spe type : %d\n", spe->type);
-			}
-			spe->type = SWAP;
+				if (spe->type == MEMORY || spe->type == ZERO) {
+					spe->swap_index = swap_load(uaddr);
+				} else {
+					printf("spe type : %d\n", spe->type);
+				}
+				spe->type = SWAP;
 
-			pagedir_clear_page(pd, uaddr);
-			palloc_free_page(fe->addr);
-			frame_free(fe);
+				pagedir_clear_page(pd, uaddr);
+				palloc_free_page(fe->addr);
+				frame_free(fe);
 
-			/*
-			pagedir_clear_page(pd, uaddr);
-			palloc_free_page(fe->addr);
-			frame_free(fe);
-			*/
+				/*
+				 pagedir_clear_page(pd, uaddr);
+				 palloc_free_page(fe->addr);
+				 frame_free(fe);
+				 */
 
 //			printf("uaddr after:%p\n", uaddr);
 //			if (spe->type == MEMORY)
 //				pagedir_clear_page(pd, uaddr);
-			spe->fe = NULL;
+				spe->fe = NULL;
 //			lock_release(&lock_frame);
 //			printf("evict loop end\n");
-			break;
+				break;
+			}
 		}
 	}
 }

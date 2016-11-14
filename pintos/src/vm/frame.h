@@ -9,6 +9,7 @@ struct frame_entry {
 	struct supp_page_entry *spe;
 	struct thread* t;
 	struct list_elem elem;
+	bool finned;
 };
 
 
