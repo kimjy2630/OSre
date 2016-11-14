@@ -213,7 +213,7 @@ int read(int fd, void *buffer, unsigned length) {
 		if (he == NULL) {
 			if (tmp_buf >= (esp - 32)
 					&& (PHYS_BASE - pg_round_down(tmp_buf)) <= (1 << 23)) {
-				spe = stack_grow(tmp_buf - ofs, true);
+				spe = stack_grow(tmp_buf - ofs);
 			} else {
 				exit(-1);
 				return -1;
@@ -277,7 +277,7 @@ int write(int fd, const void *buffer, unsigned length) {
 		if (he == NULL) {
 			if (tmp_buf >= (esp - 32)
 					&& (PHYS_BASE - pg_round_down(tmp_buf)) <= (1 << 23)) {
-				spe = stack_grow(tmp_buf - ofs, true);
+				spe = stack_grow(tmp_buf - ofs);
 			} else {
 				exit(-1);
 				return -1;
