@@ -123,13 +123,13 @@ void frame_evict() {
 //			pagedir_set_page(pd, uaddr, fe->addr, true);
 //			frame_free(fe);
 
-			pagedir_clear_page(pd, uaddr);
-			palloc_free_page(fe->addr);
-			frame_free(fe);
-
 			spe->kaddr = NULL;
 			spe->swap_index = swap_load(uaddr);
 			spe->type = SWAP;
+
+			pagedir_clear_page(pd, uaddr);
+			palloc_free_page(fe->addr);
+			frame_free(fe);
 
 			/*
 			pagedir_clear_page(pd, uaddr);
