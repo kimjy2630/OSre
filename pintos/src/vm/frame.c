@@ -145,7 +145,7 @@ void frame_evict() {
 				}
 				spe->type = SWAP;
 
-//				pagedir_clear_page(pd, uaddr);
+				pagedir_clear_page(pd, uaddr);
 				palloc_free_page(fe->addr);
 				frame_free(fe);
 
