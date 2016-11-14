@@ -58,9 +58,9 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 		return fe;
 	} else {
 //		enum intr_level old_level = intr_disable();
-		lock_acquire(&lock_frame);
+//		lock_acquire(&lock_frame);
 		frame_evict();
-		lock_release(&lock_frame);
+//		lock_release(&lock_frame);
 //		intr_set_level(old_level);
 		return frame_add(flags);
 //		return frame_add(addr);
@@ -90,7 +90,9 @@ void frame_evict() {
 //	lock_acquire(&lock_frame);
 	while(!list_empty(&frame)){
 //		printf("loop\n");
+		lock_acquire(&lock_frame);
 		e = list_pop_front(&frame);
+		lock_release(&lock_frame);
 //		printf("e:%p\n",e);
 		fe = list_entry(e, struct frame_entry, elem);
 //		printf("fe:%p\n",fe);
