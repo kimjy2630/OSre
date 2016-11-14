@@ -111,7 +111,7 @@ void frame_evict() {
 			exit(-1);
 		}
 		if(spe->type == SWAP){
-			printf("swap page\n");
+//			printf("swap page\n");
 //			frame_free(fe);
 			lock_acquire(&lock_frame);
 			list_push_back(&frame, e);
@@ -165,7 +165,7 @@ void frame_evict() {
 				spe->fe = NULL;
 //			lock_release(&lock_frame);
 //			printf("evict loop end\n");
-				break;
+				return;
 			}
 		}
 	}
