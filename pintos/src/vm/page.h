@@ -5,7 +5,7 @@
 #include "vm/frame.h"
 
 enum page_type {
-	ZERO, MEMORY, FILE, SWAP
+	DEFAULT, ZERO, MEMORY, FILE, SWAP
 };
 
 struct supp_page_entry{
