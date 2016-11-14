@@ -11,7 +11,7 @@
 //
 //}
 struct supp_page_entry* supp_page_add(uint8_t *addr, bool writable) {
-	struct hash supp_page_table = curr->supp_page_table;
+	struct hash supp_page_table = thread_current()->supp_page_table;
 
 	struct supp_page_entry *spe = malloc(sizeof(struct supp_page_entry));
 	if (spe == NULL)
