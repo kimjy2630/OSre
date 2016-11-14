@@ -129,7 +129,7 @@ void frame_evict() {
 //			frame_free(fe);
 
 			spe->kaddr = NULL;
-			spe->swap_index = swap_load(uaddr);
+//			spe->swap_index = swap_load(uaddr);
 			if(spe->type == MEMORY || spe->type == ZERO){
 				spe->swap_index = swap_load(uaddr);
 			}
