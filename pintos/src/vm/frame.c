@@ -110,6 +110,7 @@ void frame_evict() {
 			printf("kernel access!\n");
 			exit(-1);
 		}
+		printf("evict spe type %d\n", spe->type);
 		if(spe->type == SWAP){
 			printf("swap page\n");
 			frame_free(fe);
