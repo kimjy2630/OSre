@@ -22,7 +22,7 @@ void swap_init(){
 	lock_init(&swap_lock);
 }
 
-size_t swap_load(uint8_t *uaddr){ // mem -> disk
+size_t swap_load(uint8_t *uaddr, uint32_t *pd){ // mem -> disk
 	lock_acquire(&swap_lock);
 	size_t index = bitmap_scan_and_flip(swap_bitmap, 0, num_sector_in_page, 0);
 	lock_release(&swap_lock);
@@ -31,11 +31,11 @@ size_t swap_load(uint8_t *uaddr){ // mem -> disk
 	int i;
 //	lock_acquire(&swap_lock);
 	for(i=0; i<num_sector_in_page; i++){
-//		printf("disk write access[%d] %p\n", i, uaddr + i * DISK_SECTOR_SIZE);
-		if(pagedir_get_page(thread_current()->pagedir, uaddr + i * DISK_SECTOR_SIZE) == NULL){
-			printf("access[%d] %p\n", i, uaddr + i * DISK_SECTOR_SIZE);
-			PANIC("disk write no get page");
+		if(pagedir_get_page(pd, uaddr) == NULL){
+			printf("access %d, %p\n", i, uaddr);
+			PANIC("get page no frame");
 		}
+//		printf("disk write access[%d] %p\n", i, uaddr + i * DISK_SECTOR_SIZE);
 		disk_write(swap_disk, index + i, uaddr + i * DISK_SECTOR_SIZE);
 //		printf("disk write success %p\n", uaddr + i * DISK_SECTOR_SIZE);
 	}
