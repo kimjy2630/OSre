@@ -109,7 +109,7 @@ void frame_evict() {
 	uint8_t *uaddr;
 
 	ASSERT(lock_held_by_current_thread(&lock_evict));
-	ASSERT(!list_empty(&frame));
+//	ASSERT(!list_empty(&frame));
 
 	lock_acquire(&lock_frame);
 
