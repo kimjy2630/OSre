@@ -265,8 +265,9 @@ static void page_fault(struct intr_frame *f) {
 			}
 
 			if ((fault_addr == esp - 4) || (fault_addr == esp - 32) || fault_addr >= esp) {
-				if(!stack_grow(fault_addr))
-					kill(f);
+				if(stack_grow(fault_addr))
+					return;
+				kill(f);
 			}
 			else {
 //				printf("AAA\n");
