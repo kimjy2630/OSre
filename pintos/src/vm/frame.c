@@ -127,7 +127,6 @@ void frame_evict() {
 				list_push_back(&frame, e);
 				lock_release(&lock_frame);
 			} else {
-				fe->finned = true;
 //			printf("load page to swap\n");
 //			printf("uaddr before:%p\n", uaddr);
 
@@ -138,6 +137,7 @@ void frame_evict() {
 				spe->kaddr = NULL;
 //			spe->swap_index = swap_load(uaddr);
 				if (spe->type == MEMORY || spe->type == ZERO) {
+					fe->finned = true;
 					spe->swap_index = swap_load(uaddr);
 				} else {
 					printf("spe type : %d\n", spe->type);

@@ -31,9 +31,9 @@ size_t swap_load(uint8_t *uaddr){ // mem -> disk
 	int i;
 //	lock_acquire(&swap_lock);
 	for(i=0; i<num_sector_in_page; i++){
-		printf("disk write access %p\n", uaddr + i * DISK_SECTOR_SIZE);
+//		printf("disk write access %p\n", uaddr + i * DISK_SECTOR_SIZE);
 		disk_write(swap_disk, index + i, uaddr + i * DISK_SECTOR_SIZE);
-		printf("disk write success %p\n", uaddr + i * DISK_SECTOR_SIZE);
+//		printf("disk write success %p\n", uaddr + i * DISK_SECTOR_SIZE);
 	}
 //	lock_release(&swap_lock);
 	return index;
