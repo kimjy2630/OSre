@@ -219,7 +219,7 @@ static void page_fault(struct intr_frame *f) {
 //				printf("swap sfad\n");
 			}
 
-//			pagedir_clear_page(t->pagedir, uaddr);
+			pagedir_clear_page(t->pagedir, uaddr);
 			// TODO
 			if (!pagedir_set_page(t->pagedir, uaddr, spe->kaddr, spe->writable)) {
 				//				printf("KILL\n");
