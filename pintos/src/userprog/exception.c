@@ -286,6 +286,7 @@ static void page_fault(struct intr_frame *f) {
 //		printf("present\n");
 //		printf("write %d\n", write);
 //		printf("user %d\n", user);
+		printf("write to [%p]\n", pg_round_down(fault_addr));
 		if (user)
 			kill(f);
 		else {
