@@ -133,12 +133,17 @@ void frame_evict() {
 //			pagedir_clear_page(pd, uaddr);
 //			pagedir_set_page(pd, uaddr, fe->addr, true);
 //			frame_free(fe);
+				fe->finned = true;
 
 				spe->kaddr = NULL;
-				if (spe->type == MEMORY){// || spe->type == ZERO) {
-					fe->finned = true;
+				if (spe->type == MEMORY || spe->type == ZERO) {
+					if(spe->fe == NULL){
+						printf("uaddr %p\n", uaddr);
+						PANIC("evict no frame");
+					}
 					spe->swap_index = swap_load(uaddr);
-				} else {
+				}
+				else {
 					printf("spe type : %d\n", spe->type);
 				}
 				spe->type = SWAP;
