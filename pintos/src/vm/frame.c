@@ -14,10 +14,12 @@ void frame_evict();
 
 struct list frame;
 struct lock lock_frame;
+struct lock lock_evict;
 
 void frame_init() {
 	list_init(&frame);
 	lock_init(&lock_frame);
+	lock_init(&lock_evict);
 }
 
 struct frame_entry* frame_lookup(uint8_t *kaddr){
@@ -49,11 +51,11 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 		fe->spe = NULL;
 		fe->finned = false;
 
-		lock_acquire(&lock_frame);
+		lock_acquire(&lock_evict);
 //		enum intr_level old_level = intr_disable();
 //		printf("aaa\n");
 		list_push_back(&frame, &fe->elem);
-		lock_release(&lock_frame);
+		lock_release(&lock_evict);
 //		intr_set_level(old_level);
 //		printf("bbb, fe:%p\n");
 
@@ -106,8 +108,10 @@ void frame_evict() {
 	uint32_t *pd;
 	uint8_t *uaddr;
 
-	ASSERT(lock_held_by_current_thread(&lock_frame));
+	ASSERT(lock_held_by_current_thread(&lock_evict));
 	ASSERT(!list_empty(&frame));
+
+	lock_acquire(&lock_frame);
 
 	while(!list_empty(&frame)){
 //		lock_acquire(&lock_frame);
@@ -147,6 +151,8 @@ void frame_evict() {
 //				if (spe->type == MEMORY || spe->type == ZERO)
 				spe->swap_index = swap_load(fe->addr);
 				spe->type = SWAP;
+
+				lock_release(&lock_frame);
 
 				pagedir_clear_page(pd, uaddr);
 				palloc_free_page(fe->addr);
