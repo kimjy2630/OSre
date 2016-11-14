@@ -142,7 +142,7 @@ void frame_evict() {
 						printf("uaddr %p\n", uaddr);
 						PANIC("evict no frame");
 					}
-					spe->swap_index = swap_load(uaddr, pd);
+					spe->swap_index = swap_load(uaddr);
 				}
 				else {
 					printf("spe type : %d\n", spe->type);
