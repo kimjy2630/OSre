@@ -110,12 +110,12 @@ void frame_evict() {
 			printf("kernel access!\n");
 			exit(-1);
 		}
-		printf("evict spe type %d\n", spe->type);
 		if(spe->type == SWAP){
 			printf("swap page\n");
-			frame_free(fe);
-			break;
-//			list_push_back(&frame, e);
+//			frame_free(fe);
+			lock_acquire(&lock_frame);
+			list_push_back(&frame, e);
+			lock_release(&lock_frame);
 		}
 		else if(pagedir_is_accessed(pd, uaddr)){
 //			printf("accessed page\n");
