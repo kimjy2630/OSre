@@ -138,18 +138,14 @@ void frame_evict() {
 
 				spe->kaddr = NULL;
 				if (spe->type == MEMORY || spe->type == ZERO) {
-					if(pagedir_get_page(pd, uaddr) == NULL){
-						printf("uaddr %p\n", uaddr);
-						PANIC("evict no frame");
-					}
-					spe->swap_index = swap_load(fe->addr);
+					spe->swap_index = swap_load(fe->kaddr);
 				}
 				else {
 					printf("spe type : %d\n", spe->type);
 				}
 				spe->type = SWAP;
 
-				pagedir_clear_page(pd, uaddr);
+//				pagedir_clear_page(pd, uaddr);
 				palloc_free_page(fe->addr);
 				frame_free(fe);
 
