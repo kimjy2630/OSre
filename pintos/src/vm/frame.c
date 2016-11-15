@@ -39,6 +39,7 @@ struct frame_entry* frame_lookup(uint8_t *kaddr){
 }
 
 struct frame_entry* frame_add(enum palloc_flags flags) {
+	printf("frame_add\n");
 	uint8_t *addr = palloc_get_page(flags);
 	if (addr != NULL) {
 		struct frame_entry* fe = malloc(sizeof(struct frame_entry));
@@ -59,6 +60,7 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 //		intr_set_level(old_level);
 //		printf("bbb, fe:%p\n");
 
+		printf("frame_add return\n");
 		return fe;
 	} else {
 //		enum intr_level old_level = intr_disable();
@@ -66,6 +68,7 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 		frame_evict();
 		lock_release(&lock_evict);
 //		intr_set_level(old_level);
+		printf("frame_add evict return\n");
 		return frame_add(flags);
 //		return frame_add(addr);
 	}
