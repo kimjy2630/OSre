@@ -177,7 +177,7 @@ static void page_fault(struct intr_frame *f) {
 //			spe->uaddr = pg_round_down(spe->uaddr);
 			if(spe->uaddr > PHYS_BASE) {
 //				printf("uaddr:%p\n", spe->uaddr);
-//				printf("kernel access in page fault!\n");
+				printf("kernel access in page fault!\n");
 				exit(-1);
 			}
 			ASSERT(pg_ofs(spe->uaddr) == 0);
