@@ -166,7 +166,7 @@ void frame_evict() {
 
 				pagedir_clear_page(pd, uaddr);
 				palloc_free_page(fe->addr);
-				frame_free(fe->addr); ///// ???
+				frame_free(fe->addr);
 
 				spe->fe = NULL;
 				break;
