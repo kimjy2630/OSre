@@ -39,7 +39,7 @@ struct frame_entry* frame_lookup(uint8_t *kaddr){
 }
 
 struct frame_entry* frame_add(enum palloc_flags flags) {
-	printf("frame_add %d\n", thread_current()->tid);
+//	printf("frame_add %d\n", thread_current()->tid);
 	uint8_t *addr = palloc_get_page(flags);
 	if (addr != NULL) {
 		struct frame_entry* fe = malloc(sizeof(struct frame_entry));
@@ -60,7 +60,7 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 //		intr_set_level(old_level);
 //		printf("bbb, fe:%p\n");
 
-		printf("frame_add return %d\n", thread_current()->tid);
+//		printf("frame_add return %d\n", thread_current()->tid);
 		return fe;
 	} else {
 //		enum intr_level old_level = intr_disable();
@@ -68,14 +68,14 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 		frame_evict();
 		lock_release(&lock_evict);
 //		intr_set_level(old_level);
-		printf("frame_add evict return %d\n", thread_current()->tid);
+//		printf("frame_add evict return %d\n", thread_current()->tid);
 		return frame_add(flags);
 //		return frame_add(addr);
 	}
 }
 
 void frame_free(void* addr){
-	printf("frame_free %d\n", thread_current()->tid);
+//	printf("frame_free %d\n", thread_current()->tid);
 	lock_acquire(&lock_frame);
 	struct list_elem *e = NULL;
 	struct frame_entry *fe = NULL;
@@ -86,7 +86,7 @@ void frame_free(void* addr){
 	}
 	if (fe == NULL){
 		lock_release(&lock_frame);
-		printf("frame_free null %d\n",thread_current()->tid);
+//		printf("frame_free null %d\n",thread_current()->tid);
 		return;
 	}
 
@@ -96,7 +96,7 @@ void frame_free(void* addr){
 //	palloc_free_page(fe->addr);
 	free(fe);
 	lock_release(&lock_frame);
-	printf("frame_free return %d\n",thread_current()->tid);
+//	printf("frame_free return %d\n",thread_current()->tid);
 }
 
 //void frame_free(struct frame_entry *fe){
