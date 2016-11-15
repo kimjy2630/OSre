@@ -292,6 +292,7 @@ int write(int fd, const void *buffer, unsigned length) {
 		tmp_buf += write_bytes;
 		spe->fe->finned = false;
 	}
+	return cnt;
 }
 
 void seek(int fd, unsigned position) {
