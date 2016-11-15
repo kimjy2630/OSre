@@ -22,7 +22,7 @@ void swap_init(){
 	lock_init(&swap_lock);
 }
 
-size_t swap_load(uint8_t *uaddr){ // mem -> disk
+size_t swap_load(uint8_t *addr){ // mem -> disk
 	lock_acquire(&swap_lock);
 	size_t index = bitmap_scan_and_flip(swap_bitmap, 0, num_sector_in_page, 0);
 	lock_release(&swap_lock);
@@ -31,7 +31,7 @@ size_t swap_load(uint8_t *uaddr){ // mem -> disk
 	int i;
 //	lock_acquire(&swap_lock);
 	for(i=0; i<num_sector_in_page; i++){
-		disk_write(swap_disk, index + i, uaddr + i * DISK_SECTOR_SIZE);
+		disk_write(swap_disk, index + i, addr + i * DISK_SECTOR_SIZE);
 	}
 //	lock_release(&swap_lock);
 	return index;

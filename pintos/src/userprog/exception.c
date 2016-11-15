@@ -193,12 +193,12 @@ static void page_fault(struct intr_frame *f) {
 			uint8_t *kaddr = fe->addr;
 			pagedir_clear_page(t->pagedir, uaddr);
 			// TODO
-			if (!pagedir_set_page(t->pagedir, uaddr, fe->addr, true)) {
+			if (!pagedir_set_page(t->pagedir, uaddr, kaddr, true)) {
 //				printf("KILL\n");
 				palloc_free_page(kaddr);
 				//TODO
 //				frame_free(fe);
-				frame_free(fe->addr);
+				frame_free(kaddr);
 				spe->fe = NULL;
 				kill(f);
 			}
@@ -232,7 +232,7 @@ static void page_fault(struct intr_frame *f) {
 				palloc_free_page(kaddr);
 				//TODO
 //				frame_free(fe);
-				frame_free(fe->addr);
+				frame_free(kaddr);
 				spe->fe = NULL;
 				kill(f);
 			}
