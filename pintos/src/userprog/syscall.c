@@ -225,7 +225,7 @@ int read(int fd, void *buffer, unsigned length) {
 		printf("a2\n");
 		spe_tmp.uaddr = tmp_buf - ofs;
 		printf("a3\n");
-//		struct hash_elem* he = hash_find(thread_current()->pagedir, &spe_tmp.elem);
+		struct hash_elem* he;// = hash_find(thread_current()->pagedir, &spe_tmp.elem);
 		printf("CHECK\n");
 		PANIC("sys read test");
 		struct supp_page_entry* spe;
