@@ -277,6 +277,7 @@ int write(int fd, const void *buffer, unsigned length) {
 		if (he == NULL) {
 			if (tmp_buf >= (esp - 32)
 					&& (PHYS_BASE - pg_round_down(tmp_buf)) <= (1 << 23)) {
+				printf("sys write tmpbuf %p esp %p\n", tmp_buf, esp);
 				spe = stack_grow(tmp_buf - ofs);
 			} else {
 				exit(-1);
