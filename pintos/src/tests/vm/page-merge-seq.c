@@ -83,6 +83,7 @@ merge (void)
   mp_left = CHUNK_CNT;
   for (i = 0; i < CHUNK_CNT; i++)
     mp[i] = buf1 + CHUNK_SIZE * i;
+  msg ("aa");
 
   /* Merge. */
   op = buf2;
@@ -102,6 +103,7 @@ merge (void)
       if ((++mp[min] - buf1) % CHUNK_SIZE == 0)
         mp[min] = mp[--mp_left]; 
     }
+  msg("bb");
 }
 
 static void
