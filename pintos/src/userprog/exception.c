@@ -212,7 +212,7 @@ static void page_fault(struct intr_frame *f) {
 			// TODO
 			if (!pagedir_set_page(t->pagedir, uaddr, kaddr, spe->writable)) {
 //				printf("KILL\n");
-//				pagedir_clear_page(t->pagedir, uaddr);
+				pagedir_clear_page(t->pagedir, uaddr);
 				palloc_free_page(kaddr);
 				//TODO
 //				frame_free(fe);
