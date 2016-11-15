@@ -204,6 +204,7 @@ static void page_fault(struct intr_frame *f) {
 			}
 			pagedir_set_dirty (t->pagedir, uaddr, false);
 			pagedir_set_accessed (t->pagedir, uaddr, true);
+			fe->finned = true;
 
 			if (spe->type == FILE) {
 //				printf("FILE\n");
@@ -224,6 +225,8 @@ static void page_fault(struct intr_frame *f) {
 				spe->type = MEMORY;
 //				printf("swap sfad\n");
 			}
+
+			fe->finned = false;
 
 			pagedir_clear_page(t->pagedir, uaddr);
 			// TODO
