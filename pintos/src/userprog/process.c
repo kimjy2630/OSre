@@ -492,13 +492,13 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 
 		/* Get a page of memory. */
 #ifdef VM
-		struct supp_page_entry *spe = supp_page_add(upage, writable);
-//		printf("load_segment spe uaddr:%p\n", upage);
-		if(upage >= PHYS_BASE){
+		if(upage >= PHYS_BASE) {
 			printf("upage:%p\n", upage);
 			printf("kernel access!\n");
 			exit(-1);
 		}
+		struct supp_page_entry *spe = supp_page_add(upage, writable);
+//		printf("load_segment spe uaddr:%p\n", upage);
 		if(page_zero_bytes == PGSIZE)
 			spe->type = ZERO;
 		else
