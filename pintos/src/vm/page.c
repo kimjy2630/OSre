@@ -104,7 +104,7 @@ struct supp_page_entry* stack_grow(void* addr) {
 	 the frame table. */
 	struct supp_page_entry *spe = supp_page_add(pg_round_down(addr), true);
 
-	spe->t = thread_current();
+	spe->t = t;
 	spe->kaddr = fe->addr;
 	spe->page_read_bytes = 0;
 	spe->file = NULL;
