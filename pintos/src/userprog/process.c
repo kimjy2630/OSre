@@ -491,8 +491,6 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 		size_t page_zero_bytes = PGSIZE - page_read_bytes;
 
 		/* Get a page of memory. */
-		uint8_t *kpage;
-		//TODO
 #ifdef VM
 		struct supp_page_entry *spe = supp_page_add(upage, writable);
 //		printf("load_segment spe uaddr:%p\n", upage);
@@ -511,6 +509,7 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 
 		ASSERT(pg_ofs(spe->uaddr) == 0);
 #else
+		uint8_t *kpage;
 		kpage = palloc_get_page(PAL_USER);
 
 		if (kpage == NULL)
