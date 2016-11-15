@@ -193,6 +193,8 @@ static void page_fault(struct intr_frame *f) {
 
 			struct frame_entry *fe = frame_add(PAL_USER);
 
+			fe->finned = true;
+
 			fe->spe = spe;
 			spe->fe = fe;
 
@@ -214,8 +216,6 @@ static void page_fault(struct intr_frame *f) {
 			}
 			pagedir_set_dirty (t->pagedir, uaddr, false);
 			pagedir_set_accessed (t->pagedir, uaddr, true);
-
-			fe->finned = true;
 
 			if (spe->type == FILE) {
 //				printf("FILE\n");
