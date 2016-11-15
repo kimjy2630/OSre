@@ -140,6 +140,7 @@ bool remove(const char *file) {
 }
 int open(const char *file) {
 	if (!read_validity(file, strlen(file) + 1)) {
+		printf("sys open read validity error\n");
 		exit(-1);
 		return false;
 	}
@@ -147,8 +148,10 @@ int open(const char *file) {
 
 	struct file* f;
 	f = filesys_open(file);
-	if (f == NULL)
+	if (f == NULL){
+		printf("sys open filesys_open fails\n");
 		return -1;
+	}
 	int fd = add_process_file(thread_current(), f, file);
 	return fd;
 }
