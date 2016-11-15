@@ -146,14 +146,14 @@ static void page_fault(struct intr_frame *f) {
 	user = (f->error_code & PF_U) != 0;
 #ifdef VM
 //printf("PAGE FAULT\n");
-//	printf("fault_addr:%p, &fault_addr:%p %s %d\n", fault_addr, &fault_addr, thread_current()->name, thread_current()->tid);
+	printf("fault_addr:%p, &fault_addr:%p %s %d\n", fault_addr, &fault_addr, thread_current()->name, thread_current()->tid);
 	if(fault_addr >= PHYS_BASE) {
 //		printf("not user addr\n");
 //		printf("fault_addr:%p, &fault_addr:%p\n", fault_addr, &fault_addr);
 		if (user)
 			kill(f);
 		else {
-//			printf("fff\n");
+			printf("fff\n");
 			f->eip = (void *) f->eax;
 			f->eax = 0xffffffff;
 			exit(-1);
@@ -170,14 +170,14 @@ static void page_fault(struct intr_frame *f) {
 //		printf("aaa\n");
 
 		if (he != NULL) {
-//			printf("bbb\n");
+			printf("bbb\n");
 			struct supp_page_entry* spe = hash_entry(he,struct supp_page_entry,elem);
 //			printf("exception not_present spe uaddr:%p\n", spe->uaddr);
 //			printf("NOT NULL\n");
 //			spe->uaddr = pg_round_down(spe->uaddr);
 			if(spe->uaddr > PHYS_BASE) {
-//				printf("uaddr:%p\n", spe->uaddr);
-//				printf("kernel access in page fault!\n");
+				printf("uaddr:%p\n", spe->uaddr);
+				printf("kernel access in page fault!\n");
 				exit(-1);
 			}
 			ASSERT(pg_ofs(spe->uaddr) == 0);
@@ -228,7 +228,7 @@ static void page_fault(struct intr_frame *f) {
 			pagedir_clear_page(t->pagedir, uaddr);
 			// TODO
 			if (!pagedir_set_page(t->pagedir, uaddr, kaddr, spe->writable)) {
-				//				printf("KILL\n");
+//				printf("KILL\n");
 				palloc_free_page(kaddr);
 				//TODO
 //				frame_free(fe);
@@ -250,11 +250,11 @@ static void page_fault(struct intr_frame *f) {
 			void* esp;
 			if(user) {
 				esp = f->esp;
-//				printf("111 esp:%p\n", esp);
+				printf("111 esp:%p\n", esp);
 			}
 			else {
 				esp = thread_current()->esp;
-//				printf("222 esp:%p\n", esp);
+				printf("222 esp:%p\n", esp);
 			}
 
 
@@ -263,7 +263,7 @@ static void page_fault(struct intr_frame *f) {
 			if (offset > STACK_LIMIT) {
 
 //				printf("offset:%p\n", offset);
-//				printf("stack overflow\n");
+				printf("stack overflow\n");
 				f->eip = (void *) f->eax;
 				f->eax = 0xffffffff;
 				exit(-1);
@@ -276,17 +276,17 @@ static void page_fault(struct intr_frame *f) {
 				kill(f);
 			}
 			else {
-//				printf("AAA\n");
+				printf("AAA\n");
 				f->eip = (void *) f->eax;
 				f->eax = 0xffffffff;
 				exit(-1);
 			}
 		}
 	} else {
-//		printf("present\n");
-//		printf("write %d\n", write);
-//		printf("user %d\n", user);
-//		printf("write to [%p]\n", pg_round_down(fault_addr));
+		printf("present\n");
+		printf("write %d\n", write);
+		printf("user %d\n", user);
+		printf("write to [%p]\n", pg_round_down(fault_addr));
 		if (user)
 			kill(f);
 		else {
@@ -299,11 +299,11 @@ static void page_fault(struct intr_frame *f) {
 //		exit(-1);
 	}
 	if(user) {
-//		printf("CCC\n");
+		printf("CCC\n");
 		kill(f);
 	}
 	else {
-//		printf("DDD\n");
+		printf("DDD\n");
 		f->eip = (void *) f->eax;
 		f->eax = 0xffffffff;
 		exit(-1);
