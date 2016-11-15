@@ -268,7 +268,7 @@ int write(int fd, const void *buffer, unsigned length) {
 //		printf("write null file!\n");
 		return 0;
 	}
-	/*
+//	/*
 	size_t cnt = 0;
 
 	char *tmp_buf = malloc(PGSIZE);
@@ -289,8 +289,8 @@ int write(int fd, const void *buffer, unsigned length) {
 	}
 	free(tmp_buf);
 	return cnt;
-	*/
-//	/*
+//	*/
+	/*
 	unsigned rest = length;
 	void *tmp_buf = (void *) buffer;
 	int cnt = 0;
@@ -330,7 +330,7 @@ int write(int fd, const void *buffer, unsigned length) {
 		spe->fe->finned = false;
 	}
 	return cnt;
-//	*/
+	*/
 }
 
 void seek(int fd, unsigned position) {
