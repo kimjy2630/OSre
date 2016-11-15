@@ -75,6 +75,7 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 }
 
 void frame_free(void* addr){
+	printf("frame_free %d\n", thread_current()->tid);
 	lock_acquire(&lock_frame);
 	struct list_elem *e = NULL;
 	struct frame_entry *fe = NULL;
@@ -85,6 +86,7 @@ void frame_free(void* addr){
 	}
 	if (fe == NULL){
 		lock_release(&lock_frame);
+		printf("frame_free null %d\n",thread_current()->tid);
 		return;
 	}
 
@@ -94,6 +96,7 @@ void frame_free(void* addr){
 //	palloc_free_page(fe->addr);
 	free(fe);
 	lock_release(&lock_frame);
+	printf("frame_free return %d\n",thread_current()->tid);
 }
 
 //void frame_free(struct frame_entry *fe){
