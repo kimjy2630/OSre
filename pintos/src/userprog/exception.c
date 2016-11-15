@@ -202,8 +202,9 @@ static void page_fault(struct intr_frame *f) {
 				spe->fe = NULL;
 				kill(f);
 			}
-			pagedir_set_dirty (t->pagedir, uaddr, false);
-			pagedir_set_accessed (t->pagedir, uaddr, true);
+//			pagedir_set_dirty (t->pagedir, uaddr, false);
+//			pagedir_set_accessed (t->pagedir, uaddr, true);
+
 			fe->finned = true;
 
 			if (spe->type == FILE) {
