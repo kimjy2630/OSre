@@ -211,18 +211,19 @@ int read(int fd, void *buffer, unsigned length) {
 		size_t ofs = tmp_buf - pg_round_down(tmp_buf);
 		struct supp_page_entry spe_tmp;
 		spe_tmp.uaddr = tmp_buf - ofs;
-		struct hash_elem* he = hash_find(thread_current()->pagedir,
-				&spe_tmp.elem);
+		struct hash_elem* he = hash_find(thread_current()->pagedir, &spe_tmp.elem);
 		struct supp_page_entry* spe;
 		if (he == NULL) {
-			if (tmp_buf >= (esp - 32)
-					&& (PHYS_BASE - pg_round_down(tmp_buf)) <= (1 << 23)) {
+			if (tmp_buf >= (esp - 32) && (PHYS_BASE - pg_round_down(tmp_buf)) <= (1 << 23)) {
 				spe = stack_grow(tmp_buf - ofs);
-			} else {
+			}
+			else {
+				printf("asdfsadf\n");
 				exit(-1);
 				return -1;
 			}
-		} else {
+		}
+		else {
 			spe = hash_entry(he,struct supp_page_entry,elem);
 		}
 		size_t read_bytes = ofs + cnt > PGSIZE ? PGSIZE - ofs : cnt;
