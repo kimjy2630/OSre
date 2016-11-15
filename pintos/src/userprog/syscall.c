@@ -102,6 +102,7 @@ void exit(int status) {
 	if (curr->ps != NULL)
 		curr->ps->exit_status = status;
 	curr->is_exit = true;
+	frame_releaes_lock_frame();
 	thread_exit();
 }
 
