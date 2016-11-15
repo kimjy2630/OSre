@@ -230,22 +230,22 @@ int read(int fd, void *buffer, unsigned length) {
 	return cnt;*/
 }
 int write(int fd, const void *buffer, unsigned length) {
-	printf("sys write\n");
+//	printf("sys write\n");
 	if (!read_validity(buffer, length)) {
-		printf("write invalid!\n");
+//		printf("write invalid!\n");
 		exit(-1);
 		return -1;
 	}
 
 	if (fd == 1) { // write to console
-		printf("write to console\n");
+//		printf("write to console\n");
 		putbuf(buffer, (size_t) length);
 		return length;
 	}
 
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if (pf == NULL){
-		printf("write null file!\n");
+//		printf("write null file!\n");
 		return 0;
 	}
 	size_t cnt = 0;
