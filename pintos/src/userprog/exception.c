@@ -18,7 +18,7 @@
 
 
 //TODO
-bool debug = true;
+bool debug = false;
 
 /* Number of page faults processed. */
 static long long page_fault_cnt;
@@ -277,7 +277,7 @@ static void page_fault(struct intr_frame *f) {
 //			printf("fault_addr:%p\n", fault_addr);
 			if (offset > STACK_LIMIT) {
 //				printf("offset:%p\n", offset);
-				if(debug)
+//				if(debug)
 				printf("stack overflow\n");
 				f->eip = (void *) f->eax;
 				f->eax = 0xffffffff;
