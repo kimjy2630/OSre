@@ -93,7 +93,7 @@ struct supp_page_entry* stack_grow(void* addr) {
 	if (pagedir_get_page(t->pagedir, pg_round_down(addr)) != NULL
 			|| !pagedir_set_page(t->pagedir, pg_round_down(addr),
 					fe->addr, true)) {
-//		pagedir_clear_page(t->pagedir, pg_round_down(addr));
+		pagedir_clear_page(t->pagedir, pg_round_down(addr));
 		palloc_free_page(fe->addr);
 		//TODO
 //		frame_free(fe);
