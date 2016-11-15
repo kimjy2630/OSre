@@ -113,5 +113,7 @@ struct supp_page_entry* stack_grow(void* addr) {
 
 	fe->spe = spe;
 	spe->fe = fe;
+
+	memset(spe->kaddr, 0, PGSIZE);
 	return spe;
 }
