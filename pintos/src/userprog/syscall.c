@@ -289,10 +289,10 @@ int write(int fd, const void *buffer, unsigned length) {
 //		printf("CHECK\n");
 		struct supp_page_entry* spe;
 		if (he == NULL) {
-			printf("sys write tmpbuf %p esp %p\n", tmp_buf, esp);
+//			printf("sys write tmpbuf %p esp %p\n", tmp_buf, esp);
 			if (tmp_buf >= (esp - 32)
 					&& (PHYS_BASE - pg_round_down(tmp_buf)) <= (1 << 23)) {
-				printf("write stck access\n");
+//				printf("write stck access\n");
 				spe = stack_grow(tmp_buf - ofs);
 			} else {
 				printf("write kernel access\n");
