@@ -145,7 +145,7 @@ int open(const char *file) {
 		return false;
 	}
 
-
+	printf("sys open\n");
 	struct file* f;
 	f = filesys_open(file);
 	if (f == NULL){
