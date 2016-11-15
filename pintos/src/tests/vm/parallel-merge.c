@@ -111,6 +111,9 @@ merge (void)
         if (*mp[i] < *mp[min])
           min = i;
 
+      //TODO
+		msg("min %d", min);
+
       /* Append value to buf2. */
       *op++ = *mp[min];
 
