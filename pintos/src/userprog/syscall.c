@@ -287,6 +287,7 @@ int write(int fd, const void *buffer, unsigned length) {
 			spe = hash_entry(he, struct supp_page_entry, elem);
 		}
 		ASSERT(spe != NULL);
+		ASSERT(tmp_buf !=NULL);
 		size_t write_bytes = ofs + cnt > PGSIZE ? PGSIZE - ofs : cnt;
 		cnt += file_write(pf->file, tmp_buf, write_bytes);
 		rest -= write_bytes;
