@@ -16,6 +16,10 @@
 #include "filesys/filesys.h"
 #endif
 
+
+//TODO
+bool debug = true;
+
 /* Number of page faults processed. */
 static long long page_fault_cnt;
 
@@ -146,14 +150,17 @@ static void page_fault(struct intr_frame *f) {
 	user = (f->error_code & PF_U) != 0;
 #ifdef VM
 //printf("PAGE FAULT\n");
-//	printf("fault_addr:%p, &fault_addr:%p %s %d\n", fault_addr, &fault_addr, thread_current()->name, thread_current()->tid);
+	if(debug)
+	printf("fault_addr:%p, &fault_addr:%p %s %d\n", fault_addr, &fault_addr, thread_current()->name, thread_current()->tid);
 	if(fault_addr >= PHYS_BASE) {
-//		printf("not user addr\n");
+		if(debug)
+		printf("not user addr\n");
 //		printf("fault_addr:%p, &fault_addr:%p\n", fault_addr, &fault_addr);
 		if (user)
 			kill(f);
 		else {
-//			printf("fff\n");
+			if(debug)
+			printf("fff\n");
 			f->eip = (void *) f->eax;
 			f->eax = 0xffffffff;
 			exit(-1);
@@ -177,6 +184,7 @@ static void page_fault(struct intr_frame *f) {
 //			spe->uaddr = pg_round_down(spe->uaddr);
 			if(spe->uaddr > PHYS_BASE) {
 //				printf("uaddr:%p\n", spe->uaddr);
+				if(debug)
 				printf("kernel access in page fault!\n");
 				exit(-1);
 			}
@@ -255,20 +263,22 @@ static void page_fault(struct intr_frame *f) {
 			void* esp;
 			if(user) {
 				esp = f->esp;
-//				printf("111 esp:%p\n", esp);
+				if(debug)
+				printf("111 esp:%p\n", esp);
 			}
 			else {
 				esp = thread_current()->esp;
-//				printf("222 esp:%p\n", esp);
+				if(debug)
+				printf("222 esp:%p\n", esp);
 			}
 
 
 			uint32_t offset = ((uint32_t *) PHYS_BASE) - ((uint32_t *)fault_addr);
 //			printf("fault_addr:%p\n", fault_addr);
 			if (offset > STACK_LIMIT) {
-
 //				printf("offset:%p\n", offset);
-//				printf("stack overflow\n");
+				if(debug)
+				printf("stack overflow\n");
 				f->eip = (void *) f->eax;
 				f->eax = 0xffffffff;
 				exit(-1);
@@ -281,17 +291,20 @@ static void page_fault(struct intr_frame *f) {
 				kill(f);
 			}
 			else {
-//				printf("AAA\n");
+				if(debug)
+				printf("AAA\n");
 				f->eip = (void *) f->eax;
 				f->eax = 0xffffffff;
 				exit(-1);
 			}
 		}
 	} else {
-//		printf("present\n");
-//		printf("write %d\n", write);
-//		printf("user %d\n", user);
-//		printf("write to [%p]\n", pg_round_down(fault_addr));
+		if(debug){
+		printf("present\n");
+		printf("write %d\n", write);
+		printf("user %d\n", user);
+		printf("write to [%p]\n", pg_round_down(fault_addr));
+		}
 		if (user)
 			kill(f);
 		else {
@@ -308,7 +321,8 @@ static void page_fault(struct intr_frame *f) {
 		kill(f);
 	}
 	else {
-//		printf("DDD\n");
+		if(debug)
+		printf("DDD\n");
 		f->eip = (void *) f->eax;
 		f->eax = 0xffffffff;
 		exit(-1);
