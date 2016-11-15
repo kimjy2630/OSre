@@ -299,7 +299,7 @@ int write(int fd, const void *buffer, unsigned length) {
 		}
 		ASSERT(spe != NULL);
 		ASSERT(tmp_buf !=NULL);
-		printf("tmp_buf %n", tmp_buf);
+		printf("tmp_buf %p\n", tmp_buf);
 		size_t write_bytes = ofs + cnt > PGSIZE ? PGSIZE - ofs : cnt;
 		cnt += file_write(pf->file, tmp_buf, write_bytes);
 		rest -= write_bytes;
