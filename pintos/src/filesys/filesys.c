@@ -75,8 +75,11 @@ filesys_open (const char *name)
   if(inode == NULL)
     	  printf("filesys_open inode NULL\n");
 
-  if (dir != NULL)
+  if (dir != NULL){
     dir_lookup (dir, name, &inode);
+	if (inode == NULL)
+		printf("filesys_open inode 1.5 NULL\n");
+  }
   dir_close (dir);
 
   if(dir == NULL)
