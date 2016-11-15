@@ -273,6 +273,7 @@ int write(int fd, const void *buffer, unsigned length) {
 	unsigned rest = length;
 	void *tmp_buf = (void *) buffer;
 	int cnt = 0;
+	printf("write rest %d tmp_buf %p\n", rest, tmp_buf);
 	while (rest > 0) {
 		printf("write rest %d tmp_buf %p\n", rest, tmp_buf);
 		size_t ofs = tmp_buf - pg_round_down(tmp_buf);
