@@ -278,6 +278,7 @@ int write(int fd, const void *buffer, unsigned length) {
 		size_t ofs = tmp_buf - pg_round_down(tmp_buf);
 		struct supp_page_entry spe_tmp;
 		spe_tmp.uaddr = tmp_buf - ofs;
+		pritnf("CHECK\n");
 		struct hash_elem* he = hash_find(thread_current()->pagedir, &spe_tmp.elem);
 		struct supp_page_entry* spe;
 		if (he == NULL) {
