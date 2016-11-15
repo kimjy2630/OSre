@@ -37,8 +37,8 @@ size_t swap_load(uint8_t *addr){ // mem -> disk
 	return index;
 }
 
-void swap_unload(size_t index, struct supp_page_entry *spe) { // disk -> mem
-	uint8_t *uaddr = spe->uaddr;
+void swap_unload(size_t index, uint8_t *addr) { // disk -> mem
+//	uint8_t *uaddr = spe->uaddr;
 
 //	printf("unload start\n");
 	lock_acquire(&swap_lock);
@@ -50,7 +50,7 @@ void swap_unload(size_t index, struct supp_page_entry *spe) { // disk -> mem
 //	lock_acquire(&swap_lock);
 	for(i=0; i<num_sector_in_page; i++){
 //		printf("access %p\n", uaddr + i * DISK_SECTOR_SIZE);
-		disk_read(swap_disk, index + i, uaddr + i * DISK_SECTOR_SIZE);
+		disk_read(swap_disk, index + i, addr + i * DISK_SECTOR_SIZE);
 	}
 //	lock_release(&swap_lock);
 //	printf("disk_read\n");
