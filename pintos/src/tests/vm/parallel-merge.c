@@ -128,6 +128,7 @@ verify (void)
   for (hist_idx = 0; hist_idx < sizeof histogram / sizeof *histogram;
        hist_idx++)
     {
+	  msg("for %d\n", hist_idx);
       while (histogram[hist_idx]-- > 0) 
         {
           if (buf2[buf_idx] != hist_idx)
