@@ -162,6 +162,7 @@ int filesize(int fd) {
 }
 int read(int fd, void *buffer, unsigned length) {
 	if (!read_validity(buffer, length) || !write_validity(buffer, length)) {
+		printf("read not valid\n");
 		exit(-1);
 		return -1;
 	}
@@ -234,7 +235,7 @@ int read(int fd, void *buffer, unsigned length) {
 int write(int fd, const void *buffer, unsigned length) {
 //	printf("sys write\n");
 	if (!read_validity(buffer, length)) {
-//		printf("write invalid!\n");
+		printf("write not valid\n");
 		exit(-1);
 		return -1;
 	}
