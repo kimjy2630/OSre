@@ -183,8 +183,10 @@ int read(int fd, void *buffer, unsigned length) {
 		return read_size;
 	}
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
-	if (pf == NULL)
+	if (pf == NULL){
+		printf("read pf NULL\n");
 		return -1;
+	}
 	/*
 	size_t cnt = 0;
 
