@@ -18,7 +18,7 @@
 
 
 //TODO
-bool debug = true;
+bool debug = false;
 
 /* Number of page faults processed. */
 static long long page_fault_cnt;
