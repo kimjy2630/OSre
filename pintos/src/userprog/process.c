@@ -575,10 +575,10 @@ static bool setup_stack(void **esp) {
 #ifdef VM
 			//TODO
 //			pagedir_clear_page(thread_current()->pagedir, ((uint8_t *) PHYS_BASE) - PGSIZE); ??
-			palloc_free_page(fe->addr);
+			palloc_free_page(kpage);
 			//TODO
 //			frame_free(fe);
-			frame_free(fe->addr);
+			frame_free(kpage);
 //			free(spe);
 #else
 			palloc_free_page(kpage);
