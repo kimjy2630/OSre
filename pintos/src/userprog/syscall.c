@@ -220,8 +220,11 @@ int read(int fd, void *buffer, unsigned length) {
 	printf("read start loop\n");
 	while (rest > 0) {
 		size_t ofs = tmp_buf - pg_round_down(tmp_buf);
+		printf("a1\n");
 		struct supp_page_entry spe_tmp;
+		printf("a2\n");
 		spe_tmp.uaddr = tmp_buf - ofs;
+		printf("a3\n");
 		struct hash_elem* he = hash_find(thread_current()->pagedir, &spe_tmp.elem);
 		printf("CHECK\n");
 		struct supp_page_entry* spe;
