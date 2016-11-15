@@ -150,7 +150,7 @@ void frame_evict() {
 		else{
 			if(fe->finned){
 //				lock_acquire(&lock_frame);
-				printf("finned!! go back!!\n");
+//				printf("finned!! go back!!\n");
 				list_push_back(&frame, e);
 //				lock_release(&lock_frame);
 
