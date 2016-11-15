@@ -277,9 +277,10 @@ static void page_fault(struct intr_frame *f) {
 			uint32_t offset = ((uint32_t *) PHYS_BASE) - ((uint32_t *)fault_addr);
 //			printf("fault_addr:%p\n", fault_addr);
 			if (offset > STACK_LIMIT) {
-				printf("fault addr:%p\n", fault_addr);
-//				if(debug)
-				printf("stack overflow\n");
+				if(debug) {
+					printf("stack overflow\n");
+					printf("fault addr:%p\n", fault_addr);
+				}
 				f->eip = (void *) f->eax;
 				f->eax = 0xffffffff;
 				exit(-1);
