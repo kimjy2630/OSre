@@ -19,6 +19,7 @@
 
 //TODO
 bool debug = false;
+bool debug2 = false;
 
 /* Number of page faults processed. */
 static long long page_fault_cnt;
@@ -158,8 +159,10 @@ static void page_fault(struct intr_frame *f) {
 			printf("not user addr\n");
 			printf("fault_addr:%p, &fault_addr:%p\n", fault_addr, &fault_addr);
 		}
-		printf("not user addr\n");
-		printf("fault_addr:%p, &fault_addr:%p\n", fault_addr, &fault_addr);
+		if(debug2){
+			printf("not user addr\n");
+			printf("fault_addr:%p, &fault_addr:%p\n", fault_addr, &fault_addr);
+		}
 		if (user)
 			kill(f);
 		else {
@@ -285,8 +288,10 @@ static void page_fault(struct intr_frame *f) {
 					printf("stack overflow\n");
 					printf("fault addr:%p\n", fault_addr);
 				}
-				printf("stack overflow\n");
-				printf("fault addr:%p\n", fault_addr);
+				if(debug2){
+					printf("stack overflow\n");
+					printf("fault addr:%p\n", fault_addr);
+				}
 				f->eip = (void *) f->eax;
 				f->eax = 0xffffffff;
 				exit(-1);
