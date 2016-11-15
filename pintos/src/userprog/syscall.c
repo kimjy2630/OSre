@@ -183,7 +183,7 @@ int read(int fd, void *buffer, unsigned length) {
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if (pf == NULL)
 		return -1;
-//	/*
+	/*
 	size_t cnt = 0;
 
 	char *tmp_buf = malloc(PGSIZE);
@@ -205,8 +205,8 @@ int read(int fd, void *buffer, unsigned length) {
 	}
 	free(tmp_buf);
 	return cnt;
-//	*/
-	/*
+	*/
+//	/*
 	void* tmp_buf = buffer;
 	unsigned rest = length;
 	int cnt = 0;
@@ -245,7 +245,7 @@ int read(int fd, void *buffer, unsigned length) {
 		spe->fe->finned = false;
 	}
 	return cnt;
-	*/
+//	*/
 }
 int write(int fd, const void *buffer, unsigned length) {
 //	printf("sys write\n");
@@ -266,7 +266,7 @@ int write(int fd, const void *buffer, unsigned length) {
 //		printf("write null file!\n");
 		return 0;
 	}
-//	/*
+	/*
 	size_t cnt = 0;
 
 	char *tmp_buf = malloc(PGSIZE);
@@ -287,8 +287,8 @@ int write(int fd, const void *buffer, unsigned length) {
 	}
 	free(tmp_buf);
 	return cnt;
-//	*/
-	/*
+	*/
+//	/*
 	unsigned rest = length;
 	void *tmp_buf = (void *) buffer;
 	int cnt = 0;
@@ -328,7 +328,7 @@ int write(int fd, const void *buffer, unsigned length) {
 		spe->fe->finned = false;
 	}
 	return cnt;
-	*/
+//	*/
 }
 
 void seek(int fd, unsigned position) {
