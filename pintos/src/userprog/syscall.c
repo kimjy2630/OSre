@@ -7,7 +7,7 @@
 #include "threads/vaddr.h"
 #include "lib/kernel/console.h"
 #include <string.h>
-//#include "userprog/pagedir.h"
+#include "userprog/pagedir.h"
 
 static void syscall_handler(struct intr_frame *);
 
@@ -321,7 +321,7 @@ int write(int fd, const void *buffer, unsigned length) {
 		spe->fe->finned = true;
 		size_t write_bytes = ofs + rest > PGSIZE ? PGSIZE - ofs : rest;
 		cnt += file_write(pf->file, tmp_buf, write_bytes);
-//		pagedir_set_dirty(thread_current()->pagedir, pg_round_down(tmp_buf), true); ////
+		pagedir_set_dirty(thread_current()->pagedir, pg_round_down(tmp_buf), true); ////
 //		printf("write_bytes %d, cnt %d\n", write_bytes, cnt);
 		rest -= write_bytes;
 		tmp_buf += write_bytes;
