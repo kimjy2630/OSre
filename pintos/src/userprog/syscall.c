@@ -243,7 +243,7 @@ int write(int fd, const void *buffer, unsigned length) {
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if (pf == NULL)
 		return 0;
-
+/*
 	size_t cnt = 0;
 
 	char *tmp_buf = malloc(PGSIZE);
@@ -264,7 +264,8 @@ int write(int fd, const void *buffer, unsigned length) {
 	}
 	free(tmp_buf);
 	return cnt;
-	/*unsigned rest = length;
+	*/
+	unsigned rest = length;
 	void *tmp_buf = (void *) buffer;
 	int cnt = 0;
 	while (rest > 0) {
@@ -282,7 +283,7 @@ int write(int fd, const void *buffer, unsigned length) {
 				return -1;
 			}
 		} else {
-		spe = hash_entry(he,struct supp_page_entry,elem);
+			spe = hash_entry(he,struct supp_page_entry,elem);
 		}
 		size_t write_bytes = ofs + cnt > PGSIZE ? PGSIZE - ofs : cnt;
 		cnt += file_write(pf->file, tmp_buf, write_bytes);
@@ -290,7 +291,6 @@ int write(int fd, const void *buffer, unsigned length) {
 		tmp_buf += write_bytes;
 		spe->fe->finned = false;
 	}
-*/
 }
 
 void seek(int fd, unsigned position) {
