@@ -565,7 +565,7 @@ static bool setup_stack(void **esp) {
 			struct supp_page_entry *spe = supp_page_add(((uint8_t *) PHYS_BASE) - PGSIZE, true);
 //			printf("setup stack spe uaddr:%p\n", spe->uaddr);
 			spe->type = MEMORY;
-			spe->kaddr = fe->addr;
+			spe->kaddr = kpage;
 			fe->spe = spe;
 			spe->fe = fe;
 
