@@ -284,13 +284,16 @@ int write(int fd, const void *buffer, unsigned length) {
 			printf("sys write tmpbuf %p esp %p\n", tmp_buf, esp);
 			if (tmp_buf >= (esp - 32)
 					&& (PHYS_BASE - pg_round_down(tmp_buf)) <= (1 << 23)) {
+				printf("write stck access\n");
 				spe = stack_grow(tmp_buf - ofs);
 			} else {
+				printf("write kernel access\n");
 				exit(-1);
 				return -1;
 			}
 		} else {
 			spe = hash_entry(he, struct supp_page_entry, elem);
+			ptinf("sys write spe uaddr %p kaddr %p\n", spe->uaddr, spe->kaddr);
 		}
 		ASSERT(spe != NULL);
 		ASSERT(tmp_buf !=NULL);
