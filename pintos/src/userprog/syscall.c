@@ -218,7 +218,6 @@ int read(int fd, void *buffer, unsigned length) {
 				spe = stack_grow(tmp_buf - ofs);
 			}
 			else {
-				printf("asdfsadf\n");
 				exit(-1);
 				return -1;
 			}
@@ -226,7 +225,7 @@ int read(int fd, void *buffer, unsigned length) {
 		else {
 			spe = hash_entry(he,struct supp_page_entry,elem);
 		}
-		size_t read_bytes = ofs + cnt > PGSIZE ? PGSIZE - ofs : cnt;
+		size_t read_bytes = ofs + rest > PGSIZE ? PGSIZE - ofs : rest;
 		cnt += file_read(pf->file, tmp_buf, read_bytes);
 		rest -= read_bytes;
 		tmp_buf += read_bytes;
