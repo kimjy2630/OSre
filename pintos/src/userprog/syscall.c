@@ -279,20 +279,20 @@ int write(int fd, const void *buffer, unsigned length) {
 	unsigned rest = length;
 	void *tmp_buf = (void *) buffer;
 	int cnt = 0;
-//	printf("write rest %d tmp_buf %p\n", rest, tmp_buf);
+	printf("write rest %d tmp_buf %p\n", rest, tmp_buf);
 	while (rest > 0) {
-//		printf("write rest %d tmp_buf %p\n", rest, tmp_buf);
+		printf("write rest %d tmp_buf %p\n", rest, tmp_buf);
 		size_t ofs = tmp_buf - pg_round_down(tmp_buf);
 		struct supp_page_entry spe_tmp;
 		spe_tmp.uaddr = tmp_buf - ofs;
 		struct hash_elem* he = hash_find(&thread_current()->supp_page_table, &spe_tmp.elem);
-//		printf("CHECK\n");
+		printf("CHECK\n");
 		struct supp_page_entry* spe;
 		if (he == NULL) {
-//			printf("sys write tmpbuf %p esp %p\n", tmp_buf, esp);
+			printf("sys write tmpbuf %p esp %p\n", tmp_buf, esp);
 			if (tmp_buf >= (esp - 32)
 					&& (PHYS_BASE - pg_round_down(tmp_buf)) <= (1 << 23)) {
-//				printf("write stck access\n");
+				printf("write stck access\n");
 				spe = stack_grow(tmp_buf - ofs);
 			} else {
 				printf("write kernel access\n");
@@ -301,11 +301,11 @@ int write(int fd, const void *buffer, unsigned length) {
 			}
 		} else {
 			spe = hash_entry(he, struct supp_page_entry, elem);
-//			printf("sys write spe uaddr %p kaddr %p\n", spe->uaddr, spe->kaddr);
+			printf("sys write spe uaddr %p kaddr %p\n", spe->uaddr, spe->kaddr);
 		}
 		ASSERT(spe != NULL);
 		ASSERT(tmp_buf !=NULL);
-//		printf("tmp_buf %p\n", tmp_buf);
+		printf("tmp_buf %p\n", tmp_buf);
 		size_t write_bytes = ofs + cnt > PGSIZE ? PGSIZE - ofs : cnt;
 		cnt += file_write(pf->file, tmp_buf, write_bytes);
 		rest -= write_bytes;
