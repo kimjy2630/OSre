@@ -96,6 +96,8 @@ merge (void)
   for (i = 0; i < CHUNK_CNT; i++)
     mp[i] = buf1 + CHUNK_SIZE * i;
 
+  msg("mergege");
+
   /* Merge. */
   op = buf2;
   while (mp_left > 0) 
@@ -128,7 +130,7 @@ verify (void)
   for (hist_idx = 0; hist_idx < sizeof histogram / sizeof *histogram;
        hist_idx++)
     {
-	  msg("for %d\n", hist_idx);
+	  msg("for %d", hist_idx);
       while (histogram[hist_idx]-- > 0) 
         {
           if (buf2[buf_idx] != hist_idx)
