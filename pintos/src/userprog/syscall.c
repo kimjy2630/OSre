@@ -213,20 +213,26 @@ int read(int fd, void *buffer, unsigned length) {
 		spe_tmp.uaddr = tmp_buf - ofs;
 		struct hash_elem* he = hash_find(thread_current()->pagedir, &spe_tmp.elem);
 		struct supp_page_entry* spe;
+		printf("CHECK\n");
 		if (he == NULL) {
+			printf("sys read tmp_buf %p esp %p\n", tmp_buf, esp);
 			if (tmp_buf >= (esp - 32) && (PHYS_BASE - pg_round_down(tmp_buf)) <= (1 << 23)) {
+				printf("read stack access\n");
 				spe = stack_grow(tmp_buf - ofs);
 			}
 			else {
+				printf("read kernel access\n");
 				exit(-1);
 				return -1;
 			}
 		}
 		else {
 			spe = hash_entry(he,struct supp_page_entry,elem);
+			printf("sys read spe uaddr %p kaddr %p\n", spe->uaddr, spe->kaddr);
 		}
 		size_t read_bytes = ofs + rest > PGSIZE ? PGSIZE - ofs : rest;
 		cnt += file_read(pf->file, tmp_buf, read_bytes);
+		printf("read_bytes %d, cnt %d\n", read_bytes, cnt);
 		rest -= read_bytes;
 		tmp_buf += read_bytes;
 		spe->fe->finned = false;
