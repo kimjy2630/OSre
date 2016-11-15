@@ -103,7 +103,7 @@ void exit(int status) {
 		curr->ps->exit_status = status;
 	curr->is_exit = true;
 //TODO
-	frame_releaes_lock_frame();
+//	frame_releaes_lock_frame();
 	thread_exit();
 }
 
