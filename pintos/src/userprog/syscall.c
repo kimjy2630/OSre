@@ -170,8 +170,6 @@ int read(int fd, void *buffer, unsigned length) {
 		return -1;
 	}
 
-	printf("sys read!!\n");
-
 	int result = -1;
 
 	if (fd == 0) {
