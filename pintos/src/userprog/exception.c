@@ -202,8 +202,9 @@ static void page_fault(struct intr_frame *f) {
 			uint8_t *kaddr = fe->addr;
 			pagedir_clear_page(t->pagedir, uaddr);
 			// TODO
-			if (!pagedir_set_page(t->pagedir, uaddr, kaddr, true)) {
+			if (!pagedir_set_page(t->pagedir, uaddr, kaddr, spe->writable)) {
 //				printf("KILL\n");
+				pagedir_clear_page(t->pagedir, uaddr);
 				palloc_free_page(kaddr);
 				//TODO
 //				frame_free(fe);
@@ -238,7 +239,7 @@ static void page_fault(struct intr_frame *f) {
 
 			fe->finned = false;
 
-//			/*
+			/*
 			pagedir_clear_page(t->pagedir, uaddr);
 			// TODO
 			if (!pagedir_set_page(t->pagedir, uaddr, kaddr, spe->writable)) {
@@ -252,7 +253,7 @@ static void page_fault(struct intr_frame *f) {
 			}
 			pagedir_set_dirty (t->pagedir, uaddr, false);
 			pagedir_set_accessed (t->pagedir, uaddr, true);
-//			*/
+			*/
 			////
 //			if(!spe->writable)
 //				printf("uaddr:[%p] is not writable\n");
