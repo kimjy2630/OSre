@@ -131,6 +131,7 @@ hash_replace (struct hash *h, struct hash_elem *new)
 struct hash_elem *
 hash_find (struct hash *h, struct hash_elem *e) 
 {
+	printf("hash_find: start find_elem\n");
   return find_elem (h, find_bucket (h, e), e);
 }
 
