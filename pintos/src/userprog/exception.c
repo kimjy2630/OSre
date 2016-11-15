@@ -193,7 +193,7 @@ static void page_fault(struct intr_frame *f) {
 			uint8_t *kaddr = fe->addr;
 			pagedir_clear_page(t->pagedir, uaddr);
 			// TODO
-			if (!pagedir_set_page(t->pagedir, uaddr, kaddr, true)) {
+			if (!pagedir_set_page(t->pagedir, uaddr, kaddr, spe->writable)) {
 //				printf("KILL\n");
 				palloc_free_page(kaddr);
 				//TODO
