@@ -308,6 +308,7 @@ int write(int fd, const void *buffer, unsigned length) {
 		printf("tmp_buf %p\n", tmp_buf);
 		size_t write_bytes = ofs + cnt > PGSIZE ? PGSIZE - ofs : cnt;
 		cnt += file_write(pf->file, tmp_buf, write_bytes);
+		printf("write_bytes %d, cnt %d\n", write_bytes, cnt);
 		rest -= write_bytes;
 		tmp_buf += write_bytes;
 		spe->fe->finned = false;
