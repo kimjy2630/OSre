@@ -212,8 +212,8 @@ int read(int fd, void *buffer, unsigned length) {
 		struct supp_page_entry spe_tmp;
 		spe_tmp.uaddr = tmp_buf - ofs;
 		struct hash_elem* he = hash_find(thread_current()->pagedir, &spe_tmp.elem);
-		struct supp_page_entry* spe;
 		printf("CHECK\n");
+		struct supp_page_entry* spe;
 		if (he == NULL) {
 			printf("sys read tmp_buf %p esp %p\n", tmp_buf, esp);
 			if (tmp_buf >= (esp - 32) && (PHYS_BASE - pg_round_down(tmp_buf)) <= (1 << 23)) {
@@ -230,6 +230,9 @@ int read(int fd, void *buffer, unsigned length) {
 			spe = hash_entry(he,struct supp_page_entry,elem);
 			printf("sys read spe uaddr %p kaddr %p\n", spe->uaddr, spe->kaddr);
 		}
+		ASSERT(spe != NULL);
+		ASSERT(tmp_buf != NULL);
+		printf("tmp_buf %p\n", tmp_buf);
 		size_t read_bytes = ofs + rest > PGSIZE ? PGSIZE - ofs : rest;
 		cnt += file_read(pf->file, tmp_buf, read_bytes);
 		printf("read_bytes %d, cnt %d\n", read_bytes, cnt);
