@@ -145,11 +145,9 @@ int open(const char *file) {
 		return false;
 	}
 
-	printf("sys open\n");
 	struct file* f;
 	f = filesys_open(file);
 	if (f == NULL){
-		printf("sys open filesys_open fails\n");
 		return -1;
 	}
 	int fd = add_process_file(thread_current(), f, file);
@@ -170,12 +168,9 @@ int read(int fd, void *buffer, unsigned length) {
 		return -1;
 	}
 
-	printf("sys read\n");
-
 	int result = -1;
 
 	if (fd == 0) {
-		printf("read fd 0\n");
 		size_t read_size = 0;
 		char* buf = (char*) buffer;
 		while (read_size < length)
@@ -184,10 +179,8 @@ int read(int fd, void *buffer, unsigned length) {
 		return read_size;
 	}
 
-	printf("read fd not 0\n");
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if (pf == NULL){
-		printf("read pf NULL\n");
 		return -1;
 	}
 	/*
@@ -217,41 +210,36 @@ int read(int fd, void *buffer, unsigned length) {
 	void* tmp_buf = buffer;
 	unsigned rest = length;
 	int cnt = 0;
-	printf("read start loop\n");
 	while (rest > 0) {
 		size_t ofs = tmp_buf - pg_round_down(tmp_buf);
-		printf("a1\n");
 		struct supp_page_entry spe_tmp;
-		printf("a2\n");
 		spe_tmp.uaddr = tmp_buf - ofs;
-		printf("a3\n");
 		struct hash_elem* he = hash_find(&thread_current()->supp_page_table, &spe_tmp.elem);
-//		struct hash_elem* he = hash_find(&thread_current()->supp_page_table, &spe_tmp.elem);
-		printf("CHECK\n");
+//		printf("CHECK\n");
 		struct supp_page_entry* spe;
 		if (he == NULL) {
-			printf("sys read tmp_buf %p esp %p\n", tmp_buf, esp);
+//			printf("sys read tmp_buf %p esp %p\n", tmp_buf, esp);
 			if (tmp_buf >= (esp - 32) && (PHYS_BASE - pg_round_down(tmp_buf)) <= (1 << 23)) {
-				printf("read stack access\n");
+//				printf("read stack access\n");
 				spe = stack_grow(tmp_buf - ofs);
 			}
 			else {
-				printf("read kernel access\n");
+//				printf("read kernel access\n");
 				exit(-1);
 				return -1;
 			}
 		}
 		else {
 			spe = hash_entry(he,struct supp_page_entry,elem);
-			printf("sys read spe uaddr %p kaddr %p\n", spe->uaddr, spe->kaddr);
+//			printf("sys read spe uaddr %p kaddr %p\n", spe->uaddr, spe->kaddr);
 		}
 		ASSERT(spe != NULL);
 		ASSERT(tmp_buf != NULL);
 		spe->fe->finned = true;
-		printf("tmp_buf %p\n", tmp_buf);
+//		printf("tmp_buf %p\n", tmp_buf);
 		size_t read_bytes = ofs + rest > PGSIZE ? PGSIZE - ofs : rest;
 		cnt += file_read(pf->file, tmp_buf, read_bytes);
-		printf("read_bytes %d, cnt %d\n", read_bytes, cnt);
+//		printf("read_bytes %d, cnt %d\n", read_bytes, cnt);
 		rest -= read_bytes;
 		tmp_buf += read_bytes;
 		spe->fe->finned = false;
