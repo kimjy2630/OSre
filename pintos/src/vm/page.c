@@ -75,7 +75,8 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 }
 
 void supp_page_table_destroy(struct hash *supp_page_table) {
-	frame_releaes_lock_frame();
+	//TODO
+//	frame_releaes_lock_frame();
 	hash_destroy(supp_page_table, supp_page_entry_destroy);
 }
 
