@@ -293,7 +293,7 @@ int write(int fd, const void *buffer, unsigned length) {
 			}
 		} else {
 			spe = hash_entry(he, struct supp_page_entry, elem);
-			ptinf("sys write spe uaddr %p kaddr %p\n", spe->uaddr, spe->kaddr);
+			prtinf("sys write spe uaddr %p kaddr %p\n", spe->uaddr, spe->kaddr);
 		}
 		ASSERT(spe != NULL);
 		ASSERT(tmp_buf !=NULL);
