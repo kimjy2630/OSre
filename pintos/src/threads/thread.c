@@ -294,6 +294,9 @@ void thread_exit(void) {
 
 	ASSERT(!intr_context());
 
+#ifdef VM
+	frame_releaes_lock_frame();
+#endif
 #ifdef USERPROG
 	if(thread_current()->user_thread)
 		process_exit ();
