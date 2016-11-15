@@ -175,6 +175,7 @@ int read(int fd, void *buffer, unsigned length) {
 	int result = -1;
 
 	if (fd == 0) {
+		printf("read fd 0\n");
 		size_t read_size = 0;
 		char* buf = (char*) buffer;
 		while (read_size < length)
@@ -182,6 +183,8 @@ int read(int fd, void *buffer, unsigned length) {
 
 		return read_size;
 	}
+
+	printf("read fd not 0\n");
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if (pf == NULL){
 		printf("read pf NULL\n");
@@ -214,6 +217,7 @@ int read(int fd, void *buffer, unsigned length) {
 	void* tmp_buf = buffer;
 	unsigned rest = length;
 	int cnt = 0;
+	printf("read start loop\n");
 	while (rest > 0) {
 		size_t ofs = tmp_buf - pg_round_down(tmp_buf);
 		struct supp_page_entry spe_tmp;
