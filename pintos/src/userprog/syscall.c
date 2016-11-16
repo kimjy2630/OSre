@@ -109,10 +109,10 @@ void exit(int status) {
 	curr->exit_status = status;
 	if (curr->ps != NULL)
 		curr->ps->exit_status = status;
-#ifdef VM
-//	printf("clear supp page table\n");
-	supp_page_table_destroy(&curr->supp_page_table);
-#endif
+//#ifdef VM
+////	printf("clear supp page table\n");
+//	supp_page_table_destroy(&curr->supp_page_table);
+//#endif
 	curr->is_exit = true;
 	thread_exit();
 }
