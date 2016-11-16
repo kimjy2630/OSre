@@ -240,7 +240,7 @@ int read(int fd, void *buffer, unsigned length) {
 			}
 			else {
 //				printf("read kernel access\n");
-//				lock_release(&lock_file);
+				lock_release(&lock_file);
 				exit(-1);
 				return -1;
 			}
@@ -330,7 +330,7 @@ int write(int fd, const void *buffer, unsigned length) {
 				spe = stack_grow(tmp_buf - ofs);
 			} else {
 //				printf("write kernel access\n");
-//				lock_release(&lock_file);
+				lock_release(&lock_file);
 				exit(-1);
 				return -1;
 			}
