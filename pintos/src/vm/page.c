@@ -65,17 +65,22 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 
 	spe = hash_entry(e, struct supp_page_entry, elem);
 	fe = spe->fe;
-//	/*
+	/*
 	if (spe->type == MEMORY && fe != NULL) {
 		pagedir_clear_page(spe->t->pagedir, spe->uaddr);
 		//TODO
 //		frame_free(fe);
 		frame_free(fe->addr);
 	}
-//	*/
-//	pagedir_clear_page(spe->t->pagedir, spe->uaddr);
-//	if(fe != NULL)
+	*/
+	if (spe->type == MEMORY && fe != NULL) {
+		pagedir_clear_page(spe->t->pagedir, spe->uaddr);
+		//TODO
 //		frame_free(fe->addr);
+		list_remove(&fe->elem);
+		fe->spe->fe = NULL;
+		free(fe);
+	}
 	free(spe);
 }
 

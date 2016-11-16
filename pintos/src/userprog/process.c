@@ -172,8 +172,8 @@ void process_exit(void) {
 		 that's been freed (and cleared). */
 #ifdef VM
 //		printf("clear supp page table\n");
-		supp_page_table_destroy(&curr->supp_page_table);
 		lock_acquire(&lock_frame);
+		supp_page_table_destroy(&curr->supp_page_table);
 		pagedir_activate(NULL);
 		pagedir_destroy(pd);
 		curr->pagedir = NULL;
