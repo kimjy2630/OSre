@@ -221,7 +221,7 @@ int read(int fd, void *buffer, unsigned length) {
 	return cnt;
 	*/
 //	/*
-	lock_acquire(&lock_file);
+//	lock_acquire(&lock_file);
 	void* tmp_buf = buffer;
 	unsigned rest = length;
 	int cnt = 0;
@@ -254,13 +254,15 @@ int read(int fd, void *buffer, unsigned length) {
 		spe->fe->finned = true;
 //		printf("tmp_buf %p\n", tmp_buf);
 		size_t read_bytes = ofs + rest > PGSIZE ? PGSIZE - ofs : rest;
+		lock_acquire(&lock_file);
 		cnt += file_read(pf->file, tmp_buf, read_bytes);
+		lock_release(&lock_file);
 //		printf("read_bytes %d, cnt %d\n", read_bytes, cnt);
 		rest -= read_bytes;
 		tmp_buf += read_bytes;
 		spe->fe->finned = false;
 	}
-	lock_release(&lock_file);
+//	lock_release(&lock_file);
 	return cnt;
 //	*/
 }
@@ -306,7 +308,7 @@ int write(int fd, const void *buffer, unsigned length) {
 	return cnt;
 	*/
 //	/*
-	lock_acquire(&lock_file);
+//	lock_acquire(&lock_file);
 	unsigned rest = length;
 	void *tmp_buf = (void *) buffer;
 	int cnt = 0;
@@ -340,14 +342,16 @@ int write(int fd, const void *buffer, unsigned length) {
 //		printf("tmp_buf %p\n", tmp_buf);
 		spe->fe->finned = true;
 		size_t write_bytes = ofs + rest > PGSIZE ? PGSIZE - ofs : rest;
+		lock_acquire(&lock_file);
 		cnt += file_write(pf->file, tmp_buf, write_bytes);
+		lock_release(&lock_file);
 //		pagedir_set_dirty(thread_current()->pagedir, pg_round_down(tmp_buf), true); ////
 //		printf("write_bytes %d, cnt %d\n", write_bytes, cnt);
 		rest -= write_bytes;
 		tmp_buf += write_bytes;
 		spe->fe->finned = false;
 	}
-	lock_release(&lock_file);
+//	lock_release(&lock_file);
 	return cnt;
 //	*/
 }
