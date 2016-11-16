@@ -221,7 +221,7 @@ int read(int fd, void *buffer, unsigned length) {
 	return cnt;
 	*/
 //	/*
-//	lock_acquire(&lock_file);
+	lock_acquire(&lock_file);
 	void* tmp_buf = buffer;
 	unsigned rest = length;
 	int cnt = 0;
@@ -264,7 +264,7 @@ int read(int fd, void *buffer, unsigned length) {
 		spe->fe->finned = false;
 //		frame_unfin(spe->kaddr);
 	}
-//	lock_release(&lock_file);
+	lock_release(&lock_file);
 	return cnt;
 //	*/
 }
@@ -292,7 +292,6 @@ int write(int fd, const void *buffer, unsigned length) {
 
 	char *tmp_buf = malloc(PGSIZE);
 	if (tmp_buf == NULL)
-		return -1;
 
 	while (cnt < length) {
 		int cur_size = length - cnt;
@@ -310,7 +309,7 @@ int write(int fd, const void *buffer, unsigned length) {
 	return cnt;
 	*/
 //	/*
-//	lock_acquire(&lock_file);
+	lock_acquire(&lock_file);
 	unsigned rest = length;
 	void *tmp_buf = (void *) buffer;
 	int cnt = 0;
@@ -355,7 +354,7 @@ int write(int fd, const void *buffer, unsigned length) {
 		spe->fe->finned = false;
 //		frame_unfin(spe->kaddr);
 	}
-//	lock_release(&lock_file);
+	lock_release(&lock_file);
 	return cnt;
 //	*/
 }
