@@ -13,7 +13,6 @@
 void frame_evict();
 
 struct list frame;
-struct lock lock_frame;
 struct lock lock_evict;
 
 void frame_init() {
