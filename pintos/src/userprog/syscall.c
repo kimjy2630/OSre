@@ -103,6 +103,8 @@ void halt(void) {
 }
 
 void exit(int status) {
+	if(lock_held_by_current_thread(&lock_file))
+		lock_release(&lock_file);
 	struct thread *curr = thread_current();
 	curr->exit_status = status;
 	if (curr->ps != NULL)
