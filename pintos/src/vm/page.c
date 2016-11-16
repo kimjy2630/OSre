@@ -74,7 +74,8 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 	}
 	*/
 	pagedir_clear_page(spe->t->pagedir, spe->uaddr);
-	frame_free(fe->addr);
+	if(fe != NULL)
+		frame_free(fe->addr);
 	free(spe);
 }
 
