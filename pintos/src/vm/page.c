@@ -60,17 +60,21 @@ bool hash_less_addr(const struct hash_elem *a, const struct hash_elem *b, void *
 
 void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 	struct supp_page_entry *spe;
-	uint8_t *kaddr;
+//	uint8_t *kaddr;
 	struct frame_entry *fe;
 
 	spe = hash_entry(e, struct supp_page_entry, elem);
 	fe = spe->fe;
+	/*
 	if (spe->type == MEMORY && fe != NULL) {
 		pagedir_clear_page(spe->t->pagedir, spe->uaddr);
 		//TODO
 //		frame_free(fe);
 		frame_free(fe->addr);
 	}
+	*/
+	pagedir_clear_page(spe->t->pagedir, spe->uaddr);
+	frame_free(fe->addr);
 	free(spe);
 }
 
