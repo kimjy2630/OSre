@@ -4,7 +4,6 @@
 #include "threads/thread.h"
 #include "vm/page.h"
 
-struct lock lock_frame;
 
 struct frame_entry {
 	void* addr;
