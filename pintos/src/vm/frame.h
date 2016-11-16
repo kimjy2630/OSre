@@ -19,5 +19,7 @@ struct frame_entry* frame_lookup(uint8_t *kddr);
 //void frame_free(struct frame_entry *fe);
 void frame_free(void* addr);
 void frame_releaes_lock_frame();
+void frame_fin(uint8_t *addr);
+void frame_unfin(uint8_t *addr);
 
 #endif /* vm/frame.h */

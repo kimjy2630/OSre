@@ -100,6 +100,40 @@ void frame_free(void* addr){
 //	printf("frame_free return %d\n",thread_current()->tid);
 }
 
+void frame_fin(uint8_t *addr){
+	struct list_elem *e = NULL;
+	struct frame_entry *fe = NULL;
+	lock_acquire(&lock_frame);
+	for (e = list_begin(&frame); e != list_end(&frame); e = list_next(e)) {
+		fe = list_entry(e, struct frame_entry, elem);
+		if (fe->addr == addr)
+			break;
+	}
+	if (fe == NULL) {
+		lock_release(&lock_frame);
+		return;
+	}
+	fe->finned = true;
+	lock_release(&lock_frame);
+}
+
+void frame_unfin(uint8_t *addr){
+	struct list_elem *e = NULL;
+	struct frame_entry *fe = NULL;
+	lock_acquire(&lock_frame);
+	for (e = list_begin(&frame); e != list_end(&frame); e = list_next(e)) {
+		fe = list_entry(e, struct frame_entry, elem);
+		if (fe->addr == addr)
+			break;
+	}
+	if (fe == NULL) {
+		lock_release(&lock_frame);
+		return;
+	}
+	fe->finned = false;
+	lock_release(&lock_frame);
+}
+
 //void frame_free(struct frame_entry *fe){
 //	lock_acquire(&lock_frame);
 //	list_remove(&fe->elem);
