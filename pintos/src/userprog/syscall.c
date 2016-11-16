@@ -251,8 +251,8 @@ int read(int fd, void *buffer, unsigned length) {
 		}
 		ASSERT(spe != NULL);
 		ASSERT(tmp_buf != NULL);
-//		spe->fe->finned = true;
-		frame_fin(spe->kaddr);
+		spe->fe->finned = true;
+//		frame_fin(spe->kaddr);
 //		printf("tmp_buf %p\n", tmp_buf);
 		size_t read_bytes = ofs + rest > PGSIZE ? PGSIZE - ofs : rest;
 //		lock_acquire(&lock_file);
@@ -261,8 +261,8 @@ int read(int fd, void *buffer, unsigned length) {
 //		printf("read_bytes %d, cnt %d\n", read_bytes, cnt);
 		rest -= read_bytes;
 		tmp_buf += read_bytes;
-//		spe->fe->finned = false;
-		frame_unfin(spe->kaddr);
+		spe->fe->finned = false;
+//		frame_unfin(spe->kaddr);
 	}
 //	lock_release(&lock_file);
 	return cnt;
@@ -342,8 +342,8 @@ int write(int fd, const void *buffer, unsigned length) {
 		ASSERT(spe != NULL);
 		ASSERT(tmp_buf !=NULL);
 //		printf("tmp_buf %p\n", tmp_buf);
-//		spe->fe->finned = true;
-		frame_fin(spe->kaddr);
+		spe->fe->finned = true;
+//		frame_fin(spe->kaddr);
 		size_t write_bytes = ofs + rest > PGSIZE ? PGSIZE - ofs : rest;
 //		lock_acquire(&lock_file);
 		cnt += file_write(pf->file, tmp_buf, write_bytes);
@@ -352,8 +352,8 @@ int write(int fd, const void *buffer, unsigned length) {
 //		printf("write_bytes %d, cnt %d\n", write_bytes, cnt);
 		rest -= write_bytes;
 		tmp_buf += write_bytes;
-//		spe->fe->finned = false;
-		frame_unfin(spe->kaddr);
+		spe->fe->finned = false;
+//		frame_unfin(spe->kaddr);
 	}
 //	lock_release(&lock_file);
 	return cnt;
