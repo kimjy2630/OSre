@@ -176,7 +176,7 @@ static void page_fault(struct intr_frame *f) {
 
 	if (not_present) {
 //		printf("NOT PRESENT\n");
-		printf("fault_addr:%p, &fault_addr:%p %s %d\n", fault_addr, &fault_addr, thread_current()->name, thread_current()->tid);
+//		printf("fault_addr:%p, &fault_addr:%p %s %d\n", fault_addr, &fault_addr, thread_current()->name, thread_current()->tid);
 		struct supp_page_entry spe_tmp;
 		spe_tmp.uaddr = pg_round_down(fault_addr);
 
