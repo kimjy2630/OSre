@@ -7,14 +7,19 @@
 #include "threads/vaddr.h"
 #include "lib/kernel/console.h"
 #include <string.h>
+#include "threads/synch.h"
 //#include "userprog/pagedir.h"
 
 static void syscall_handler(struct intr_frame *);
 
 void* esp;
 
+struct lock lock_file;
+
 void syscall_init(void) {
 	intr_register_int(0x30, 3, INTR_ON, syscall_handler, "syscall");
+
+	lock_init(&lock_file);
 }
 
 static void*
@@ -144,20 +149,27 @@ int open(const char *file) {
 		return false;
 	}
 
+	lock_acquire(&lock_file);
 	struct file* f;
 	f = filesys_open(file);
-	if (f == NULL){
+	if (f == NULL) {
+		lock_release(&lock_file);
 		return -1;
 	}
 	int fd = add_process_file(thread_current(), f, file);
+	lock_release(&lock_file);
 	return fd;
 }
 int filesize(int fd) {
+	lock_acquire(&lock_file);
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
-	if (pf == NULL)
+	if (pf == NULL) {
+		lock_release(&lock_file);
 		return -1;
+	}
 
 	int len = file_length(pf->file);
+	lock_release(&lock_file);
 	return len;
 }
 int read(int fd, void *buffer, unsigned length) {
@@ -178,8 +190,11 @@ int read(int fd, void *buffer, unsigned length) {
 		return read_size;
 	}
 
+
+	lock_acquire(&lock_file);
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if (pf == NULL){
+		lock_release(&lock_file);
 		return -1;
 	}
 	/*
@@ -224,6 +239,7 @@ int read(int fd, void *buffer, unsigned length) {
 			}
 			else {
 //				printf("read kernel access\n");
+				lock_release(&lock_file);
 				exit(-1);
 				return -1;
 			}
@@ -243,6 +259,7 @@ int read(int fd, void *buffer, unsigned length) {
 		tmp_buf += read_bytes;
 		spe->fe->finned = false;
 	}
+	lock_release(&lock_file);
 	return cnt;
 //	*/
 }
@@ -260,9 +277,11 @@ int write(int fd, const void *buffer, unsigned length) {
 		return length;
 	}
 
+	lock_acquire(&lock_file);
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if (pf == NULL){
 //		printf("write null file!\n");
+		lock_release(&lock_file);
 		return 0;
 	}
 	/*
@@ -308,6 +327,7 @@ int write(int fd, const void *buffer, unsigned length) {
 				spe = stack_grow(tmp_buf - ofs);
 			} else {
 //				printf("write kernel access\n");
+				lock_release(&lock_file);
 				exit(-1);
 				return -1;
 			}
@@ -327,6 +347,7 @@ int write(int fd, const void *buffer, unsigned length) {
 		tmp_buf += write_bytes;
 		spe->fe->finned = false;
 	}
+	lock_release(&lock_file);
 	return cnt;
 //	*/
 }
