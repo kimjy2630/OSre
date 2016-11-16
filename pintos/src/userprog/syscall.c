@@ -221,7 +221,7 @@ int read(int fd, void *buffer, unsigned length) {
 	return cnt;
 	*/
 //	/*
-	lock_acquire(&lock_file);
+//	lock_acquire(&lock_file);
 	void* tmp_buf = buffer;
 	unsigned rest = length;
 	int cnt = 0;
@@ -240,7 +240,7 @@ int read(int fd, void *buffer, unsigned length) {
 			}
 			else {
 //				printf("read kernel access\n");
-				lock_release(&lock_file);
+//				lock_release(&lock_file);
 				exit(-1);
 				return -1;
 			}
@@ -255,14 +255,16 @@ int read(int fd, void *buffer, unsigned length) {
 //		frame_fin(spe->kaddr);
 //		printf("tmp_buf %p\n", tmp_buf);
 		size_t read_bytes = ofs + rest > PGSIZE ? PGSIZE - ofs : rest;
+		lock_acquire(&lock_file);
 		cnt += file_read(pf->file, tmp_buf, read_bytes);
+		lock_release(&lock_file);
 //		printf("read_bytes %d, cnt %d\n", read_bytes, cnt);
 		rest -= read_bytes;
 		tmp_buf += read_bytes;
 		spe->fe->finned = false;
 //		frame_unfin(spe->kaddr);
 	}
-	lock_release(&lock_file);
+//	lock_release(&lock_file);
 	return cnt;
 //	*/
 }
@@ -307,7 +309,7 @@ int write(int fd, const void *buffer, unsigned length) {
 	return cnt;
 	*/
 //	/*
-	lock_acquire(&lock_file);
+//	lock_acquire(&lock_file);
 	unsigned rest = length;
 	void *tmp_buf = (void *) buffer;
 	int cnt = 0;
@@ -328,7 +330,7 @@ int write(int fd, const void *buffer, unsigned length) {
 				spe = stack_grow(tmp_buf - ofs);
 			} else {
 //				printf("write kernel access\n");
-				lock_release(&lock_file);
+//				lock_release(&lock_file);
 				exit(-1);
 				return -1;
 			}
@@ -342,7 +344,9 @@ int write(int fd, const void *buffer, unsigned length) {
 		spe->fe->finned = true;
 //		frame_fin(spe->kaddr);
 		size_t write_bytes = ofs + rest > PGSIZE ? PGSIZE - ofs : rest;
+		lock_acquire(&lock_file);
 		cnt += file_write(pf->file, tmp_buf, write_bytes);
+		lock_release(&lock_file);
 //		pagedir_set_dirty(thread_current()->pagedir, pg_round_down(tmp_buf), true); ////
 //		printf("write_bytes %d, cnt %d\n", write_bytes, cnt);
 		rest -= write_bytes;
@@ -350,7 +354,7 @@ int write(int fd, const void *buffer, unsigned length) {
 		spe->fe->finned = false;
 //		frame_unfin(spe->kaddr);
 	}
-	lock_release(&lock_file);
+//	lock_release(&lock_file);
 	return cnt;
 //	*/
 }
