@@ -526,7 +526,7 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 			palloc_free_page(kpage);
 			return false;
 		}
-#endif
+//#endif
 
 		/* Advance. */
 		read_bytes -= page_read_bytes;
