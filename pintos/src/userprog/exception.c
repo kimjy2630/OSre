@@ -228,14 +228,15 @@ static void page_fault(struct intr_frame *f) {
 
 			if (spe->type == FILE) {
 //				printf("FILE\n");
-				lock_acquire(&lock_file);
 				file_seek(spe->file, spe->ofs);
 
+				lock_acquire(&lock_file);
 				off_t bytes_read = file_read(spe->file, kaddr, spe->page_read_bytes);
+				lock_release(&lock_file);
+
 				ASSERT(bytes_read == spe->page_read_bytes);
 				memset(kaddr + bytes_read, 0, PGSIZE - bytes_read);
 				spe->type = MEMORY;
-				lock_release(&lock_file);
 			} else if (spe->type == ZERO) {
 //				printf("ZERO\n");
 				memset(kaddr, 0, PGSIZE);
