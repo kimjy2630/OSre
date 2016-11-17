@@ -9,7 +9,7 @@
 struct list list_frame;
 
 void frame_init() {
-	list_init(list_frame);
+	list_init(&list_frame);
 }
 
 struct frame_entry* frame_add(void* kaddr) {
