@@ -488,6 +488,7 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 		size_t page_read_bytes = read_bytes < PGSIZE ? read_bytes : PGSIZE;
 		size_t page_zero_bytes = PGSIZE - page_read_bytes;
 
+		printf("LOAD SEGMENT %d %d\n", read_bytes, zero_bytes);
 		//TODO
 #ifdef VM
 		struct supp_page_entry* spe = page_add(upage, PAL_USER);
@@ -531,7 +532,6 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 		zero_bytes -= page_zero_bytes;
 		upage += PGSIZE;
 	}
-	exit(-1);
 	return true;
 }
 
