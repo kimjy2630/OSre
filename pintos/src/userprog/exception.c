@@ -165,7 +165,7 @@ page_fault (struct intr_frame *f)
 	  } else {
 			spe = page_add(pg_round_down(fault_addr), PAL_USER | PAL_ZERO);
 			if (spe != NULL) {
-				exit(-1);
+				return;
 			}
 	  }
   }
