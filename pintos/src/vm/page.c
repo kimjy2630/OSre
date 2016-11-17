@@ -1,5 +1,6 @@
 #include "lib/kernel/hash.h"
 
+#include "threads/thread.h"
 #include "threads/palloc.h"
 #include "threads/synch.h"
 
