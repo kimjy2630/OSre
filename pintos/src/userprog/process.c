@@ -488,6 +488,25 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 		size_t page_read_bytes = read_bytes < PGSIZE ? read_bytes : PGSIZE;
 		size_t page_zero_bytes = PGSIZE - page_read_bytes;
 
+		//TODO
+#ifdef VM
+		struct supp_page_entry* spe = page_add(upage, PAL_USER);
+		if(spe == NULL)
+			return false;
+
+		if (file_read(file, spe->kaddr, page_read_bytes) != (int) page_read_bytes) {
+			page_free(spe);
+			return false;
+		}
+		memset(spe->kaddr + page_read_bytes, 0, page_zero_bytes);
+
+		if (!install_page(upage, spe->kaddr, writable)) {
+			palloc_free_page(spe->kaddr);
+			return false;
+		}
+#else
+		//TODO
+
 		/* Get a page of memory. */
 		uint8_t *kpage = palloc_get_page(PAL_USER);
 		if (kpage == NULL)
@@ -505,6 +524,7 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 			palloc_free_page(kpage);
 			return false;
 		}
+#endif
 
 		/* Advance. */
 		read_bytes -= page_read_bytes;
