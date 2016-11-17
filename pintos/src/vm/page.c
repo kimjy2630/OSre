@@ -24,7 +24,7 @@ void supp_page_init(struct hash* page_table) {
 	hash_init(page_table, supp_page_hash_func, supp_page_less, NULL);
 }
 
-struct supp_page_entry* page_add(void* uaddr, enum palloc_flag flags) {
+struct supp_page_entry* page_add(void* uaddr, enum palloc_flags flags) {
 	struct supp_page_entry* spe = malloc(sizeof(struct supp_page_entry));
 	if (spe == NULL)
 		return NULL;
