@@ -173,6 +173,8 @@ void process_exit(void) {
 #ifdef VM
 //		printf("clear supp page table\n");
 		supp_page_table_destroy(&curr->supp_page_table);
+		if(lock_held_by_current_thread(&lock_file))
+				lock_release(&lock_file);
 #endif
 		pagedir_activate(NULL);
 		pagedir_destroy(pd);
