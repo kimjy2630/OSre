@@ -554,7 +554,8 @@ static bool setup_stack(void **esp) {
 			*esp = PHYS_BASE;
 		else
 			page_free(kpage);
-	}
+	} else
+		printf("spe null\n");
 #else
 	kpage = palloc_get_page(PAL_USER | PAL_ZERO);
 	if (kpage != NULL) {
@@ -565,7 +566,7 @@ static bool setup_stack(void **esp) {
 			palloc_free_page(kpage);
 	}
 #endif
-	printf("install success %d\n", success);
+	printf("setup stack %d\n", success);
 	return success;
 }
 
