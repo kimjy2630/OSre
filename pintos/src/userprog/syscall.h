@@ -2,8 +2,10 @@
 #define USERPROG_SYSCALL_H
 #include "userprog/process.h"
 
+struct lock lock_file;
 
 void syscall_init (void);
+
 
 ////
 static int get_user(const uint8_t *uaddr);

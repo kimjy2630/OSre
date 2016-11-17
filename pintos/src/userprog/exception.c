@@ -10,6 +10,7 @@
 ////
 #ifdef VM
 #include "threads/vaddr.h"
+#include "userprog/syscall.h"
 #include "vm/frame.h"
 #include "vm/page.h"
 #include "filesys/file.h"
@@ -200,8 +201,6 @@ static void page_fault(struct intr_frame *f) {
 
 			struct frame_entry *fe = frame_add(PAL_USER);
 
-			fe->finned = true;
-
 			fe->spe = spe;
 			spe->fe = fe;
 
@@ -210,6 +209,9 @@ static void page_fault(struct intr_frame *f) {
 			uint8_t *uaddr = spe->uaddr;
 			uint8_t *kaddr = fe->addr;
 			pagedir_clear_page(t->pagedir, uaddr);
+
+//			fe->finned = true;
+			frame_fin(kaddr);
 			// TODO
 			if (!pagedir_set_page(t->pagedir, uaddr, kaddr, spe->writable)) {
 //				printf("KILL\n");
@@ -226,12 +228,14 @@ static void page_fault(struct intr_frame *f) {
 
 			if (spe->type == FILE) {
 //				printf("FILE\n");
+				lock_acquire(&lock_file);
 				file_seek(spe->file, spe->ofs);
 
 				off_t bytes_read = file_read(spe->file, kaddr, spe->page_read_bytes);
 				ASSERT(bytes_read == spe->page_read_bytes);
 				memset(kaddr + bytes_read, 0, PGSIZE - bytes_read);
 				spe->type = MEMORY;
+				lock_release(&lock_file);
 			} else if (spe->type == ZERO) {
 //				printf("ZERO\n");
 				memset(kaddr, 0, PGSIZE);
@@ -241,10 +245,12 @@ static void page_fault(struct intr_frame *f) {
 				swap_unload(spe->swap_index, kaddr);
 				spe->swap_index = NULL;
 				spe->type = MEMORY;
+//				pagedir_set_dirty (t->pagedir, uaddr, true);
 //				printf("swap sfad\n");
 			}
 
-			fe->finned = false;
+//			fe->finned = false;
+			frame_unfin(kaddr);
 
 			/*
 			pagedir_clear_page(t->pagedir, uaddr);

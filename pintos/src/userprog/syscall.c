@@ -14,7 +14,7 @@ static void syscall_handler(struct intr_frame *);
 
 void* esp;
 
-struct lock lock_file;
+//struct lock lock_file;
 
 void syscall_init(void) {
 	intr_register_int(0x30, 3, INTR_ON, syscall_handler, "syscall");
