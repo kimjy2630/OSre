@@ -243,7 +243,7 @@ static void page_fault(struct intr_frame *f) {
 					free(buffer);
 					exit(-1);
 				}
-				memcopy(kaddr, buffer, PGSIZE);
+				memcpy(kaddr, buffer, PGSIZE);
 				free(buffer);
 				memset(kaddr + bytes_read, 0, PGSIZE - bytes_read);
 			} else if (spe->type == ZERO) {
