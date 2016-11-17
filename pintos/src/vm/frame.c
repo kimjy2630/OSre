@@ -13,6 +13,11 @@ void frame_init() {
 	list_init(&list_frame);
 }
 
+void frame_entry_init(struct frame_entry* fe) {
+	fe->kaddr = NULL;
+	fe->spe = NULL;
+}
+
 struct frame_entry* frame_add(enum palloc_flags flags) {
 	struct frame_entry* fe;
 	if (fe == NULL)
@@ -21,11 +26,25 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 	if(kaddr == NULL) {
 		/* frame eviction */
 		//TODO
-		return NULL;
+		fe = frame_evict();
 	} else {
 		fe = malloc(sizeof(struct frame_entry));
+		frame_entry_init(fe);
 		fe->kaddr = kaddr;
 		list_push_back(&list_frame, &fe->elem);
-		return fe;
 	}
+	return fe;
+}
+
+struct frame_entry* frame_evict() {
+	return NULL;
+}
+
+void frame_free(struct frame_entry* fe) {
+	if (fe == NULL)
+		return;
+
+	fe->spe = NULL;
+	palloc_free_page(fe->kaddr);
+	free(fe);
 }

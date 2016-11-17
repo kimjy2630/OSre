@@ -7,6 +7,9 @@
 //TODO
 #include "threads/synch.h"
 //TODO
+#ifdef VM
+#include "lib/kernel/hash.h"
+#endif
 
 /* States in a thread's life cycle. */
 enum thread_status
@@ -113,6 +116,10 @@ struct thread
     struct list list_ps;
 
     struct file* f;
+#endif
+
+#ifdef VM
+    struct hash page_table;
 #endif
 
     /* Owned by thread.c. */

@@ -18,6 +18,10 @@
 #include "threads/thread.h"
 #include "threads/vaddr.h"
 
+#include "vm/frame.h"
+#include "vm/page.h"
+#include "vm/swap.h"
+
 static thread_func start_process NO_RETURN;
 static bool load(const char *cmdline, void (**eip)(void), void **esp);
 /////
@@ -514,6 +518,16 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 static bool setup_stack(void **esp) {
 	uint8_t *kpage;
 	bool success = false;
+
+	struct supp_page_entry *spe = page_add(((uint8_t *) PHYS_BASE) - PGSIZE,
+			PAL_USER | PAL_ZERO);
+	if(spe != NULL) {
+		success = install_page(spe->uaddr, spe->kaddr, true);
+		if (success)
+			*esp = PHYS_BASE;
+		else
+			palloc_free_page(kpage);
+	}
 
 	kpage = palloc_get_page(PAL_USER | PAL_ZERO);
 	if (kpage != NULL) {

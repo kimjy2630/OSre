@@ -514,6 +514,9 @@ static void init_thread(struct thread *t, const char *name, int priority) {
 	list_init(&t->list_pf);
 	list_init(&t->list_ps);
 #endif
+#ifdef VM
+	hash_init(&t->hash_table);
+#endif
 	////
 }
 
