@@ -680,8 +680,10 @@ bool push_argument(char ** file, int argc, void ** esp) {
 
 //	char *fn_copy = palloc_get_page(PAL_USER);
 	char *fn_copy = malloc(100);
-	if (fn_copy == NULL)
+	if (fn_copy == NULL) {
+		printf("push argument fn_copy NULL\n");
 		return false;
+	}
 
 	strlcpy(fn_copy, *file, PGSIZE);
 
