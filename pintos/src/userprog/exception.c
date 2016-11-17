@@ -230,9 +230,11 @@ static void page_fault(struct intr_frame *f) {
 //				printf("FILE\n");
 				file_seek(spe->file, spe->ofs);
 
+				printf("page fault before lock file\n");
 				lock_acquire(&lock_file);
 				off_t bytes_read = file_read(spe->file, kaddr, spe->page_read_bytes);
 				lock_release(&lock_file);
+				printf("page fault after lock file\n");
 
 				ASSERT(bytes_read == spe->page_read_bytes);
 				memset(kaddr + bytes_read, 0, PGSIZE - bytes_read);
