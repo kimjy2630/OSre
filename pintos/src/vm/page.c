@@ -21,7 +21,7 @@ bool supp_page_less(struct hash_elem *e1, struct hash_elem *e2, void *aux) {
 }
 
 void supp_page_init(struct hash* page_table) {
-	hash_init(page_table, supp_page_hash_func, supp_page_less);
+	hash_init(page_table, supp_page_hash_func, supp_page_less, NULL);
 }
 
 struct supp_page_entry* page_add(void* uaddr, enum palloc_flag flags) {
