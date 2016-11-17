@@ -275,7 +275,7 @@ int read(int fd, void *buffer, unsigned length) {
 int write(int fd, const void *buffer, unsigned length) {
 //	printf("sys write\n");
 	if (!read_validity(buffer, length)) {
-//		printf("write not valid\n");
+		printf("write not valid\n");
 		exit(-1);
 		return -1;
 	}
