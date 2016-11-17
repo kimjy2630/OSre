@@ -8,6 +8,7 @@
 #include "userprog/process.h"
 ////
 #include "threads/palloc.h"
+#include "threads/vaddr.h"
 
 
 /* Number of page faults processed. */
