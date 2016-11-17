@@ -411,7 +411,6 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 	free(buffer);
 	if(!arg_stack)
 		success = false;
-	printf("load %d arg_stack %d\n", success, arg_stack);
 	return success;
 }
 
@@ -675,12 +674,10 @@ free_print(void* ptr, enum struct_num num_struct)
 
 bool push_argument(char ** file, int argc, void ** esp) {
 
-//	char *fn_copy = palloc_get_page(PAL_USER);
-	char *fn_copy = malloc(100);
-	if (fn_copy == NULL) {
-		printf("push argument fn_copy NULL\n");
+	char *fn_copy = palloc_get_page(PAL_USER);
+//	char *fn_copy = malloc(100);
+	if (fn_copy == NULL)
 		return false;
-	}
 
 	strlcpy(fn_copy, *file, PGSIZE);
 
@@ -725,10 +722,9 @@ bool push_argument(char ** file, int argc, void ** esp) {
 	*esp -= 4;
 	*((int*) (*esp)) = 0;
 
-//	palloc_free_page(fn_copy);
-	free(fn_copy);
+	palloc_free_page(fn_copy);
+//	free(fn_copy);
 	free(index);
-	printf("push argument success\n");
 	return true;
 }
 
