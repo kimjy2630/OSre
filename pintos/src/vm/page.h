@@ -18,6 +18,7 @@ struct supp_page_entry {
 };
 
 struct supp_page_entry* page_add(void* uaddr, enum palloc_flags flags);
+struct supp_page_entry* page_find(void* uaddr);
 void page_free(struct supp_page_entry* spe);
 
 

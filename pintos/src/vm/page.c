@@ -3,6 +3,7 @@
 #include "threads/thread.h"
 #include "threads/palloc.h"
 #include "threads/synch.h"
+#include "threads/vaddr.h"
 
 #include "userprog/pagedir.h"
 
@@ -38,6 +39,16 @@ struct supp_page_entry* page_add(void* uaddr, enum palloc_flags flags) {
 	spe->fe->spe = spe;
 	hash_insert(&thread_current()->page_table, &spe->elem);
 	return NULL;
+}
+
+struct supp_page_entry* page_find(void* uaddr) {
+	struct supp_page_entry spe_tmp;
+	spe_tmp.uaddr = pg_round_down(uaddr);
+	ASSERT(pg_ofs(spe_tmp.uaddr) == 0);
+	struct hash_elem* he = hash_find(&thread_current()->page_table, &spe_tmp.elem);
+	if (he == NULL)
+		return NULL;
+	return hash_entry(he, struct supp_page_entry, elem);
 }
 
 void page_free(struct supp_page_entry* spe) {

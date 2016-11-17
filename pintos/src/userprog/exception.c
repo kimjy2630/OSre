@@ -152,6 +152,20 @@ page_fault (struct intr_frame *f)
   write = (f->error_code & PF_W) != 0;
   user = (f->error_code & PF_U) != 0;
 
+  if(not_present) {
+	  struct supp_page_entry* spe = page_find(fault_addr);
+	  if(spe != NULL) {
+		  //TODO
+		  printf("SPE is not NULL!\n");
+		  return;
+	  } else {
+			spe = page_add(pg_round_down(fault_addr), PAL_USER | PAL_ZERO);
+			if (spe != NULL) {
+				exit(-1);
+			}
+	  }
+  }
+
   /* To implement virtual memory, delete the rest of the function
      body, and replace it with code that brings in the page to
      which fault_addr refers. */
