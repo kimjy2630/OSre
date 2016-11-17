@@ -180,7 +180,7 @@ int filesize(int fd) {
 }
 int read(int fd, void *buffer, unsigned length) {
 	if (!read_validity(buffer, length) || !write_validity(buffer, length)) {
-		printf("read not valid\n");
+//		printf("read not valid\n");
 		exit(-1);
 		return -1;
 	}
