@@ -154,6 +154,7 @@ page_fault (struct intr_frame *f)
   write = (f->error_code & PF_W) != 0;
   user = (f->error_code & PF_U) != 0;
 
+  printf("PAGE FAULT %p\n", fault_addr);
   if(not_present) {
 	  struct supp_page_entry* spe = page_find(fault_addr);
 	  if(spe != NULL) {
