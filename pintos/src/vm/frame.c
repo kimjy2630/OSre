@@ -9,6 +9,8 @@
 
 struct list list_frame;
 
+struct frame_entry* frame_evict();
+
 void frame_init() {
 	list_init(&list_frame);
 }
