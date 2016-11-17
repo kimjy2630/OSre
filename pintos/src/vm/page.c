@@ -30,7 +30,8 @@ struct supp_page_entry* page_add(void* uaddr, enum palloc_flags flags) {
 	struct supp_page_entry* spe = malloc(sizeof(struct supp_page_entry));
 	if (spe == NULL)
 		return NULL;
-	spe->uaddr = uaddr;
+	spe->uaddr = pg_round_down(uaddr);
+	ASSERT(pg_ofs(spe->uaddr) == 0);
 	spe->fe = frame_add(flags);
 	if(spe->fe == NULL) {
 		page_free(spe);
