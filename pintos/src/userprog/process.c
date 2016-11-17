@@ -490,9 +490,7 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 		size_t page_read_bytes = read_bytes < PGSIZE ? read_bytes : PGSIZE;
 		size_t page_zero_bytes = PGSIZE - page_read_bytes;
 
-		printf("LOAD SEGMENT %d %d\n", read_bytes, zero_bytes);
 		//TODO
-		/*
 #ifdef VM
 		struct supp_page_entry* spe = page_add(upage, PAL_USER);
 		if(spe == NULL)
@@ -510,7 +508,7 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 		}
 #else
 		//TODO
-		*/
+
 		/* Get a page of memory. */
 		uint8_t *kpage = palloc_get_page(PAL_USER);
 		if (kpage == NULL)
@@ -528,14 +526,13 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 			palloc_free_page(kpage);
 			return false;
 		}
-//#endif
+#endif
 
 		/* Advance. */
 		read_bytes -= page_read_bytes;
 		zero_bytes -= page_zero_bytes;
 		upage += PGSIZE;
 	}
-	printf("TRUE\n");
 	return true;
 }
 
@@ -554,8 +551,7 @@ static bool setup_stack(void **esp) {
 			*esp = PHYS_BASE;
 		else
 			page_free(kpage);
-	} else
-		printf("spe null\n");
+	}
 #else
 	kpage = palloc_get_page(PAL_USER | PAL_ZERO);
 	if (kpage != NULL) {
@@ -566,7 +562,6 @@ static bool setup_stack(void **esp) {
 			palloc_free_page(kpage);
 	}
 #endif
-	printf("setup stack %d\n", success);
 	return success;
 }
 
