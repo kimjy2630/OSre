@@ -31,6 +31,10 @@ struct supp_page_entry* page_add(void* uaddr, enum palloc_flags flags) {
 		return NULL;
 	spe->uaddr = uaddr;
 	spe->fe = frame_add(flags);
+	if(spe->fe == NULL) {
+		page_free(spe);
+		return NULL;
+	}
 	spe->fe->spe = spe;
 	hash_insert(&thread_current()->page_table, &spe->elem);
 	return NULL;
