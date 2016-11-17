@@ -1,3 +1,5 @@
+#ifdef VM
+
 #include "lib/kernel/hash.h"
 
 #include "threads/palloc.h"
@@ -44,3 +46,4 @@ void page_free(struct supp_page_entry* spe) {
 	spe->fe = NULL;
 	free(spe);
 }
+#endif
