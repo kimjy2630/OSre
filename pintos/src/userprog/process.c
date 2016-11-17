@@ -411,7 +411,7 @@ bool load(const char *file_name, void (**eip)(void), void **esp) {
 	free(buffer);
 	if(!arg_stack)
 		success = false;
-	printf("load %d\n", success);
+	printf("load %d arg_stack %d\n", success, arg_stack);
 	return success;
 }
 
