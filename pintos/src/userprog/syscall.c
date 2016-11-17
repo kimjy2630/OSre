@@ -155,6 +155,7 @@ int open(const char *file) {
 		return false;
 	}
 
+	printf("open before lock file\n");
 	lock_acquire(&lock_file);
 	struct file* f;
 	f = filesys_open(file);
@@ -164,9 +165,11 @@ int open(const char *file) {
 	}
 	int fd = add_process_file(thread_current(), f, file);
 	lock_release(&lock_file);
+	printf("open after lock file\n");
 	return fd;
 }
 int filesize(int fd) {
+	printf("filesize before lock file\n");
 	lock_acquire(&lock_file);
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if (pf == NULL) {
@@ -176,6 +179,7 @@ int filesize(int fd) {
 
 	int len = file_length(pf->file);
 	lock_release(&lock_file);
+	printf("filesize after lock file\n");
 	return len;
 }
 int read(int fd, void *buffer, unsigned length) {
@@ -259,9 +263,11 @@ int read(int fd, void *buffer, unsigned length) {
 		frame_fin(spe->kaddr);
 //		printf("tmp_buf %p\n", tmp_buf);
 		size_t read_bytes = ofs + rest > PGSIZE ? PGSIZE - ofs : rest;
+		printf("read before lock file\n");
 		lock_acquire(&lock_file);
 		cnt += file_read(pf->file, tmp_buf, read_bytes);
 		lock_release(&lock_file);
+		printf("read after lock file\n");
 //		printf("read_bytes %d, cnt %d\n", read_bytes, cnt);
 		rest -= read_bytes;
 		tmp_buf += read_bytes;
@@ -348,9 +354,11 @@ int write(int fd, const void *buffer, unsigned length) {
 		spe->fe->finned = true;
 //		frame_fin(spe->kaddr);
 		size_t write_bytes = ofs + rest > PGSIZE ? PGSIZE - ofs : rest;
+		printf("write before lock file\n");
 		lock_acquire(&lock_file);
 		cnt += file_write(pf->file, tmp_buf, write_bytes);
 		lock_release(&lock_file);
+		printf("write after lock file\n");
 //		pagedir_set_dirty(thread_current()->pagedir, pg_round_down(tmp_buf), true); ////
 //		printf("write_bytes %d, cnt %d\n", write_bytes, cnt);
 		rest -= write_bytes;
