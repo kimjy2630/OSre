@@ -565,6 +565,7 @@ static bool setup_stack(void **esp) {
 			palloc_free_page(kpage);
 	}
 #endif
+	printf("install success %d\n", success);
 	return success;
 }
 
