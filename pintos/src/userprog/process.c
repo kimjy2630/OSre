@@ -131,7 +131,8 @@ int process_wait(tid_t child_tid) {
 	if (flag) {
 
 		while (child->t->user_thread && !child->t->is_exit) {
-			barrier();
+//			barrier();
+			thread_yield();
 		}
 		int status = child->exit_status;
 		//TODO
