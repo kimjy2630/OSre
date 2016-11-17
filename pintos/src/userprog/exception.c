@@ -165,7 +165,7 @@ page_fault (struct intr_frame *f)
 			return;
 		} else {
 			void* esp = f->esp;
-			if(fault_addr >= esp - 32 && (PHYS_BASE - pg_round_down(fault_addr)) <= STACK_MAX)
+			if(is_user_vaddr(fault_addr) && fault_addr >= esp - 32 && (PHYS_BASE - pg_round_down(fault_addr)) <= STACK_MAX)
 				spe = page_add(pg_round_down(fault_addr), PAL_USER | PAL_ZERO);
 			if (spe != NULL) {
 				return;
