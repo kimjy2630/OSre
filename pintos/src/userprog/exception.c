@@ -10,6 +10,7 @@
 #include "threads/palloc.h"
 #include "threads/vaddr.h"
 
+#define STACK_MAX (8*1024*1024)
 
 /* Number of page faults processed. */
 static long long page_fault_cnt;
@@ -156,19 +157,21 @@ page_fault (struct intr_frame *f)
 
 //  printf("PAGE FAULT %p\n", fault_addr);
 #ifdef VM
-  if(not_present) {
-	  struct supp_page_entry* spe = page_find(fault_addr);
-	  if(spe != NULL) {
-		  //TODO
+	if(not_present) {
+		struct supp_page_entry* spe = page_find(fault_addr);
+		if(spe != NULL) {
+			//TODO
 //		  printf("SPE is not NULL!\n");
-		  return;
-	  } else {
-			spe = page_add(pg_round_down(fault_addr), PAL_USER | PAL_ZERO);
+			return;
+		} else {
+			void* esp = f->esp;
+			if(fault_addr >= esp - 32 && (PHYS_BASE - pg_round_down(fault_addr)) <= STACK_MAX)
+				spe = page_add(pg_round_down(fault_addr), PAL_USER | PAL_ZERO);
 			if (spe != NULL) {
 				return;
 			}
-	  }
-  }
+		}
+	}
 #endif
 
   /* To implement virtual memory, delete the rest of the function
