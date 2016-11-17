@@ -533,6 +533,7 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 		zero_bytes -= page_zero_bytes;
 		upage += PGSIZE;
 	}
+	printf("TRUE\n");
 	return true;
 }
 
