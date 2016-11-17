@@ -155,6 +155,7 @@ page_fault (struct intr_frame *f)
   user = (f->error_code & PF_U) != 0;
 
   printf("PAGE FAULT %p\n", fault_addr);
+#ifdef VM
   if(not_present) {
 	  struct supp_page_entry* spe = page_find(fault_addr);
 	  if(spe != NULL) {
@@ -168,6 +169,7 @@ page_fault (struct intr_frame *f)
 			}
 	  }
   }
+#endif
 
   /* To implement virtual memory, delete the rest of the function
      body, and replace it with code that brings in the page to
