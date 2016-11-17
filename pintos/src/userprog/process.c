@@ -490,6 +490,7 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 
 		printf("LOAD SEGMENT %d %d\n", read_bytes, zero_bytes);
 		//TODO
+		/*
 #ifdef VM
 		struct supp_page_entry* spe = page_add(upage, PAL_USER);
 		if(spe == NULL)
@@ -507,7 +508,7 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 		}
 #else
 		//TODO
-
+		*/
 		/* Get a page of memory. */
 		uint8_t *kpage = palloc_get_page(PAL_USER);
 		if (kpage == NULL)
