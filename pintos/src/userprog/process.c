@@ -95,6 +95,7 @@ static void start_process(void *f_name) {
 
 	/* If load failed, quit. */
 	if (!success) {
+		printf("LOAD FAILED\n");
 		exit(-1);
 	}
 
