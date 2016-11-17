@@ -210,8 +210,8 @@ static void page_fault(struct intr_frame *f) {
 			uint8_t *kaddr = fe->addr;
 			pagedir_clear_page(t->pagedir, uaddr);
 
-//			fe->finned = true;
-			frame_fin(kaddr);
+			fe->finned = true;
+//			frame_fin(kaddr);
 			// TODO
 			if (!pagedir_set_page(t->pagedir, uaddr, kaddr, spe->writable)) {
 //				printf("KILL\n");
@@ -252,8 +252,8 @@ static void page_fault(struct intr_frame *f) {
 //				printf("swap sfad\n");
 			}
 
-//			fe->finned = false;
-			frame_unfin(kaddr);
+			fe->finned = false;
+//			frame_unfin(kaddr);
 
 			/*
 			pagedir_clear_page(t->pagedir, uaddr);
