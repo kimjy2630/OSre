@@ -13,6 +13,9 @@
 #include "threads/vaddr.h"
 #include "userprog/process.h"
 #include <stdlib.h>
+#ifdef VM
+#include "lib/kernel/hash.h"
+#endif
 
 /* Random value for struct thread's `magic' member.
  Used to detect stack overflow.  See the big comment at the top
@@ -176,6 +179,10 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 	free(buffer);
 
 	tid = t->tid = allocate_tid();
+
+#ifdef VM
+	supp_page_init(&t->page_table);
+#endif
 
 	#ifdef USERPROG
 	t->parent = thread_current();
@@ -513,9 +520,6 @@ static void init_thread(struct thread *t, const char *name, int priority) {
 	t->is_exit = false;
 	list_init(&t->list_pf);
 	list_init(&t->list_ps);
-#endif
-#ifdef VM
-	hash_init(&t->hash_table);
 #endif
 	////
 }
