@@ -37,6 +37,7 @@ struct supp_page_entry* page_add(void* uaddr, enum palloc_flags flags) {
 		page_free(spe);
 		return NULL;
 	}
+	spe->kaddr = spe->fe->kaddr;
 	spe->fe->spe = spe;
 	hash_insert(&thread_current()->page_table, &spe->elem);
 	return spe;
