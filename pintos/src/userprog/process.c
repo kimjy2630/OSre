@@ -519,6 +519,7 @@ static bool setup_stack(void **esp) {
 	uint8_t *kpage;
 	bool success = false;
 
+#ifdef VM
 	struct supp_page_entry *spe = page_add(((uint8_t *) PHYS_BASE) - PGSIZE,
 			PAL_USER | PAL_ZERO);
 	if(spe != NULL) {
@@ -526,9 +527,9 @@ static bool setup_stack(void **esp) {
 		if (success)
 			*esp = PHYS_BASE;
 		else
-			palloc_free_page(kpage);
+			page_free(kpage);
 	}
-
+#else
 	kpage = palloc_get_page(PAL_USER | PAL_ZERO);
 	if (kpage != NULL) {
 		success = install_page(((uint8_t *) PHYS_BASE) - PGSIZE, kpage, true);
@@ -537,6 +538,7 @@ static bool setup_stack(void **esp) {
 		else
 			palloc_free_page(kpage);
 	}
+#endif
 	return success;
 }
 
