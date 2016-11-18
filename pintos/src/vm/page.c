@@ -135,6 +135,8 @@ struct supp_page_entry* stack_grow(void* addr) {
 	 the frame table. */
 	struct supp_page_entry *spe = supp_page_add(pg_round_down(addr), true);
 
+	lock_acquire(&spe->lock);
+
 	spe->t = t;
 	spe->kaddr = fe->addr;
 	spe->page_read_bytes = 0;
@@ -146,5 +148,7 @@ struct supp_page_entry* stack_grow(void* addr) {
 	spe->fe = fe;
 
 	memset(spe->kaddr, 0, PGSIZE);
+
+	lock_release(spe->lock);
 	return spe;
 }
