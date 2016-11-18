@@ -185,7 +185,7 @@ static void page_fault(struct intr_frame *f) {
 		if (he != NULL) {
 //			printf("bbb\n");
 			struct supp_page_entry* spe = hash_entry(he,struct supp_page_entry,elem);
-			lock_acquire(&spe->lock);
+//			lock_acquire(&spe->lock);
 //			printf("exception not_present spe uaddr:%p\n", spe->uaddr);
 //			printf("NOT NULL\n");
 //			spe->uaddr = pg_round_down(spe->uaddr);
@@ -229,6 +229,7 @@ static void page_fault(struct intr_frame *f) {
 
 			if (spe->type == FILE) {
 //				printf("FILE\n");
+				lock_acquire(&spe->lock);
 				file_seek(spe->file, spe->ofs);
 //				/*
 				off_t bytes_read = file_read(spe->file, kaddr, spe->page_read_bytes);
@@ -236,6 +237,7 @@ static void page_fault(struct intr_frame *f) {
 				ASSERT(bytes_read == spe->page_read_bytes);
 				memset(kaddr + bytes_read, 0, PGSIZE - bytes_read);
 				spe->type = MEMORY;
+				lock_release(&spe->lock);
 //				*/
 				/*
 				void *buffer = malloc(PGSIZE);
@@ -254,21 +256,23 @@ static void page_fault(struct intr_frame *f) {
 				*/
 			} else if (spe->type == ZERO) {
 //				printf("ZERO\n");
+				lock_acquire(&spe->lock);
 				memset(kaddr, 0, PGSIZE);
+				lock_release(&spe->lock);
 			}
 			else if(spe->type == SWAP) {
 //				printf("SWAP\n");
-//				lock_acquire(&spe->lock);
+				lock_acquire(&spe->lock);
 				swap_unload(spe->swap_index, kaddr);
 				spe->swap_index = NULL;
 				spe->type = MEMORY;
-//				lock_release(&spe->lock);
+				lock_release(&spe->lock);
 //				pagedir_set_dirty (t->pagedir, uaddr, true);
 //				printf("swap sfad\n");
 			}
 
 			fe->finned = false;
-			lock_release(&spe->lock);
+//			lock_release(&spe->lock);
 //			frame_unfin(kaddr);
 
 			/*
