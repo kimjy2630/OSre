@@ -67,7 +67,7 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 	struct frame_entry *fe;
 
 	spe = hash_entry(e, struct supp_page_entry, elem);
-//	lock_acquire(&spe->lock);
+	lock_acquire(&spe->lock);
 	fe = spe->fe;
 	/*
 	if (spe->type == MEMORY && fe != NULL) {
@@ -87,16 +87,14 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 //		free(fe);
 		frame_free(spe);
 	}
-//	lock_release(&spe->lock);
+	lock_release(&spe->lock);
 	free(spe);
 }
 
 void supp_page_table_destroy(struct hash *supp_page_table) {
 	//TODO
 	frame_releaes_lock_frame();
-	lock_acquire(&spe->lock);
 	hash_destroy(supp_page_table, supp_page_entry_destroy);
-	lock_release(&spe->lock);
 }
 
 struct supp_page_entry* stack_grow(void* addr) {
