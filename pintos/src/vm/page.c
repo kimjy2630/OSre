@@ -149,6 +149,6 @@ struct supp_page_entry* stack_grow(void* addr) {
 
 	memset(spe->kaddr, 0, PGSIZE);
 
-	lock_release(spe->lock);
+	lock_release(&spe->lock);
 	return spe;
 }
