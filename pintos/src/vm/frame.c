@@ -89,7 +89,7 @@ void frame_free(void* addr){
 		}
 	}
 	if(!find){
-		printf("frame_free: fe not found at addr %p.\n", addr);
+//		printf("frame_free: fe not found at addr %p.\n", addr);
 		lock_release(&lock_frame);
 		return;
 	}
