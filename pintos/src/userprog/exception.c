@@ -259,9 +259,9 @@ static void page_fault(struct intr_frame *f) {
 			}
 			else if(spe->type == SWAP) {
 //				printf("SWAP\n");
-				lock_acquire(&spe->lock);
+//				lock_acquire(&spe->lock);
 				swap_unload(spe->swap_index, kaddr);
-				lock_release(&spe->lock);
+//				lock_release(&spe->lock);
 				spe->swap_index = NULL;
 				spe->type = MEMORY;
 //				pagedir_set_dirty (t->pagedir, uaddr, true);
