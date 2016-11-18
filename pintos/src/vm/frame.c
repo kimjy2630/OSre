@@ -93,8 +93,8 @@ void frame_free(struct supp_page_entry* spe) {
 			break;
 		}
 	}
-	if(!find)
-		printf("frame_free: fe not found.\n");
+//	if(!find)
+//		printf("frame_free: fe not found.\n");
 	lock_release(&lock_frame);
 }
 //void frame_free(void* addr){
