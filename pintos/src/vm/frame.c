@@ -199,17 +199,17 @@ void frame_evict() {
 		}
 
 		if (spe->type == SWAP){
-			printf("evict swap - pass\n");
+//			printf("evict swap - pass\n");
 			list_push_back(&frame, e);
 		}else if (fe->finned) {
-			printf("evict finned!! go back!!\n");
+//			printf("evict finned!! go back!!\n");
 			list_push_back(&frame, e);
 		} else if (pagedir_is_accessed(pd, uaddr)) {
-			printf("evict access - pass now\n");
+//			printf("evict access - pass now\n");
 			pagedir_set_accessed(pd, uaddr, 0);
 			list_push_back(&frame, e);
 		} else {
-			printf("evict find! - send to swap\n");
+//			printf("evict find! - send to swap\n");
 //				fe->finned = true;
 
 //				spe->kaddr = NULL;
