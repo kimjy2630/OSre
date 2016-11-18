@@ -233,13 +233,14 @@ static void page_fault(struct intr_frame *f) {
 			if (spe->type == FILE) {
 //				printf("FILE\n");
 				file_seek(spe->file, spe->ofs);
-				/*
+//				/*
 				off_t bytes_read = file_read(spe->file, kaddr, spe->page_read_bytes);
 
 				ASSERT(bytes_read == spe->page_read_bytes);
 				memset(kaddr + bytes_read, 0, PGSIZE - bytes_read);
 				spe->type = MEMORY;
-				*/
+//				*/
+				/*
 				void *buffer = malloc(PGSIZE);
 				off_t bytes_read = file_read(spe->file, buffer, spe->page_read_bytes);
 				if(bytes_read != spe->page_read_bytes){
@@ -253,6 +254,7 @@ static void page_fault(struct intr_frame *f) {
 				memcpy(kaddr, buffer, PGSIZE);
 				free(buffer);
 				memset(kaddr + bytes_read, 0, PGSIZE - bytes_read);
+				*/
 			} else if (spe->type == ZERO) {
 //				printf("ZERO\n");
 				memset(kaddr, 0, PGSIZE);
