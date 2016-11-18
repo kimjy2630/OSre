@@ -121,7 +121,7 @@ main (void)
 #endif
 
 #ifdef VM
-//  lock_init(&lock_page);
+  lock_init(&lock_page);
   /* frame init */
   frame_init ();
 
