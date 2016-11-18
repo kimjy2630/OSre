@@ -31,7 +31,7 @@ struct supp_page_entry{
 	uint32_t page_read_bytes;
 };
 
-//void supp_page_init();
+void supp_page_init();
 struct supp_page_entry* supp_page_add(uint8_t* addr, bool writable);
 //void supp_page_get();
 //bool supp_page_remove();

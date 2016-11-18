@@ -14,7 +14,7 @@
 
 struct lock lock_page;
 
-void page_init() {
+void supp_page_init() {
 	lock_init(&lock_page);
 }
 
