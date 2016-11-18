@@ -233,13 +233,13 @@ static void page_fault(struct intr_frame *f) {
 
 				file_seek(spe->file, spe->ofs);
 //				/*
-				lock_acquire(&spe->lock);
+//				lock_acquire(&spe->lock);
 				off_t bytes_read = file_read(spe->file, kaddr, spe->page_read_bytes);
 
 				ASSERT(bytes_read == spe->page_read_bytes);
 				memset(kaddr + bytes_read, 0, PGSIZE - bytes_read);
 				spe->type = MEMORY;
-				lock_release(&spe->lock);
+//				lock_release(&spe->lock);
 //				*/
 				/*
 				void *buffer = malloc(PGSIZE);
@@ -258,17 +258,17 @@ static void page_fault(struct intr_frame *f) {
 				*/
 			} else if (spe->type == ZERO) {
 //				printf("ZERO\n");
-				lock_acquire(&spe->lock);
+//				lock_acquire(&spe->lock);
 				memset(kaddr, 0, PGSIZE);
-				lock_release(&spe->lock);
+//				lock_release(&spe->lock);
 			}
 			else if(spe->type == SWAP) {
 //				printf("SWAP\n");
-				lock_acquire(&spe->lock);
+//				lock_acquire(&spe->lock);
 				swap_unload(spe->swap_index, kaddr);
 				spe->swap_index = NULL;
 				spe->type = MEMORY;
-				lock_release(&spe->lock);
+//				lock_release(&spe->lock);
 //				pagedir_set_dirty (t->pagedir, uaddr, true);
 //				printf("swap sfad\n");
 			}
