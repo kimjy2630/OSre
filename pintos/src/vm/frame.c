@@ -191,50 +191,44 @@ void frame_evict() {
 		spe = fe->spe;
 		pd = spe->t->pagedir;
 		uaddr = spe->uaddr;
-		if(uaddr > PHYS_BASE){
+
+		if (uaddr > PHYS_BASE) {
 			lock_release(&lock_frame);
 			printf("kernel access!\n");
 			exit(-1);
 		}
-		if(spe->type == SWAP){
-//			lock_acquire(&lock_frame);
+
+		if (spe->type == SWAP){
+			printf("evict swap - pass\n");
 			list_push_back(&frame, e);
-//			lock_release(&lock_frame);
-		}
-		else if(pagedir_is_accessed(pd, uaddr)){
+		}else if (fe->finned) {
+			printf("evict finned!! go back!!\n");
+			list_push_back(&frame, e);
+		} else if (pagedir_is_accessed(pd, uaddr)) {
+			printf("evict access - pass now\n");
 			pagedir_set_accessed(pd, uaddr, 0);
-
-//			lock_acquire(&lock_frame);
 			list_push_back(&frame, e);
-//			lock_release(&lock_frame);
-		}
-		else{
-			if(fe->finned){
-//				lock_acquire(&lock_frame);
-//				printf("finned!! go back!!\n");
-				list_push_back(&frame, e);
-//				lock_release(&lock_frame);
-
-			} else {
+		} else {
+			ptinf("evict find! - send to swap\n");
 //				fe->finned = true;
 
 //				spe->kaddr = NULL;
 //				if (spe->type == MEMORY || spe->type == ZERO)
-				spe->swap_index = swap_load(fe->addr);
-				spe->type = SWAP;
+			spe->swap_index = swap_load(fe->addr);
+			spe->type = SWAP;
 
-				lock_release(&lock_frame);
+			lock_release(&lock_frame);
 
-				pagedir_clear_page(pd, uaddr);
+			pagedir_clear_page(pd, uaddr);
 //				palloc_free_page(fe->addr);
 //				frame_free(fe->addr);
-				frame_free(spe);
+			frame_free(spe);
 //				spe->fe = NULL;
-				break;
-			}
+			break;
 		}
+
 	}
-	if(lock_held_by_current_thread(&lock_frame))
+	if (lock_held_by_current_thread(&lock_frame))
 		lock_release(&lock_frame);
 }
 
