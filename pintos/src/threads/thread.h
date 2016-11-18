@@ -122,7 +122,7 @@ struct thread
 #ifdef VM
     struct hash supp_page_table;
     void* esp;
-//    struct lock lock_hash;
+    struct lock lock_page;
 #endif
 
     /* Owned by thread.c. */
