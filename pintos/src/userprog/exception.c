@@ -186,6 +186,7 @@ static void page_fault(struct intr_frame *f) {
 //			printf("bbb\n");
 			struct supp_page_entry* spe = hash_entry(he,struct supp_page_entry,elem);
 //			lock_acquire(&spe->lock);
+
 //			printf("exception not_present spe uaddr:%p\n", spe->uaddr);
 //			printf("NOT NULL\n");
 //			spe->uaddr = pg_round_down(spe->uaddr);
