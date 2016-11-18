@@ -219,8 +219,9 @@ static void page_fault(struct intr_frame *f) {
 				palloc_free_page(kaddr);
 				//TODO
 //				frame_free(fe);
-				frame_free(kaddr);
+//				frame_free(kaddr);
 				spe->fe = NULL;
+				frame_free(spe);
 				kill(f);
 			}
 			pagedir_set_dirty (t->pagedir, uaddr, false);
@@ -239,7 +240,8 @@ static void page_fault(struct intr_frame *f) {
 				void *buffer = malloc(PGSIZE);
 				off_t bytes_read = file_read(spe->file, buffer, spe->page_read_bytes);
 				if(bytes_read != spe->page_read_bytes){
-					frame_free(kaddr);
+//					frame_free(kaddr);
+					frame_free(spe);
 					free(buffer);
 					exit(-1);
 				}

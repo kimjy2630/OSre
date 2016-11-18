@@ -577,7 +577,9 @@ static bool setup_stack(void **esp) {
 			palloc_free_page(kpage);
 			//TODO
 //			frame_free(fe);
-			frame_free(kpage);
+//			frame_free(kpage);
+//			frame_free(spe);
+			free(fe);
 //			free(spe);
 #else
 			palloc_free_page(kpage);
