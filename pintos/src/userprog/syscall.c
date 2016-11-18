@@ -152,7 +152,7 @@ int open(const char *file) {
 	if (!read_validity(file, strlen(file) + 1)) {
 //		printf("sys open read validity error\n");
 		exit(-1);
-		return false;
+		return -1;
 	}
 
 	lock_acquire(&lock_file);
