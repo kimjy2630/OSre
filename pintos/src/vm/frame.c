@@ -41,28 +41,7 @@ struct frame_entry* frame_lookup(uint8_t *kaddr){
 struct frame_entry* frame_add(enum palloc_flags flags) {
 //	printf("frame_add %d\n", thread_current()->tid);
 	uint8_t *addr = palloc_get_page(flags);
-	if (addr != NULL) {
-		struct frame_entry* fe = malloc(sizeof(struct frame_entry));
-		if (fe == NULL) {
-			palloc_free_page(addr);
-			return NULL;
-		}
-		fe->addr = addr;
-//		fe->t = thread_current();
-		fe->spe = NULL;
-		fe->finned = false;
-
-		lock_acquire(&lock_frame);
-//		enum intr_level old_level = intr_disable();
-//		printf("aaa\n");
-		list_push_back(&frame, &fe->elem);
-		lock_release(&lock_frame);
-//		intr_set_level(old_level);
-//		printf("bbb, fe:%p\n");
-
-//		printf("frame_add return %d\n", thread_current()->tid);
-		return fe;
-	} else {
+	while (addr == NULL) {
 //		enum intr_level old_level = intr_disable();
 		lock_acquire(&lock_evict);
 //		printf("evict!\n");
@@ -70,9 +49,29 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 		lock_release(&lock_evict);
 //		intr_set_level(old_level);
 //		printf("frame_add evict return %d\n", thread_current()->tid);
-		return frame_add(flags);
+//		return frame_add(flags);
 //		return frame_add(addr);
 	}
+	struct frame_entry* fe = malloc(sizeof(struct frame_entry));
+	if (fe == NULL) {
+		palloc_free_page(addr);
+		return NULL;
+	}
+	fe->addr = addr;
+//		fe->t = thread_current();
+	fe->spe = NULL;
+	fe->finned = false;
+
+	lock_acquire(&lock_frame);
+//		enum intr_level old_level = intr_disable();
+//		printf("aaa\n");
+	list_push_back(&frame, &fe->elem);
+	lock_release(&lock_frame);
+//		intr_set_level(old_level);
+//		printf("bbb, fe:%p\n");
+
+//		printf("frame_add return %d\n", thread_current()->tid);
+	return fe;
 }
 
 void frame_free(struct supp_page_entry* spe) {
