@@ -263,9 +263,9 @@ static void page_fault(struct intr_frame *f) {
 //				printf("SWAP\n");
 				lock_acquire(&spe->lock);
 				swap_unload(spe->swap_index, kaddr);
-				lock_release(&spe->lock);
 				spe->swap_index = NULL;
 				spe->type = MEMORY;
+				lock_release(&spe->lock);
 //				pagedir_set_dirty (t->pagedir, uaddr, true);
 //				printf("swap sfad\n");
 			}
