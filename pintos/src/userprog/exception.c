@@ -15,6 +15,7 @@
 #include "vm/page.h"
 #include "filesys/file.h"
 #include "filesys/filesys.h"
+#include "threads/synch.h"
 #endif
 
 
@@ -221,7 +222,9 @@ static void page_fault(struct intr_frame *f) {
 //				frame_free(fe);
 //				frame_free(kaddr);
 				spe->fe = NULL;
+				lock_acquire(&spe->lock);
 				frame_free(spe);
+				lock_release(&spe->lock);
 				kill(f);
 			}
 			pagedir_set_dirty (t->pagedir, uaddr, false);
@@ -241,7 +244,9 @@ static void page_fault(struct intr_frame *f) {
 				off_t bytes_read = file_read(spe->file, buffer, spe->page_read_bytes);
 				if(bytes_read != spe->page_read_bytes){
 //					frame_free(kaddr);
+					lock_acquire(&spe->lock);
 					frame_free(spe);
+					lock_release(&spe->lock);
 					free(buffer);
 					exit(-1);
 				}

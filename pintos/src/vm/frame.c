@@ -191,6 +191,7 @@ void frame_evict() {
 
 		fe = list_entry(e, struct frame_entry, elem);
 		spe = fe->spe;
+		lock_acquire(&spe->lock);
 		pd = spe->t->pagedir;
 		uaddr = spe->uaddr;
 
@@ -203,13 +204,16 @@ void frame_evict() {
 		if (spe->type == SWAP){
 //			printf("evict swap - pass\n");
 			list_push_back(&frame, e);
+			lock_release(&spe->lock);
 		}else if (fe->finned) {
 //			printf("evict finned!! go back!!\n");
 			list_push_back(&frame, e);
+			lock_release(&spe->lock);
 		} else if (pagedir_is_accessed(pd, uaddr)) {
 //			printf("evict access - pass now\n");
 			pagedir_set_accessed(pd, uaddr, 0);
 			list_push_back(&frame, e);
+			lock_release(&spe->lock);
 		} else {
 //			printf("evict find! - send to swap\n");
 //				fe->finned = true;
@@ -226,6 +230,7 @@ void frame_evict() {
 //				frame_free(fe->addr);
 			list_push_back(&frame, e);
 			frame_free(spe);
+			lock_release(&spe->lock);
 //				spe->fe = NULL;
 			break;
 		}

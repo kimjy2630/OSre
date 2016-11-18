@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "threads/thread.h"
 #include "threads/vaddr.h"
+#include "threads/synch.h"
 #include "userprog/pagedir.h"
 #include "threads/palloc.h"
 
@@ -16,10 +17,12 @@ struct supp_page_entry* supp_page_add(uint8_t *addr, bool writable) {
 	struct supp_page_entry *spe = malloc(sizeof(struct supp_page_entry));
 	if (spe == NULL)
 		return NULL;
+
 	spe->t = thread_current();
 	spe->uaddr = pg_round_down(addr);
 	spe->writable = writable;
 	spe->fe = NULL;
+	lock_init(&spe->lock);
 
 	hash_insert(&supp_page_table, &spe->elem);
 	return spe;

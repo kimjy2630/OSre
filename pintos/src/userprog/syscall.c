@@ -255,6 +255,7 @@ int read(int fd, void *buffer, unsigned length) {
 		}
 		ASSERT(spe != NULL);
 		ASSERT(tmp_buf != NULL);
+		lock_acquire(&spe->lock);
 //		spe->fe->finned = true;
 		frame_fin(spe->kaddr);
 //		printf("tmp_buf %p\n", tmp_buf);
@@ -271,6 +272,7 @@ int read(int fd, void *buffer, unsigned length) {
 		tmp_buf += read_bytes;
 //		spe->fe->finned = false;
 		frame_unfin(spe->kaddr);
+		lock_release(&spe->lock);
 	}
 //	lock_release(&lock_file);
 	return cnt;
@@ -349,6 +351,7 @@ int write(int fd, const void *buffer, unsigned length) {
 		ASSERT(spe != NULL);
 		ASSERT(tmp_buf !=NULL);
 //		printf("tmp_buf %p\n", tmp_buf);
+		lock_acquire(&spe->lock);
 		spe->fe->finned = true;
 //		frame_fin(spe->kaddr);
 		size_t write_bytes = ofs + rest > PGSIZE ? PGSIZE - ofs : rest;
@@ -365,6 +368,7 @@ int write(int fd, const void *buffer, unsigned length) {
 		tmp_buf += write_bytes;
 		spe->fe->finned = false;
 //		frame_unfin(spe->kaddr);
+		lock_release(&spe->lock);
 	}
 //	lock_release(&lock_file);
 	return cnt;

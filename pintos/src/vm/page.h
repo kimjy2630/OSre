@@ -3,6 +3,7 @@
 
 #include "lib/kernel/hash.h"
 #include "vm/frame.h"
+#include "threads/synch.h"
 
 enum page_type {
 	DEFAULT, ZERO, MEMORY, FILE, SWAP
@@ -19,6 +20,8 @@ struct supp_page_entry{
 	size_t swap_index;
 	struct frame_entry *fe;
 	struct thread *t;
+
+	struct lock lock;
 
 	/* used for file page */
 	struct file* file;
