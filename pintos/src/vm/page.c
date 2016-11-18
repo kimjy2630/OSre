@@ -96,7 +96,9 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 void supp_page_table_destroy(struct hash *supp_page_table) {
 	//TODO
 	frame_releaes_lock_frame();
+	lock_acquire(&lock_page);
 	hash_destroy(supp_page_table, supp_page_entry_destroy);
+	lock_release(&lock_page);
 }
 
 struct supp_page_entry* stack_grow(void* addr) {
