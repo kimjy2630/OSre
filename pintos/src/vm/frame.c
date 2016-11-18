@@ -51,6 +51,7 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 //		printf("frame_add evict return %d\n", thread_current()->tid);
 //		return frame_add(flags);
 //		return frame_add(addr);
+		addr = palloc_get_page(flags);
 	}
 	struct frame_entry* fe = malloc(sizeof(struct frame_entry));
 	if (fe == NULL) {
