@@ -259,14 +259,14 @@ int read(int fd, void *buffer, unsigned length) {
 		frame_fin(spe->kaddr);
 //		printf("tmp_buf %p\n", tmp_buf);
 		size_t read_bytes = ofs + rest > PGSIZE ? PGSIZE - ofs : rest;
-		void *br = malloc(read_bytes); ////
+//		void *br = malloc(read_bytes); ////
 		lock_acquire(&lock_file);
-//		cnt += file_read(pf->file, tmp_buf, read_bytes);
-		cnt += file_read(pf->file, br, read_bytes);
+		cnt += file_read(pf->file, tmp_buf, read_bytes);
+//		cnt += file_read(pf->file, br, read_bytes);
 		lock_release(&lock_file);
 //		printf("read_bytes %d, cnt %d\n", read_bytes, cnt);
-		memcpy(tmp_buf, br, read_bytes);  ////
-		free(br); ////
+//		memcpy(tmp_buf, br, read_bytes);  ////
+//		free(br); ////
 		rest -= read_bytes;
 		tmp_buf += read_bytes;
 //		spe->fe->finned = false;
@@ -352,13 +352,13 @@ int write(int fd, const void *buffer, unsigned length) {
 		spe->fe->finned = true;
 //		frame_fin(spe->kaddr);
 		size_t write_bytes = ofs + rest > PGSIZE ? PGSIZE - ofs : rest;
-		void *br = malloc(write_bytes); ////
-		memcpy(br, tmp_buf, write_bytes); ////
+//		void *br = malloc(write_bytes); ////
+//		memcpy(br, tmp_buf, write_bytes); ////
 		lock_acquire(&lock_file);
-//		cnt += file_write(pf->file, tmp_buf, write_bytes);
-		cnt += file_write(pf->file, br, write_bytes);
+		cnt += file_write(pf->file, tmp_buf, write_bytes);
+//		cnt += file_write(pf->file, br, write_bytes);
 		lock_release(&lock_file);
-		free(br); ////
+//		free(br); ////
 //		pagedir_set_dirty(thread_current()->pagedir, pg_round_down(tmp_buf), true); ////
 //		printf("write_bytes %d, cnt %d\n", write_bytes, cnt);
 		rest -= write_bytes;
