@@ -216,7 +216,7 @@ void frame_evict() {
 //				lock_release(&lock_frame);
 
 			} else {
-				fe->finned = true;
+//				fe->finned = true;
 
 //				spe->kaddr = NULL;
 //				if (spe->type == MEMORY || spe->type == ZERO)
