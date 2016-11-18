@@ -11,6 +11,13 @@
 //void supp_page_init() {
 //
 //}
+
+struct lock lock_page;
+
+void page_init() {
+	lock_init(&lock_page);
+}
+
 struct supp_page_entry* supp_page_add(uint8_t *addr, bool writable) {
 	struct hash supp_page_table = thread_current()->supp_page_table;
 
@@ -24,9 +31,9 @@ struct supp_page_entry* supp_page_add(uint8_t *addr, bool writable) {
 	spe->fe = NULL;
 	lock_init(&spe->lock);
 
-	lock_acquire(&spe->t->lock_page);
+	lock_acquire(&lock_page);
 	hash_insert(&supp_page_table, &spe->elem);
-	lock_release(&spe->t->lock_page);
+	lock_release(&lock_page);
 	return spe;
 }
 /*
@@ -96,9 +103,9 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 void supp_page_table_destroy(struct hash *supp_page_table) {
 	//TODO
 	frame_releaes_lock_frame();
-	lock_acquire(&thread_current()->lock_page);
+	lock_acquire(&lock_page);
 	hash_destroy(supp_page_table, supp_page_entry_destroy);
-	lock_release(&thread_current()->lock_page);
+	lock_release(&lock_page);
 }
 
 struct supp_page_entry* stack_grow(void* addr) {
