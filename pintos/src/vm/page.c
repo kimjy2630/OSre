@@ -67,6 +67,7 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 	struct frame_entry *fe;
 
 	spe = hash_entry(e, struct supp_page_entry, elem);
+	lock_acquire(&spe->lock);
 	fe = spe->fe;
 	/*
 	if (spe->type == MEMORY && fe != NULL) {
@@ -76,14 +77,17 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 		frame_free(fe->addr);
 	}
 	*/
-	if (spe->type == MEMORY && fe != NULL) {
+//	if (spe->type == MEMORY && fe != NULL) {
+	if (fe != NULL) {
 		pagedir_clear_page(spe->t->pagedir, spe->uaddr);
 		//TODO
 //		frame_free(fe->addr);
-		list_remove(&fe->elem);
-		fe->spe->fe = NULL;
-		free(fe);
+//		list_remove(&fe->elem);
+//		fe->spe->fe = NULL;
+//		free(fe);
+		frame_free(spe);
 	}
+	lock_release(&spe->lock);
 	free(spe);
 }
 
