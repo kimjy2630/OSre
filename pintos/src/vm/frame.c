@@ -75,38 +75,55 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 	}
 }
 
-void frame_free(void* addr){
-//	printf("frame_free %d\n", thread_current()->tid);
+void frame_free(struct supp_page_entry* spe) {
 	lock_acquire(&lock_frame);
-	struct list_elem *e = NULL;
-	struct frame_entry *fe = NULL;
-	bool find = false; ////
+	struct list_elem* e;
+	struct frame_entry* fe;
 	for (e = list_begin(&frame); e != list_end(&frame); e = list_next(e)) {
 		fe = list_entry(e, struct frame_entry, elem);
-		if (fe->addr == addr){
-			find = true; ////
+		if (fe->spe == spe) {
+			list_remove(e);
+			spe->fe = NULL;
+			spe->kaddr = NULL;
+			palloc_free_page(fe->addr);
+			free(fe);
 			break;
 		}
 	}
-	if(!find){
-//		printf("frame_free: fe not found at addr %p.\n", addr);
-		lock_release(&lock_frame);
-		return;
-	}
-	if (fe == NULL){
-		lock_release(&lock_frame);
-//		printf("frame_free null %d\n",thread_current()->tid);
-		return;
-	}
-
-	list_remove(&fe->elem);
-
-	fe->spe->fe = NULL;
-//	palloc_free_page(fe->addr);
-	free(fe);
 	lock_release(&lock_frame);
-//	printf("frame_free return %d\n",thread_current()->tid);
 }
+//void frame_free(void* addr){
+////	printf("frame_free %d\n", thread_current()->tid);
+//	lock_acquire(&lock_frame);
+//	struct list_elem *e = NULL;
+//	struct frame_entry *fe = NULL;
+//	bool find = false; ////
+//	for (e = list_begin(&frame); e != list_end(&frame); e = list_next(e)) {
+//		fe = list_entry(e, struct frame_entry, elem);
+//		if (fe->addr == addr){
+//			find = true; ////
+//			break;
+//		}
+//	}
+//	if(!find){
+////		printf("frame_free: fe not found at addr %p.\n", addr);
+//		lock_release(&lock_frame);
+//		return;
+//	}
+//	if (fe == NULL){
+//		lock_release(&lock_frame);
+////		printf("frame_free null %d\n",thread_current()->tid);
+//		return;
+//	}
+//
+//	list_remove(&fe->elem);
+//
+//	fe->spe->fe = NULL;
+////	palloc_free_page(fe->addr);
+//	free(fe);
+//	lock_release(&lock_frame);
+////	printf("frame_free return %d\n",thread_current()->tid);
+//}
 
 void frame_fin(uint8_t *addr){
 	struct list_elem *e = NULL;
