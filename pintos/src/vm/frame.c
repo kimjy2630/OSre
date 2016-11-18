@@ -217,18 +217,18 @@ void frame_evict() {
 			} else {
 				fe->finned = true;
 
-				spe->kaddr = NULL;
+//				spe->kaddr = NULL;
 //				if (spe->type == MEMORY || spe->type == ZERO)
 				spe->swap_index = swap_load(fe->addr);
 				spe->type = SWAP;
 
 				lock_release(&lock_frame);
 
-				pagedir_clear_page(pd, uaddr);
-				palloc_free_page(fe->addr);
-				frame_free(fe->addr);
-
-				spe->fe = NULL;
+//				pagedir_clear_page(pd, uaddr);
+//				palloc_free_page(fe->addr);
+//				frame_free(fe->addr);
+				frame_free(spe);
+//				spe->fe = NULL;
 				break;
 			}
 		}
