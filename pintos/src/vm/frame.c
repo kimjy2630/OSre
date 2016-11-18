@@ -209,7 +209,7 @@ void frame_evict() {
 			pagedir_set_accessed(pd, uaddr, 0);
 			list_push_back(&frame, e);
 		} else {
-			ptinf("evict find! - send to swap\n");
+			printf("evict find! - send to swap\n");
 //				fe->finned = true;
 
 //				spe->kaddr = NULL;
