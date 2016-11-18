@@ -5,6 +5,8 @@
 #include "vm/frame.h"
 #include "threads/synch.h"
 
+struct lock lock_page;
+
 enum page_type {
 	DEFAULT, ZERO, MEMORY, FILE, SWAP
 };

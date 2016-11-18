@@ -24,7 +24,9 @@ struct supp_page_entry* supp_page_add(uint8_t *addr, bool writable) {
 	spe->fe = NULL;
 	lock_init(&spe->lock);
 
+	lock_acquire(&lock_page);
 	hash_insert(&supp_page_table, &spe->elem);
+	lock_release(&lock_page);
 	return spe;
 }
 /*
