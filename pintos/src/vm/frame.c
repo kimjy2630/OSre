@@ -180,7 +180,7 @@ void frame_evict() {
 	ASSERT(lock_held_by_current_thread(&lock_evict));
 //	ASSERT(!list_empty(&frame));
 
-	printf("EVICTION!\n");
+	printf("EVICTION! %d\n", thread_current()->tid);
 
 	lock_acquire(&lock_frame);
 
