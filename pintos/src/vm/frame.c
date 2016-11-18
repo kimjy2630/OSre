@@ -80,6 +80,7 @@ void frame_free(struct supp_page_entry* spe) {
 	lock_acquire(&lock_frame);
 	struct list_elem* e;
 	struct frame_entry* fe;
+	bool find = false;
 	for (e = list_begin(&frame); e != list_end(&frame); e = list_next(e)) {
 		fe = list_entry(e, struct frame_entry, elem);
 		if (fe->spe == spe) {
@@ -88,9 +89,12 @@ void frame_free(struct supp_page_entry* spe) {
 			spe->kaddr = NULL;
 			palloc_free_page(fe->addr);
 			free(fe);
+			find = true;
 			break;
 		}
 	}
+	if(!find)
+		printf("frame_free: fe not found.\n");
 	lock_release(&lock_frame);
 }
 //void frame_free(void* addr){
