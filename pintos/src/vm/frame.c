@@ -283,10 +283,10 @@ void frame_evict() {
 
 struct list_elem* next_pointer(struct list_elem *ptr){
 	if (ptr == list_back(&frame)) {
-		printf("next_pointer: go front!\n");
+//		printf("next_pointer: go front!\n");
 		return list_begin(&frame);
 	} else {
-		printf("next_pointer: go next!\n");
+//		printf("next_pointer: go next!\n");
 		return list_next(ptr);
 	}
 }
@@ -308,7 +308,7 @@ void frame_evict_ver2() {
 
 	int cnt = 0;
 	while (!list_empty(&frame)) {
-		printf("loop %d, frame size %d\n", cnt, list_size(&frame));
+//		printf("loop %d, frame size %d\n", cnt, list_size(&frame));
 		fe = list_entry(evict_pointer, struct frame_entry, elem);
 		spe = fe->spe;
 		pd = spe->t->pagedir;
