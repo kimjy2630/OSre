@@ -301,7 +301,7 @@ void frame_evict_ver2() {
 
 	lock_acquire(&lock_frame);
 	if(evict_pointer == NULL)
-		evict_pointer = list_begin(&frame);
+		evict_pointer = list_front(&frame);
 
 	while (!list_empty(&frame)) {
 		fe = list_entry(evict_pointer, struct frame_entry, elem);
