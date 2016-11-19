@@ -28,7 +28,7 @@ struct supp_page_entry* supp_page_add(uint8_t *addr, bool writable) {
 	spe->t = thread_current();
 	spe->uaddr = pg_round_down(addr);
 	spe->writable = writable;
-//	spe->fe = NULL;
+	spe->fe = NULL;
 	lock_init(&spe->lock);
 
 //	lock_acquire(&spe->t->lock_page);
