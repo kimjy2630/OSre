@@ -298,13 +298,13 @@ void thread_exit(void) {
 
 #ifdef USERPROG
 	if(thread_current()->user_thread) {
-#ifdef VM
-		if (thread_current()->pagedir != NULL) {
-		lock_acquire(&thread_current()->lock_page);
-		supp_page_table_destroy(&thread_current()->supp_page_table);
-		lock_release(&thread_current()->lock_page);
-		}
-#endif
+//#ifdef VM
+//		if (thread_current()->pagedir != NULL) {
+//		lock_acquire(&thread_current()->lock_page);
+//		supp_page_table_destroy(&thread_current()->supp_page_table);
+//		lock_release(&thread_current()->lock_page);
+//		}
+//#endif
 		process_exit ();
 	}
 #endif
