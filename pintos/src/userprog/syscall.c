@@ -15,12 +15,12 @@ static void syscall_handler(struct intr_frame *);
 
 void* esp;
 
-//struct lock lock_file;
+struct lock lock_file;
 
 void syscall_init(void) {
 	intr_register_int(0x30, 3, INTR_ON, syscall_handler, "syscall");
 
-//	lock_init(&lock_file);
+	lock_init(&lock_file);
 }
 
 static void*
@@ -104,8 +104,8 @@ void halt(void) {
 }
 
 void exit(int status) {
-//	if(lock_held_by_current_thread(&lock_file))
-//		lock_release(&lock_file);
+	if(lock_held_by_current_thread(&lock_file))
+		lock_release(&lock_file);
 	struct thread *curr = thread_current();
 	curr->exit_status = status;
 	if (curr->ps != NULL)
@@ -156,27 +156,27 @@ int open(const char *file) {
 		return -1;
 	}
 
-//	lock_acquire(&lock_file);
+	lock_acquire(&lock_file);
 	struct file* f;
 	f = filesys_open(file);
 	if (f == NULL) {
-//		lock_release(&lock_file);
+		lock_release(&lock_file);
 		return -1;
 	}
 	int fd = add_process_file(thread_current(), f, file);
-//	lock_release(&lock_file);
+	lock_release(&lock_file);
 	return fd;
 }
 int filesize(int fd) {
-//	lock_acquire(&lock_file);
+	lock_acquire(&lock_file);
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if (pf == NULL) {
-//		lock_release(&lock_file);
+		lock_release(&lock_file);
 		return -1;
 	}
 
 	int len = file_length(pf->file);
-//	lock_release(&lock_file);
+	lock_release(&lock_file);
 	return len;
 }
 int read(int fd, void *buffer, unsigned length) {
@@ -253,9 +253,9 @@ int read(int fd, void *buffer, unsigned length) {
 		spe->fe->finned = true;
 		size_t read_bytes = ofs + rest > PGSIZE ? PGSIZE - ofs : rest;
 
-//		lock_acquire(&lock_file);
+		lock_acquire(&lock_file);
 		cnt += file_read(pf->file, tmp_buf, read_bytes);
-//		lock_release(&lock_file);
+		lock_release(&lock_file);
 
 		rest -= read_bytes;
 		tmp_buf += read_bytes;
@@ -335,9 +335,9 @@ int write(int fd, const void *buffer, unsigned length) {
 		spe->fe->finned = true;
 		size_t write_bytes = ofs + rest > PGSIZE ? PGSIZE - ofs : rest;
 
-//		lock_acquire(&lock_file);
+		lock_acquire(&lock_file);
 		cnt += file_write(pf->file, tmp_buf, write_bytes);
-//		lock_release(&lock_file);
+		lock_release(&lock_file);
 
 		rest -= write_bytes;
 		tmp_buf += write_bytes;
