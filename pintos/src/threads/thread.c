@@ -194,7 +194,7 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 	list_push_back(&thread_current()->list_ps, &t->ps->elem);
 	t->fd_cnt = 3;
 
-//	lock_init(&t->lock_page);
+	lock_init(&t->lock_page);
 	#endif
 
 #ifdef VM

@@ -12,11 +12,11 @@
 //
 //}
 
-struct lock lock_page;
-
-void supp_page_init() {
-	lock_init(&lock_page);
-}
+//struct lock lock_page;
+//
+//void supp_page_init() {
+//	lock_init(&lock_page);
+//}
 
 struct supp_page_entry* supp_page_add(uint8_t *addr, bool writable) {
 	struct hash supp_page_table = thread_current()->supp_page_table;
@@ -32,9 +32,9 @@ struct supp_page_entry* supp_page_add(uint8_t *addr, bool writable) {
 //	lock_init(&spe->lock);
 
 //	lock_acquire(&spe->t->lock_page);
-	lock_acquire(&lock_page);
+	lock_acquire(&spe->t->lock_page);
 	hash_insert(&supp_page_table, &spe->elem);
-	lock_release(&lock_page);
+	lock_release(&spe->t->lock_page);
 //	lock_release(&spe->t->lock_page);
 	return spe;
 }
