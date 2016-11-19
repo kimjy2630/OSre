@@ -28,9 +28,9 @@ main (int argc, char *argv[])
 //  arc4_crypt (&arc4, buf, SIZE);
 
   for (i = 0; i < SIZE; i++)
-	  buf[i] = i % 112;
+	  buf[i] = 1;
   for (i = 0; i < SIZE; i++)
-	  buf[i] -= i % 112;
+	  buf[i]--;
 
   /* Check that it's all zeros. */
   for (i = 0; i < SIZE; i++)
