@@ -70,7 +70,7 @@ sema_down (struct semaphore *sema)
 	while (sema->value == 0)
     {
 		list_push_back (&sema->waiters, &thread_current ()->elem_sema);
-		printf("waiting name %s tid %d\n", thread_current()->name, thread_current()->tid);
+//		printf("waiting name %s tid %d\n", thread_current()->name, thread_current()->tid);
 		thread_block ();
     }
 	sema->value--;

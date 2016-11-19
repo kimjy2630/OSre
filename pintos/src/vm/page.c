@@ -32,7 +32,7 @@ struct supp_page_entry* supp_page_add(uint8_t *addr, bool writable) {
 //	lock_init(&spe->lock);
 
 //	lock_acquire(&spe->t->lock_page);
-	printf("lock_page\n");
+//	printf("lock_page\n");
 	lock_acquire(&lock_page);
 	hash_insert(&supp_page_table, &spe->elem);
 	lock_release(&lock_page);
