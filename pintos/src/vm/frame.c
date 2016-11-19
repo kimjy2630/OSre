@@ -107,7 +107,6 @@ void frame_free_fe(struct frame_entry *fe){
 	fe->spe->kaddr = NULL;
 	palloc_free_page(fe->addr);
 	free(fe);
-	break;
 	lock_release(&lock_frame);
 }
 
