@@ -255,7 +255,7 @@ void frame_evict() {
 				frame_free_fe(spe->fe);
 				lock_release(&spe->lock);
 //				spe->fe = NULL;
-				printf("evict loop cnt %d, size %d\n", cnt, list_size(&frame));
+//				printf("evict loop cnt %d, size %d\n", cnt, list_size(&frame));
 				break;
 			}
 		}
