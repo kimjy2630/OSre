@@ -175,6 +175,7 @@ void process_exit(void) {
 		supp_page_table_destroy(&curr->supp_page_table);
 //		if(!hash_empty(&curr->supp_page_table))
 //			printf("supp page table is not empty\n");
+		ASSERT(hash_empty(&curr->supp_page_table));
 #endif
 		pagedir_activate(NULL);
 		pagedir_destroy(pd);
