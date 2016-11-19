@@ -220,10 +220,10 @@ static void page_fault(struct intr_frame *f) {
 //				frame_free(fe);
 //				frame_free(kaddr);
 				spe->fe = NULL;
-				lock_acquire(&spe->lock);
+//				lock_acquire(&spe->lock); //////
 //				frame_free(spe);
 				frame_free_fe(spe->fe);
-				lock_release(&spe->lock);
+//				lock_release(&spe->lock); //////
 				free(spe); ////
 				kill(f);
 			}
