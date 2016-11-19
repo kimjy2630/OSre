@@ -53,7 +53,7 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 //		return frame_add(addr);
 		addr = palloc_get_page(flags);
 	}
-//	printf("evict! end\n");
+	printf("evict! end\n");
 	struct frame_entry* fe = malloc(sizeof(struct frame_entry));
 	if (fe == NULL) {
 		palloc_free_page(addr);
