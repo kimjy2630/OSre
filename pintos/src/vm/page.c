@@ -12,7 +12,7 @@
 //
 //}
 
-//struct lock lock_page;
+struct lock lock_page;
 
 //void supp_page_init() {
 //	lock_init(&lock_page);
@@ -31,9 +31,11 @@ struct supp_page_entry* supp_page_add(uint8_t *addr, bool writable) {
 	spe->fe = NULL;
 	lock_init(&spe->lock);
 
-	lock_acquire(&spe->t->lock_page);
+//	lock_acquire(&spe->t->lock_page);
+	lock_acquire(&spe->lock_page);
 	hash_insert(&supp_page_table, &spe->elem);
-	lock_release(&spe->t->lock_page);
+	lock_release(&spe->lock_page);
+//	lock_release(&spe->t->lock_page);
 	return spe;
 }
 /*
@@ -103,12 +105,13 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 	free(spe);
 }
 
-void supp_page_table_destroy(struct hash *supp_page_table, struct lock* lock_page) {
+//void supp_page_table_destroy(struct hash *supp_page_table, struct lock* lock_page) {
+void supp_page_table_destroy(struct hash *supp_page_table) {
 	//TODO
 	frame_releaes_lock_frame();
-	lock_acquire(lock_page);
+	lock_acquire(&lock_page);
 	hash_destroy(supp_page_table, supp_page_entry_destroy);
-	lock_release(lock_page);
+	lock_release(&lock_page);
 }
 
 struct supp_page_entry* stack_grow(void* addr) {
