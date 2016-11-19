@@ -97,7 +97,7 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 	free(spe);
 }
 
-void supp_page_table_destroy(struct hash *supp_page_table, struct lock lock_page) {
+void supp_page_table_destroy(struct hash *supp_page_table, struct lock* lock_page) {
 	//TODO
 	frame_releaes_lock_frame();
 	lock_acquire(&lock_page);
