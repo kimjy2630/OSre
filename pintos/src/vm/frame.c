@@ -144,7 +144,7 @@ void frame_free_fe(struct frame_entry *fe){
 ////	printf("frame_free return %d\n",thread_current()->tid);
 //}
 
-///*
+/*
 void frame_fin(uint8_t *addr){
 	struct list_elem *e = NULL;
 	struct frame_entry *fe = NULL;
@@ -178,6 +178,7 @@ void frame_unfin(uint8_t *addr){
 	fe->finned = false;
 	lock_release(&lock_frame);
 }
+*/
 
 //void frame_free(struct frame_entry *fe){
 //	lock_acquire(&lock_frame);
