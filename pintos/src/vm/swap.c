@@ -23,7 +23,7 @@ void swap_init(){
 }
 
 size_t swap_load(uint8_t *addr){ // mem -> disk
-	ASSERT(pg_ofs(addr) == 0);
+//	ASSERT(pg_ofs(addr) == 0); ////
 //	printf("load start\n");
 	lock_acquire(&swap_lock);
 	size_t index = bitmap_scan_and_flip(swap_bitmap, 0, num_sector_in_page, 0);
@@ -43,7 +43,7 @@ size_t swap_load(uint8_t *addr){ // mem -> disk
 }
 
 void swap_unload(size_t index, uint8_t *addr) { // disk -> mem
-	ASSERT(pg_ofs(addr) == 0);
+//	ASSERT(pg_ofs(addr) == 0); ////
 //	uint8_t *uaddr = spe->uaddr;
 
 //	printf("unload start\n");
