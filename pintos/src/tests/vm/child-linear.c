@@ -34,8 +34,9 @@ main (int argc, char *argv[])
 
   /* Check that it's all zeros. */
   for (i = 0; i < SIZE; i++)
-    if (buf[i] != '\0')
+    if (buf[i] != '\0') {
+    	printf("buf[i] %d i %d\n",buf[i],i);
       fail ("byte %zu != 0", i);
-
+    }
   return 0x42;
 }
