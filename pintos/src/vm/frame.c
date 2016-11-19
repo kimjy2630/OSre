@@ -202,6 +202,7 @@ void frame_evict() {
 	lock_acquire(&lock_frame);
 
 	while(!list_empty(&frame)){
+		int cnt = 0;
 //		lock_acquire(&lock_frame);
 		e = list_pop_front(&frame);
 //		lock_release(&lock_frame);
@@ -254,9 +255,11 @@ void frame_evict() {
 				frame_free_fe(spe->fe);
 				lock_release(&spe->lock);
 //				spe->fe = NULL;
+				printf("evict loop cnt %d, size %d\n", cnt, list_size(&frame));
 				break;
 			}
 		}
+		cnt++;
 	}
 	if (lock_held_by_current_thread(&lock_frame))
 		lock_release(&lock_frame);
