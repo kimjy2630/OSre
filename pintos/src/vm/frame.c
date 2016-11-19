@@ -12,7 +12,7 @@
 
 void frame_evict();
 void frame_evict_ver2();
-struct list_elem* next_pointer(struct list_elem *ptr, struct list_elem *elem_end);
+struct list_elem* next_pointer(struct list_elem *ptr);
 
 struct list frame;
 struct lock lock_frame;
