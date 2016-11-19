@@ -201,8 +201,8 @@ void frame_evict() {
 
 	lock_acquire(&lock_frame);
 
+	int cnt = 0;
 	while(!list_empty(&frame)){
-		int cnt = 0;
 //		lock_acquire(&lock_frame);
 		e = list_pop_front(&frame);
 //		lock_release(&lock_frame);
