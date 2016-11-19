@@ -198,7 +198,7 @@ static void page_fault(struct intr_frame *f) {
 			}
 			ASSERT(pg_ofs(spe->uaddr) == 0);
 
-			struct frame_entry *fe = frame_add(PAL_USER);
+			struct frame_entry *fe = frame_add(PAL_USER | PAL_ZERO);
 
 			fe->spe = spe;
 			spe->fe = fe;
@@ -242,7 +242,7 @@ static void page_fault(struct intr_frame *f) {
 			} else if (spe->type == ZERO) {
 //				printf("ZERO\n");
 //				lock_acquire(&spe->lock);
-				memset(kaddr, 0, PGSIZE);
+//				memset(kaddr, 0, PGSIZE);
 //				lock_release(&spe->lock);
 			}
 			else if(spe->type == SWAP) {
