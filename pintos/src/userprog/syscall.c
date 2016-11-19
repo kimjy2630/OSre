@@ -156,27 +156,27 @@ int open(const char *file) {
 		return -1;
 	}
 
-	lock_acquire(&lock_file);
+//	lock_acquire(&lock_file);
 	struct file* f;
 	f = filesys_open(file);
 	if (f == NULL) {
-		lock_release(&lock_file);
+//		lock_release(&lock_file);
 		return -1;
 	}
 	int fd = add_process_file(thread_current(), f, file);
-	lock_release(&lock_file);
+//	lock_release(&lock_file);
 	return fd;
 }
 int filesize(int fd) {
-	lock_acquire(&lock_file);
+//	lock_acquire(&lock_file);
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if (pf == NULL) {
-		lock_release(&lock_file);
+//		lock_release(&lock_file);
 		return -1;
 	}
 
 	int len = file_length(pf->file);
-	lock_release(&lock_file);
+//	lock_release(&lock_file);
 	return len;
 }
 int read(int fd, void *buffer, unsigned length) {
