@@ -23,5 +23,7 @@ void frame_free(struct supp_page_entry* spe);
 void frame_releaes_lock_frame();
 void frame_fin(uint8_t *addr);
 void frame_unfin(uint8_t *addr);
+void frame_lock_acquire();
+void frame_lock_release();
 
 #endif /* vm/frame.h */

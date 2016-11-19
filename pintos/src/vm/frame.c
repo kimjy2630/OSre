@@ -249,3 +249,11 @@ void frame_releaes_lock_frame(){
 	if(lock_held_by_current_thread(&lock_frame))
 			lock_release(&lock_frame);
 }
+
+void frame_lock_acquire(){
+	lock_acquire(&lock_frame);
+}
+
+void frame_lock_release(){
+	lock_release(&lock_frame);
+}
