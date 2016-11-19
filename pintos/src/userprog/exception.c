@@ -196,7 +196,7 @@ static void page_fault(struct intr_frame *f) {
 				printf("kernel access in page fault!\n");
 				exit(-1);
 			}
-			ASSERT(pg_ofs(spe->uaddr) == 0);
+//			ASSERT(pg_ofs(spe->uaddr) == 0); ////
 
 			struct frame_entry *fe = frame_add(PAL_USER | PAL_ZERO);
 
@@ -204,7 +204,7 @@ static void page_fault(struct intr_frame *f) {
 			spe->fe = fe;
 
 			spe->kaddr = fe->addr;
-			ASSERT(pg_round_down(fault_addr) == spe->uaddr);
+//			ASSERT(pg_round_down(fault_addr) == spe->uaddr); ////
 			uint8_t *uaddr = spe->uaddr;
 			uint8_t *kaddr = fe->addr;
 			pagedir_clear_page(t->pagedir, uaddr);
@@ -237,7 +237,7 @@ static void page_fault(struct intr_frame *f) {
 				file_seek(spe->file, spe->ofs);
 				off_t bytes_read = file_read(spe->file, kaddr, spe->page_read_bytes);
 
-				ASSERT(bytes_read == spe->page_read_bytes);
+//				ASSERT(bytes_read == spe->page_read_bytes); ////
 				memset(kaddr + bytes_read, 0, PGSIZE - bytes_read);
 				spe->type = MEMORY;
 //				lock_release(&spe->lock); //////
