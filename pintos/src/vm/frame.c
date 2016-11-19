@@ -203,7 +203,7 @@ void frame_evict() {
 	uint32_t *pd;
 	uint8_t *uaddr;
 
-	ASSERT(lock_held_by_current_thread(&lock_evict));
+//	ASSERT(lock_held_by_current_thread(&lock_evict)); ////
 //	ASSERT(!list_empty(&frame));
 
 //	printf("EVICTION! %d\n", thread_current()->tid);
@@ -297,7 +297,7 @@ void frame_evict_ver2() {
 	uint32_t *pd;
 	uint8_t *uaddr;
 
-	ASSERT(lock_held_by_current_thread(&lock_evict));
+//	ASSERT(lock_held_by_current_thread(&lock_evict)); ////
 //	ASSERT(!list_empty(&frame));
 
 //	printf("EVICTION! %d\n", thread_current()->tid);
