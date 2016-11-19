@@ -31,15 +31,15 @@ struct frame_entry* frame_lookup(uint8_t *kaddr){
 	struct list_elem *e;
 	struct frame_entry *fe;
 
-//	lock_acquire(&lock_frame); //////
+	lock_acquire(&lock_frame); //////
 	for(e = list_begin(&frame); e != list_begin(&frame); e = list_next(e)){
 		fe = list_entry(e, struct frame_entry, elem);
 		if(fe->addr == kaddr){
-//			lock_release(&lock_frame); //////
+			lock_release(&lock_frame); //////
 			return fe;
 		}
 	}
-//	lock_release(&lock_frame); //////
+	lock_release(&lock_frame); //////
 	return NULL;
 }
 
@@ -70,11 +70,11 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 	fe->spe = NULL;
 	fe->finned = false;
 
-//	lock_acquire(&lock_frame); //////
+	lock_acquire(&lock_frame); //////
 //		enum intr_level old_level = intr_disable();
 //		printf("aaa\n");
 	list_push_back(&frame, &fe->elem);
-//	lock_release(&lock_frame); //////
+	lock_release(&lock_frame); //////
 //		intr_set_level(old_level);
 //		printf("bbb, fe:%p\n");
 
@@ -108,13 +108,13 @@ void frame_free(struct supp_page_entry* spe) {
 
 void frame_free_fe(struct frame_entry *fe){
 //	printf("frame_free %d\n", thread_current()->tid);
-//	lock_acquire(&lock_frame); //////
+	lock_acquire(&lock_frame); //////
 	list_remove(&fe->elem);
 	fe->spe->fe = NULL;
 	fe->spe->kaddr = NULL;
 	palloc_free_page(fe->addr);
 	free(fe);
-//	lock_release(&lock_frame); ///////
+	lock_release(&lock_frame); ///////
 }
 
 //void frame_free(void* addr){
@@ -208,7 +208,7 @@ void frame_evict() {
 
 //	printf("EVICTION! %d\n", thread_current()->tid);
 
-//	lock_acquire(&lock_frame); //////
+	lock_acquire(&lock_frame); //////
 
 	int cnt = 0;
 	while(!list_empty(&frame)){
@@ -227,7 +227,7 @@ void frame_evict() {
 			uaddr = spe->uaddr;
 
 			if (uaddr > PHYS_BASE) {
-//				lock_release(&lock_frame); //////
+				lock_release(&lock_frame); //////
 				printf("kernel access!\n");
 				exit(-1);
 			}
@@ -254,7 +254,7 @@ void frame_evict() {
 				spe->swap_index = swap_load(fe->addr);
 				spe->type = SWAP;
 
-//				lock_release(&lock_frame); //////
+				lock_release(&lock_frame); //////
 
 				pagedir_clear_page(pd, uaddr);
 //				palloc_free_page(fe->addr);
@@ -277,8 +277,8 @@ void frame_evict() {
 //		}
 		cnt++;
 	}
-//	if (lock_held_by_current_thread(&lock_frame)) //////
-//		lock_release(&lock_frame);
+	if (lock_held_by_current_thread(&lock_frame)) //////
+		lock_release(&lock_frame);
 }
 
 struct list_elem* next_pointer(struct list_elem *ptr){
@@ -336,9 +336,9 @@ void frame_evict_ver2() {
 			struct list_elem *ptr = evict_pointer;
 			evict_pointer = next_pointer(evict_pointer);
 
-//			lock_acquire(&lock_frame); //////
+			lock_acquire(&lock_frame); //////
 			list_remove(ptr);
-//			lock_release(&lock_frame); //////
+			lock_release(&lock_frame); //////
 
 			pagedir_clear_page(pd, uaddr);
 			fe->spe->fe = NULL;
@@ -349,19 +349,19 @@ void frame_evict_ver2() {
 		}
 		cnt++;
 	}
-//	if (lock_held_by_current_thread(&lock_frame)) //////
-//		lock_release(&lock_frame);
+	if (lock_held_by_current_thread(&lock_frame)) //////
+		lock_release(&lock_frame);
 }
 
 void frame_releaes_lock_frame(){
-//	if(lock_held_by_current_thread(&lock_frame)) //////
-//			lock_release(&lock_frame);
+	if(lock_held_by_current_thread(&lock_frame)) //////
+			lock_release(&lock_frame);
 }
 
 void frame_lock_acquire(){
-//	lock_acquire(&lock_frame); //////
+	lock_acquire(&lock_frame); //////
 }
 
 void frame_lock_release(){
-//	lock_release(&lock_frame); //////
+	lock_release(&lock_frame); //////
 }
