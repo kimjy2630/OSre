@@ -27,6 +27,7 @@ void frame_init() {
 	evict_pointer = NULL;
 }
 
+/*
 struct frame_entry* frame_lookup(uint8_t *kaddr){
 	struct list_elem *e;
 	struct frame_entry *fe;
@@ -42,6 +43,7 @@ struct frame_entry* frame_lookup(uint8_t *kaddr){
 	lock_release(&lock_frame); //////
 	return NULL;
 }
+*/
 
 struct frame_entry* frame_add(enum palloc_flags flags) {
 //	printf("frame_add %d\n", thread_current()->tid);
