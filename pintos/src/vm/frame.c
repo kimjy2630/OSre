@@ -52,12 +52,12 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 //		printf("evict!\n");
 //		frame_evict();
 		frame_evict_ver2();
+		addr = palloc_get_page(flags);
 		lock_release(&lock_evict);
 //		intr_set_level(old_level);
 //		printf("frame_add evict return %d\n", thread_current()->tid);
 //		return frame_add(flags);
 //		return frame_add(addr);
-		addr = palloc_get_page(flags);
 	}
 //	printf("evict! end\n");
 	struct frame_entry* fe = malloc(sizeof(struct frame_entry));
