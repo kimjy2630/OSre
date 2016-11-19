@@ -56,6 +56,7 @@ void swap_unload(size_t index, uint8_t *addr) { // disk -> mem
 //		printf("access %p\n", uaddr + i * DISK_SECTOR_SIZE);
 		disk_read(swap_disk, index + i, addr + i * DISK_SECTOR_SIZE);
 	}
+	bitmap_set_multiple(swap_bitmap, index, num_sector_in_page, 0);////
 	lock_release(&swap_lock);
 //	printf("disk_read\n");
 //	printf("unload end\n");
