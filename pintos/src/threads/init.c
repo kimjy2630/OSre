@@ -124,7 +124,6 @@ main (void)
 #ifdef VM
   /* frame init */
   frame_init ();
-  supp_page_init();
 //  disk_init();
   swap_init();
 #endif
