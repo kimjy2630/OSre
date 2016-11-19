@@ -79,26 +79,17 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 void frame_free(struct supp_page_entry* spe) {
 	ASSERT(lock_held_by_current_thread(&spe->lock));
 	lock_acquire(&lock_frame);
-	struct list_elem* e;
-	struct frame_entry* fe;
-	bool find = false;
-	for (e = list_begin(&frame); e != list_end(&frame); e = list_next(e)) {
-		fe = list_entry(e, struct frame_entry, elem);
-		if (fe->spe == spe) {
-			list_remove(e);
-			spe->fe = NULL;
-			spe->kaddr = NULL;
-			palloc_free_page(fe->addr);
-			free(fe);
-			find = true;
-			break;
-		}
+	struct frame_entry* fe = spe->fe;
+	if (fe != NULL) {
+		list_remove(&fe->elem);
+		spe->fe = NULL;
+		spe->kaddr = NULL;
+		palloc_free_page(fe->addr);
+		free(fe);
 	}
-//	if(!find)
-//		printf("frame_free: fe not found.\n");
 	lock_release(&lock_frame);
 }
-
+/*
 void frame_free_fe(struct frame_entry *fe){
 //	printf("frame_free %d\n", thread_current()->tid);
 	lock_acquire(&lock_frame);
@@ -109,7 +100,7 @@ void frame_free_fe(struct frame_entry *fe){
 	free(fe);
 	lock_release(&lock_frame);
 }
-
+*/
 //void frame_free(void* addr){
 ////	printf("frame_free %d\n", thread_current()->tid);
 //	lock_acquire(&lock_frame);
@@ -246,8 +237,8 @@ void frame_evict() {
 //				palloc_free_page(fe->addr);
 //				frame_free(fe->addr);
 			list_push_back(&frame, e);
-//			frame_free(spe);
-			frame_free_fe(spe->fe);
+			frame_free(spe);
+//			frame_free_fe(spe->fe);
 			lock_release(&spe->lock);
 //				spe->fe = NULL;
 			break;
