@@ -50,12 +50,12 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 	uint8_t *addr = palloc_get_page(flags);
 	while (addr == NULL) {
 //		enum intr_level old_level = intr_disable();
-//		lock_acquire(&lock_evict);
+		lock_acquire(&lock_evict);
 //		printf("evict!\n");
 //		frame_evict();
 		frame_evict_ver2();
 		addr = palloc_get_page(flags);
-//		lock_release(&lock_evict);
+		lock_release(&lock_evict);
 //		intr_set_level(old_level);
 //		printf("frame_add evict return %d\n", thread_current()->tid);
 //		return frame_add(flags);
@@ -345,7 +345,7 @@ void frame_evict_ver2() {
 			pagedir_clear_page(pd, uaddr);
 			fe->spe->fe = NULL;
 			fe->spe->kaddr = NULL;
-//			palloc_free_page(fe->addr);
+			palloc_free_page(fe->addr);
 			free(fe);
 			break;
 		}
