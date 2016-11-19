@@ -223,7 +223,7 @@ static void page_fault(struct intr_frame *f) {
 				lock_acquire(&spe->lock);
 				frame_free(spe);
 				lock_release(&spe->lock);
-				free(spe); ////
+//				free(spe); ////
 				kill(f);
 			}
 			pagedir_set_dirty (t->pagedir, uaddr, false);
