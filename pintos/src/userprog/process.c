@@ -513,7 +513,7 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 
 //		lock_release(&spe->lock); //////
 
-		ASSERT(pg_ofs(spe->uaddr) == 0);
+//		ASSERT(pg_ofs(spe->uaddr) == 0); ////
 #else
 		uint8_t *kpage;
 		kpage = palloc_get_page(PAL_USER);
@@ -577,7 +577,7 @@ static bool setup_stack(void **esp) {
 			spe->fe = fe;
 
 //			lock_release(&spe->lock); //////
-			ASSERT(pg_ofs(spe->uaddr) == 0);
+//			ASSERT(pg_ofs(spe->uaddr) == 0); ////
 #endif
 		} else {
 #ifdef VM
