@@ -78,7 +78,7 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 	struct frame_entry *fe;
 
 	spe = hash_entry(e, struct supp_page_entry, elem);
-	lock_acquire(&spe->lock);
+//	lock_acquire(&spe->lock); //////
 	fe = spe->fe;
 	/*
 	if (spe->type == MEMORY && fe != NULL) {
@@ -102,7 +102,7 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 	if(spe->type == SWAP && spe->swap_index != NULL) {
 		swap_free(spe->swap_index);
 	}
-	lock_release(&spe->lock);
+//	lock_release(&spe->lock); //////
 	free(spe);
 }
 
@@ -139,7 +139,7 @@ struct supp_page_entry* stack_grow(void* addr) {
 	 the frame table. */
 	struct supp_page_entry *spe = supp_page_add(pg_round_down(addr), true);
 
-	lock_acquire(&spe->lock);
+//	lock_acquire(&spe->lock); //////
 
 	spe->t = t;
 	spe->kaddr = fe->addr;
@@ -153,6 +153,6 @@ struct supp_page_entry* stack_grow(void* addr) {
 
 	memset(spe->kaddr, 0, PGSIZE);
 
-	lock_release(&spe->lock);
+//	lock_release(&spe->lock); //////
 	return spe;
 }
