@@ -313,11 +313,11 @@ void thread_exit(void) {
 	 We will be destroyed during the call to schedule_tail(). */
 	intr_disable();
 
-	struct list* list_lock = &thread_current()->list_lock;
-	while (!list_empty(list_lock)) {
-		struct lock* lock = list_entry(list_pop_front(list_lock), struct lock, elem);
-		lock_release(lock);
-	}
+//	struct list* list_lock = &thread_current()->list_lock;
+//	while (!list_empty(list_lock)) {
+//		struct lock* lock = list_entry(list_pop_front(list_lock), struct lock, elem);
+//		lock_release(lock);
+//	}
 
 	thread_current()->status = THREAD_DYING;
 	schedule();
@@ -342,27 +342,15 @@ void thread_yield(void) {
 
 /* Sets the current thread's priority to NEW_PRIORITY. */
 void thread_set_priority(int new_priority) {
-	enum intr_level old_level = intr_disable();
-
-	thread_current()->priority = new_priority;
-
-	thread_calc_eff_priority(thread_current());
-
-	if (!list_empty(&ready_list)) {
-		int highest_in_ready = list_entry (list_max (&ready_list, highest_priority, NULL), struct thread, elem)->priority_eff;
-		if (thread_get_eff_priority(thread_current()) < highest_in_ready)
-			thread_yield();
-	}
-
-	intr_set_level(old_level);
+	thread_current ()->priority = new_priority;
 }
 
 /* Returns the current thread's priority. */
 int thread_get_priority(void) {
-//  return thread_current ()->priority;
-	return thread_current()->priority_eff;
+	return thread_current ()->priority;
 }
 
+/*
 bool highest_priority(const struct list_elem* a, const struct list_elem* b, void* aux) {
 	int priority_a = thread_get_eff_priority(list_entry(a, struct thread, elem));
 	int priority_b = thread_get_eff_priority(list_entry(b, struct thread, elem));
@@ -427,6 +415,7 @@ void thread_calc_eff_priority(struct thread* t) {
 
 	intr_set_level(old_level);
 }
+*/
 
 /* Sets the current thread's nice value to NICE. */
 void thread_set_nice(int nice UNUSED) {
