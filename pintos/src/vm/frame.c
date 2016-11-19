@@ -94,10 +94,23 @@ void frame_free(struct supp_page_entry* spe) {
 			break;
 		}
 	}
-	if(!find)
-		printf("frame_free: fe not found.\n");
+//	if(!find)
+//		printf("frame_free: fe not found.\n");
 	lock_release(&lock_frame);
 }
+
+void frame_free_fe(struct frame_entry *fe){
+//	printf("frame_free %d\n", thread_current()->tid);
+	lock_acquire(&lock_frame);
+	list_remove(&fe->elem);
+	fe->spe->fe = NULL;
+	fe->spe->kaddr = NULL;
+	palloc_free_page(fe->addr);
+	free(fe);
+	break;
+	lock_release(&lock_frame);
+}
+
 //void frame_free(void* addr){
 ////	printf("frame_free %d\n", thread_current()->tid);
 //	lock_acquire(&lock_frame);
@@ -235,6 +248,7 @@ void frame_evict() {
 //				frame_free(fe->addr);
 			list_push_back(&frame, e);
 			frame_free(spe);
+			// frame_free_fe
 			lock_release(&spe->lock);
 //				spe->fe = NULL;
 			break;

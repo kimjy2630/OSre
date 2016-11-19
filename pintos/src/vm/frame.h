@@ -25,5 +25,6 @@ void frame_fin(uint8_t *addr);
 void frame_unfin(uint8_t *addr);
 void frame_lock_acquire();
 void frame_lock_release();
+void frame_free_fe(struct frame_entry *fe);
 
 #endif /* vm/frame.h */

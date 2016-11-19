@@ -222,6 +222,7 @@ static void page_fault(struct intr_frame *f) {
 				spe->fe = NULL;
 				lock_acquire(&spe->lock);
 				frame_free(spe);
+				// frame_free_fe
 				lock_release(&spe->lock);
 				free(spe); ////
 				kill(f);
