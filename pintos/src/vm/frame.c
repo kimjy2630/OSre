@@ -250,7 +250,7 @@ void frame_evict() {
 				pagedir_clear_page(pd, uaddr);
 //				palloc_free_page(fe->addr);
 //				frame_free(fe->addr);
-				list_push_back(&frame, e);
+//				list_push_back(&frame, e);
 //			frame_free(spe);
 				frame_free_fe(spe->fe);
 				lock_release(&spe->lock);
