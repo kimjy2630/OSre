@@ -12,15 +12,19 @@
 
 void frame_evict();
 void frame_evict_ver2();
+void next_pointer(struct list_elem *ptr);
 
 struct list frame;
 struct lock lock_frame;
 struct lock lock_evict;
 
+struct list_elem* evict_pointer;
+
 void frame_init() {
 	list_init(&frame);
 	lock_init(&lock_frame);
 	lock_init(&lock_evict);
+	evict_pointer = NULL;
 }
 
 struct frame_entry* frame_lookup(uint8_t *kaddr){
@@ -277,6 +281,13 @@ void frame_evict() {
 		lock_release(&lock_frame);
 }
 
+void next_pointer(struct list_elem *ptr){
+	if(ptr == list_end(&frame))
+		ptr = list_begin(&frame);
+	else
+		ptr = list_next(ptr);
+}
+
 void frame_evict_ver2() {
 	struct list_elem *e;
 	struct frame_entry *fe;
@@ -290,11 +301,12 @@ void frame_evict_ver2() {
 //	printf("EVICTION! %d\n", thread_current()->tid);
 
 	lock_acquire(&lock_frame);
+	if(evict_pointer == NULL)
+		evict_pointer = list_begin(&frame);
 
 	int cnt = 0;
 	while(!list_empty(&frame)){
 //		lock_acquire(&lock_frame);
-		e = list_front(&frame);
 //		lock_release(&lock_frame);
 
 		fe = list_entry(e, struct frame_entry, elem);
@@ -316,15 +328,18 @@ void frame_evict_ver2() {
 			if (spe->type == SWAP) {
 //			printf("evict swap - pass\n");
 //				list_push_back(&frame, e);
+				next_pointer(evict_pointer);
 //				lock_release(&spe->lock); //////
 			} else if (fe->finned) {
 //			printf("evict finned!! go back!!\n");
 //				list_push_back(&frame, e);
+				next_pointer(evict_pointer);
 //				lock_release(&spe->lock); //////
 			} else if (pagedir_is_accessed(pd, uaddr)) {
 //			printf("evict access - pass now\n");
 				pagedir_set_accessed(pd, uaddr, 0);
 //				list_push_back(&frame, e);
+				next_pointer(evict_pointer);
 //				lock_release(&spe->lock); //////
 			} else {
 //			printf("evict find! - send to swap\n");
@@ -335,7 +350,10 @@ void frame_evict_ver2() {
 				spe->swap_index = swap_load(fe->addr);
 				spe->type = SWAP;
 
-				list_remove(e);
+				struct list_elem *ptr = evict_pointer;
+				next_pointer(evict_pointer);
+				list_remove(ptr);
+
 				lock_release(&lock_frame);
 
 				pagedir_clear_page(pd, uaddr);
@@ -357,7 +375,6 @@ void frame_evict_ver2() {
 				break;
 			}
 //		}
-			e = list_next(e);
 		cnt++;
 	}
 	if (lock_held_by_current_thread(&lock_frame))
