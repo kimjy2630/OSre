@@ -75,7 +75,7 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 //		printf("frame_add return %d\n", thread_current()->tid);
 	return fe;
 }
-
+/*
 void frame_free(struct supp_page_entry* spe) {
 //	ASSERT(lock_held_by_current_thread(&spe->lock));
 	lock_acquire(&lock_frame);
@@ -98,6 +98,7 @@ void frame_free(struct supp_page_entry* spe) {
 //		printf("frame_free: fe not found.\n");
 	lock_release(&lock_frame);
 }
+*/
 
 void frame_free_fe(struct frame_entry *fe){
 //	printf("frame_free %d\n", thread_current()->tid);
