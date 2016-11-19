@@ -246,8 +246,8 @@ void frame_evict() {
 //				palloc_free_page(fe->addr);
 //				frame_free(fe->addr);
 			list_push_back(&frame, e);
-			frame_free(spe);
-			// frame_free_fe
+//			frame_free(spe);
+			frame_free_fe(spe->fe);
 			lock_release(&spe->lock);
 //				spe->fe = NULL;
 			break;
