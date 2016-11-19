@@ -12,7 +12,7 @@
 
 void frame_evict();
 void frame_evict_ver2();
-struct list_elem* next_pointer(struct list_elem *ptr);
+struct list_elem* next_pointer(struct list_elem *ptr, struct list_elem *elem_end);
 
 struct list frame;
 struct lock lock_frame;
@@ -281,8 +281,8 @@ void frame_evict() {
 		lock_release(&lock_frame);
 }
 
-struct list_elem* next_pointer(struct list_elem *ptr){
-	if (ptr == list_back(&frame)) {
+struct list_elem* next_pointer(struct list_elem *ptr, struct list_elem *elem_end){
+	if (ptr == elem_end) {
 //		printf("next_pointer: go front!\n");
 		return list_begin(&frame);
 	} else {
@@ -303,6 +303,7 @@ void frame_evict_ver2() {
 //	printf("EVICTION! %d\n", thread_current()->tid);
 
 	lock_acquire(&lock_frame);
+	struct list_elem *elem_end = list_back(&frame);
 	if(evict_pointer == NULL)
 		evict_pointer = list_front(&frame);
 
@@ -321,18 +322,18 @@ void frame_evict_ver2() {
 		}
 
 		if (spe->type == SWAP) {
-			evict_pointer = next_pointer(evict_pointer);
+			evict_pointer = next_pointer(evict_pointer, elem_end);
 		} else if (fe->finned) {
-			evict_pointer = next_pointer(evict_pointer);
+			evict_pointer = next_pointer(evict_pointer, elem_end);
 		} else if (pagedir_is_accessed(pd, uaddr)) {
 			pagedir_set_accessed(pd, uaddr, 0);
-			evict_pointer = next_pointer(evict_pointer);
+			evict_pointer = next_pointer(evict_pointer, elem_end);
 		} else {
 			spe->swap_index = swap_load(fe->addr);
 			spe->type = SWAP;
 
 			struct list_elem *ptr = evict_pointer;
-			evict_pointer = next_pointer(evict_pointer);
+			evict_pointer = next_pointer(evict_pointer, elem_end);
 			list_remove(ptr);
 
 			lock_release(&lock_frame);
