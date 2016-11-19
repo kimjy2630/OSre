@@ -282,6 +282,7 @@ void frame_evict() {
 }
 
 struct list_elem* next_pointer(struct list_elem *ptr){
+	printf("next_pointer!\n");
 	if(ptr == list_end(&frame))
 		return list_begin(&frame);
 	else
