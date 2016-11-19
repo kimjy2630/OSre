@@ -199,7 +199,12 @@ void frame_evict() {
 
 		fe = list_entry(e, struct frame_entry, elem);
 		spe = fe->spe;
-		lock_acquire(&spe->lock);
+//		lock_acquire(&spe->lock);
+		bool lock_success = lock_try_acquire(&spe->lock);
+		if(!lock_success){
+			list_push_back(&frame, e);
+		}
+
 		pd = spe->t->pagedir;
 		uaddr = spe->uaddr;
 
