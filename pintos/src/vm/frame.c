@@ -252,7 +252,14 @@ void frame_evict() {
 //				frame_free(fe->addr);
 //				list_push_back(&frame, e);
 //			frame_free(spe);
-				frame_free_fe(spe->fe);
+
+//				frame_free_fe(spe->fe); ////
+//				/*
+				fe->spe->fe = NULL;
+				fe->spe->kaddr = NULL;
+				palloc_free_page(fe->addr);
+				free(fe);
+//				*/
 				lock_release(&spe->lock);
 //				spe->fe = NULL;
 //				printf("evict loop cnt %d, size %d\n", cnt, list_size(&frame));
