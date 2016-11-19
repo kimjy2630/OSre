@@ -212,8 +212,7 @@ void frame_evict() {
 		bool lock_success = lock_try_acquire(&spe->lock);
 		if(!lock_success){
 			list_push_back(&frame, e);
-		}
-		else {
+		} else {
 			pd = spe->t->pagedir;
 			uaddr = spe->uaddr;
 
