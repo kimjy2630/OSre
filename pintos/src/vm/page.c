@@ -12,11 +12,11 @@
 //
 //}
 
-struct lock lock_page;
+//struct lock lock_page;
 
-void supp_page_init() {
-	lock_init(&lock_page);
-}
+//void supp_page_init() {
+//	lock_init(&lock_page);
+//}
 
 struct supp_page_entry* supp_page_add(uint8_t *addr, bool writable) {
 	struct hash supp_page_table = thread_current()->supp_page_table;

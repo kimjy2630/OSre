@@ -252,7 +252,7 @@ static void page_fault(struct intr_frame *f) {
 //				printf("swap sfad\n");
 			}
 
-			fe->finned = false;
+//			fe->finned = false; ????
 //			lock_release(&spe->lock);
 //			frame_unfin(kaddr);
 
