@@ -23,7 +23,7 @@ struct supp_page_entry{
 	struct frame_entry *fe;
 	struct thread *t;
 
-	struct lock lock;
+//	struct lock lock;
 
 	/* used for file page */
 	struct file* file;
