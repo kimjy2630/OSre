@@ -27,16 +27,9 @@ main (int argc, char *argv[])
   arc4_init (&arc4, key, strlen (key));
   arc4_crypt (&arc4, buf, SIZE);
 
-//  for (i = 0; i < SIZE; i++)
-//	  buf[i] = 1;
-//  for (i = 0; i < SIZE; i++)
-//	  buf[i]--;
-
   /* Check that it's all zeros. */
   for (i = 0; i < SIZE; i++)
-    if (buf[i] != '\0') {
-    	printf("buf[i] %d i %d\n",buf[i],i);
+    if (buf[i] != '\0')
       fail ("byte %zu != 0", i);
-    }
   return 0x42;
 }
