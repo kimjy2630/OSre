@@ -77,7 +77,7 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 }
 
 void frame_free(struct supp_page_entry* spe) {
-	ASSERT(lock_held_by_current_thread(&spe->lock));
+//	ASSERT(lock_held_by_current_thread(&spe->lock));
 	lock_acquire(&lock_frame);
 	struct list_elem* e;
 	struct frame_entry* fe;
