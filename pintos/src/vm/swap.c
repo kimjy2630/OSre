@@ -27,7 +27,7 @@ size_t swap_load(uint8_t *addr){ // mem -> disk
 //	printf("load start\n");
 	lock_acquire(&swap_lock);
 	size_t index = bitmap_scan_and_flip(swap_bitmap, 0, num_sector_in_page, 0);
-	lock_release(&swap_lock);
+//	lock_release(&swap_lock);
 	if(index == BITMAP_ERROR){
 		lock_release(&swap_lock);
 		PANIC("swap disk full");
@@ -38,6 +38,7 @@ size_t swap_load(uint8_t *addr){ // mem -> disk
 		disk_write(swap_disk, index + i, addr + i * DISK_SECTOR_SIZE);
 //		lock_release(&swap_lock);
 	}
+	lock_release(&swap_lock);
 //	printf("load end\n");
 	return index;
 }
@@ -49,7 +50,7 @@ void swap_unload(size_t index, uint8_t *addr) { // disk -> mem
 //	printf("unload start\n");
 	lock_acquire(&swap_lock);
 	bitmap_set_multiple(swap_bitmap, index, num_sector_in_page, 0);
-	lock_release(&swap_lock);
+//	lock_release(&swap_lock);
 //	printf("bit set mul\n");
 
 	int i;
@@ -59,6 +60,7 @@ void swap_unload(size_t index, uint8_t *addr) { // disk -> mem
 		disk_read(swap_disk, index + i, addr + i * DISK_SECTOR_SIZE);
 //		lock_release(&swap_lock);
 	}
+	lock_release(&swap_lock);
 //	printf("disk_read\n");
 //	printf("unload end\n");
 }
