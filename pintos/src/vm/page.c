@@ -131,7 +131,6 @@ struct supp_page_entry* stack_grow(void* addr) {
 		pagedir_clear_page(t->pagedir, pg_round_down(addr));
 		palloc_free_page(fe->addr);
 		//TODO
-//		frame_free(fe);
 //		frame_free(fe->addr);
 		frame_free_fe(fe);
 		return NULL;
