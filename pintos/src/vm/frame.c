@@ -44,7 +44,7 @@ struct frame_entry* frame_add(enum palloc_flags flags) {
 	while (addr == NULL) {
 //		enum intr_level old_level = intr_disable();
 		lock_acquire(&lock_evict);
-		printf("evict!\n");
+//		printf("evict!\n");
 		frame_evict();
 		lock_release(&lock_evict);
 //		intr_set_level(old_level);
@@ -197,7 +197,7 @@ void frame_evict() {
 	ASSERT(lock_held_by_current_thread(&lock_evict));
 //	ASSERT(!list_empty(&frame));
 
-//	printf("EVICTION! %d\n", thread_current()->tid);
+	printf("EVICTION! %d\n", thread_current()->tid);
 
 	lock_acquire(&lock_frame);
 
