@@ -100,7 +100,7 @@ void frame_free(struct supp_page_entry* spe) {
 }
 
 void frame_free_fe(struct frame_entry *fe){
-//	printf("frame_free %d\n", thread_current()->tid);
+//	printf("frame_free %d\n", thread_current()->tid); //
 	lock_acquire(&lock_frame);
 	list_remove(&fe->elem);
 	fe->spe->fe = NULL;
