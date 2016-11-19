@@ -219,8 +219,8 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 	/* Add to run queue. */
 	thread_unblock(t);
 
-	if (thread_get_eff_priority(t) > thread_get_priority())
-		thread_yield();
+//	if (thread_get_eff_priority(t) > thread_get_priority())
+//		thread_yield();
 
 	return tid;
 }
