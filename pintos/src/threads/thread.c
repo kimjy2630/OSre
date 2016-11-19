@@ -294,10 +294,15 @@ void thread_exit(void) {
 	intr_set_level(old);
 
 	ASSERT(!intr_context());
-
+#ifdef VM
+	lock_acquire(&thread_current()->lock_page);
+#endif
 #ifdef USERPROG
 	if(thread_current()->user_thread)
 		process_exit ();
+#endif
+#ifdef VM
+	lock_release(&thread_current()->lock_page);
 #endif
 
 	/* Just set our status to dying and schedule another process.
