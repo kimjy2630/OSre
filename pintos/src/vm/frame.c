@@ -306,7 +306,9 @@ void frame_evict_ver2() {
 	if(evict_pointer == NULL)
 		evict_pointer = list_front(&frame);
 
+	int cnt = 0;
 	while (!list_empty(&frame)) {
+		printf("loop %d\n", cnt);
 		fe = list_entry(evict_pointer, struct frame_entry, elem);
 		spe = fe->spe;
 		pd = spe->t->pagedir;
@@ -342,6 +344,7 @@ void frame_evict_ver2() {
 			free(fe);
 			break;
 		}
+		cnt++;
 	}
 	if (lock_held_by_current_thread(&lock_frame))
 		lock_release(&lock_frame);
