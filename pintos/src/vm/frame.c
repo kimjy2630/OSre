@@ -345,7 +345,7 @@ void frame_evict_ver2() {
 			pagedir_clear_page(pd, uaddr);
 			fe->spe->fe = NULL;
 			fe->spe->kaddr = NULL;
-			palloc_free_page(fe->addr);
+//			palloc_free_page(fe->addr);
 			free(fe);
 			break;
 		}
