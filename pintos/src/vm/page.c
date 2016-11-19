@@ -96,9 +96,9 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 //		free(fe);
 		frame_free(spe);
 	}
-//	if(spe->type == SWAP && spe->swap_index != NULL) {
-//		swap_free(spe->swap_index);
-//	}
+	if(spe->type == SWAP && spe->swap_index != NULL) {
+		swap_free(spe->swap_index);
+	}
 	lock_release(&spe->lock);
 	free(spe);
 }
