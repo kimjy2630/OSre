@@ -289,7 +289,6 @@ void next_pointer(struct list_elem *ptr){
 }
 
 void frame_evict_ver2() {
-	struct list_elem *e;
 	struct frame_entry *fe;
 	struct supp_page_entry *spe;
 	uint32_t *pd;
@@ -309,7 +308,7 @@ void frame_evict_ver2() {
 //		lock_acquire(&lock_frame);
 //		lock_release(&lock_frame);
 
-		fe = list_entry(e, struct frame_entry, elem);
+		fe = list_entry(evict_pointer, struct frame_entry, elem);
 		spe = fe->spe;
 //		lock_acquire(&spe->lock);
 //		bool lock_success = lock_try_acquire(&spe->lock); //////
