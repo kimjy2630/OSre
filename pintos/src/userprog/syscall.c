@@ -247,8 +247,8 @@ int read(int fd, void *buffer, unsigned length) {
 		} else
 			spe = hash_entry(he, struct supp_page_entry, elem);
 
-		ASSERT(spe != NULL);
-		ASSERT(tmp_buf != NULL);
+//		ASSERT(spe != NULL);
+//		ASSERT(tmp_buf != NULL);
 //		lock_acquire(&spe->lock); //////
 		spe->fe->finned = true;
 		size_t read_bytes = ofs + rest > PGSIZE ? PGSIZE - ofs : rest;
@@ -328,8 +328,8 @@ int write(int fd, const void *buffer, unsigned length) {
 		} else
 			spe = hash_entry(he, struct supp_page_entry, elem);
 
-		ASSERT(spe != NULL);
-		ASSERT(tmp_buf !=NULL);
+//		ASSERT(spe != NULL);
+//		ASSERT(tmp_buf !=NULL);
 
 //		lock_acquire(&spe->lock); //////
 		spe->fe->finned = true;
