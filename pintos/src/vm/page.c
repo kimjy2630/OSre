@@ -96,7 +96,8 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 //		list_remove(&fe->elem);
 //		fe->spe->fe = NULL;
 //		free(fe);
-		frame_free(spe);
+//		frame_free(spe);
+		frame_free_fe(spe->fe);
 	}
 	if(spe->type == SWAP && spe->swap_index != NULL) {
 		swap_free(spe->swap_index);
@@ -131,7 +132,8 @@ struct supp_page_entry* stack_grow(void* addr) {
 		palloc_free_page(fe->addr);
 		//TODO
 //		frame_free(fe);
-		frame_free(fe->addr);
+//		frame_free(fe->addr);
+		frame_free_fe(fe);
 		return NULL;
 	}
 	/* Record the new stack page in the supplemental page table and
