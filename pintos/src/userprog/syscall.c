@@ -425,7 +425,7 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 	unsigned rest = file_length;
 	uint8_t *tmp_addr = uaddr;
 	size_t ofs = 0;
-	printf("g\n");
+	printf("g, rest %u\n", rest);
 	while(rest>0){
 		struct supp_page_entry *spe = supp_page_add(tmp_addr, true);
 //		printf("spe add\n");
