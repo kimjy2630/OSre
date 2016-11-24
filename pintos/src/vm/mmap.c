@@ -16,7 +16,7 @@ struct mmapping* get_mmap_from_mapid(struct thread* t, mapid_t mapid) {
 	struct hash_elem *e = hash_find(&t->mmap_table, &mmapping.elem);
 	if(e == NULL)
 		return NULL;
-	return hash_entry(e, struct mmapping, hash_elem);
+	return hash_entry(e, struct mmapping, elem);
 }
 struct mmapping* add_mmap(struct thread *t, int fd, uint8_t *uaddr){
 	struct mmapping *mmap = malloc(sizeof(struct mmapping));
