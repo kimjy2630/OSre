@@ -431,43 +431,6 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 	}
 
 	return mmap->mapid;
-	/*
-	unsigned rest = file_length;
-	int cnt = 0;
-	while (rest > 0) {
-		size_t ofs = tmp_buf - pg_round_down(tmp_buf);
-		struct supp_page_entry spe_tmp;
-		spe_tmp.uaddr = tmp_buf - ofs;
-		struct hash_elem* he = hash_find(&thread_current()->supp_page_table, &spe_tmp.elem);
-		struct supp_page_entry* spe;
-		if (he == NULL) {
-			if (tmp_buf >= (esp - 32) && (PHYS_BASE - pg_round_down(tmp_buf)) <= (1 << 23))
-				spe = stack_grow(tmp_buf - ofs);
-			else {
-				exit(-1);
-				return -1;
-			}
-		} else
-			spe = hash_entry(he, struct supp_page_entry, elem);
-
-		//		ASSERT(spe != NULL);
-		//		ASSERT(tmp_buf !=NULL);
-
-		//		lock_acquire(&spe->lock); //////
-		spe->fe->finned = true;
-		size_t write_bytes = ofs + rest > PGSIZE ? PGSIZE - ofs : rest;
-
-		lock_acquire(&lock_file);
-		cnt += file_write(pf->file, tmp_buf, write_bytes);
-		lock_release(&lock_file);
-
-		rest -= write_bytes;
-		tmp_buf += write_bytes;
-
-		spe->fe->finned = false;
-		//		lock_release(&spe->lock);//////
-	}
-	*/
 }
 
 void munmap(mapid_t mapid){
