@@ -13,27 +13,20 @@ test_main (void)
   int handle;
   mapid_t map;
   size_t i;
-  msg("a");
+//  msg("a");
   CHECK ((handle = open ("sample.txt")) > 1, "open \"sample.txt\"");
-//  CHECK ((map = mmap (handle, actual)) != MAP_FAILED, "mmap \"sample.txt\"");
-  msg("aa");
-  msg("aaa");
-  map = mmap(handle, actual);
-  msg("map");
-  if(map == -1)
-	  msg("map is -1");
-  CHECK (map != MAP_FAILED, "mmap \"sample.txt\"");
-  msg("b");
+  CHECK ((map = mmap (handle, actual)) != MAP_FAILED, "mmap \"sample.txt\"");
+//  msg("b");
   /* Check that data is correct. */
   if (memcmp (actual, sample, strlen (sample)))
     fail ("read of mmap'd file reported bad data");
-  msg("c");
+//  msg("c");
   /* Verify that data is followed by zeros. */
   for (i = strlen (sample); i < 4096; i++)
     if (actual[i] != 0)
       fail ("byte %zu of mmap'd region has value %02hhx (should be 0)",
             i, actual[i]);
-  msg("d");
+//  msg("d");
   munmap (map);
   close (handle);
 }

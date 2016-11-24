@@ -383,49 +383,49 @@ void close(int fd) {
 }
 
 mapid_t mmap(int fd, uint8_t *uaddr){
-	printf("mmap: start\n");
+//	printf("mmap: start\n");
 	if(uaddr > PHYS_BASE){
-		printf("mmap: kernel access\n");
+//		printf("mmap: kernel access\n");
 		exit(-1);
 	}
-	printf("a\n");
+//	printf("a\n");
 	if(uaddr == 0 || pg_ofs(uaddr) != 0 || fd == 0 || fd == 1){
-		printf("mmap: invalid fd or uaddr\n");
+//		printf("mmap: invalid fd or uaddr\n");
 		return -1;
 	}
-	printf("b\n");
+//	printf("b\n");
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if(pf == NULL){
-		printf("mmap: pf NULL\n");
+//		printf("mmap: pf NULL\n");
 		return -1;
 	}
-	printf("c\n");
+//	printf("c\n");
 	lock_acquire(&lock_file);
 	struct file *file = file_reopen(pf->file);
 	off_t length = file_length(file);
 	lock_release(&lock_file);
-	printf("d\n");
+//	printf("d\n");
 	int num_page = length / PGSIZE;
 	if(length % PGSIZE != 0)
 		num_page++;
-	printf("e\n");
+//	printf("e\n");
 	int i;
 	for(i=0; i<num_page; i++){
 		struct supp_page_entry spe_tmp;
 		spe_tmp.uaddr = uaddr + i * PGSIZE;
 		struct hash_elem* he = hash_find(&thread_current()->supp_page_table, &spe_tmp.elem);
 		if(he != NULL){
-			printf("mmap: page exists in %p\n", uaddr + i*PGSIZE);
+//			printf("mmap: page exists in %p\n", uaddr + i*PGSIZE);
 			return -1;
 		}
 	}
-	printf("f\n");
+//	printf("f\n");
 	struct mmapping *mmap = add_mmap(thread_current(), fd, uaddr);
 
 	unsigned rest = length;
 	uint8_t *tmp_addr = uaddr;
 	size_t ofs = 0;
-	printf("g, rest %u\n", rest);
+//	printf("g, rest %u\n", rest);
 	while(rest>0){
 		struct supp_page_entry *spe = supp_page_add(tmp_addr, true);
 //		printf("spe add\n");
@@ -448,7 +448,7 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 		tmp_addr += read_bytes;
 //		printf("rest %u\n", rest);
 	}
-	printf("mmap: good");
+//	printf("mmap: good");
 	return mmap->mapid;
 }
 
