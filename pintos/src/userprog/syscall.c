@@ -428,25 +428,25 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 	printf("g\n");
 	while(rest>0){
 		struct supp_page_entry *spe = supp_page_add(tmp_addr, true);
-		printf("spe add\n");
+//		printf("spe add\n");
 		size_t read_bytes = rest > PGSIZE ? PGSIZE : rest;
-		printf("read bytes %d\n", read_bytes);
+//		printf("read bytes %d\n", read_bytes);
 //		spe->fe->finned = true;
-		printf("1\n");
+//		printf("1\n");
 		spe->type = MMAP;
-		printf("2\n");
+//		printf("2\n");
 		spe->mmap = mmap;
-		printf("3\n");
+//		printf("3\n");
 		spe->mmap_ofs = ofs;
-		printf("4\n");
+//		printf("4\n");
 		spe->mmap_page_read_bytes = read_bytes;
-		printf("5\n");
+//		printf("5\n");
 //		spe->fe->finned = false;
-		printf("spe set\n");
+//		printf("spe set\n");
 		rest -= read_bytes;
 		ofs += read_bytes;
 		tmp_addr += read_bytes;
-		printf("rest %d\n", rest);
+//		printf("rest %d\n", rest);
 	}
 	printf("mmap: good");
 	return mmap->mapid;
