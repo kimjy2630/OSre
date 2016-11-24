@@ -428,6 +428,7 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 	printf("g\n");
 	while(rest>0){
 		struct supp_page_entry *spe = supp_page_add(tmp_addr, true);
+		printf("spe add\n");
 		size_t read_bytes = rest > PGSIZE ? PGSIZE : rest;
 		spe->fe->finned = true;
 		spe->type = MMAP;
