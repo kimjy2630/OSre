@@ -439,6 +439,7 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 		rest -= read_bytes;
 		ofs += read_bytes;
 		tmp_addr += read_bytes;
+		printf("rest %d\n", rest);
 	}
 	printf("mmap: good");
 	return mmap->mapid;
