@@ -28,7 +28,7 @@ void seek(int fd, unsigned position);
 unsigned tell(int fd);
 void close(int fd);
 ////
-mapid_t mmap(int fd, uint8_t *uaddr);
-mapid_t munmap(mapid_t mapping);
+//mapid_t mmap(int fd, uint8_t *uaddr);
+//mapid_t munmap(mapid_t mapping);
 
 #endif /* userprog/syscall.h */
