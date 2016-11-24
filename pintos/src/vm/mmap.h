@@ -12,3 +12,5 @@ struct mmapping{
 
 unsigned hash_mapid(struct hash_elem *e, void *aux);
 bool hash_less_mapid(const struct hash_elem *a, const struct hash_elem *b, void *aux);
+
+#endif
