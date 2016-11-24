@@ -430,12 +430,14 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 		struct supp_page_entry *spe = supp_page_add(tmp_addr, true);
 		printf("spe add\n");
 		size_t read_bytes = rest > PGSIZE ? PGSIZE : rest;
+		printf("read bytes %d\n", read_bytes);
 		spe->fe->finned = true;
 		spe->type = MMAP;
 		spe->mmap = mmap;
 		spe->mmap_ofs = ofs;
 		spe->mmap_page_read_bytes = read_bytes;
 		spe->fe->finned = false;
+		printf("spe set\n");
 		rest -= read_bytes;
 		ofs += read_bytes;
 		tmp_addr += read_bytes;
