@@ -201,8 +201,8 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 #ifdef VM
 	hash_init(&t->supp_page_table, hash_addr, hash_less_addr, NULL);
 	t->esp = NULL;
-//	hash_init(&t->mmap_table, hash_mapid, hash_less_mapid, NULL);
-//	t->mmap_cnt = 0;
+	hash_init(&t->mmap_table, hash_mapid, hash_less_mapid, NULL);
+	t->mmap_cnt = 0;
 #endif
 
 	/* Stack frame for kernel_thread(). */
