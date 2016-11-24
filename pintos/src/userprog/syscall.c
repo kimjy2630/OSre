@@ -383,6 +383,7 @@ void close(int fd) {
 }
 
 mapid_t mmap(int fd, uint8_t *uaddr){
+	printf("mmap: start\n");
 	if(uaddr > PHYS_BASE){
 		printf("mmap: kernel access\n");
 		exit(-1);
