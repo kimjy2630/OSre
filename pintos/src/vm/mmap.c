@@ -5,7 +5,7 @@
 
 struct lock lock_mmap;
 
-void mmap_table_init(){
+void mmap_lock_init(){
 	lock_init(&lock_mmap);
 }
 

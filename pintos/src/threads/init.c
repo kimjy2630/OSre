@@ -128,7 +128,7 @@ main (void)
   supp_page_init();
 //  disk_init();
   swap_init();
-  mmap_table_init();
+  mmap_lock_init();
 #endif
 
   printf ("Boot complete.\n");

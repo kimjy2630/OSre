@@ -12,7 +12,7 @@ struct mmapping{
 	struct hash_elem elem;
 };
 
-void mmap_table_init();
+void mmap_lock_init();
 //struct mmapping* get_mmap_from_mapid(struct thread* t, mapid_t mapid);
 //struct mmapping* add_mmap(struct thread *t, int fd, uint8_t *uaddr);
 
