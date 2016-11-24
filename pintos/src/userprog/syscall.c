@@ -394,11 +394,11 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 
 	lock_acquire(&lock_file);
 	struct file *file = file_reopen(pf->file);
-	off_t file_length = file_length(file);
+	off_t length = file_length(file);
 	lock_release(&lock_file);
 
-	int num_page = file_length / PGSIZE;
-	if(file_length % PGSIZE != 0)
+	int num_page = length / PGSIZE;
+	if(length % PGSIZE != 0)
 		num_page++;
 
 	int i;
