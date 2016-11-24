@@ -441,7 +441,7 @@ void munmap(mapid_t mapid){
 		return;
 
 	lock_acquire(&lock_file);
-	off_t length = file_length(file);
+	off_t length = file_length(mmap->file);
 	lock_release(&lock_file);
 
 	int num_page = length / PGSIZE;
