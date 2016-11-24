@@ -16,6 +16,7 @@ test_main (void)
   msg("a");
   CHECK ((handle = open ("sample.txt")) > 1, "open \"sample.txt\"");
 //  CHECK ((map = mmap (handle, actual)) != MAP_FAILED, "mmap \"sample.txt\"");
+  msg("aa");
   map = mmap(handle, actual);
   msg("map %d", map);
   CHECK (map != MAP_FAILED, "mmap \"sample.txt\"");
