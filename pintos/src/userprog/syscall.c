@@ -426,7 +426,6 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 	uint8_t *tmp_addr = uaddr;
 	size_t ofs = 0;
 	printf("g\n");
-	/*
 	while(rest>0){
 		struct supp_page_entry *spe = supp_page_add(tmp_addr, true);
 		printf("spe add\n");
@@ -450,7 +449,6 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 		printf("rest %d\n", rest);
 	}
 	printf("mmap: good");
-	*/
 	return mmap->mapid;
 }
 
