@@ -10,6 +10,8 @@
 #include "threads/synch.h"
 #include "lib/kernel/hash.h"
 //#include "userprog/pagedir.h"
+#include "vm/page.h"
+#include "vm/mmap.h"
 
 static void syscall_handler(struct intr_frame *);
 
@@ -95,6 +97,12 @@ syscall_handler (struct intr_frame *f UNUSED)
 		break;
 		case SYS_CLOSE:
 		close(get_argument_int(ptr, 1));
+		break;
+		case SYS_MMAP:
+		mmap(get_argument_int(ptr, 1), get_argument_ptr(ptr,2));
+		break;
+		case SYS_MUNMAP:
+		munmap(get_argument_int(ptr,1));
 		break;
 	}
 }
@@ -370,6 +378,99 @@ void close(int fd) {
 		file_close(pf->file);
 	pf->file = NULL;
 	remove_process_file_from_fd(thread_current(), fd);
+}
+
+mapid_t mmap(int fd, uint8_t *uaddr){
+	if(uaddr > PHYS_BASE)
+		exit(-1);
+
+	if(uaddr == 0 || pg_ofs(uaddr) != 0 || fd == 0 || fd == 1)
+		return -1;
+
+	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
+	if(pf == NULL)
+		return -1;
+
+	lock_acquire(&lock_file);
+	struct file *file = file_reopen(pf->file);
+	off_t file_length = file_length(file);
+	lock_release(&lock_file);
+
+	int num_page = file_length / PGSIZE;
+	if(file_length % PGSIZE != 0)
+		num_page++;
+
+	int i;
+	for(i=0; i<num_page; i++){
+		struct supp_page_entry spe_tmp;
+		spe_tmp.uaddr = uaddr + i * PGSIZE;
+		struct hash_elem* he = hash_find(&thread_current()->supp_page_table, &spe_tmp.elem);
+		if(he != NULL)
+			return -1;
+	}
+
+	struct mmapping *mmap = add_mmap(thread_current(), fd, uaddr);
+
+	unsigned rest = file_length;
+	uint8_t *tmp_addr = uaddr;
+	size_t ofs = 0;
+
+	while(rest>0){
+		struct supp_page_entry *spe = supp_page_add(tmp_addr, true);
+		size_t read_bytes = rest > PGSIZE ? PGSIZE : rest;
+		spe->fe->finned = true;
+		spe->type = MMAP;
+		spe->mmap = mmap;
+		spe->mmap_ofs = ofs;
+		spe->mmap_read_bytes = read_bytes;
+		spe->fe->finned = false;
+		rest -= read_bytes;
+		ofs += read_bytes;
+		tmp_addr += read_bytes;
+	}
+
+	return mmap->mapid;
+	/*
+	unsigned rest = file_length;
+	int cnt = 0;
+	while (rest > 0) {
+		size_t ofs = tmp_buf - pg_round_down(tmp_buf);
+		struct supp_page_entry spe_tmp;
+		spe_tmp.uaddr = tmp_buf - ofs;
+		struct hash_elem* he = hash_find(&thread_current()->supp_page_table, &spe_tmp.elem);
+		struct supp_page_entry* spe;
+		if (he == NULL) {
+			if (tmp_buf >= (esp - 32) && (PHYS_BASE - pg_round_down(tmp_buf)) <= (1 << 23))
+				spe = stack_grow(tmp_buf - ofs);
+			else {
+				exit(-1);
+				return -1;
+			}
+		} else
+			spe = hash_entry(he, struct supp_page_entry, elem);
+
+		//		ASSERT(spe != NULL);
+		//		ASSERT(tmp_buf !=NULL);
+
+		//		lock_acquire(&spe->lock); //////
+		spe->fe->finned = true;
+		size_t write_bytes = ofs + rest > PGSIZE ? PGSIZE - ofs : rest;
+
+		lock_acquire(&lock_file);
+		cnt += file_write(pf->file, tmp_buf, write_bytes);
+		lock_release(&lock_file);
+
+		rest -= write_bytes;
+		tmp_buf += write_bytes;
+
+		spe->fe->finned = false;
+		//		lock_release(&spe->lock);//////
+	}
+	*/
+}
+
+void munmap(mapid_t mapid){
+
 }
 
 int get_user(const uint8_t *uaddr) {

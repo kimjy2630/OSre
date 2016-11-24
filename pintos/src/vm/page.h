@@ -4,11 +4,12 @@
 #include "lib/kernel/hash.h"
 #include "vm/frame.h"
 #include "threads/synch.h"
+#include "vm/mmap.h"
 
 //struct lock lock_page;
 
 enum page_type {
-	DEFAULT, ZERO, MEMORY, FILE, SWAP
+	DEFAULT, ZERO, MEMORY, FILE, SWAP, MMAP
 };
 
 struct supp_page_entry{
@@ -29,6 +30,11 @@ struct supp_page_entry{
 	struct file* file;
 	uint32_t ofs;
 	uint32_t page_read_bytes;
+
+	/* used for mmap page */
+	struct mmapping* mmap;
+	uint32_t mmap_ofs;
+	uint32_t mmap_page_read_bytes;
 };
 
 void supp_page_init();

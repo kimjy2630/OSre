@@ -39,6 +39,7 @@
 #include "vm/frame.h"
 #include "vm/page.h"
 #include "vm/swap.h"
+#include "vm/mmap.h"
 #endif
 
 /* Amount of physical memory, in 4 kB pages. */
@@ -127,6 +128,7 @@ main (void)
   supp_page_init();
 //  disk_init();
   swap_init();
+  mmap_table_init();
 #endif
 
   printf ("Boot complete.\n");
