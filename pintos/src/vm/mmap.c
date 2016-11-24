@@ -23,6 +23,7 @@ struct mmapping* add_mmap(struct thread *t, int fd, uint8_t *uaddr){
 	if(mmap == NULL)
 		return -1;
 	memset(mmap, 0, sizeof(struct mmapping));
+	mmap->uaddr = uaddr;
 	mmap->mapid = t->mmap_cnt++;
 	struct process_file *pf = get_process_file_from_fd(t, fd);
 	mmap->file = pf->file;
