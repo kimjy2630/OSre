@@ -10,6 +10,7 @@
 #include "threads/synch.h"
 #include "lib/kernel/hash.h"
 //#include "userprog/pagedir.h"
+#include "filesys/file.h"
 #include "vm/page.h"
 #include "vm/mmap.h"
 
