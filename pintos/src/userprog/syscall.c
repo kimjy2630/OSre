@@ -423,7 +423,7 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 		spe->type = MMAP;
 		spe->mmap = mmap;
 		spe->mmap_ofs = ofs;
-		spe->mmap_read_bytes = read_bytes;
+		spe->mmap_page_read_bytes = read_bytes;
 		spe->fe->finned = false;
 		rest -= read_bytes;
 		ofs += read_bytes;
