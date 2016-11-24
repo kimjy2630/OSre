@@ -1,8 +1,7 @@
 #ifndef USERPROG_SYSCALL_H
 #define USERPROG_SYSCALL_H
 #include "userprog/process.h"
-
-typedef int mapid_t;
+#include "vm/mmap.h"
 
 struct lock lock_file;
 
