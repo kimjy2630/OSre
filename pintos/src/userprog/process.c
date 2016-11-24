@@ -136,6 +136,7 @@ int process_wait(tid_t child_tid) {
 	if (flag) {
 		while (child->t->user_thread && !child->t->is_exit)
 			thread_yield();
+		enum intr_level old_level = intr_disabled();
 		int status = child->exit_status;
 		//TODO
 		if (child->t != NULL) {
@@ -144,7 +145,7 @@ int process_wait(tid_t child_tid) {
 		}
 		//TODO
 		free(child);
-
+		intr_set_level(old_level);
 		return status;
 	}
 	return -1;
