@@ -2,6 +2,8 @@
 #define USERPROG_SYSCALL_H
 #include "userprog/process.h"
 
+typedef int mapid_t;
+
 struct lock lock_file;
 
 void syscall_init (void);
