@@ -16,6 +16,7 @@
 #ifdef VM
 #include "lib/kernel/hash.h"
 #include "vm/page.h"
+#include "vm/mmap.h"
 #endif
 
 /* Random value for struct thread's `magic' member.
