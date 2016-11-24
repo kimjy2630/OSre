@@ -456,7 +456,7 @@ void munmap(mapid_t mapid){
 		struct hash_elem *he = hash_find(&t->supp_page_table, &spe_tmp.elem);
 		ASSERT(he != NULL);
 
-		struct supp_page_table *spe = hash_entry(he, struct supp_page_entry, elem);
+		struct supp_page_entry *spe = hash_entry(he, struct supp_page_entry, elem);
 		if(spe->type == MEMORY){
 			struct mmapping *mmap = spe->mmap;
 			uint8_t *kaddr = spe->kaddr;
