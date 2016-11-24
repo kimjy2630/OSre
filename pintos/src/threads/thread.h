@@ -122,6 +122,7 @@ struct thread
 #ifdef VM
     struct hash supp_page_table;
     void* esp;
+    struct hash mmap_table;
 //    struct lock lock_page;
 #endif
 
