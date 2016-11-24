@@ -18,6 +18,14 @@ void supp_page_init() {
 	lock_init(&lock_page);
 }
 
+void lock_page_acquire(){
+	lock_acquire(&lock_page);
+}
+
+void lock_page_release(){
+	lock_release(&lock_page);
+}
+
 struct supp_page_entry* supp_page_add(uint8_t *addr, bool writable) {
 	struct hash supp_page_table = thread_current()->supp_page_table;
 
@@ -59,7 +67,6 @@ bool supp_page_remove(uint8_t *addr) {
 
 }
 */
-
 unsigned hash_addr(struct hash_elem *e, void *aux) {
 	struct supp_page_entry *spe;
 	spe = hash_entry(e, struct supp_page_entry, elem);

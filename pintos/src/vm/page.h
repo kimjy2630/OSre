@@ -38,6 +38,8 @@ struct supp_page_entry{
 };
 
 void supp_page_init();
+void lock_page_acquire();
+void lock_page_release();
 struct supp_page_entry* supp_page_add(uint8_t* addr, bool writable);
 //void supp_page_get();
 //bool supp_page_remove();
