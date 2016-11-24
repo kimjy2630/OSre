@@ -383,15 +383,21 @@ void close(int fd) {
 }
 
 mapid_t mmap(int fd, uint8_t *uaddr){
-	if(uaddr > PHYS_BASE)
+	if(uaddr > PHYS_BASE){
+		printf("mmap: kernel access\n");
 		exit(-1);
+	}
 
-	if(uaddr == 0 || pg_ofs(uaddr) != 0 || fd == 0 || fd == 1)
+	if(uaddr == 0 || pg_ofs(uaddr) != 0 || fd == 0 || fd == 1){
+		printf("mmap: invalid fd or uaddr\n");
 		return -1;
+	}
 
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
-	if(pf == NULL)
+	if(pf == NULL){
+		printf("mmap: pf NULL\n");
 		return -1;
+	}
 
 	lock_acquire(&lock_file);
 	struct file *file = file_reopen(pf->file);
@@ -407,8 +413,10 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 		struct supp_page_entry spe_tmp;
 		spe_tmp.uaddr = uaddr + i * PGSIZE;
 		struct hash_elem* he = hash_find(&thread_current()->supp_page_table, &spe_tmp.elem);
-		if(he != NULL)
+		if(he != NULL){
+			printf("mmap: page exists in %p\n", uaddr + i*PGSIZE);
 			return -1;
+		}
 	}
 
 	struct mmapping *mmap = add_mmap(thread_current(), fd, uaddr);
