@@ -470,7 +470,9 @@ void munmap(mapid_t mapid){
 			frame_free_fe(spe->fe);
 			pagedir_clear_page(t->pagedir, uaddr);
 		}
+		lock_acquire(&lock_page);
 		hash_delete(&t->supp_page_table, he);
+		lock_release(&lock_page);
 		free(spe);
 		uaddr += PGSIZE;
 	}
