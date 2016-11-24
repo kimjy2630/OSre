@@ -18,7 +18,8 @@ test_main (void)
 //  CHECK ((map = mmap (handle, actual)) != MAP_FAILED, "mmap \"sample.txt\"");
   msg("aa");
   map = mmap(handle, actual);
-  printf("map %d\n", map);
+  if(map == -1)
+	  msg("map is -1");
   CHECK (map != MAP_FAILED, "mmap \"sample.txt\"");
   msg("b");
   /* Check that data is correct. */
