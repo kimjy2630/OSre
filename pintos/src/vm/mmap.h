@@ -3,6 +3,8 @@
 
 #include "lib/kernel/hash.h"
 
+typedef int mapid_t;
+
 struct mmapping{
 	mapid_t mapid;
 	uint8_t *uaddr;
