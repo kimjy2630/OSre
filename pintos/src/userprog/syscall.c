@@ -12,6 +12,7 @@
 //#include "userprog/pagedir.h"
 #include "filesys/file.h"
 #include "vm/page.h"
+#include "vm/frame.h"
 #include "vm/mmap.h"
 
 static void syscall_handler(struct intr_frame *);
@@ -434,7 +435,45 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 }
 
 void munmap(mapid_t mapid){
+	struct thread *t = thread_current();
+	struct mmapping *mmap = get_mmap_from_mapid(t, mapid);
+	if(mmap == NULL)
+		return;
 
+	lock_acquire(&lock_file);
+	off_t length = file_length(file);
+	lock_release(&lock_file);
+
+	int num_page = length / PGSIZE;
+	if(length % PGSIZE != 0)
+		num_page++;
+
+	uint8_t *uaddr = mmap->uaddr;
+	int i;
+	for(i=0; i<num_page; i++){
+		struct supp_page_entry spe_tmp;
+		spe_tmp.uaddr = uaddr;
+		struct hash_elem *he = hash_find(&t->supp_page_table, &spe_tmp.elem);
+		ASSERT(he != NULL);
+
+		struct supp_page_table *spe = hash_entry(he, struct supp_page_table, elem);
+		if(spe->type == MEMORY){
+			struct mmapping *mmap = spe->mmap;
+			uint8_t *kaddr = spe->kaddr;
+			if(pagedir_is_dirty(t->pagedir, kaddr)){
+				struct file *file = mmap->file;
+				lock_acquire(&lock_file);
+				file_seek(file, spe->mmap_ofs);
+				file_write(file, kaddr, spe->mmap_page_read_bytes);
+				lock_release(&lock_file);
+			}
+			frame_free_fe(spe->fe);
+			pagedir_clear_page(t->pagedir, uaddr);
+		}
+		hash_delete(&t->supp_page_table, he);
+		free(spe);
+		uaddr += PGSIZE;
+	}
 }
 
 int get_user(const uint8_t *uaddr) {
