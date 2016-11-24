@@ -422,7 +422,7 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 	printf("f\n");
 	struct mmapping *mmap = add_mmap(thread_current(), fd, uaddr);
 
-	unsigned rest = file_length;
+	unsigned rest = length;
 	uint8_t *tmp_addr = uaddr;
 	size_t ofs = 0;
 	printf("g, rest %u\n", rest);
@@ -446,7 +446,7 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 		rest -= read_bytes;
 		ofs += read_bytes;
 		tmp_addr += read_bytes;
-		printf("rest %u\n", rest);
+//		printf("rest %u\n", rest);
 	}
 	printf("mmap: good");
 	return mmap->mapid;
