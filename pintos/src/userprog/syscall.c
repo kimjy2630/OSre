@@ -388,27 +388,27 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 		printf("mmap: kernel access\n");
 		exit(-1);
 	}
-
+	printf("a\n");
 	if(uaddr == 0 || pg_ofs(uaddr) != 0 || fd == 0 || fd == 1){
 		printf("mmap: invalid fd or uaddr\n");
 		return -1;
 	}
-
+	printf("b\n");
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if(pf == NULL){
 		printf("mmap: pf NULL\n");
 		return -1;
 	}
-
+	printf("c\n");
 	lock_acquire(&lock_file);
 	struct file *file = file_reopen(pf->file);
 	off_t length = file_length(file);
 	lock_release(&lock_file);
-
+	printf("d\n");
 	int num_page = length / PGSIZE;
 	if(length % PGSIZE != 0)
 		num_page++;
-
+	printf("e\n");
 	int i;
 	for(i=0; i<num_page; i++){
 		struct supp_page_entry spe_tmp;
@@ -419,13 +419,13 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 			return -1;
 		}
 	}
-
+	printf("f\n");
 	struct mmapping *mmap = add_mmap(thread_current(), fd, uaddr);
 
 	unsigned rest = file_length;
 	uint8_t *tmp_addr = uaddr;
 	size_t ofs = 0;
-
+	printf("g\n");
 	while(rest>0){
 		struct supp_page_entry *spe = supp_page_add(tmp_addr, true);
 		size_t read_bytes = rest > PGSIZE ? PGSIZE : rest;
