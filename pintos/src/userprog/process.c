@@ -191,13 +191,6 @@ void process_exit(void) {
 	}
 
 	pd = curr->pagedir;
-//#ifdef VM
-//	if(pd != NULL){
-//		supp_page_table_destroy(&curr->supp_page_table);
-//		mmap_table_destroy(&curr->mmap_table);
-//	}
-//#endif
-
 	enum intr_level old = intr_disable();
 	/* Destroy the current process's page directory and switch back
 	 to the kernel-only page directory. */
@@ -209,6 +202,12 @@ void process_exit(void) {
 		 directory before destroying the process's page
 		 directory, or our active page directory will be one
 		 that's been freed (and cleared). */
+#ifdef VM
+	if(pd != NULL){
+		supp_page_table_destroy(&curr->supp_page_table);
+		mmap_table_destroy(&curr->mmap_table);
+	}
+#endif
 		pagedir_activate(NULL);
 		pagedir_destroy(pd);
 		curr->pagedir = NULL;
