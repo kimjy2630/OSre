@@ -96,23 +96,15 @@ merge (void)
   for (i = 0; i < CHUNK_CNT; i++)
     mp[i] = buf1 + CHUNK_SIZE * i;
 
-  //TODO
-//  msg("mergege");
-
   /* Merge. */
   op = buf2;
   while (mp_left > 0) 
     {
-	  //TODO
-//		msg("while %d", mp_left);
       /* Find smallest value. */
       size_t min = 0;
       for (i = 1; i < mp_left; i++)
         if (*mp[i] < *mp[min])
           min = i;
-
-      //TODO
-//		msg("min %d", min);
 
       /* Append value to buf2. */
       *op++ = *mp[min];
@@ -122,8 +114,6 @@ merge (void)
       if ((++mp[min] - buf1) % CHUNK_SIZE == 0) 
         mp[min] = mp[--mp_left];
     }
-	//TODO
-//	msg("while end");
 }
 
 static void
@@ -138,8 +128,6 @@ verify (void)
   for (hist_idx = 0; hist_idx < sizeof histogram / sizeof *histogram;
        hist_idx++)
     {
-	  //TODO
-//	  msg("for %d", hist_idx);
       while (histogram[hist_idx]-- > 0) 
         {
           if (buf2[buf_idx] != hist_idx)
