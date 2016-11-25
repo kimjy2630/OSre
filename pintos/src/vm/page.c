@@ -97,8 +97,8 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 		frame_free(fe->addr);
 	}
 	*/
+	if (fe != NULL) {
 //	if (spe->type == MEMORY && fe != NULL) {
-	if (spe->type == MEMORY && fe != NULL) {
 		pagedir_clear_page(spe->t->pagedir, spe->uaddr);
 		//TODO
 //		frame_free(fe->addr);
