@@ -245,6 +245,7 @@ static void page_fault(struct intr_frame *f) {
 //				pagedir_set_dirty (t->pagedir, kaddr, false);
 //				pagedir_set_accessed (t->pagedir, kaddr, true);
 			}
+			lock_acquire(&t->lock_pd);
 			pagedir_clear_page(t->pagedir, uaddr);
 			if (!pagedir_set_page(t->pagedir, uaddr, kaddr, spe->writable)) {
 				//				printf("KILL\n");
@@ -260,10 +261,12 @@ static void page_fault(struct intr_frame *f) {
 				//				lock_release(&spe->lock); //////
 				free(spe);////
 				kill(f);
+				lock_release(&t->lock_pd);
 			}
 
 			pagedir_set_dirty (t->pagedir, uaddr, dirty);
 			pagedir_set_accessed (t->pagedir, uaddr, true);
+			lock_release(&t->lock_pd);
 			fe->finned = false;
 
 //			lock_release(&spe->lock);

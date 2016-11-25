@@ -154,6 +154,7 @@ struct supp_page_entry* stack_grow(void* addr) {
 	struct frame_entry *fe = frame_add(PAL_ZERO | PAL_USER);
 	struct thread* t = thread_current();
 
+	lock_acquire(&t->lock_pd);
 	if (pagedir_get_page(t->pagedir, pg_round_down(addr)) != NULL
 			|| !pagedir_set_page(t->pagedir, pg_round_down(addr),
 					fe->addr, true)) {
@@ -162,8 +163,10 @@ struct supp_page_entry* stack_grow(void* addr) {
 		//TODO
 //		frame_free(fe->addr);
 		frame_free_fe(fe);
+		lock_release(&t->lock_pd);
 		return NULL;
 	}
+	lock_release(&t->lock_pd);
 	/* Record the new stack page in the supplemental page table and
 	 the frame table. */
 	struct supp_page_entry *spe = supp_page_add(pg_round_down(addr), true);
