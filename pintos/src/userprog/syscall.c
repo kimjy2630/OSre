@@ -486,7 +486,7 @@ void munmap(mapid_t mapid){
 			file_write_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
 			lock_release(&lock_file);
 			pagedir_clear_page(spe->t->pagedir, spe->uaddr);
-			frame_free_fe(fe);
+			frame_free_fe(spe->fe);
 		}
 		pagedir_clear_page(t->pagedir, uaddr);
 //		printf("pagedir clear %p\n", uaddr);
