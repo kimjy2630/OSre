@@ -332,16 +332,13 @@ void thread_exit(void) {
 			free(pf);
 		}
 	}
-//	if(curr->user_thread) {
-//#ifdef VM
-//		if (curr->pagedir != NULL) {
-////		lock_acquire(&thread_current()->lock_page);
-//		supp_page_table_destroy(&curr->supp_page_table);
-////		lock_release(&thread_current()->lock_page);
-//		}
-//#endif
-		process_exit ();
-//	}
+#ifdef VM
+	if(curr->pagedir != NULL) {
+		supp_page_table_destroy(&curr->supp_page_table);
+		mmap_table_destroy(&curr->mmap_table);
+	}
+#endif
+	process_exit ();
 #endif
 
 	/* Just set our status to dying and schedule another process.
