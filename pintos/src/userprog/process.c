@@ -152,7 +152,6 @@ int process_wait(tid_t child_tid) {
 
 /* Free the current process's resources. */
 void process_exit(void) {
-	enum intr_level old = intr_disable();
 	struct thread *curr = thread_current();
 	int tid = curr->tid;
 	uint32_t *pd;
@@ -161,12 +160,13 @@ void process_exit(void) {
 			thread_current()->exit_status);
 
 	pd = curr->pagedir;
-	//#ifdef VM
-	//	if(pd != NULL){
-	//		supp_page_table_destroy(&curr->supp_page_table);
-	//		mmap_table_destroy(&curr->mmap_table);
-	//	}
-	//#endif
+#ifdef VM
+	if(pd != NULL) {
+		supp_page_table_destroy(&curr->supp_page_table);
+		mmap_table_destroy(&curr->mmap_table);
+	}
+#endif
+	enum intr_level old = intr_disable();
 	/* Destroy the current process's page directory and switch back
 	 to the kernel-only page directory. */
 	if (pd != NULL) {
@@ -177,10 +177,10 @@ void process_exit(void) {
 		 directory before destroying the process's page
 		 directory, or our active page directory will be one
 		 that's been freed (and cleared). */
-#ifdef VM
-		supp_page_table_destroy(&curr->supp_page_table);
-		mmap_table_destroy(&curr->mmap_table);
-#endif
+//#ifdef VM
+//		supp_page_table_destroy(&curr->supp_page_table);
+//		mmap_table_destroy(&curr->mmap_table);
+//#endif
 		pagedir_activate(NULL);
 		pagedir_destroy(pd);
 		curr->pagedir = NULL;
