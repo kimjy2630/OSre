@@ -383,78 +383,55 @@ void close(int fd) {
 }
 
 mapid_t mmap(int fd, uint8_t *uaddr){
-//	printf("mmap: start\n");
 	if(uaddr > PHYS_BASE){
 //		printf("mmap: kernel access\n");
 		exit(-1);
 	}
-//	printf("a\n");
 	if(uaddr == 0 || pg_ofs(uaddr) != 0 || fd == 0 || fd == 1){
 //		printf("mmap: invalid fd or uaddr\n");
 		return -1;
 	}
-//	printf("b\n");
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if(pf == NULL){
 //		printf("mmap: pf NULL\n");
 		return -1;
 	}
-//	printf("c\n");
 	off_t length = filesize(pf->fd);
 	if(length == 0){
-//		printf("file lenght 0\n");
 		return -1;
 	}
 	lock_acquire(&lock_file);
 	struct file *file = file_reopen(pf->file);
-//	off_t length = file_length(file);
 	lock_release(&lock_file);
-//	printf("d\n");
 	int num_page = length / PGSIZE;
 	if(length % PGSIZE != 0)
 		num_page++;
-//	printf("e\n");
 	int i;
 	for(i=0; i<num_page; i++){
 		struct supp_page_entry spe_tmp;
 		spe_tmp.uaddr = uaddr + i * PGSIZE;
 		struct hash_elem* he = hash_find(&thread_current()->supp_page_table, &spe_tmp.elem);
 		if(he != NULL){
-//			printf("mmap: page exists in %p\n", uaddr + i*PGSIZE);
 			file_close(file);
 			return -1;
 		}
 	}
-//	printf("f\n");
 	struct mmapping *mmap = add_mmap(thread_current(), fd, uaddr);
 
 	unsigned rest = length;
 	uint8_t *tmp_addr = uaddr;
 	size_t ofs = 0;
-//	printf("g, rest %u\n", rest);
 	while(rest>0){
 		struct supp_page_entry *spe = supp_page_add(tmp_addr, true);
-//		printf("spe add\n");
 		size_t read_bytes = rest > PGSIZE ? PGSIZE : rest;
-//		printf("read bytes %d\n", read_bytes);
-//		spe->fe->finned = true;
-//		printf("1\n");
 		spe->type = MMAP;
-//		printf("2\n");
 		spe->mmap = mmap;
-//		printf("3\n");
 		spe->mmap_ofs = ofs;
-//		printf("4\n");
 		spe->mmap_page_read_bytes = read_bytes;
-//		printf("5\n");
-//		spe->fe->finned = false;
-//		printf("spe set\n");
 		rest -= read_bytes;
 		ofs += read_bytes;
 		tmp_addr += read_bytes;
-//		printf("rest %u\n", rest);
 	}
-//	printf("mmap: good");
 	return mmap->mapid;
 }
 
