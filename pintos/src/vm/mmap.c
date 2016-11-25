@@ -16,7 +16,7 @@ struct mmapping* get_mmap_from_mapid(struct thread* t, mapid_t mapid) {
 
 	struct mmapping mmap_tmp;
 	mmap_tmp.mapid = mapid;
-	printf("mapid %d\n", mapid);
+	printf("get_mmap_from_mapid: mapid %d\n", mapid);
 
 	struct hash_elem *e = hash_find(&t->mmap_table, &mmap_tmp.elem);
 	if(e == NULL){
@@ -32,7 +32,9 @@ struct mmapping* add_mmap(struct thread *t, int fd, uint8_t *uaddr){
 		return -1;
 	memset(mmap, 0, sizeof(struct mmapping));
 	mmap->uaddr = uaddr;
-	mmap->mapid = t->mmap_cnt++;
+	mmap->mapid = t->mmap_cnt;
+	printf("add_mmap: mapid %d\n", mmap->mapid);
+	mmap_cnt++;
 	struct process_file *pf = get_process_file_from_fd(t, fd);
 	mmap->file = pf->file;
 	lock_acquire(&lock_mmap);
