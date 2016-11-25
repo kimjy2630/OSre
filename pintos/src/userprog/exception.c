@@ -207,30 +207,12 @@ static void page_fault(struct intr_frame *f) {
 //			ASSERT(pg_round_down(fault_addr) == spe->uaddr); ////
 			uint8_t *uaddr = spe->uaddr;
 			uint8_t *kaddr = fe->addr;
-			pagedir_clear_page(t->pagedir, uaddr);
+
 
 			fe->finned = true;
+			bool dirty = false;
 //			frame_fin(kaddr);
 			// TODO
-			if (!pagedir_set_page(t->pagedir, uaddr, kaddr, spe->writable)) {
-//				printf("KILL\n");
-				pagedir_clear_page(t->pagedir, uaddr);
-				palloc_free_page(kaddr);
-				//TODO
-//				frame_free(fe);
-//				frame_free(kaddr);
-				spe->fe = NULL;
-//				lock_acquire(&spe->lock); //////
-//				frame_free(spe);
-				frame_free_fe(spe->fe);
-//				lock_release(&spe->lock); //////
-				free(spe); ////
-				kill(f);
-			}
-
-			pagedir_set_dirty (t->pagedir, kaddr, false);
-			pagedir_set_accessed (t->pagedir, kaddr, true);
-
 			if (spe->type == FILE) {
 //				printf("FILE\n");
 //				lock_acquire(&spe->lock); //////
@@ -248,6 +230,7 @@ static void page_fault(struct intr_frame *f) {
 				swap_unload(spe->swap_index, kaddr);
 				spe->swap_index = NULL;
 				spe->type = MEMORY;
+				dirty = true;
 //				lock_release(&spe->lock); //////
 //				pagedir_set_dirty (t->pagedir, uaddr, true);
 //				printf("swap sfad\n");
@@ -262,6 +245,25 @@ static void page_fault(struct intr_frame *f) {
 //				pagedir_set_dirty (t->pagedir, kaddr, false);
 //				pagedir_set_accessed (t->pagedir, kaddr, true);
 			}
+			pagedir_clear_page(t->pagedir, uaddr);
+			if (!pagedir_set_page(t->pagedir, uaddr, kaddr, spe->writable)) {
+				//				printf("KILL\n");
+				pagedir_clear_page(t->pagedir, uaddr);
+				palloc_free_page(kaddr);
+				//TODO
+				//				frame_free(fe);
+				//				frame_free(kaddr);
+				spe->fe = NULL;
+				//				lock_acquire(&spe->lock); //////
+				//				frame_free(spe);
+				frame_free_fe(spe->fe);
+				//				lock_release(&spe->lock); //////
+				free(spe);////
+				kill(f);
+			}
+
+			pagedir_set_dirty (t->pagedir, kaddr, dirty);
+			pagedir_set_accessed (t->pagedir, kaddr, true);
 			fe->finned = false;
 
 //			lock_release(&spe->lock);
