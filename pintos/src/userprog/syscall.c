@@ -101,7 +101,7 @@ syscall_handler (struct intr_frame *f UNUSED)
 		close(get_argument_int(ptr, 1));
 		break;
 		case SYS_MMAP:
-		mmap(get_argument_int(ptr, 1), get_argument_ptr(ptr,2));
+		f->eax = mmap(get_argument_int(ptr, 1), get_argument_ptr(ptr,2));
 		break;
 		case SYS_MUNMAP:
 		munmap(get_argument_int(ptr,1));
