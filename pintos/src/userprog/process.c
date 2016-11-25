@@ -151,12 +151,9 @@ int process_wait(tid_t child_tid) {
 
 /* Free the current process's resources. */
 void process_exit(void) {
-	enum intr_level old = intr_disable();
 	struct thread *curr = thread_current();
 	int tid = curr->tid;
 	uint32_t *pd;
-
-	printf("%s: exit(%d)\n", thread_current()->name, thread_current()->exit_status);
 
 	/* Destroy the current process's page directory and switch back
 	 to the kernel-only page directory. */
@@ -172,7 +169,7 @@ void process_exit(void) {
 #ifdef VM
 //		printf("clear supp page table\n");
 //		supp_page_table_destroy(&curr->supp_page_table, &curr->lock_page);
-//		supp_page_table_destroy(&curr->supp_page_table);
+		supp_page_table_destroy(&curr->supp_page_table);
 //		if(!hash_empty(&curr->supp_page_table))
 //			printf("supp page table is not empty\n");
 //		ASSERT(hash_empty(&curr->supp_page_table));
@@ -181,6 +178,8 @@ void process_exit(void) {
 		pagedir_destroy(pd);
 		curr->pagedir = NULL;
 	}
+	enum intr_level old = intr_disable();
+	printf("%s: exit(%d)\n", thread_current()->name, thread_current()->exit_status);
 
 	if (curr->f != NULL) {
 		file_close(curr->f);
