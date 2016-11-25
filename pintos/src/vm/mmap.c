@@ -10,13 +10,16 @@ void mmap_lock_init(){
 }
 
 struct mmapping* get_mmap_from_mapid(struct thread* t, mapid_t mapid) {
-	struct mmapping mmapping;
-	mmapping.mapid = mapid;
+	struct mmapping mmap_tmp;
+	mmap_tmp.mapid = mapid;
 
-	struct hash_elem *e = hash_find(&t->mmap_table, &mmapping.elem);
-	if(e == NULL)
+	struct hash_elem *e = hash_find(&t->mmap_table, &mmap_tmp.elem);
+	if(e == NULL){
+		printf("get_map_from_mapid: hash_find NULL\n");
 		return NULL;
-	return hash_entry(e, struct mmapping, elem);
+	}
+	struct mmapping *mmap = hash_entry(e, struct mmapping, elem);
+	return mmap;
 }
 struct mmapping* add_mmap(struct thread *t, int fd, uint8_t *uaddr){
 	struct mmapping *mmap = malloc(sizeof(struct mmapping));
