@@ -251,12 +251,12 @@ static void page_fault(struct intr_frame *f) {
 //				pagedir_set_dirty (t->pagedir, uaddr, true);
 //				printf("swap sfad\n");
 			} else if(spe->type == MMAP){
-				struct file *file = spe->mmap->file;
-				ASSERT(file != NULL);
-//				file_seek(file, spe->mmap_ofs);
-				off_t bytes_read = file_read_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
-//				memset(kaddr + bytes_read, 0, PGSIZE - bytes_read);
-				spe->type = MEM_MMAP;
+//				struct file *file = spe->mmap->file;
+//				ASSERT(file != NULL);
+////				file_seek(file, spe->mmap_ofs);
+//				off_t bytes_read = file_read_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
+////				memset(kaddr + bytes_read, 0, PGSIZE - bytes_read);
+//				spe->type = MEM_MMAP;
 			}
 			fe->finned = false;
 //			lock_release(&spe->lock);
