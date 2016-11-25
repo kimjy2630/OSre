@@ -155,7 +155,7 @@ void process_exit(void) {
 	struct thread *curr = thread_current();
 	int tid = curr->tid;
 	uint32_t *pd;
-	printf("%s: exit(%d)\n", thread_current()->name, thread_current()->exit_status);
+//	printf("%s: exit(%d)\n", thread_current()->name, thread_current()->exit_status);
 
 	/* Destroy the current process's page directory and switch back
 	 to the kernel-only page directory. */
