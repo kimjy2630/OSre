@@ -402,7 +402,7 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 //	printf("c\n");
 	off_t length = filesize(pf->fd);
 	if(length == 0){
-		printf("file lenght 0\n");
+//		printf("file lenght 0\n");
 		return -1;
 	}
 	lock_acquire(&lock_file);
