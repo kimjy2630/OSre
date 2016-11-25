@@ -152,12 +152,41 @@ int process_wait(tid_t child_tid) {
 
 /* Free the current process's resources. */
 void process_exit(void) {
+	enum intr_level old = intr_disable();
 	struct thread *curr = thread_current();
 	int tid = curr->tid;
 	uint32_t *pd;
 
 	printf("%s: exit(%d)\n", thread_current()->name,
 			thread_current()->exit_status);
+
+	pd = curr->pagedir;
+	//#ifdef VM
+	//	if(pd != NULL){
+	//		supp_page_table_destroy(&curr->supp_page_table);
+	//		mmap_table_destroy(&curr->mmap_table);
+	//	}
+	//#endif
+	/* Destroy the current process's page directory and switch back
+	 to the kernel-only page directory. */
+	if (pd != NULL) {
+		/* Correct ordering here is crucial.  We must set
+		 cur->pagedir to NULL before switching page directories,
+		 so that a timer interrupt can't switch back to the
+		 process page directory.  We must activate the base page
+		 directory before destroying the process's page
+		 directory, or our active page directory will be one
+		 that's been freed (and cleared). */
+#ifdef VM
+		supp_page_table_destroy(&curr->supp_page_table);
+		mmap_table_destroy(&curr->mmap_table);
+#endif
+		pagedir_activate(NULL);
+		pagedir_destroy(pd);
+		curr->pagedir = NULL;
+	}
+
+	intr_set_level(old);
 
 	if (curr->f != NULL) {
 		file_close(curr->f);
@@ -189,35 +218,6 @@ void process_exit(void) {
 			free(pf);
 		}
 	}
-
-	pd = curr->pagedir;
-//#ifdef VM
-//	if(pd != NULL){
-//		supp_page_table_destroy(&curr->supp_page_table);
-//		mmap_table_destroy(&curr->mmap_table);
-//	}
-//#endif
-	enum intr_level old = intr_disable();
-	/* Destroy the current process's page directory and switch back
-	 to the kernel-only page directory. */
-	if (pd != NULL) {
-		/* Correct ordering here is crucial.  We must set
-		 cur->pagedir to NULL before switching page directories,
-		 so that a timer interrupt can't switch back to the
-		 process page directory.  We must activate the base page
-		 directory before destroying the process's page
-		 directory, or our active page directory will be one
-		 that's been freed (and cleared). */
-#ifdef VM
-		supp_page_table_destroy(&curr->supp_page_table);
-		mmap_table_destroy(&curr->mmap_table);
-#endif
-		pagedir_activate(NULL);
-		pagedir_destroy(pd);
-		curr->pagedir = NULL;
-	}
-
-	intr_set_level(old);
 }
 
 /* Sets up the CPU for running user code in the current
