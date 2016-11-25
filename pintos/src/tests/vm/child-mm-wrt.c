@@ -16,9 +16,14 @@ test_main (void)
 {
   int handle;
 
+  msg("a");
   CHECK (create ("sample.txt", sizeof sample), "create \"sample.txt\"");
+  msg("b");
   CHECK ((handle = open ("sample.txt")) > 1, "open \"sample.txt\"");
+  msg("c");
   CHECK (mmap (handle, ACTUAL) != MAP_FAILED, "mmap \"sample.txt\"");
+  msg("d");
   memcpy (ACTUAL, sample, sizeof sample);
+  msg("e");
 }
 
