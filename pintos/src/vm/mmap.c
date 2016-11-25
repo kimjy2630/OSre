@@ -2,6 +2,7 @@
 #include "threads/thread.h"
 #include <stdlib.h>
 #include "userprog/process.h"
+#include "userprog/syscall.h"
 
 struct lock lock_mmap;
 
