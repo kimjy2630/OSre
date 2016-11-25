@@ -400,9 +400,14 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 		return -1;
 	}
 //	printf("c\n");
+	off_t length = filesize(pf->fd);
+	if(length == 0){
+		printf("file lenght 0\n");
+		return -1;
+	}
 	lock_acquire(&lock_file);
 	struct file *file = file_reopen(pf->file);
-	off_t length = file_length(file);
+//	off_t length = file_length(file);
 	lock_release(&lock_file);
 //	printf("d\n");
 	int num_page = length / PGSIZE;
@@ -416,6 +421,7 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 		struct hash_elem* he = hash_find(&thread_current()->supp_page_table, &spe_tmp.elem);
 		if(he != NULL){
 //			printf("mmap: page exists in %p\n", uaddr + i*PGSIZE);
+			file_close(file);
 			return -1;
 		}
 	}
