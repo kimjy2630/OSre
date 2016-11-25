@@ -436,7 +436,7 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 }
 
 void munmap(mapid_t mapid){
-	printf("munmap: start");
+	printf("munmap: start\n");
 	struct thread *t = thread_current();
 	struct mmapping *mmap = get_mmap_from_mapid(t, mapid);
 	if(mmap == NULL)
