@@ -436,11 +436,13 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 }
 
 void munmap(mapid_t mapid){
+	printf("munmap: start");
 	struct thread *t = thread_current();
 	struct mmapping *mmap = get_mmap_from_mapid(t, mapid);
 	if(mmap == NULL)
 		return;
 
+	printf("a\n");
 	lock_acquire(&lock_file);
 	off_t length = file_length(mmap->file);
 	lock_release(&lock_file);
@@ -448,7 +450,7 @@ void munmap(mapid_t mapid){
 	int num_page = length / PGSIZE;
 	if(length % PGSIZE != 0)
 		num_page++;
-
+	printf("b\n");
 	uint8_t *uaddr = mmap->uaddr;
 	int i;
 	for(i=0; i<num_page; i++){
@@ -478,6 +480,7 @@ void munmap(mapid_t mapid){
 		free(spe);
 		uaddr += PGSIZE;
 	}
+	printf("munmap: end\n");
 }
 
 int get_user(const uint8_t *uaddr) {
