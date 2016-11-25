@@ -10,9 +10,9 @@ void mmap_lock_init(){
 }
 
 struct mmapping* get_mmap_from_mapid(struct thread* t, mapid_t mapid) {
-	struct supp_page_entry spe_tmp;
-	spe_tmp.uaddr = uaddr + i * PGSIZE;
-	struct hash_elem* he = hash_find(&thread_current()->supp_page_table, &spe_tmp.elem);
+//	struct supp_page_entry spe_tmp;
+//	spe_tmp.uaddr = uaddr + i * PGSIZE;
+//	struct hash_elem* he = hash_find(&thread_current()->supp_page_table, &spe_tmp.elem);
 
 	struct mmapping mmap_tmp;
 	mmap_tmp.mapid = mapid;
