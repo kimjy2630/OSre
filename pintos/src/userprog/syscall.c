@@ -469,7 +469,6 @@ void munmap(mapid_t mapid){
 				struct file *file = spe->mmap->file;
 				lock_acquire(&lock_file);
 				file_write_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
-				file_close(file);
 				lock_release(&lock_file);
 //				printf("file is updated from MEM_MMAP page\n");
 			}
