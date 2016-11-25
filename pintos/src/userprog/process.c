@@ -197,7 +197,7 @@ void process_exit(void) {
 	//		mmap_table_destroy(&curr->mmap_table);
 	//	}
 	//#endif
-	enum intr_level old_level = intr_disable();
+//	enum intr_level old_level = intr_disable();
 	/* Destroy the current process's page directory and switch back
 	 to the kernel-only page directory. */
 //	lock_acquire(&curr->lock_pd);
@@ -210,10 +210,8 @@ void process_exit(void) {
 		 directory, or our active page directory will be one
 		 that's been freed (and cleared). */
 #ifdef VM
-		intr_set_level(old_level);
 		supp_page_table_destroy(&curr->supp_page_table);
 		mmap_table_destroy(&curr->mmap_table);
-		old_level = intr_disable();
 #endif
 		pagedir_activate(NULL);
 		pagedir_destroy(pd);
@@ -221,7 +219,7 @@ void process_exit(void) {
 	}
 //	lock_release(&curr->lock_pd);
 
-	intr_set_level(old_level);
+//	intr_set_level(old_level);
 }
 
 /* Sets up the CPU for running user code in the current
