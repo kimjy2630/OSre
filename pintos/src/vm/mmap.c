@@ -40,7 +40,7 @@ struct mmapping* add_mmap(struct thread *t, int fd, uint8_t *uaddr){
 	mmap->file = pf->file;
 	printf("b %d\n", mmap->mapid);
 	lock_acquire(&lock_mmap);
-	hash_insert(&t->mmap_table, mmap);
+	hash_insert(&t->mmap_table, &mmap->elem);
 	lock_release(&lock_mmap);
 	printf("c %d\n", mmap->mapid);
 
