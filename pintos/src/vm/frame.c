@@ -255,8 +255,8 @@ void frame_evict() {
 					file_write_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
 					lock_release(&lock_file);
 				}
-				lock_release(&lock_frame);
 				spe->type = MMAP;
+				lock_release(&lock_frame);
 				pagedir_clear_page(pd, uaddr);
 				fe->spe->fe = NULL;
 				fe->spe->kaddr = NULL;
