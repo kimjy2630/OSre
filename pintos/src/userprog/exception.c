@@ -228,6 +228,9 @@ static void page_fault(struct intr_frame *f) {
 				kill(f);
 			}
 
+			pagedir_set_dirty (t->pagedir, kaddr, false);
+			pagedir_set_accessed (t->pagedir, kaddr, true);
+
 			if (spe->type == FILE) {
 //				printf("FILE\n");
 //				lock_acquire(&spe->lock); //////
@@ -256,11 +259,11 @@ static void page_fault(struct intr_frame *f) {
 				off_t bytes_read = file_read_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
 //				memset(kaddr + bytes_read, 0, PGSIZE - bytes_read);
 				spe->type = MEM_MMAP;
+				pagedir_set_dirty (t->pagedir, kaddr, false);
+				pagedir_set_accessed (t->pagedir, kaddr, true);
 			}
 			fe->finned = false;
 
-			pagedir_set_dirty (t->pagedir, kaddr, false);
-			pagedir_set_accessed (t->pagedir, kaddr, true);
 //			lock_release(&spe->lock);
 //			frame_unfin(kaddr);
 
