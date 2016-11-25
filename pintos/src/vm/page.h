@@ -9,7 +9,7 @@
 //struct lock lock_page;
 
 enum page_type {
-	DEFAULT, ZERO, MEMORY, FILE, SWAP, MMAP
+	DEFAULT, ZERO, MEMORY, FILE, SWAP, MMAP, MEM_MMAP
 };
 
 struct supp_page_entry{

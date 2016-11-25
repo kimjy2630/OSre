@@ -247,6 +247,20 @@ void frame_evict() {
 				pagedir_set_accessed(pd, uaddr, 0);
 				list_push_back(&frame, e);
 //				lock_release(&spe->lock); //////
+			} else if(spe->type->MEM_MMAP) {
+				uint8_t *kaddr = spe->kaddr;
+				if(pagedir_is_dirty(pd, kaddr)){
+					struct file *file = spe->mmap->file;
+					lock_acquire(&lock_file);
+					file_write_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
+					lock_release(&lock_file);
+				}
+				lock_release(&lock_frame);
+				pagedir_clear_page(pd, uaddr);
+				fe->spe->fe = NULL;
+				fe->spe->kaddr = NULL;
+				palloc_free_page(fe->addr);
+				free(fe);
 			} else {
 //			printf("evict find! - send to swap\n");
 //				fe->finned = true;

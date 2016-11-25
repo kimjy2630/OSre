@@ -256,7 +256,7 @@ static void page_fault(struct intr_frame *f) {
 //				file_seek(file, spe->mmap_ofs);
 				off_t bytes_read = file_read_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
 //				memset(kaddr + bytes_read, 0, PGSIZE - bytes_read);
-				spe->type = MEMORY;
+				spe->type = MEM_MMAP;
 			}
 			fe->finned = false;
 //			lock_release(&spe->lock);
