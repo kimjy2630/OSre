@@ -474,13 +474,10 @@ void munmap(mapid_t mapid){
 		if(spe->type == MEM_MMAP){
 			struct mmapping *mmap = spe->mmap;
 			uint8_t *kaddr = spe->kaddr;
-			if(pagedir_is_dirty(t->pagedir, kaddr)){
-				struct file *file = mmap->file;
-				lock_acquire(&lock_file);
-//				file_seek(file, spe->mmap_ofs);
-				file_write_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
-				lock_release(&lock_file);
-			}
+			struct file *file = mmap->file;
+			lock_acquire(&lock_file);
+			file_write_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
+			lock_release(&lock_file);
 			frame_free_fe(spe->fe);
 		}
 		pagedir_clear_page(t->pagedir, uaddr);
