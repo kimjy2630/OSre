@@ -253,8 +253,8 @@ static void page_fault(struct intr_frame *f) {
 			} else if(spe->type == MMAP){
 				struct file *file = spe->mmap->file;
 				ASSERT(file != NULL);
-				file_seek(file, spe->mmap_ofs);
-				off_t bytes_read = file_read(file, kaddr, spe->mmap_page_read_bytes);
+//				file_seek(file, spe->mmap_ofs);
+				off_t bytes_read = file_read_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
 				memset(kaddr + bytes_read, 0, PGSIZE - bytes_read);
 				spe->type = MEMORY;
 			}
