@@ -186,9 +186,14 @@ void process_exit(void) {
 		}
 	}
 
+	enum intr_level old = intr_disable();
+	#ifdef VM
+			supp_page_table_destroy(&curr->supp_page_table);
+	#endif
+		intr_set_level(old);
+
 	/* Destroy the current process's page directory and switch back
 	 to the kernel-only page directory. */
-	enum intr_level old = intr_disable();
 	pd = curr->pagedir;
 	if (pd != NULL) {
 		/* Correct ordering here is crucial.  We must set
@@ -198,19 +203,10 @@ void process_exit(void) {
 		 directory before destroying the process's page
 		 directory, or our active page directory will be one
 		 that's been freed (and cleared). */
-#ifdef VM
-//		printf("clear supp page table\n");
-//		supp_page_table_destroy(&curr->supp_page_table, &curr->lock_page);
-		supp_page_table_destroy(&curr->supp_page_table);
-//		if(!hash_empty(&curr->supp_page_table))
-//			printf("supp page table is not empty\n");
-//		ASSERT(hash_empty(&curr->supp_page_table));
-#endif
 		pagedir_activate(NULL);
 		pagedir_destroy(pd);
 		curr->pagedir = NULL;
 	}
-	intr_set_level(old);
 }
 
 /* Sets up the CPU for running user code in the current
