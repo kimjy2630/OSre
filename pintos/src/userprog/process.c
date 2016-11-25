@@ -197,10 +197,10 @@ void process_exit(void) {
 	//		mmap_table_destroy(&curr->mmap_table);
 	//	}
 	//#endif
-	//	enum intr_level old = intr_disable();
+	enum intr_level old = intr_disable();
 	/* Destroy the current process's page directory and switch back
 	 to the kernel-only page directory. */
-	lock_acquire(&curr->lock_pd);
+//	lock_acquire(&curr->lock_pd);
 	if (pd != NULL) {
 		/* Correct ordering here is crucial.  We must set
 		 cur->pagedir to NULL before switching page directories,
@@ -217,9 +217,9 @@ void process_exit(void) {
 		pagedir_destroy(pd);
 		curr->pagedir = NULL;
 	}
-	lock_release(&curr->lock_pd);
+//	lock_release(&curr->lock_pd);
 
-	//	intr_set_level(old);
+	intr_set_level(old);
 }
 
 /* Sets up the CPU for running user code in the current
