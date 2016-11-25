@@ -141,10 +141,13 @@ int wait(pid_t pid) {
 }
 
 bool create(const char *file, unsigned initial_size) {
+	printf("syscall creat\n");
 	if (!read_validity(file, strlen(file) + 1)) {
+		printf("read validity false\n");
 		exit(-1);
 		return false;
 	}
+	printf("filesys_create\n");
 	return filesys_create(file, initial_size);
 }
 bool remove(const char *file) {
