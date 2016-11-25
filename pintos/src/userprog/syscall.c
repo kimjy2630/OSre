@@ -387,7 +387,8 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 //		printf("mmap: kernel access\n");
 		exit(-1);
 	}
-	if(uaddr == 0 || uaddr % PGSIZE != 0 || fd == 0 || fd == 1){
+	printf("pg_ofs %u\n", pg_ofs(uaddr));
+	if(uaddr == 0 || pg_ofs(uaddr) != 0 || fd == 0 || fd == 1){
 //		printf("mmap: invalid fd or uaddr\n");
 		return -1;
 	}
