@@ -125,12 +125,12 @@ void exit(int status) {
 //	supp_page_table_destroy(&curr->supp_page_table);
 //#endif
 	curr->is_exit = true;
-#ifdef VM
-	uint32_t *pd;
-	pd = curr->pagedir;
-	if(pd != NULL)
-		supp_page_table_destroy(&curr->supp_page_table);
-#endif
+//#ifdef VM
+//	uint32_t *pd;
+//	pd = curr->pagedir;
+//	if(pd != NULL)
+//		supp_page_table_destroy(&curr->supp_page_table);
+//#endif
 	thread_exit();
 }
 
