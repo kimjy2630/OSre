@@ -212,25 +212,6 @@ static void page_fault(struct intr_frame *f) {
 			fe->finned = true;
 //			frame_fin(kaddr);
 			// TODO
-			if (!pagedir_set_page(t->pagedir, uaddr, kaddr, spe->writable)) {
-//				printf("KILL\n");
-				pagedir_clear_page(t->pagedir, uaddr);
-				palloc_free_page(kaddr);
-				//TODO
-//				frame_free(fe);
-//				frame_free(kaddr);
-				spe->fe = NULL;
-//				lock_acquire(&spe->lock); //////
-//				frame_free(spe);
-				frame_free_fe(spe->fe);
-//				lock_release(&spe->lock); //////
-				free(spe); ////
-				kill(f);
-			}
-
-//			pagedir_set_dirty (t->pagedir, kaddr, false);
-//			pagedir_set_accessed (t->pagedir, kaddr, true);
-
 			if (spe->type == FILE) {
 //				printf("FILE\n");
 //				lock_acquire(&spe->lock); //////
@@ -262,6 +243,25 @@ static void page_fault(struct intr_frame *f) {
 //				pagedir_set_dirty (t->pagedir, kaddr, false);
 //				pagedir_set_accessed (t->pagedir, kaddr, true);
 			}
+
+			if (!pagedir_set_page(t->pagedir, uaddr, kaddr, spe->writable)) {
+//				printf("KILL\n");
+				pagedir_clear_page(t->pagedir, uaddr);
+				palloc_free_page(kaddr);
+				//TODO
+//				frame_free(fe);
+//				frame_free(kaddr);
+				spe->fe = NULL;
+//				lock_acquire(&spe->lock); //////
+//				frame_free(spe);
+				frame_free_fe(spe->fe);
+//				lock_release(&spe->lock); //////
+				free(spe);////
+				kill(f);
+			}
+
+			pagedir_set_dirty (t->pagedir, kaddr, false);
+			pagedir_set_accessed (t->pagedir, kaddr, true);
 			fe->finned = false;
 
 //			lock_release(&spe->lock);
