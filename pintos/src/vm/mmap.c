@@ -64,3 +64,19 @@ bool hash_less_mapid(const struct hash_elem *a, const struct hash_elem *b, void 
 	mmap_b = hash_entry(b, struct mmapping, elem);
 	return mmap_a->mapid < mmap_b->mapid;
 }
+
+void mmap_destroy(struct hash_elem *e, void *aux) {
+	struct mmapping *mmap;
+
+	mmap = hash_entry(e, struct mmapping, elem);
+	lock_acquire(&lock_file);
+	file_close(mmap->file);
+	lock_release(&lock_file);
+	free(mmap);
+}
+
+//void supp_page_table_destroy(struct hash *supp_page_table, struct lock* lock_page) {
+void mmap_page_table_destroy(struct hash *mmap_table) {
+	//TODO
+	hash_destroy(mmap_table, mmap_destroy);
+}

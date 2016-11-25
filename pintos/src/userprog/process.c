@@ -191,8 +191,10 @@ void process_exit(void) {
 
 	pd = curr->pagedir;
 #ifdef VM
-	if(pd != NULL)
+	if(pd != NULL){
 		supp_page_table_destroy(&curr->supp_page_table);
+		mmap_table_destory(&curr->mmap_table);
+	}
 #endif
 
 	enum intr_level old = intr_disable();
