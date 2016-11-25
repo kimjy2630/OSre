@@ -492,8 +492,8 @@ void munmap(mapid_t mapid){
 				lock_release(&lock_file);
 			}
 			frame_free_fe(spe->fe);
-			pagedir_clear_page(t->pagedir, uaddr);
 		}
+		pagedir_clear_page(t->pagedir, uaddr);
 		lock_page_acquire();
 		hash_delete(&t->supp_page_table, he);
 		lock_page_release();
