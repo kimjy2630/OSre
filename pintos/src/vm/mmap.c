@@ -10,6 +10,10 @@ void mmap_lock_init(){
 }
 
 struct mmapping* get_mmap_from_mapid(struct thread* t, mapid_t mapid) {
+	struct supp_page_entry spe_tmp;
+	spe_tmp.uaddr = uaddr + i * PGSIZE;
+	struct hash_elem* he = hash_find(&thread_current()->supp_page_table, &spe_tmp.elem);
+
 	struct mmapping mmap_tmp;
 	mmap_tmp.mapid = mapid;
 
@@ -48,14 +52,14 @@ struct mmapping* add_mmap(struct thread *t, int fd, uint8_t *uaddr){
 
 
 unsigned hash_mapid(struct hash_elem *e, void *aux) {
-	struct mmapping *mmapping;
-	mmapping = hash_entry(e, struct mmapping, elem);
-	return hash_bytes(&mmapping->mapid, sizeof(mmapping->mapid));
+	struct mmapping *mmap;
+	mmap = hash_entry(e, struct mmapping, elem);
+	return hash_int(mmap->mapid);
 }
 
 bool hash_less_mapid(const struct hash_elem *a, const struct hash_elem *b, void *aux) {
-	struct mmapping *mmapping_a, *mmapping_b;
-	mmapping_a = hash_entry(a, struct mmapping, elem);
-	mmapping_b = hash_entry(b, struct mmapping, elem);
-	return mmapping_a->mapid < mmapping_b->mapid;
+	struct mmapping *mmap_a, *mmap_b;
+	mmap_a = hash_entry(a, struct mmapping, elem);
+	mmap_b = hash_entry(b, struct mmapping, elem);
+	return mmap_a->mapid < mmap_b->mapid;
 }
