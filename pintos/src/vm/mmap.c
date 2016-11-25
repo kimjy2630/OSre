@@ -35,11 +35,14 @@ struct mmapping* add_mmap(struct thread *t, int fd, uint8_t *uaddr){
 	mmap->mapid = t->mmap_cnt;
 	printf("add_mmap: mapid %d\n", mmap->mapid);
 	t->mmap_cnt++;
+	printf("a %d\n", mmap->mapid);
 	struct process_file *pf = get_process_file_from_fd(t, fd);
 	mmap->file = pf->file;
+	printf("b %d\n", mmap->mapid);
 	lock_acquire(&lock_mmap);
 	hash_insert(&t->mmap_table, mmap);
 	lock_release(&lock_mmap);
+	printf("c %d\n", mmap->mapid);
 
 	printf("add_mmap: mapid before return %d\n", mmap->mapid);
 	return mmap;
