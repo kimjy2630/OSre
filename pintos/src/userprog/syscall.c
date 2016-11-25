@@ -471,6 +471,7 @@ void munmap(mapid_t mapid){
 		ASSERT(he != NULL);
 
 		struct supp_page_entry *spe = hash_entry(he, struct supp_page_entry, elem);
+		printf("spe type %d\n", spe->type);
 		if(spe->type == MEM_MMAP){
 			struct mmapping *mmap = spe->mmap;
 			uint8_t *kaddr = spe->kaddr;
