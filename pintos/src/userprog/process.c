@@ -172,7 +172,7 @@ void process_exit(void) {
 #ifdef VM
 //		printf("clear supp page table\n");
 //		supp_page_table_destroy(&curr->supp_page_table, &curr->lock_page);
-		supp_page_table_destroy(&curr->supp_page_table);
+//		supp_page_table_destroy(&curr->supp_page_table);
 //		if(!hash_empty(&curr->supp_page_table))
 //			printf("supp page table is not empty\n");
 //		ASSERT(hash_empty(&curr->supp_page_table));

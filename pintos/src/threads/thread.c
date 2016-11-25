@@ -292,7 +292,8 @@ tid_t thread_tid(void) {
 /* Deschedules the current thread and destroys it.  Never
  returns to the caller. */
 void thread_exit(void) {
-	int tid = thread_current()->tid;
+	struct thread *curr = thread_current();
+	int tid = curr->tid;
 	enum intr_level old = intr_disable();
 	intr_set_level(old);
 
@@ -300,14 +301,14 @@ void thread_exit(void) {
 
 
 #ifdef USERPROG
-	if(thread_current()->user_thread) {
-//#ifdef VM
-//		if (thread_current()->pagedir != NULL) {
+	if(curr->user_thread) {
+#ifdef VM
+		if (curr->pagedir != NULL) {
 //		lock_acquire(&thread_current()->lock_page);
-//		supp_page_table_destroy(&thread_current()->supp_page_table);
+		supp_page_table_destroy(&curr->supp_page_table);
 //		lock_release(&thread_current()->lock_page);
-//		}
-//#endif
+		}
+#endif
 		process_exit ();
 	}
 #endif
@@ -316,13 +317,13 @@ void thread_exit(void) {
 	 We will be destroyed during the call to schedule_tail(). */
 	intr_disable();
 
-	struct list* list_lock = &thread_current()->list_lock;
+	struct list* list_lock = &curr->list_lock;
 	while (!list_empty(list_lock)) {
 		struct lock* lock = list_entry(list_pop_front(list_lock), struct lock, elem);
 		lock_release(lock);
 	}
 
-	thread_current()->status = THREAD_DYING;
+	curr->status = THREAD_DYING;
 	schedule();
 	NOT_REACHED ();
 }
