@@ -384,17 +384,17 @@ void close(int fd) {
 
 mapid_t mmap(int fd, uint8_t *uaddr){
 	if(uaddr > PHYS_BASE){
-		printf("mmap: kernel access\n");
+//		printf("mmap: kernel access\n");
 		exit(-1);
 	}
 //	printf("pg_ofs %u\n", pg_ofs(uaddr));
 	if(uaddr == 0 || pg_ofs(uaddr) != 0 || fd == 0 || fd == 1){
-		printf("mmap: invalid fd or uaddr\n");
+//		printf("mmap: invalid fd or uaddr\n");
 		return -1;
 	}
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if(pf == NULL){
-		printf("mmap: pf NULL\n");
+//		printf("mmap: pf NULL\n");
 		return -1;
 	}
 	off_t length = filesize(pf->fd);
@@ -436,7 +436,7 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 		tmp_addr += read_bytes;
 	}
 	mapid_t ret_mapid = mmap->mapid;
-	printf("mmap: return %d\n", ret_mapid);
+//	printf("mmap: return %d\n", ret_mapid);
 	return ret_mapid;
 }
 
