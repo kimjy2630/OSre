@@ -16,6 +16,7 @@ struct mmapping* get_mmap_from_mapid(struct thread* t, mapid_t mapid) {
 
 	struct mmapping mmap_tmp;
 	mmap_tmp.mapid = mapid;
+	printf("mapid %d\n", mapid);
 
 	struct hash_elem *e = hash_find(&t->mmap_table, &mmap_tmp.elem);
 	if(e == NULL){
