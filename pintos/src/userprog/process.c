@@ -191,12 +191,12 @@ void process_exit(void) {
 	}
 
 	pd = curr->pagedir;
-#ifdef VM
-	if(pd != NULL){
-		supp_page_table_destroy(&curr->supp_page_table);
-		mmap_table_destroy(&curr->mmap_table);
-	}
-#endif
+//#ifdef VM
+//	if(pd != NULL){
+//		supp_page_table_destroy(&curr->supp_page_table);
+//		mmap_table_destroy(&curr->mmap_table);
+//	}
+//#endif
 
 	enum intr_level old = intr_disable();
 	/* Destroy the current process's page directory and switch back
