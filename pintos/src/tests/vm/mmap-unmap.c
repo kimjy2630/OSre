@@ -15,9 +15,8 @@ test_main (void)
   mapid_t map;
 
   CHECK ((handle = open ("sample.txt")) > 1, "open \"sample.txt\"");
-//  map = mmap (handle, ACTUAL);
   CHECK ((map = mmap (handle, ACTUAL)) != MAP_FAILED, "mmap \"sample.txt\"");
-  printf("map %d\n", map);
+
   munmap (map);
 
   fail ("unmapped memory is readable (%d)", *(int *) ACTUAL);
