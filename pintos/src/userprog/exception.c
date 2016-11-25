@@ -238,7 +238,7 @@ static void page_fault(struct intr_frame *f) {
 				off_t bytes_read = file_read(spe->file, kaddr, spe->page_read_bytes);
 
 //				ASSERT(bytes_read == spe->page_read_bytes); ////
-				memset(kaddr + bytes_read, 0, PGSIZE - bytes_read);
+//				memset(kaddr + bytes_read, 0, PGSIZE - bytes_read);
 				spe->type = MEMORY;
 //				lock_release(&spe->lock); //////
 			} else if(spe->type == SWAP) {
@@ -255,7 +255,7 @@ static void page_fault(struct intr_frame *f) {
 				ASSERT(file != NULL);
 //				file_seek(file, spe->mmap_ofs);
 				off_t bytes_read = file_read_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
-				memset(kaddr + bytes_read, 0, PGSIZE - bytes_read);
+//				memset(kaddr + bytes_read, 0, PGSIZE - bytes_read);
 				spe->type = MEMORY;
 			}
 			fe->finned = false;
