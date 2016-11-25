@@ -473,19 +473,13 @@ void munmap(mapid_t mapid){
 		struct supp_page_entry *spe = hash_entry(he, struct supp_page_entry, elem);
 //		printf("spe type %d, MEM_MMAP %d\n", spe->type, MEM_MMAP);
 		if(spe->type == MEM_MMAP){
-//			struct mmapping *mmap = spe->mmap;
-//			uint8_t *kaddr = spe->kaddr;
-//			struct file *file = mmap->file;
-//			lock_acquire(&lock_file);
-//			file_write_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
-//			lock_release(&lock_file);
-//			frame_free_fe(spe->fe);
 			uint8_t *kaddr = spe->kaddr;
-//			struct file *file = spe->mmap->file;
-//			struct file *file = spe->mmap->file;
-			lock_acquire(&lock_file);
-			file_write_at(spe->mmap->file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
-			lock_release(&lock_file);
+			if(pagedir_is_dirty(spe->t->pagedir, kaddr)){
+				struct file *file = spe->mmap->file;
+				lock_acquire(&lock_file);
+				file_write_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
+				lock_release(&lock_file);
+			}
 			pagedir_clear_page(spe->t->pagedir, spe->uaddr);
 			frame_free_fe(spe->fe);
 		}
