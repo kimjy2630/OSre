@@ -433,18 +433,18 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 		tmp_addr += read_bytes;
 	}
 	mapid_t ret_mapid = mmap->mapid;
-	printf("mmap: return %d\n", ret_mapid);
+//	printf("mmap: return %d\n", ret_mapid);
 	return ret_mapid;
 }
 
 void munmap(mapid_t mapid){
-	printf("munmap: start, mapid %d\n", mapid);
+//	printf("munmap: start, mapid %d\n", mapid);
 	struct thread *t = thread_current();
 	struct mmapping *mmap = get_mmap_from_mapid(t, mapid);
 	if(mmap == NULL)
 		return;
 
-	printf("a\n");
+//	printf("a\n");
 	lock_acquire(&lock_file);
 	off_t length = file_length(mmap->file);
 	lock_release(&lock_file);
@@ -452,7 +452,7 @@ void munmap(mapid_t mapid){
 	int num_page = length / PGSIZE;
 	if(length % PGSIZE != 0)
 		num_page++;
-	printf("b\n");
+//	printf("b\n");
 	uint8_t *uaddr = mmap->uaddr;
 	int i;
 	for(i=0; i<num_page; i++){
@@ -475,14 +475,14 @@ void munmap(mapid_t mapid){
 			frame_free_fe(spe->fe);
 		}
 		pagedir_clear_page(t->pagedir, uaddr);
-		printf("pagedir clear %p\n", uaddr);
+//		printf("pagedir clear %p\n", uaddr);
 		lock_page_acquire();
 		hash_delete(&t->supp_page_table, he);
 		lock_page_release();
 		free(spe);
 		uaddr += PGSIZE;
 	}
-	printf("munmap: end\n");
+//	printf("munmap: end\n");
 }
 
 int get_user(const uint8_t *uaddr) {

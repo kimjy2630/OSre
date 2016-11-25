@@ -16,11 +16,11 @@ struct mmapping* get_mmap_from_mapid(struct thread* t, mapid_t mapid) {
 
 	struct mmapping mmap_tmp;
 	mmap_tmp.mapid = mapid;
-	printf("get_mmap_from_mapid: mapid %d\n", mapid);
+//	printf("get_mmap_from_mapid: mapid %d\n", mapid);
 
 	struct hash_elem *e = hash_find(&t->mmap_table, &mmap_tmp.elem);
 	if(e == NULL){
-		printf("get_map_from_mapid: hash_find NULL\n");
+//		printf("get_map_from_mapid: hash_find NULL\n");
 		return NULL;
 	}
 	struct mmapping *mmap = hash_entry(e, struct mmapping, elem);
