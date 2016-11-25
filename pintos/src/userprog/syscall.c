@@ -420,16 +420,16 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 
 	unsigned rest = length;
 	uint8_t *tmp_addr = uaddr;
-	size_t ofs = 0;
+	size_t mmap_ofs = 0;
 	while(rest>0){
 		struct supp_page_entry *spe = supp_page_add(tmp_addr, true);
 		size_t read_bytes = rest > PGSIZE ? PGSIZE : rest;
 		spe->type = MMAP;
 		spe->mmap = mmap;
-		spe->mmap_ofs = ofs;
+		spe->mmap_ofs = mmap_ofs;
 		spe->mmap_page_read_bytes = read_bytes;
 		rest -= read_bytes;
-		ofs += read_bytes;
+		mmap_ofs += read_bytes;
 		tmp_addr += read_bytes;
 	}
 	mapid_t ret_mapid = mmap->mapid;
