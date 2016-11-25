@@ -247,7 +247,7 @@ void frame_evict() {
 				pagedir_set_accessed(pd, uaddr, 0);
 				list_push_back(&frame, e);
 //				lock_release(&spe->lock); //////
-			} else if(spe->type->MEM_MMAP) {
+			} else if(spe->type == MEM_MMAP) {
 				uint8_t *kaddr = spe->kaddr;
 				if(pagedir_is_dirty(pd, kaddr)){
 					struct file *file = spe->mmap->file;
