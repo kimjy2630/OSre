@@ -484,8 +484,7 @@ void munmap(mapid_t mapid){
 //			struct file *file = spe->mmap->file;
 //			struct file *file = spe->mmap->file;
 			lock_acquire(&lock_file);
-			file_seek(spe->mmap->file, spe->mmap_ofs);
-			file_write(spe->mmap->file, kaddr, spe->mmap_page_read_bytes);
+			file_write_at(spe->mmap->file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
 			lock_release(&lock_file);
 			pagedir_clear_page(spe->t->pagedir, spe->uaddr);
 			frame_free_fe(spe->fe);
