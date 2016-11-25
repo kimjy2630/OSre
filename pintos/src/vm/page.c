@@ -97,7 +97,7 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 	}
 	*/
 //	if (spe->type == MEMORY && fe != NULL) {
-	if (fe != NULL) {
+	if (spe->type == MEMORY && fe != NULL) {
 		pagedir_clear_page(spe->t->pagedir, spe->uaddr);
 		//TODO
 //		frame_free(fe->addr);
@@ -105,9 +105,15 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 //		fe->spe->fe = NULL;
 //		free(fe);
 //		frame_free(spe);
-		frame_free_fe(spe->fe);
-	}
-	if(spe->type == SWAP && spe->swap_index != NULL) {
+		frame_free_fe(fe);
+	} else if(spe->type == MEM_MMAP && fe != NULL){
+		uint8_t *kaddr = spe->kaddr;
+		struct file *file = spe->mmap->file;
+		lock_acquire(&lock_file);
+		file_write_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
+		lock_release(&lock_file);
+		frame_free_fe(fe);
+	} else if(spe->type == SWAP && spe->swap_index != NULL) {
 		swap_free(spe->swap_index);
 	}
 //	lock_release(&spe->lock); //////
