@@ -120,17 +120,7 @@ void exit(int status) {
 	curr->exit_status = status;
 	if (curr->ps != NULL)
 		curr->ps->exit_status = status;
-//#ifdef VM
-////	printf("clear supp page table\n");
-//	supp_page_table_destroy(&curr->supp_page_table);
-//#endif
 	curr->is_exit = true;
-//#ifdef VM
-//	uint32_t *pd;
-//	pd = curr->pagedir;
-//	if(pd != NULL)
-//		supp_page_table_destroy(&curr->supp_page_table);
-//#endif
 	printf("%s: exit(%d)\n", thread_current()->name, thread_current()->exit_status);
 	thread_exit();
 }
