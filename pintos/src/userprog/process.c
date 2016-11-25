@@ -159,7 +159,6 @@ void process_exit(void) {
 
 	/* Destroy the current process's page directory and switch back
 	 to the kernel-only page directory. */
-	enum intr_level old = intr_disable();
 	pd = curr->pagedir;
 	if (pd != NULL) {
 		/* Correct ordering here is crucial.  We must set
@@ -182,6 +181,7 @@ void process_exit(void) {
 		curr->pagedir = NULL;
 	}
 
+	enum intr_level old = intr_disable();
 	if (curr->f != NULL) {
 		file_close(curr->f);
 		curr->f = NULL;
