@@ -251,7 +251,7 @@ static void page_fault(struct intr_frame *f) {
 //				pagedir_set_dirty (t->pagedir, uaddr, true);
 //				printf("swap sfad\n");
 			} else if(spe->type == MMAP){
-				struct file *file = file_reopen(spe->mmap->file);
+				struct file *file = spe->mmap->file;
 				ASSERT(file != NULL);
 				printf("pagefault: add MEM_MMAP page, file %p\n", file);
 //				file_seek(file, spe->mmap_ofs);
