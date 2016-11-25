@@ -155,11 +155,11 @@ void process_exit(void) {
 	int tid = curr->tid;
 	uint32_t *pd;
 
-	enum intr_level old = intr_disable();
 	printf("%s: exit(%d)\n", thread_current()->name, thread_current()->exit_status);
 
 	/* Destroy the current process's page directory and switch back
 	 to the kernel-only page directory. */
+	enum intr_level old = intr_disable();
 	pd = curr->pagedir;
 	if (pd != NULL) {
 		/* Correct ordering here is crucial.  We must set
