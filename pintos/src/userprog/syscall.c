@@ -417,14 +417,14 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 		}
 	}
 	struct mmapping *mmap = add_mmap(thread_current(), file, uaddr);
-	printf("mmap: mmap file %p\n", mmap->file);
+//	printf("mmap: mmap file %p\n", mmap->file);
 
 	unsigned rest = length;
 	uint8_t *tmp_addr = uaddr;
 	size_t mmap_ofs = 0;
 	while(rest>0){
 		struct supp_page_entry *spe = supp_page_add(tmp_addr, true);
-		printf("MMAP spe add\n");
+//		printf("MMAP spe add\n");
 		size_t read_bytes = rest > PGSIZE ? PGSIZE : rest;
 		spe->type = MMAP;
 		spe->mmap = mmap;
