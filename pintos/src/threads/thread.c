@@ -302,7 +302,7 @@ void thread_exit(void) {
 
 
 #ifdef USERPROG
-	if(curr->user_thread) {
+//	if(curr->user_thread) {
 //#ifdef VM
 //		if (curr->pagedir != NULL) {
 ////		lock_acquire(&thread_current()->lock_page);
@@ -311,7 +311,7 @@ void thread_exit(void) {
 //		}
 //#endif
 		process_exit ();
-	}
+//	}
 #endif
 
 	/* Just set our status to dying and schedule another process.
