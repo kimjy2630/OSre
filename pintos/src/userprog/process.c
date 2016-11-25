@@ -194,7 +194,7 @@ void process_exit(void) {
 #ifdef VM
 	if(pd != NULL){
 		supp_page_table_destroy(&curr->supp_page_table);
-		mmap_table_destory(&curr->mmap_table);
+		mmap_table_destroy(&curr->mmap_table);
 	}
 #endif
 

@@ -76,8 +76,6 @@ void mmap_destroy(struct hash_elem *e, void *aux) {
 	free(mmap);
 }
 
-//void supp_page_table_destroy(struct hash *supp_page_table, struct lock* lock_page) {
 void mmap_table_destroy(struct hash *mmap_table) {
-	//TODO
 	hash_destroy(mmap_table, mmap_destroy);
 }
