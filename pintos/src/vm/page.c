@@ -7,6 +7,7 @@
 #include "threads/synch.h"
 #include "userprog/pagedir.h"
 #include "threads/palloc.h"
+#include "userprog/syscall.h"
 
 //void supp_page_init() {
 //
