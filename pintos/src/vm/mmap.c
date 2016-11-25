@@ -41,6 +41,7 @@ struct mmapping* add_mmap(struct thread *t, int fd, uint8_t *uaddr){
 	hash_insert(&t->mmap_table, mmap);
 	lock_release(&lock_mmap);
 
+	printf("add_mmap: mapid before return %d\n", mmap->mapid);
 	return mmap;
 //	struct list *list_pf = &t->list_pf;
 //	struct process_file *pf = malloc(sizeof(struct process_file));
