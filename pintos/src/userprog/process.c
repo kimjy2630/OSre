@@ -151,9 +151,11 @@ int process_wait(tid_t child_tid) {
 
 /* Free the current process's resources. */
 void process_exit(void) {
+//	enum intr_level old = intr_disable();
 	struct thread *curr = thread_current();
 	int tid = curr->tid;
 	uint32_t *pd;
+	printf("%s: exit(%d)\n", thread_current()->name, thread_current()->exit_status);
 
 	/* Destroy the current process's page directory and switch back
 	 to the kernel-only page directory. */
@@ -178,8 +180,6 @@ void process_exit(void) {
 		pagedir_destroy(pd);
 		curr->pagedir = NULL;
 	}
-	enum intr_level old = intr_disable();
-	printf("%s: exit(%d)\n", thread_current()->name, thread_current()->exit_status);
 
 	if (curr->f != NULL) {
 		file_close(curr->f);
@@ -212,7 +212,7 @@ void process_exit(void) {
 		}
 	}
 
-	intr_set_level(old);
+//	intr_set_level(old);
 }
 
 /* Sets up the CPU for running user code in the current
