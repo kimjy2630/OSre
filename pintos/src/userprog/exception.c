@@ -227,8 +227,6 @@ static void page_fault(struct intr_frame *f) {
 				free(spe); ////
 				kill(f);
 			}
-			pagedir_set_dirty (t->pagedir, kaddr, false);
-			pagedir_set_accessed (t->pagedir, kaddr, true);
 
 			if (spe->type == FILE) {
 //				printf("FILE\n");
@@ -260,6 +258,9 @@ static void page_fault(struct intr_frame *f) {
 				spe->type = MEM_MMAP;
 			}
 			fe->finned = false;
+
+			pagedir_set_dirty (t->pagedir, kaddr, false);
+			pagedir_set_accessed (t->pagedir, kaddr, true);
 //			lock_release(&spe->lock);
 //			frame_unfin(kaddr);
 
