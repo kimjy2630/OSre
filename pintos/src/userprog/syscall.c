@@ -454,9 +454,10 @@ void munmap(mapid_t mapid){
 		return;
 
 //	printf("a\n");
-	lock_acquire(&lock_file);
-	off_t length = file_length(mmap->file);
-	lock_release(&lock_file);
+//	lock_acquire(&lock_file);
+//	off_t length = file_length(mmap->file);
+//	lock_release(&lock_file);
+	off_t length = filesize(mmap->pf->fd);
 
 	int num_page = length / PGSIZE;
 	if(length % PGSIZE != 0)
@@ -481,7 +482,8 @@ void munmap(mapid_t mapid){
 //			lock_release(&lock_file);
 //			frame_free_fe(spe->fe);
 			uint8_t *kaddr = spe->kaddr;
-			struct file *file = spe->mmap->file;
+//			struct file *file = spe->mmap->file;
+			struct file *file = spe->mmap->pf->file;
 			lock_acquire(&lock_file);
 			file_write_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
 			lock_release(&lock_file);
