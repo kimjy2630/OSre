@@ -56,7 +56,6 @@ filesys_create (const char *name, off_t initial_size)
     free_map_release (inode_sector, 1);
   dir_close (dir);
 
-  printf("create success? %d\n", success);
   return success;
 }
 
