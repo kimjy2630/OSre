@@ -162,6 +162,7 @@ struct supp_page_entry* stack_grow(void* addr) {
 		//TODO
 //		frame_free(fe->addr);
 		frame_free_fe(fe);
+		lock_release(&t->lock_pd);
 		return NULL;
 	}
 	/* Record the new stack page in the supplemental page table and
