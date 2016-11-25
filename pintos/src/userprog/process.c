@@ -157,7 +157,7 @@ void process_exit(void) {
 	uint32_t *pd;
 
 //	printf("%s: exit(%d)\n", thread_current()->name, thread_current()->exit_status);
-
+/*
 	if (curr->f != NULL) {
 		file_close(curr->f);
 		curr->f = NULL;
@@ -188,7 +188,7 @@ void process_exit(void) {
 			free(pf);
 		}
 	}
-
+*/
 	pd = curr->pagedir;
 	//#ifdef VM
 	//	if(pd != NULL) {
