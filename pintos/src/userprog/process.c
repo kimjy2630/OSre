@@ -151,11 +151,11 @@ int process_wait(tid_t child_tid) {
 
 /* Free the current process's resources. */
 void process_exit(void) {
-	enum intr_level old = intr_disable();
 	struct thread *curr = thread_current();
 	int tid = curr->tid;
 	uint32_t *pd;
 
+	enum intr_level old = intr_disable();
 	printf("%s: exit(%d)\n", thread_current()->name, thread_current()->exit_status);
 
 	/* Destroy the current process's page directory and switch back
