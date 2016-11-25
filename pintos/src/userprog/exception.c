@@ -208,23 +208,6 @@ static void page_fault(struct intr_frame *f) {
 			uint8_t *uaddr = spe->uaddr;
 			uint8_t *kaddr = fe->addr;
 
-			pagedir_clear_page(t->pagedir, uaddr);
-			if (!pagedir_set_page(t->pagedir, uaddr, kaddr, spe->writable)) {
-				//				printf("KILL\n");
-				pagedir_clear_page(t->pagedir, uaddr);
-				palloc_free_page(kaddr);
-				//TODO
-				//				frame_free(fe);
-				//				frame_free(kaddr);
-				spe->fe = NULL;
-				//				lock_acquire(&spe->lock); //////
-				//				frame_free(spe);
-				frame_free_fe(spe->fe);
-				//				lock_release(&spe->lock); //////
-				free(spe);////
-				kill(f);
-				lock_release(&t->lock_pd);
-			}
 
 			fe->finned = true;
 			bool dirty = false;
@@ -265,6 +248,24 @@ static void page_fault(struct intr_frame *f) {
 				spe->type = MEM_MMAP;
 //				pagedir_set_dirty (t->pagedir, kaddr, false);
 //				pagedir_set_accessed (t->pagedir, kaddr, true);
+			}
+
+			pagedir_clear_page(t->pagedir, uaddr);
+			if (!pagedir_set_page(t->pagedir, uaddr, kaddr, spe->writable)) {
+				//				printf("KILL\n");
+				pagedir_clear_page(t->pagedir, uaddr);
+				palloc_free_page(kaddr);
+				//TODO
+				//				frame_free(fe);
+				//				frame_free(kaddr);
+				spe->fe = NULL;
+				//				lock_acquire(&spe->lock); //////
+				//				frame_free(spe);
+				frame_free_fe(spe->fe);
+				//				lock_release(&spe->lock); //////
+				free(spe);////
+				kill(f);
+				lock_release(&t->lock_pd);
 			}
 
 			pagedir_set_dirty (t->pagedir, uaddr, dirty);
