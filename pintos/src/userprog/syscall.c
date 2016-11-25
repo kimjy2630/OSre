@@ -423,7 +423,7 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 			return -1;
 		}
 	}
-	struct mmapping *mmap = add_mmap(thread_current(), file, uaddr);
+	struct mmapping *mmap = add_mmap(thread_current(), pf, file, uaddr);
 //	printf("mmap: mmap file %p\n", mmap->file);
 
 	unsigned rest = length;
@@ -455,7 +455,7 @@ void munmap(mapid_t mapid){
 
 //	printf("a\n");
 	lock_acquire(&lock_file);
-	off_t length = file_length(mmap->file);
+	off_t length = filesize(mmap->pf->fd);
 	lock_release(&lock_file);
 
 	int num_page = length / PGSIZE;
@@ -481,7 +481,7 @@ void munmap(mapid_t mapid){
 //			lock_release(&lock_file);
 //			frame_free_fe(spe->fe);
 			uint8_t *kaddr = spe->kaddr;
-			struct file *file = spe->mmap->file;
+			struct file *file = spe->mmap->pf->file;
 			lock_acquire(&lock_file);
 			file_write_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
 			lock_release(&lock_file);
