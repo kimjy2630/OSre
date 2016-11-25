@@ -262,8 +262,8 @@ static void page_fault(struct intr_frame *f) {
 				kill(f);
 			}
 
-			pagedir_set_dirty (t->pagedir, kaddr, dirty);
-			pagedir_set_accessed (t->pagedir, kaddr, true);
+			pagedir_set_dirty (t->pagedir, uaddr, dirty);
+			pagedir_set_accessed (t->pagedir, uaddr, true);
 			fe->finned = false;
 
 //			lock_release(&spe->lock);

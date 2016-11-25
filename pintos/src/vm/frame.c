@@ -249,7 +249,7 @@ void frame_evict() {
 //				lock_release(&spe->lock); //////
 			} else if(spe->type == MEM_MMAP) {
 				uint8_t *kaddr = spe->kaddr;
-				if(pagedir_is_dirty(pd, kaddr)){
+				if(pagedir_is_dirty(pd, uaddr)){
 					struct file *file = spe->mmap->file;
 					lock_acquire(&lock_file);
 					file_write_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);

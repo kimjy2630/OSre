@@ -474,7 +474,7 @@ void munmap(mapid_t mapid){
 //		printf("spe type %d, MEM_MMAP %d\n", spe->type, MEM_MMAP);
 		if(spe->type == MEM_MMAP){
 			uint8_t *kaddr = spe->kaddr;
-			if(pagedir_is_dirty(spe->t->pagedir, kaddr)){
+			if(pagedir_is_dirty(spe->t->pagedir, uaddr)){
 				struct file *file = spe->mmap->file;
 				lock_acquire(&lock_file);
 				file_write_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
