@@ -8,6 +8,7 @@ typedef int mapid_t;
 struct mmapping{
 	mapid_t mapid;
 	uint8_t *uaddr;
+	struct process_file *pf;
 	struct file *file;
 	struct hash_elem elem;
 };
