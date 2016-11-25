@@ -476,8 +476,6 @@ void munmap(mapid_t mapid){
 			uint8_t *kaddr = spe->kaddr;
 			if(pagedir_is_dirty(t->pagedir, kaddr)){
 				struct file *file = mmap->file;
-				off_t length = file_length(file);
-				printf("munmap file length %u\n", length);
 				lock_acquire(&lock_file);
 //				file_seek(file, spe->mmap_ofs);
 				file_write_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
