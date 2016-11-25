@@ -253,11 +253,10 @@ static void page_fault(struct intr_frame *f) {
 			} else if(spe->type == MMAP){
 				struct file *file = spe->mmap->file;
 				ASSERT(file != NULL);
-				printf("pagefault: add MEM_MMAP page, file %p\n", file);
+				off_t length = file_length(file);
+				printf("pagefault: add MEM_MMAP page, file %p, length %u\n", file, length);
 //				file_seek(file, spe->mmap_ofs);
 				off_t bytes_read = file_read_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
-				size_t length = file_length(file);
-				read(0, kaddr, length);
 //				memset(kaddr + bytes_read, 0, PGSIZE - bytes_read);
 				spe->type = MEM_MMAP;
 			}
