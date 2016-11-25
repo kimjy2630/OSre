@@ -432,8 +432,9 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 		ofs += read_bytes;
 		tmp_addr += read_bytes;
 	}
-	printf("mmap: return %d\n", mmap->mapid);
-	return mmap->mapid;
+	mapid_t ret_mapid = mmap->mapid;
+	printf("mmap: return %d\n", ret_mapid);
+	return ret_mapid;
 }
 
 void munmap(mapid_t mapid){
