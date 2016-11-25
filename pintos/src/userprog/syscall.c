@@ -131,7 +131,6 @@ void exit(int status) {
 	if(pd != NULL)
 		supp_page_table_destroy(&curr->supp_page_table);
 #endif
-	printf("%s: exit(%d)\n", curr->name, curr->exit_status);
 	thread_exit();
 }
 

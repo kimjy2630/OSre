@@ -295,6 +295,7 @@ void thread_exit(void) {
 	struct thread *curr = thread_current();
 	int tid = curr->tid;
 	enum intr_level old = intr_disable();
+	printf("%s: exit(%d)\n", curr->name, curr->exit_status);
 	intr_set_level(old);
 
 	ASSERT(!intr_context());
