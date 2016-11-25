@@ -157,7 +157,7 @@ void process_exit(void) {
 	uint32_t *pd;
 
 	pd = curr->pagedir;
-	enum intr_level old_level = intr_disable();
+//	enum intr_level old_level = intr_disable();
 	/* Destroy the current process's page directory and switch back
 	 to the kernel-only page directory. */
 	if (pd != NULL) {
@@ -177,7 +177,7 @@ void process_exit(void) {
 		curr->pagedir = NULL;
 	}
 
-	intr_set_level(old_level);
+//	intr_set_level(old_level);
 }
 
 /* Sets up the CPU for running user code in the current
