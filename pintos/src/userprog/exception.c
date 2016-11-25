@@ -228,8 +228,8 @@ static void page_fault(struct intr_frame *f) {
 				kill(f);
 			}
 
-			pagedir_set_dirty (t->pagedir, kaddr, false);
-			pagedir_set_accessed (t->pagedir, kaddr, true);
+//			pagedir_set_dirty (t->pagedir, kaddr, false);
+//			pagedir_set_accessed (t->pagedir, kaddr, true);
 
 			if (spe->type == FILE) {
 //				printf("FILE\n");
