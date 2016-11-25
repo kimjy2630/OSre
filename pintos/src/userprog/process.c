@@ -156,50 +156,10 @@ void process_exit(void) {
 	int tid = curr->tid;
 	uint32_t *pd;
 
-//	printf("%s: exit(%d)\n", thread_current()->name, thread_current()->exit_status);
-/*
-	if (curr->f != NULL) {
-		file_close(curr->f);
-		curr->f = NULL;
-	}
-	struct list* list_ps = &curr->list_ps;
-	while (!list_empty(list_ps)) {
-		struct process_status* ps = list_entry(list_pop_front(list_ps),
-				struct process_status, elem);
-		if (ps != NULL) {
-			if (ps->t != NULL) {
-				ps->t->parent = NULL;
-				if (!ps->t->is_exit)
-					process_wait(ps->tid);
-				ps->t->ps = NULL;
-			}
-			free(ps);
-		}
-	}
-
-	struct list* list_pf = &curr->list_pf;
-	while (!list_empty(list_pf)) {
-		struct process_file* pf = list_entry(list_pop_front(list_pf),
-				struct process_file, elem);
-		if (pf != NULL) {
-			if (pf->file != NULL)
-				file_close(pf->file);
-			pf->file = NULL;
-			free(pf);
-		}
-	}
-*/
 	pd = curr->pagedir;
-	//#ifdef VM
-	//	if(pd != NULL) {
-	//		supp_page_table_destroy(&curr->supp_page_table);
-	//		mmap_table_destroy(&curr->mmap_table);
-	//	}
-	//#endif
 	enum intr_level old_level = intr_disable();
 	/* Destroy the current process's page directory and switch back
 	 to the kernel-only page directory. */
-//	lock_acquire(&curr->lock_pd);
 	if (pd != NULL) {
 		/* Correct ordering here is crucial.  We must set
 		 cur->pagedir to NULL before switching page directories,
@@ -216,7 +176,6 @@ void process_exit(void) {
 		pagedir_destroy(pd);
 		curr->pagedir = NULL;
 	}
-//	lock_release(&curr->lock_pd);
 
 	intr_set_level(old_level);
 }
