@@ -185,15 +185,15 @@ void process_exit(void) {
 			free(pf);
 		}
 	}
-
+	pd = curr->pagedir;
 #ifdef VM
-			supp_page_table_destroy(&curr->supp_page_table);
+	if (pd != NULL)
+		supp_page_table_destroy(&curr->supp_page_table);
 #endif
 
 	enum intr_level old = intr_disable();
 	/* Destroy the current process's page directory and switch back
 	 to the kernel-only page directory. */
-	pd = curr->pagedir;
 	if (pd != NULL) {
 		/* Correct ordering here is crucial.  We must set
 		 cur->pagedir to NULL before switching page directories,
