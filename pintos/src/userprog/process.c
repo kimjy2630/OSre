@@ -151,21 +151,16 @@ int process_wait(tid_t child_tid) {
 
 /* Free the current process's resources. */
 void process_exit(void) {
+	enum intr_level old = intr_disable();
 	struct thread *curr = thread_current();
 	int tid = curr->tid;
 	uint32_t *pd;
 
 	printf("%s: exit(%d)\n", thread_current()->name, thread_current()->exit_status);
 
-	pd = curr->pagedir;
-#ifdef VM
-	if (pd != NULL)
-		supp_page_table_destroy(&curr->supp_page_table);
-#endif
-
-	enum intr_level old = intr_disable();
 	/* Destroy the current process's page directory and switch back
 	 to the kernel-only page directory. */
+	pd = curr->pagedir;
 	if (pd != NULL) {
 		/* Correct ordering here is crucial.  We must set
 		 cur->pagedir to NULL before switching page directories,
@@ -174,41 +169,50 @@ void process_exit(void) {
 		 directory before destroying the process's page
 		 directory, or our active page directory will be one
 		 that's been freed (and cleared). */
+#ifdef VM
+//		printf("clear supp page table\n");
+//		supp_page_table_destroy(&curr->supp_page_table, &curr->lock_page);
+		supp_page_table_destroy(&curr->supp_page_table);
+//		if(!hash_empty(&curr->supp_page_table))
+//			printf("supp page table is not empty\n");
+//		ASSERT(hash_empty(&curr->supp_page_table));
+#endif
 		pagedir_activate(NULL);
 		pagedir_destroy(pd);
 		curr->pagedir = NULL;
 	}
 
-
-
-		if (curr->f != NULL) {
-			file_close(curr->f);
-			curr->f = NULL;
-		}
-		struct list* list_ps = &curr->list_ps;
-		while (!list_empty(list_ps)) {
-			struct process_status* ps = list_entry(list_pop_front(list_ps), struct process_status, elem);
-			if (ps != NULL) {
-				if (ps->t != NULL) {
-					ps->t->parent = NULL;
-					if (!ps->t->is_exit)
-						process_wait(ps->tid);
-					ps->t->ps = NULL;
-				}
-				free(ps);
+	if (curr->f != NULL) {
+		file_close(curr->f);
+		curr->f = NULL;
+	}
+	struct list* list_ps = &curr->list_ps;
+	while (!list_empty(list_ps)) {
+		struct process_status* ps = list_entry(list_pop_front(list_ps),
+				struct process_status, elem);
+		if (ps != NULL) {
+			if (ps->t != NULL) {
+				ps->t->parent = NULL;
+				if (!ps->t->is_exit)
+					process_wait(ps->tid);
+				ps->t->ps = NULL;
 			}
+			free(ps);
 		}
+	}
 
-		struct list* list_pf = &curr->list_pf;
-		while (!list_empty(list_pf)) {
-			struct process_file* pf = list_entry(list_pop_front(list_pf), struct process_file, elem);
-			if (pf != NULL) {
-				if (pf->file != NULL)
-					file_close(pf->file);
-				pf->file = NULL;
-				free(pf);
-			}
+	struct list* list_pf = &curr->list_pf;
+	while (!list_empty(list_pf)) {
+		struct process_file* pf = list_entry(list_pop_front(list_pf),
+				struct process_file, elem);
+		if (pf != NULL) {
+			if (pf->file != NULL)
+				file_close(pf->file);
+			pf->file = NULL;
+			free(pf);
 		}
+	}
+
 	intr_set_level(old);
 }
 
