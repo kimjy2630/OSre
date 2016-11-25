@@ -186,12 +186,11 @@ void process_exit(void) {
 		}
 	}
 
-	enum intr_level old = intr_disable();
-	#ifdef VM
+#ifdef VM
 			supp_page_table_destroy(&curr->supp_page_table);
-	#endif
-		intr_set_level(old);
+#endif
 
+	enum intr_level old = intr_disable();
 	/* Destroy the current process's page directory and switch back
 	 to the kernel-only page directory. */
 	pd = curr->pagedir;
@@ -207,6 +206,7 @@ void process_exit(void) {
 		pagedir_destroy(pd);
 		curr->pagedir = NULL;
 	}
+	intr_set_level(old);
 }
 
 /* Sets up the CPU for running user code in the current
