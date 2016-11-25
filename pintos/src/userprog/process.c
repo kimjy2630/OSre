@@ -156,8 +156,7 @@ void process_exit(void) {
 	int tid = curr->tid;
 	uint32_t *pd;
 
-//	enum intr_level old_level = intr_disable();
-	lock_acquire(&curr->lock_pd);
+	enum intr_level old_level = intr_disable();
 	pd = curr->pagedir;
 	/* Destroy the current process's page directory and switch back
 	 to the kernel-only page directory. */
@@ -177,8 +176,7 @@ void process_exit(void) {
 		pagedir_destroy(pd);
 		curr->pagedir = NULL;
 	}
-	lock_release(&curr->lock_pd);
-//	intr_set_level(old_level);
+	intr_set_level(old_level);
 }
 
 /* Sets up the CPU for running user code in the current
