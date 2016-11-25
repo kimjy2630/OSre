@@ -26,7 +26,7 @@ struct mmapping* get_mmap_from_mapid(struct thread* t, mapid_t mapid) {
 	struct mmapping *mmap = hash_entry(e, struct mmapping, elem);
 	return mmap;
 }
-struct mmapping* add_mmap(struct thread *t, int fd, uint8_t *uaddr){
+struct mmapping* add_mmap(struct thread *t, struct file *file, uint8_t *uaddr){
 	struct mmapping *mmap = malloc(sizeof(struct mmapping));
 	if(mmap == NULL)
 		return -1;
@@ -34,8 +34,7 @@ struct mmapping* add_mmap(struct thread *t, int fd, uint8_t *uaddr){
 	mmap->uaddr = uaddr;
 	mmap->mapid = t->mmap_cnt;
 	t->mmap_cnt++;
-	struct process_file *pf = get_process_file_from_fd(t, fd);
-	mmap->file = pf->file;
+	mmap->file = file;
 	lock_acquire(&lock_mmap);
 	hash_insert(&t->mmap_table, &mmap->elem);
 	lock_release(&lock_mmap);

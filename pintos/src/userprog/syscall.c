@@ -416,7 +416,7 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 			return -1;
 		}
 	}
-	struct mmapping *mmap = add_mmap(thread_current(), fd, uaddr);
+	struct mmapping *mmap = add_mmap(thread_current(), file, uaddr);
 	printf("mmap: mmap file %p\n", mmap->file);
 
 	unsigned rest = length;
