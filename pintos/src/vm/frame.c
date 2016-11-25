@@ -256,6 +256,7 @@ void frame_evict() {
 					lock_release(&lock_file);
 				}
 				lock_release(&lock_frame);
+				spe->type = MMAP;
 				pagedir_clear_page(pd, uaddr);
 				fe->spe->fe = NULL;
 				fe->spe->kaddr = NULL;
