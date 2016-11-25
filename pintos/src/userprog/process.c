@@ -155,6 +155,7 @@ void process_exit(void) {
 	int tid = curr->tid;
 	uint32_t *pd;
 
+	printf("%s: exit(%d)\n", thread_current()->name, thread_current()->exit_status);
 
 	pd = curr->pagedir;
 #ifdef VM
@@ -178,7 +179,7 @@ void process_exit(void) {
 		curr->pagedir = NULL;
 	}
 
-	printf("%s: exit(%d)\n", thread_current()->name, thread_current()->exit_status);
+
 
 		if (curr->f != NULL) {
 			file_close(curr->f);
