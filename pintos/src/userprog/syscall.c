@@ -417,7 +417,6 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 		}
 	}
 	struct mmapping *mmap = add_mmap(thread_current(), fd, uaddr);
-	printf("mmap: mmap->mapid %d\n", mmap->mapid);
 
 	unsigned rest = length;
 	uint8_t *tmp_addr = uaddr;
@@ -433,12 +432,11 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 		ofs += read_bytes;
 		tmp_addr += read_bytes;
 	}
-	printf("mmap: return %d\n", mmap->mapid);
 	return mmap->mapid;
 }
 
 void munmap(mapid_t mapid){
-	printf("munmap: start\n");
+	printf("munmap: start, mapid %d\n", mapid);
 	struct thread *t = thread_current();
 	struct mmapping *mmap = get_mmap_from_mapid(t, mapid);
 	if(mmap == NULL)
