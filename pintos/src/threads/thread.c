@@ -335,7 +335,7 @@ void thread_exit(void) {
 #ifdef VM
 	if(curr->pagedir != NULL) {
 		supp_page_table_destroy(&curr->supp_page_table);
-//		mmap_table_destroy(&curr->mmap_table);
+		mmap_table_destroy(&curr->mmap_table);
 	}
 #endif
 	process_exit ();
