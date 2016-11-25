@@ -479,7 +479,7 @@ void munmap(mapid_t mapid){
 				lock_acquire(&lock_file);
 				file_write_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
 				lock_release(&lock_file);
-				printf("file is updated from MEM_MMAP page\n");
+//				printf("file is updated from MEM_MMAP page\n");
 			}
 			pagedir_clear_page(spe->t->pagedir, spe->uaddr);
 			frame_free_fe(spe->fe);
