@@ -102,7 +102,7 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 		}
 		pagedir_clear_page(spe->t->pagedir, spe->uaddr);
 		frame_free_fe(fe);
-	} else if(spe->type == SWAP && spe->swap_index != NULL) {
+	} else if(spe->type == SWAP) {
 		swap_free(spe->swap_index);
 	}
 	ASSERT(spe->uaddr <= PHYS_BASE); // assert spe->uaddr
