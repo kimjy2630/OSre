@@ -117,7 +117,7 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 //				file_write_at(file, spe->kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
 //				lock_release(&lock_file);
 //			}
-		}
+//		}
 		pagedir_clear_page(spe->t->pagedir, spe->uaddr);
 		//TODO
 //		frame_free(fe->addr);
