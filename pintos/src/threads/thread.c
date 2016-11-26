@@ -12,7 +12,7 @@
 #include "threads/synch.h"
 #include "threads/vaddr.h"
 #include "userprog/process.h"
-//#include "userprog/syscall.h"
+#include "userprog/syscall.h"
 #include <stdlib.h>
 #ifdef VM
 #include "lib/kernel/hash.h"
