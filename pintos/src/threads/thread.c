@@ -180,7 +180,7 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 	char *fun_name = strtok_r(buffer, " ", &last);
 	init_thread(t, fun_name, priority);
 	free(buffer);
-	lock_init(&t->lock_pd);
+//	lock_init(&t->lock_pd);
 	list_init(&t->list_wait);
 #else
 	init_thread (t, name, priority);
