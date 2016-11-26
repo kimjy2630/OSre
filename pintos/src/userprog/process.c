@@ -135,9 +135,13 @@ int process_wait(tid_t child_tid) {
 		}
 	}
 	if (flag) {
-		while (child->t->user_thread && !child->t->is_exit){
-			printf("thread_yield %d\n", child->t->tid);
-			thread_yield();
+//		while (child->t->user_thread && !child->t->is_exit){
+////			printf("thread_yield %d\n", child->t->tid);
+//			thread_yield();
+//		}
+		if (child->t->user_thread && !child->t->is_exit){
+			list_push_back(&child->t->list_wait, &t->elem_wait);
+			thread_block();
 		}
 		int status = child->exit_status;
 		//TODO

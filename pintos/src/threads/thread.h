@@ -118,6 +118,9 @@ struct thread
     struct list list_ps;
 
     struct file* f;
+
+    struct list list_wait;
+    struct list_elem elem_wait;
 #endif
 
 #ifdef VM

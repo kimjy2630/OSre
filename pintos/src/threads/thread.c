@@ -181,6 +181,7 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 	init_thread(t, fun_name, priority);
 	free(buffer);
 	lock_init(&t->lock_pd);
+	list_init(&t->list_wait);
 #else
 	init_thread (t, name, priority);
 #endif
@@ -295,8 +296,8 @@ tid_t thread_tid(void) {
 void thread_exit(void) {
 	struct thread *curr = thread_current();
 	int tid = curr->tid;
-	enum intr_level old = intr_disable();
-	intr_set_level(old);
+//	enum intr_level old = intr_disable();
+//	intr_set_level(old);
 
 	ASSERT(!intr_context());
 
@@ -331,6 +332,12 @@ void thread_exit(void) {
 			pf->file = NULL;
 			free(pf);
 		}
+	}
+
+	struct list *list_wait = &curr->list_wait;
+	while (!list_empty(list_wait)) {
+		struct thread* t = list_entry(list_pop_front(list_wait), struct thread, elem_wait);
+		thread_unblock(t);
 	}
 #ifdef VM
 	if(curr->pagedir != NULL) {
