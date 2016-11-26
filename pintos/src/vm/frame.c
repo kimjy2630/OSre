@@ -336,7 +336,7 @@ void frame_evict_ver2() {
 
 		if (uaddr > PHYS_BASE) {
 //			lock_release(&lock_frame);
-			printf("kernel access!\n");
+			printf("frame_evict: kernel access! %p\n");
 			exit(-1);
 		}
 

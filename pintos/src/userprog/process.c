@@ -463,7 +463,7 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 #ifdef VM
 		if(upage >= PHYS_BASE) {
 //			printf("upage:%p\n", upage);
-			printf("kernel access! %p\n", upage);
+			printf("load_segment: kernel access! %p\n", upage);
 			exit(-1);
 		}
 		struct supp_page_entry *spe = supp_page_add(upage, writable);
