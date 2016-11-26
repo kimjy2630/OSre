@@ -347,6 +347,36 @@ void frame_evict_ver2() {
 		} else if (pagedir_is_accessed(pd, uaddr)) {
 			pagedir_set_accessed(pd, uaddr, 0);
 			evict_pointer = next_pointer(evict_pointer);
+		} else if(spe->type == MEM_MMAP) {
+			uint8_t *kaddr = spe->kaddr;
+			if(pagedir_is_dirty(pd, uaddr)){
+				struct file *file = spe->mmap->file;
+				lock_acquire(&lock_file);
+				file_write_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
+				lock_release(&lock_file);
+			}
+			spe->type = MMAP;
+
+			struct list_elem *ptr = evict_pointer;
+			evict_pointer = next_pointer(evict_pointer);
+
+			lock_acquire(&lock_frame); //////
+			list_remove(ptr);
+			lock_release(&lock_frame); //////
+
+			pagedir_clear_page(pd, uaddr);
+			fe->spe->fe = NULL;
+			fe->spe->kaddr = NULL;
+			palloc_free_page(fe->addr);
+			free(fe);
+			break;
+
+//			pagedir_clear_page(pd, uaddr);
+//			fe->spe->fe = NULL;
+//			fe->spe->kaddr = NULL;
+//			palloc_free_page(fe->addr);
+//			free(fe);
+//			break;
 		} else {
 			spe->swap_index = swap_load(fe->addr);
 			spe->type = SWAP;
