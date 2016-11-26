@@ -139,10 +139,12 @@ int process_wait(tid_t child_tid) {
 ////			printf("thread_yield %d\n", child->t->tid);
 //			thread_yield();
 //		}
+		enum intr_level old_level = intr_disable();
 		if (child->t->user_thread && !child->t->is_exit){
 			list_push_back(&child->t->list_wait, &t->elem_wait);
 			thread_block();
 		}
+		intr_set_level(old_level);
 		int status = child->exit_status;
 		//TODO
 		if (child->t != NULL) {
