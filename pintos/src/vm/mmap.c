@@ -65,10 +65,6 @@ bool hash_less_mapid(const struct hash_elem *a, const struct hash_elem *b, void 
 	mmap_b = hash_entry(b, struct mmapping, elem);
 	return mmap_a->mapid < mmap_b->mapid;
 }
-void mmap_release_lock_mmap(){
-	if(lock_held_by_current_thread(&lock_mmap)) //////
-				lock_release(&lock_mmap);
-}
 
 void mmap_destroy(struct hash_elem *e, void *aux) {
 	struct mmapping *mmap;
@@ -81,6 +77,5 @@ void mmap_destroy(struct hash_elem *e, void *aux) {
 }
 
 void mmap_table_destroy(struct hash *mmap_table) {
-	mmap_release_lock_mmap();
 	hash_destroy(mmap_table, mmap_destroy);
 }
