@@ -326,7 +326,7 @@ void frame_evict_ver2() {
 		evict_pointer = list_front(&frame);
 //	lock_release(&lock_frame);
 
-	int cnt = 0;
+//	int cnt = 0;
 	while (!list_empty(&frame)) {
 //		printf("loop %d, frame size %d\n", cnt, list_size(&frame));
 		fe = list_entry(evict_pointer, struct frame_entry, elem);
@@ -387,7 +387,7 @@ void frame_evict_ver2() {
 			free(fe);
 			break;
 		}
-		cnt++;
+//		cnt++;
 	}
 	if (lock_held_by_current_thread(&lock_frame)) //////
 		lock_release(&lock_frame);
