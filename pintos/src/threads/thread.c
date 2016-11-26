@@ -12,6 +12,7 @@
 #include "threads/synch.h"
 #include "threads/vaddr.h"
 #include "userprog/process.h"
+#include "userprog/syscall.h"
 #include <stdlib.h>
 #ifdef VM
 #include "lib/kernel/hash.h"
@@ -304,7 +305,9 @@ void thread_exit(void) {
 
 #ifdef USERPROG
 	if (curr->f != NULL) {
+		lock_acquire(&lock_file);
 		file_close(curr->f);
+		lock_release(&lock_file);
 		curr->f = NULL;
 	}
 	struct list* list_ps = &curr->list_ps;
@@ -327,8 +330,11 @@ void thread_exit(void) {
 		struct process_file* pf = list_entry(list_pop_front(list_pf),
 				struct process_file, elem);
 		if (pf != NULL) {
-			if (pf->file != NULL)
-			file_close(pf->file);
+			if (pf->file != NULL){
+				lock_acquire(&lock_file);
+				file_close(pf->file);
+				lock_release(&lock_file);
+			}
 			pf->file = NULL;
 			free(pf);
 		}
