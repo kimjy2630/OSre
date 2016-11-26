@@ -348,11 +348,10 @@ void frame_evict_ver2() {
 			pagedir_set_accessed(pd, uaddr, 0);
 			evict_pointer = next_pointer(evict_pointer);
 		} else if(spe->type == MEM_MMAP) {
-			uint8_t *kaddr = spe->kaddr;
 			if(pagedir_is_dirty(pd, uaddr)){
 				struct file *file = spe->mmap->file;
 				lock_acquire(&lock_file);
-				file_write_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
+				file_write_at(file, fe->addr, spe->mmap_page_read_bytes, spe->mmap_ofs);
 				lock_release(&lock_file);
 			}
 			spe->type = MMAP;
@@ -365,18 +364,11 @@ void frame_evict_ver2() {
 			lock_release(&lock_frame); //////
 
 			pagedir_clear_page(pd, uaddr);
-			fe->spe->fe = NULL;
-			fe->spe->kaddr = NULL;
+			spe->fe = NULL;
+			spe->kaddr = NULL;
 			palloc_free_page(fe->addr);
 			free(fe);
 			break;
-
-//			pagedir_clear_page(pd, uaddr);
-//			fe->spe->fe = NULL;
-//			fe->spe->kaddr = NULL;
-//			palloc_free_page(fe->addr);
-//			free(fe);
-//			break;
 		} else {
 			spe->swap_index = swap_load(fe->addr);
 			spe->type = SWAP;
@@ -389,8 +381,8 @@ void frame_evict_ver2() {
 			lock_release(&lock_frame); //////
 
 			pagedir_clear_page(pd, uaddr);
-			fe->spe->fe = NULL;
-			fe->spe->kaddr = NULL;
+			spe->fe = NULL;
+			spe->kaddr = NULL;
 			palloc_free_page(fe->addr);
 			free(fe);
 			break;
