@@ -302,7 +302,12 @@ void thread_exit(void) {
 
 	ASSERT(!intr_context());
 
-
+#ifdef VM
+	if(curr->pagedir != NULL) {
+		supp_page_table_destroy(&curr->supp_page_table);
+		mmap_table_destroy(&curr->mmap_table);
+	}
+#endif
 #ifdef USERPROG
 	if (curr->f != NULL) {
 		lock_acquire(&lock_file);
@@ -345,12 +350,6 @@ void thread_exit(void) {
 		struct thread* t = list_entry(list_pop_front(list_wait), struct thread, elem_wait);
 		thread_unblock(t);
 	}
-#ifdef VM
-	if(curr->pagedir != NULL) {
-		supp_page_table_destroy(&curr->supp_page_table);
-		mmap_table_destroy(&curr->mmap_table);
-	}
-#endif
 	process_exit ();
 #endif
 
