@@ -331,6 +331,7 @@ void frame_evict_ver2() {
 //		printf("loop %d, frame size %d\n", cnt, list_size(&frame));
 		fe = list_entry(evict_pointer, struct frame_entry, elem);
 		spe = fe->spe;
+		ASSERT(spe->uaddr <= PHYS_BASE); // assert spe->uaddr
 		pd = spe->t->pagedir;
 		uaddr = spe->uaddr;
 

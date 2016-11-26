@@ -254,6 +254,8 @@ int read(int fd, void *buffer, unsigned length) {
 		} else
 			spe = hash_entry(he, struct supp_page_entry, elem);
 
+		ASSERT(spe->uaddr <= PHYS_BASE); // assert spe->uaddr
+
 //		ASSERT(spe != NULL);
 //		ASSERT(tmp_buf != NULL);
 //		lock_acquire(&spe->lock); //////
@@ -335,6 +337,7 @@ int write(int fd, const void *buffer, unsigned length) {
 		} else
 			spe = hash_entry(he, struct supp_page_entry, elem);
 
+		ASSERT(spe->uaddr <= PHYS_BASE); // assert spe->uaddr
 //		ASSERT(spe != NULL);
 //		ASSERT(tmp_buf !=NULL);
 
@@ -431,6 +434,8 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 		rest -= read_bytes;
 		mmap_ofs += read_bytes;
 		tmp_addr += read_bytes;
+
+		ASSERT(spe->uaddr <= PHYS_BASE); // assert spe->uaddr
 	}
 	mapid_t ret_mapid = mmap->mapid;
 //	printf("mmap: return %d\n", ret_mapid);
@@ -480,6 +485,7 @@ void munmap(mapid_t mapid){
 		lock_page_acquire();
 		hash_delete(&t->supp_page_table, he);
 		lock_page_release();
+		ASSERT(spe->uaddr <= PHYS_BASE); // assert spe->uaddr
 		free(spe);
 		uaddr += PGSIZE;
 	}

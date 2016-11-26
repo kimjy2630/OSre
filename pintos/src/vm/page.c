@@ -46,6 +46,7 @@ struct supp_page_entry* supp_page_add(uint8_t *addr, bool writable) {
 	hash_insert(&supp_page_table, &spe->elem);
 	lock_release(&lock_page);
 //	lock_release(&spe->t->lock_page);
+	ASSERT(spe->uaddr <= PHYS_BASE); // assert spe->uaddr
 	return spe;
 }
 /*
@@ -71,6 +72,7 @@ bool supp_page_remove(uint8_t *addr) {
 unsigned hash_addr(struct hash_elem *e, void *aux) {
 	struct supp_page_entry *spe;
 	spe = hash_entry(e, struct supp_page_entry, elem);
+	ASSERT(spe->uaddr <= PHYS_BASE); // assert spe->uaddr
 	return hash_int(spe->uaddr);
 }
 
@@ -78,6 +80,8 @@ bool hash_less_addr(const struct hash_elem *a, const struct hash_elem *b, void *
 	struct supp_page_entry *spe_a, *spe_b;
 	spe_a = hash_entry(a, struct supp_page_entry, elem);
 	spe_b = hash_entry(b, struct supp_page_entry, elem);
+	ASSERT(spe_a->uaddr <= PHYS_BASE); // assert spe->uaddr
+	ASSERT(spe_b->uaddr <= PHYS_BASE); // assert spe->uaddr
 	return spe_a->uaddr < spe_b->uaddr;
 }
 
@@ -101,6 +105,7 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 	} else if(spe->type == SWAP && spe->swap_index != NULL) {
 		swap_free(spe->swap_index);
 	}
+	ASSERT(spe->uaddr <= PHYS_BASE); // assert spe->uaddr
 	free(spe);
 }
 
@@ -138,6 +143,7 @@ struct supp_page_entry* stack_grow(void* addr) {
 	 the frame table. */
 	struct supp_page_entry *spe = supp_page_add(pg_round_down(addr), true);
 
+
 //	lock_acquire(&spe->lock); //////
 
 	spe->t = t;
@@ -152,6 +158,6 @@ struct supp_page_entry* stack_grow(void* addr) {
 
 	memset(spe->kaddr, 0, PGSIZE);
 
-//	lock_release(&spe->lock); //////
+	ASSERT(spe->uaddr <= PHYS_BASE); // assert spe->uaddr
 	return spe;
 }

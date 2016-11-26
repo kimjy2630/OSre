@@ -469,6 +469,7 @@ static bool load_segment(struct file *file, off_t ofs, uint8_t *upage, uint32_t 
 		struct supp_page_entry *spe = supp_page_add(upage, writable);
 //		lock_acquire(&spe->lock); //////
 //		printf("load_segment spe uaddr:%p\n", upage);
+		ASSERT(spe->uaddr <= PHYS_BASE); // assert spe->uaddr
 		if(page_zero_bytes == PGSIZE)
 			spe->type = ZERO;
 		else
@@ -535,6 +536,7 @@ static bool setup_stack(void **esp) {
 			*esp = PHYS_BASE;
 #ifdef VM
 			struct supp_page_entry *spe = supp_page_add(((uint8_t *) PHYS_BASE) - PGSIZE, true);
+			ASSERT(spe->uaddr <= PHYS_BASE); // assert spe->uaddr
 //			lock_acquire(&spe->lock); //////
 //			printf("setup stack spe uaddr:%p\n", spe->uaddr);
 			spe->type = MEMORY;
