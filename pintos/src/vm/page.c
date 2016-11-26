@@ -83,32 +83,10 @@ bool hash_less_addr(const struct hash_elem *a, const struct hash_elem *b, void *
 
 void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 	struct supp_page_entry *spe;
-//	uint8_t *kaddr;
 	struct frame_entry *fe;
 
 	spe = hash_entry(e, struct supp_page_entry, elem);
-//	lock_acquire(&spe->lock); //////
 	fe = spe->fe;
-	/*
-	if (spe->type == MEMORY && fe != NULL) {
-		pagedir_clear_page(spe->t->pagedir, spe->uaddr);
-		//TODO
-//		frame_free(fe);
-		frame_free(fe->addr);
-	}
-	*/
-//	if (spe->type == MEM_MMAP){
-//		uint8_t *uaddr = spe->uaddr;
-//		uint8_t *kaddr = spe->kaddr;
-//		if (pagedir_is_dirty(spe->t->pagedir, uaddr)) {
-//			struct file *file = spe->mmap->file;
-//			lock_acquire(&lock_file);
-//			file_write_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
-//			lock_release(&lock_file);
-//		}
-//		pagedir_clear_page(spe->t->pagedir, spe->uaddr);
-//		frame_free_fe(fe);
-//	} else
 	if (fe != NULL) {
 //		if (spe->type == MEM_MMAP) {
 //			if (pagedir_is_dirty(spe->t->pagedir, spe->uaddr)) {
@@ -119,27 +97,10 @@ void supp_page_entry_destroy(struct hash_elem *e, void *aux) {
 //			}
 //		}
 		pagedir_clear_page(spe->t->pagedir, spe->uaddr);
-		//TODO
-//		frame_free(fe->addr);
-//		list_remove(&fe->elem);
-//		fe->spe->fe = NULL;
-//		free(fe);
-//		frame_free(spe);
 		frame_free_fe(fe);
-	}
-//	else if(spe->type == MEM_MMAP && fe != NULL){
-//		uint8_t *kaddr = spe->kaddr;
-//		struct file *file = spe->mmap->file;
-//		lock_acquire(&lock_file);
-//		file_write_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
-//		lock_release(&lock_file);
-//		pagedir_clear_page(spe->t->pagedir, spe->uaddr);
-//		frame_free_fe(fe);
-//	}
-	else if(spe->type == SWAP && spe->swap_index != NULL) {
+	} else if(spe->type == SWAP && spe->swap_index != NULL) {
 		swap_free(spe->swap_index);
 	}
-//	lock_release(&spe->lock); //////
 	free(spe);
 }
 
