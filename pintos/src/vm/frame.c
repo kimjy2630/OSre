@@ -262,7 +262,7 @@ void frame_evict() {
 				fe->spe->kaddr = NULL;
 				palloc_free_page(fe->addr);
 				free(fe);
-				break;
+//				break;
 			} else {
 //			printf("evict find! - send to swap\n");
 //				fe->finned = true;
