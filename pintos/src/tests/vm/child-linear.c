@@ -31,5 +31,6 @@ main (int argc, char *argv[])
   for (i = 0; i < SIZE; i++)
     if (buf[i] != '\0')
       fail ("byte %zu != 0", i);
+
   return 0x42;
 }
