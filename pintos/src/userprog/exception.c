@@ -152,10 +152,8 @@ static void page_fault(struct intr_frame *f) {
 	write = (f->error_code & PF_W) != 0;
 	user = (f->error_code & PF_U) != 0;
 #ifdef VM
-//printf("PAGE FAULT\n");
 	if(debug)
 	printf("fault_addr:%p, &fault_addr:%p %s %d\n", fault_addr, &fault_addr, thread_current()->name, thread_current()->tid);
-//	printf("fault_addr:%p, &fault_addr:%p %s %d\n", fault_addr, &fault_addr, thread_current()->name, thread_current()->tid);
 	if(fault_addr >= PHYS_BASE) {
 		if(debug || debug2) {
 			printf("not user addr\n");
@@ -173,30 +171,19 @@ static void page_fault(struct intr_frame *f) {
 	}
 
 	if (not_present) {
-//		printf("NOT PRESENT\n");
-//		printf("fault_addr:%p, &fault_addr:%p %s %d\n", fault_addr, &fault_addr, thread_current()->name, thread_current()->tid);
 		struct supp_page_entry spe_tmp;
 		spe_tmp.uaddr = pg_round_down(fault_addr);
 
 		struct thread *t = thread_current();
 		struct hash_elem *he = hash_find(&t->supp_page_table, &spe_tmp.elem);
-//		printf("aaa\n");
 
 		if (he != NULL) {
-//			printf("bbb\n");
 			struct supp_page_entry* spe = hash_entry(he,struct supp_page_entry,elem);
-//			lock_acquire(&spe->lock);
-
-//			printf("exception not_present spe uaddr:%p\n", spe->uaddr);
-//			printf("NOT NULL\n");
-//			spe->uaddr = pg_round_down(spe->uaddr);
 			if(spe->uaddr > PHYS_BASE) {
-//				printf("uaddr:%p\n", spe->uaddr);
 				if(debug)
 				printf("kernel access in page fault!\n");
 				exit(-1);
 			}
-//			ASSERT(pg_ofs(spe->uaddr) == 0); ////
 
 			struct frame_entry *fe = frame_add(PAL_USER | PAL_ZERO);
 
@@ -204,100 +191,46 @@ static void page_fault(struct intr_frame *f) {
 			spe->fe = fe;
 
 			spe->kaddr = fe->addr;
-//			ASSERT(pg_round_down(fault_addr) == spe->uaddr); ////
 			uint8_t *uaddr = spe->uaddr;
 			uint8_t *kaddr = fe->addr;
 
 
 			fe->finned = true;
 			bool dirty = false;
-//			frame_fin(kaddr);
 			// TODO
 			if (spe->type == FILE) {
-//				printf("FILE\n");
-//				lock_acquire(&spe->lock); //////
-
-//				lock_acquire(&lock_file);
 				file_seek(spe->file, spe->ofs);
 				off_t bytes_read = file_read(spe->file, kaddr, spe->page_read_bytes);
-//				lock_release(&lock_file);
-
-//				ASSERT(bytes_read == spe->page_read_bytes); ////
-//				memset(kaddr + bytes_read, 0, PGSIZE - bytes_read);
 				spe->type = MEMORY;
-//				lock_release(&spe->lock); //////
 			} else if(spe->type == SWAP) {
-//				printf("SWAP\n");
-//				lock_acquire(&spe->lock); //////
 				swap_unload(spe->swap_index, kaddr);
 				spe->swap_index = NULL;
 				spe->type = MEMORY;
 				dirty = true;
-//				lock_release(&spe->lock); //////
-//				pagedir_set_dirty (t->pagedir, uaddr, true);
-//				printf("swap sfad\n");
 			} else if(spe->type == MMAP){
-//				printf("pagefault MMAP\n");
 				struct file *file = spe->mmap->file;
 				ASSERT(file != NULL);
-//				file_seek(file, spe->mmap_ofs);
-//				lock_acquire(&lock_file);
 				off_t bytes_read = file_read_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
-//				lock_release(&lock_file);
-//				memset(kaddr + bytes_read, 0, PGSIZE - bytes_read);
 				spe->type = MEM_MMAP;
-//				pagedir_set_dirty (t->pagedir, kaddr, false);
-//				pagedir_set_accessed (t->pagedir, kaddr, true);
 			}
 
 			pagedir_clear_page(t->pagedir, uaddr);
 			if (!pagedir_set_page(t->pagedir, uaddr, kaddr, spe->writable)) {
-				//				printf("KILL\n");
 				pagedir_clear_page(t->pagedir, uaddr);
 				palloc_free_page(kaddr);
-				//TODO
-				//				frame_free(fe);
-				//				frame_free(kaddr);
 				spe->fe = NULL;
-				//				lock_acquire(&spe->lock); //////
-				//				frame_free(spe);
 				frame_free_fe(spe->fe);
-				//				lock_release(&spe->lock); //////
-				free(spe);////
+				free(spe);
 				kill(f);
-//				lock_release(&t->lock_pd);
 			}
 
 			pagedir_set_dirty (t->pagedir, uaddr, dirty);
 			pagedir_set_accessed (t->pagedir, uaddr, true);
 			fe->finned = false;
 
-//			lock_release(&spe->lock);
-//			frame_unfin(kaddr);
-
-			/*
-			pagedir_clear_page(t->pagedir, uaddr);
-			// TODO
-			if (!pagedir_set_page(t->pagedir, uaddr, kaddr, spe->writable)) {
-//				printf("KILL\n");
-				palloc_free_page(kaddr);
-				//TODO
-//				frame_free(fe);
-				frame_free(kaddr);
-				spe->fe = NULL;
-				kill(f);
-			}
-			pagedir_set_dirty (t->pagedir, uaddr, false);
-			pagedir_set_accessed (t->pagedir, uaddr, true);
-			*/
-			////
-//			if(!spe->writable)
-//				printf("uaddr:[%p] is not writable\n");
-
 			return;
 		} else {
 			/* extend stack */
-//			printf("ccc\n");
 			void* esp;
 			if(user) {
 				esp = f->esp;
@@ -312,13 +245,8 @@ static void page_fault(struct intr_frame *f) {
 
 
 			uint32_t offset = ((uint32_t *) PHYS_BASE) - ((uint32_t *)fault_addr);
-//			printf("fault_addr:%p\n", fault_addr);
 			if (offset > STACK_LIMIT) {
-				if(debug) {
-					printf("stack overflow\n");
-					printf("fault addr:%p\n", fault_addr);
-				}
-				if(debug2){
+				if(debug || debug2) {
 					printf("stack overflow\n");
 					printf("fault addr:%p\n", fault_addr);
 				}
@@ -355,12 +283,8 @@ static void page_fault(struct intr_frame *f) {
 			f->eax = 0xffffffff;
 			exit(-1);
 		}
-
-		// invalid
-//		exit(-1);
 	}
 	if(user) {
-//		printf("CCC\n");
 		kill(f);
 	}
 	else {
@@ -370,7 +294,6 @@ static void page_fault(struct intr_frame *f) {
 		f->eax = 0xffffffff;
 		exit(-1);
 	}
-//	kill (f);
 #else
 
 	/* To implement virtual memory, delete the rest of the function
