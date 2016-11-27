@@ -16,15 +16,11 @@ struct supp_page_entry{
 	void* uaddr;
 	void* kaddr;
 	bool writable;
-//	struct frame_entry *fe;
 	enum page_type type;
 	struct hash_elem elem;
-//	struct lock lock_using;
 	size_t swap_index;
 	struct frame_entry *fe;
 	struct thread *t;
-
-//	struct lock lock;
 
 	/* used for file page */
 	struct file* file;
