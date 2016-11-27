@@ -88,7 +88,6 @@ void supp_page_table_destroy(struct hash *supp_page_table) {
 }
 
 struct supp_page_entry* stack_grow(void* addr) {
-	/* If we're here, let's give this process another page */
 	struct frame_entry *fe = frame_add(PAL_ZERO | PAL_USER);
 	struct thread* t = thread_current();
 
@@ -99,8 +98,6 @@ struct supp_page_entry* stack_grow(void* addr) {
 		frame_free_fe(fe);
 		return NULL;
 	}
-	/* Record the new stack page in the supplemental page table and
-	 the frame table. */
 	struct supp_page_entry *spe = supp_page_add(pg_round_down(addr), true);
 
 

@@ -9,7 +9,6 @@
 #include <string.h>
 #include "threads/synch.h"
 #include "lib/kernel/hash.h"
-//#include "userprog/pagedir.h"
 #include "filesys/file.h"
 #include "vm/page.h"
 #include "vm/frame.h"
@@ -52,12 +51,9 @@ syscall_handler (struct intr_frame *f UNUSED)
 #ifdef VM
 	thread_current()->esp = f->esp;
 #endif
-//	printf("read validity:%p\n", ptr);
 	if (!read_validity(ptr, 4)){
-//		printf("hahaha\n");
 		exit(-1);
 	}
-//	printf("I'm valid!\n");
 	switch (*((int*) ptr)) {
 		case SYS_HALT:
 		halt();
@@ -158,7 +154,6 @@ bool remove(const char *file) {
 }
 int open(const char *file) {
 	if (!read_validity(file, strlen(file) + 1)) {
-//		printf("sys open read validity error\n");
 		exit(-1);
 		return -1;
 	}
@@ -188,7 +183,6 @@ int filesize(int fd) {
 }
 int read(int fd, void *buffer, unsigned length) {
 	if (!read_validity(buffer, length) || !write_validity(buffer, length)) {
-//		printf("read not valid\n");
 		exit(-1);
 		return -1;
 	}
@@ -232,7 +226,6 @@ int read(int fd, void *buffer, unsigned length) {
 	free(tmp_buf);
 	return cnt;
 	*/
-//	/*
 	void* tmp_buf = buffer;
 	unsigned rest = length;
 	int cnt = 0;
@@ -254,11 +247,8 @@ int read(int fd, void *buffer, unsigned length) {
 		} else
 			spe = hash_entry(he, struct supp_page_entry, elem);
 
-		ASSERT(spe->uaddr <= PHYS_BASE); // assert spe->uaddr
+		ASSERT(spe->uaddr <= PHYS_BASE);
 
-//		ASSERT(spe != NULL);
-//		ASSERT(tmp_buf != NULL);
-//		lock_acquire(&spe->lock); //////
 		spe->fe->finned = true;
 		size_t read_bytes = ofs + rest > PGSIZE ? PGSIZE - ofs : rest;
 
@@ -270,29 +260,23 @@ int read(int fd, void *buffer, unsigned length) {
 		tmp_buf += read_bytes;
 
 		spe->fe->finned = false;
-//		lock_release(&spe->lock); //////
 	}
 	return cnt;
-//	*/
 }
 
 int write(int fd, const void *buffer, unsigned length) {
-//	printf("sys write\n");
 	if (!read_validity(buffer, length)) {
-//		printf("write not valid\n");
 		exit(-1);
 		return -1;
 	}
 
-	if (fd == 1) { // write to console
-//		printf("write to console\n");
+	if (fd == 1) {
 		putbuf(buffer, (size_t) length);
 		return length;
 	}
 
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if (pf == NULL){
-//		printf("write null file!\n");
 		return 0;
 	}
 	/*
@@ -316,7 +300,6 @@ int write(int fd, const void *buffer, unsigned length) {
 	free(tmp_buf);
 	return cnt;
 	*/
-//	/*
 	unsigned rest = length;
 	void *tmp_buf = (void *) buffer;
 	int cnt = 0;
@@ -337,11 +320,7 @@ int write(int fd, const void *buffer, unsigned length) {
 		} else
 			spe = hash_entry(he, struct supp_page_entry, elem);
 
-		ASSERT(spe->uaddr <= PHYS_BASE); // assert spe->uaddr
-//		ASSERT(spe != NULL);
-//		ASSERT(tmp_buf !=NULL);
-
-//		lock_acquire(&spe->lock); //////
+		ASSERT(spe->uaddr <= PHYS_BASE);
 		spe->fe->finned = true;
 		size_t write_bytes = ofs + rest > PGSIZE ? PGSIZE - ofs : rest;
 
@@ -353,10 +332,8 @@ int write(int fd, const void *buffer, unsigned length) {
 		tmp_buf += write_bytes;
 
 		spe->fe->finned = false;
-//		lock_release(&spe->lock);//////
 	}
 	return cnt;
-//	*/
 }
 
 void seek(int fd, unsigned position) {
