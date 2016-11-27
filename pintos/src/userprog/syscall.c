@@ -384,17 +384,13 @@ void close(int fd) {
 
 mapid_t mmap(int fd, uint8_t *uaddr){
 	if(uaddr > PHYS_BASE){
-//		printf("mmap: kernel access\n");
 		exit(-1);
 	}
-//	printf("pg_ofs %u\n", pg_ofs(uaddr));
 	if(uaddr == 0 || pg_ofs(uaddr) != 0 || fd == 0 || fd == 1){
-//		printf("mmap: invalid fd or uaddr\n");
 		return -1;
 	}
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if(pf == NULL){
-//		printf("mmap: pf NULL\n");
 		return -1;
 	}
 	off_t length = filesize(pf->fd);
@@ -418,14 +414,12 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 		}
 	}
 	struct mmapping *mmap = add_mmap(thread_current(), file, uaddr);
-//	printf("mmap: mmap file %p\n", mmap->file);
 
 	unsigned rest = length;
 	uint8_t *tmp_addr = uaddr;
 	size_t mmap_ofs = 0;
 	while(rest>0){
 		struct supp_page_entry *spe = supp_page_add(tmp_addr, true);
-//		printf("MMAP spe add\n");
 		size_t read_bytes = rest > PGSIZE ? PGSIZE : rest;
 		spe->type = MMAP;
 		spe->mmap = mmap;
@@ -435,21 +429,18 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 		mmap_ofs += read_bytes;
 		tmp_addr += read_bytes;
 
-		ASSERT(spe->uaddr <= PHYS_BASE); // assert spe->uaddr
+		ASSERT(spe->uaddr <= PHYS_BASE);
 	}
 	mapid_t ret_mapid = mmap->mapid;
-//	printf("mmap: return %d\n", ret_mapid);
 	return ret_mapid;
 }
 
 void munmap(mapid_t mapid){
-//	printf("munmap: start, mapid %d\n", mapid);
 	struct thread *t = thread_current();
 	struct mmapping *mmap = get_mmap_from_mapid(t, mapid);
 	if(mmap == NULL)
 		return;
 
-//	printf("a\n");
 	lock_acquire(&lock_file);
 	off_t length = file_length(mmap->file);
 	lock_release(&lock_file);
@@ -457,7 +448,6 @@ void munmap(mapid_t mapid){
 	int num_page = length / PGSIZE;
 	if(length % PGSIZE != 0)
 		num_page++;
-//	printf("b\n");
 	uint8_t *uaddr = mmap->uaddr;
 	int i;
 	for(i=0; i<num_page; i++){
@@ -467,7 +457,6 @@ void munmap(mapid_t mapid){
 		ASSERT(he != NULL);
 
 		struct supp_page_entry *spe = hash_entry(he, struct supp_page_entry, elem);
-//		printf("spe type %d, MEM_MMAP %d\n", spe->type, MEM_MMAP);
 		if(spe->type == MEM_MMAP){
 			uint8_t *kaddr = spe->kaddr;
 			if(pagedir_is_dirty(spe->t->pagedir, uaddr)){
@@ -475,21 +464,18 @@ void munmap(mapid_t mapid){
 				lock_acquire(&lock_file);
 				file_write_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
 				lock_release(&lock_file);
-//				printf("file is updated from MEM_MMAP page\n");
 			}
 			pagedir_clear_page(spe->t->pagedir, spe->uaddr);
 			frame_free_fe(spe->fe);
 		}
 		pagedir_clear_page(t->pagedir, uaddr);
-//		printf("pagedir clear %p\n", uaddr);
 		lock_page_acquire();
 		hash_delete(&t->supp_page_table, he);
 		lock_page_release();
-		ASSERT(spe->uaddr <= PHYS_BASE); // assert spe->uaddr
+		ASSERT(spe->uaddr <= PHYS_BASE);
 		free(spe);
 		uaddr += PGSIZE;
 	}
-//	printf("munmap: end\n");
 }
 
 int get_user(const uint8_t *uaddr) {
