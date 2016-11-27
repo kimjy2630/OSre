@@ -197,7 +197,6 @@ static void page_fault(struct intr_frame *f) {
 
 			fe->finned = true;
 			bool dirty = false;
-			// TODO
 			if (spe->type == FILE) {
 				file_seek(spe->file, spe->ofs);
 				off_t bytes_read = file_read(spe->file, kaddr, spe->page_read_bytes);
@@ -230,7 +229,6 @@ static void page_fault(struct intr_frame *f) {
 
 			return;
 		} else {
-			/* extend stack */
 			void* esp;
 			if(user) {
 				esp = f->esp;
