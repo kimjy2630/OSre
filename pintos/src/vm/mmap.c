@@ -11,17 +11,11 @@ void mmap_lock_init(){
 }
 
 struct mmapping* get_mmap_from_mapid(struct thread* t, mapid_t mapid) {
-//	struct supp_page_entry spe_tmp;
-//	spe_tmp.uaddr = uaddr + i * PGSIZE;
-//	struct hash_elem* he = hash_find(&thread_current()->supp_page_table, &spe_tmp.elem);
-
 	struct mmapping mmap_tmp;
 	mmap_tmp.mapid = mapid;
-//	printf("get_mmap_from_mapid: mapid %d\n", mapid);
 
 	struct hash_elem *e = hash_find(&t->mmap_table, &mmap_tmp.elem);
 	if(e == NULL){
-//		printf("get_map_from_mapid: hash_find NULL\n");
 		return NULL;
 	}
 	struct mmapping *mmap = hash_entry(e, struct mmapping, elem);
@@ -41,15 +35,6 @@ struct mmapping* add_mmap(struct thread *t, struct file *file, uint8_t *uaddr){
 	lock_release(&lock_mmap);
 
 	return mmap;
-//	struct list *list_pf = &t->list_pf;
-//	struct process_file *pf = malloc(sizeof(struct process_file));
-//	if (pf == NULL)
-//		return -1;
-//	memset(pf, 0, sizeof(struct process_file));
-//	pf->fd = t->fd_cnt++;
-//	pf->file = file;
-//	list_push_back(list_pf, &pf->elem);
-//	return pf->fd;
 }
 
 
