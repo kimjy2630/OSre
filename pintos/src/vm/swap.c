@@ -23,46 +23,29 @@ void swap_init(){
 }
 
 size_t swap_load(uint8_t *addr){ // mem -> disk
-//	ASSERT(pg_ofs(addr) == 0); ////
-//	printf("load start\n");
 	lock_acquire(&swap_lock);
 	size_t index = bitmap_scan_and_flip(swap_bitmap, 0, num_sector_in_page, 0);
-//	lock_release(&swap_lock);
 	if(index == BITMAP_ERROR){
 		lock_release(&swap_lock);
 		PANIC("swap disk full");
 	}
 	int i;
 	for (i = 0; i < num_sector_in_page; ++i) {
-//		lock_acquire(&swap_lock);
 		disk_write(swap_disk, index + i, addr + i * DISK_SECTOR_SIZE);
-//		lock_release(&swap_lock);
 	}
 	lock_release(&swap_lock);
-//	printf("load end\n");
 	return index;
 }
 
 void swap_unload(size_t index, uint8_t *addr) { // disk -> mem
-//	ASSERT(pg_ofs(addr) == 0); ////
-//	uint8_t *uaddr = spe->uaddr;
-
-//	printf("unload start\n");
 	lock_acquire(&swap_lock);
 	bitmap_set_multiple(swap_bitmap, index, num_sector_in_page, 0);
-//	lock_release(&swap_lock);
-//	printf("bit set mul\n");
 
 	int i;
 	for (i = 0; i < num_sector_in_page; ++i) {
-//		printf("access %p\n", uaddr + i * DISK_SECTOR_SIZE);
-//		lock_acquire(&swap_lock);
 		disk_read(swap_disk, index + i, addr + i * DISK_SECTOR_SIZE);
-//		lock_release(&swap_lock);
 	}
 	lock_release(&swap_lock);
-//	printf("disk_read\n");
-//	printf("unload end\n");
 }
 
 void swap_free(size_t index){
