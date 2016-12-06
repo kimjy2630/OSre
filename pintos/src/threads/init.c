@@ -42,6 +42,10 @@
 #include "vm/mmap.h"
 #endif
 
+#ifdef filesys
+#include "filesys/cache.h"
+#endif
+
 /* Amount of physical memory, in 4 kB pages. */
 size_t ram_pages;
 
@@ -120,6 +124,7 @@ main (void)
   /* Initialize file system. */
   disk_init ();
   filesys_init (format_filesys);
+  cache_init();
 #endif
 
 #ifdef VM

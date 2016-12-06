@@ -13,7 +13,7 @@ struct cache_entry{
 	struct list_elem elem;
 };
 
-void init_cache();
+void cache_init();
 
 struct cache_entry *cache_find(disk_sector_t sector_idx);
 struct cache_entry *cache_read(disk_sector_t sector_idx);
