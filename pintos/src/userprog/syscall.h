@@ -1,7 +1,7 @@
 #ifndef USERPROG_SYSCALL_H
 #define USERPROG_SYSCALL_H
 #include "userprog/process.h"
-//#include "vm/mmap.h"
+#include "vm/mmap.h"
 
 struct lock lock_file;
 
