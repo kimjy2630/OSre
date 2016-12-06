@@ -520,10 +520,6 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
 		if (chunk_size <= 0)
 			break;
 
-		if (sector_idx == -1) {
-			return bytes_read;
-		}
-
 		if (sector_ofs == 0 && chunk_size == DISK_SECTOR_SIZE) {
 			/* Read full sector directly into caller's buffer. */
 			/*
