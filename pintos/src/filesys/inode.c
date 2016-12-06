@@ -186,8 +186,8 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 	size_t num_sector = bytes_to_sectors(length);
 	size_t curr_num_sector = bytes_to_sectors(disk_inode->length);
 	ASSERT(num_sector < DOUBLE_INDIRECT && curr_num_sector < DOUBLE_INDIRECT);
-	size_t growth = num_sector - curr_num_sector;
-	printf("grow_inode: init growth %u\n", growth);
+	int growth = num_sector - curr_num_sector;
+	printf("grow_inode: init growth %d\n", growth);
 
 	if(growth <= 0){
 		disk_inode->length = length;
@@ -343,7 +343,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 	} else{
 		disk_write(filesys_disk, disk_inode->list_sector[125], double_indirect);
 	}
-	printf("grow_inode: final growth %u\n", growth);
+	printf("grow_inode: final growth %d\n", growth);
 	if(growth <= 0){
 		disk_inode->length = length;
 		free(indirect);
