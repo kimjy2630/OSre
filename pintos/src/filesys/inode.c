@@ -206,6 +206,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 				growth--;
 			} else{
 				free_inode(disk_inode, curr_num_sector);
+				printf("grow_inode: a");
 				return false;
 			}
 		}
@@ -223,6 +224,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 	if (indirect == NULL) {
 		free_inode(disk_inode, curr_num_sector);
 		free(indirect);
+		printf("grow_inode: b");
 		return false;
 	}
 
@@ -235,6 +237,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 			} else{
 				free_inode(disk_inode, curr_num_sector);
 				free(indirect);
+				printf("grow_inode: c");
 				return false;
 			}
 		} else{
@@ -249,6 +252,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 			} else{
 				free_inode(disk_inode, curr_num_sector);
 				free(indirect);
+				printf("grow_inode: d");
 				return false;
 			}
 		}
@@ -275,6 +279,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 		free_inode(disk_inode, curr_num_sector);
 		free(indirect);
 		free(double_indirect);
+		printf("grow_inode: e");
 		return false;
 	}
 
@@ -286,6 +291,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 			free_inode(disk_inode, curr_num_sector);
 			free(indirect);
 			free(double_indirect);
+			printf("grow_inode: f");
 			return false;
 		}
 	} else{
@@ -301,6 +307,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 				free_inode(disk_inode, curr_num_sector);
 				free(indirect);
 				free(double_indirect);
+				printf("grow_inode: g");
 				return false;
 			}
 		} else{
@@ -316,6 +323,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 				free_inode(disk_inode, curr_num_sector);
 				free(indirect);
 				free(double_indirect);
+				printf("grow_inode: h");
 				return false;
 			}
 		}
@@ -340,6 +348,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 		free(double_indirect);
 		return true;
 	}
+	printf("grow_inode: i");
 	return false;
 }
 
