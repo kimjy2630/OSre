@@ -136,7 +136,7 @@ void cache_evict(){
 }
 
 void cache_write_back(){
-	struct list_elem e;
+	struct list_elem *e;
 	struct cache_entry *ce;
 
 	lock_acquire(&lock_cache);
