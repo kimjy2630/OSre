@@ -66,6 +66,7 @@ byte_to_sector (const struct inode *inode, off_t pos)
 	else
 		return -1;
 	*/
+	printf("byte_to_sector start.\n");
 	ASSERT(inode != NULL);
 	if (pos < inode->data.length){
 		int sector = pos / DISK_SECTOR_SIZE;
@@ -82,6 +83,7 @@ byte_to_sector (const struct inode *inode, off_t pos)
 
 			disk_sector_t ret_sector = indirect->list_sector[sector-124];
 			free(indirect);
+			printf("byte_to_sector end.\n");
 			return ret_sector;
 		}
 		/* double indirect sector */
@@ -96,12 +98,16 @@ byte_to_sector (const struct inode *inode, off_t pos)
 
 			disk_sector_t ret_sector = indirect->list_sector[(sector-SINGLE_INDIRECT)%128];
 			free(indirect);
+			printf("byte_to_sector end.\n");
 			return ret_sector;
 		}
+		printf("byte_to_sector end.\n");
 		return -1;
 	}
-	else
+	else{
+		printf("byte_to_sector end.\n");
 		return -1;
+	}
 }
 
 /* List of open inodes, so that opening a single inode twice
