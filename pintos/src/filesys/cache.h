@@ -2,6 +2,7 @@
 #define FILESYS_CACHE_H
 
 #include <stdbool.h>
+#include "devices/disk.h"
 
 struct cache_entry{
 	disk_sector_t sector_idx;
