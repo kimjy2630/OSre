@@ -348,6 +348,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 bool
 inode_create (disk_sector_t sector, off_t length)
 {
+  printf("inode_create start.\n");
   struct inode_disk *disk_inode = NULL;
   bool success = false;
 
@@ -397,6 +398,7 @@ inode_create (disk_sector_t sector, off_t length)
 
 	  free(disk_inode);
   }
+  printf("inode_create end.\n");
   return success;
 }
 
