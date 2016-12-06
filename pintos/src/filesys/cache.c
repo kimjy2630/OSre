@@ -60,18 +60,15 @@ struct cache_entry *cache_read(disk_sector_t sector_idx){
 	disk_read(filesys_disk, sector_idx, sector);
 	ce->sector = sector;
 
+	lock_acquire(&lock_cache);
 	if(cache_num < CACHE_MAX){
-		lock_acquire(&lock_cache);
 		list_push_back(&list_cache, &ce->elem);
 		cache_num++;
-		lock_release(&lock_cache);
-	}
-	else{
-		lock_acquire(&lock_cache);
+	} else{
 		cache_evict();
 		list_push_back(&list_cache, &ce->elem);
-		lock_acquire(&lock_cache);
 	}
+	lock_release(&lock_cache);
 	return ce;
 }
 
