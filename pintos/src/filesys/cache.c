@@ -25,8 +25,10 @@ struct cache_entry *cache_find(disk_sector_t sector_idx){
 	lock_acquire(&lock_cache);
 	for(e = list_begin(&list_cache); e != list_end(&list_cache); e = list_next(e)){
 		ce = list_entry(e, struct cache_entry, elem);
-		if(ce->sector_idx == sector_idx)
+		if(ce->sector_idx == sector_idx){
+			lock_release(&lock_cache);
 			return ce;
+		}
 	}
 	lock_release(&lock_cache);
 	return NULL;
