@@ -71,8 +71,10 @@ byte_to_sector (const struct inode *inode, off_t pos)
 	if (pos < inode->data.length){
 		int sector = pos / DISK_SECTOR_SIZE;
 		/* direct sector */
-		if(sector < DIRECT)
+		if(sector < DIRECT){
+			printf("byte_to_sector end.\n");
 			return inode->data.list_sector[sector];
+		}
 		/* single indirect sector */
 		struct indirect_sector *indirect;
 		struct cache_entry *ce;
