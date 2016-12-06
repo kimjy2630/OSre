@@ -112,6 +112,7 @@ static struct list open_inodes;
 void
 inode_init (void) 
 {
+  printf("inode_init.\n");
   list_init (&open_inodes);
 }
 
