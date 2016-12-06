@@ -56,6 +56,7 @@ struct cache_entry *cache_read(disk_sector_t sector_idx){
 	if(cache_num < CACHE_MAX){
 		lock_acquire(&lock_cache);
 		list_push_back(&list_cache, &ce->elem);
+		cache_num++;
 		lock_release(&lock_cache);
 	}
 	else{
@@ -91,6 +92,7 @@ struct cache_entry *cache_write(disk_sector_t sector_idx){
 	lock_acquire(&lock_cache);
 	if(cache_num < CACHE_MAX){
 		list_push_back(&list_cache, &ce->elem);
+		cache_num++;
 	} else{
 		cache_evict();
 		list_push_back(&list_cache, &ce->elem);
