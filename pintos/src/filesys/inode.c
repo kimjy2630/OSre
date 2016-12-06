@@ -14,8 +14,8 @@
 #define SINGLE_INDIRECT 252
 #define DOUBLE_INDIRECT 16636
 
-void free_inode(struct inode_disk *disk_inode, off_t length);
-bool grow_inode(struct inode_disk *disk_inode, off_t length);
+//void free_inode(struct inode_disk *disk_inode, off_t length);
+//bool grow_inode(struct inode_disk *disk_inode, off_t length);
 
 /* On-disk inode.
    Must be exactly DISK_SECTOR_SIZE bytes long. */
@@ -129,7 +129,7 @@ void free_inode(struct inode_disk *disk_inode, off_t length){
 		for(i=0; i<128; i++){
 			if(num_sector < DOUBLE_INDIRECT - 128*i
 					&& double_indirect->list_sector[127-i] != NULL){
-				indirect = double_indirect[127-i];
+				indirect = double_indirect->list_sector[127-i];
 				for(j=0; j<128; j++){
 					if(num_sector < DOUBLE_INDIRECT - 128*i - j
 							&& indirect->list_sector[127-j] != NULL){
@@ -252,9 +252,9 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 
 		if(disk_inode->list_sector[124] == NULL){
 			disk_inode->list_sector[124] = indirect_sector;
-			disk_write(filesys_write, indirect_sector, indirect);
+			disk_write(filesys_disk, indirect_sector, indirect);
 		} else{
-			disk_write(filesys_write, disk_inode->list_sector[124], indirect);
+			disk_write(filesys_disk, disk_inode->list_sector[124], indirect);
 		}
 	}
 	if (growth <= 0) {
