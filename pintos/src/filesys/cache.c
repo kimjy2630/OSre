@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "devices/disk.h"
+#include "filesys/filesys.h"
 
 struct list list_cache;
 int cache_num;
