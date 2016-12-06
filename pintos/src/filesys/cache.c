@@ -40,6 +40,10 @@ struct cache_entry *cache_read(disk_sector_t sector_idx){
 	}
 
 	ce = malloc(sizeof(struct cache_entry));
+	if(ce == NULL){
+		printf("cache_read: not enough space to make a cache_entry\n");
+		return NULL;
+	}
 	ce->sector_idx = sector_idx;
 	ce->dirty = false;
 	ce->access = true;
@@ -48,6 +52,7 @@ struct cache_entry *cache_read(disk_sector_t sector_idx){
 	sector = malloc(DISK_SECTOR_SIZE);
 	if(sector == NULL){
 		printf("cache_read: not enough space to make a cache_sector\n");
+		free(ce);
 		return NULL;
 	}
 	disk_read(filesys_disk, sector_idx, sector);
@@ -65,6 +70,7 @@ struct cache_entry *cache_read(disk_sector_t sector_idx){
 		list_push_back(&list_cache, &ce->elem);
 		lock_acquire(&lock_cache);
 	}
+	return ce;
 }
 
 struct cache_entry *cache_write(disk_sector_t sector_idx){
@@ -76,6 +82,10 @@ struct cache_entry *cache_write(disk_sector_t sector_idx){
 	}
 
 	ce = malloc(sizeof(struct cache_entry));
+	if (ce == NULL) {
+		printf("cache_write: not enough space to make a cache_entry\n");
+		return NULL;
+	}
 	ce->sector_idx = sector_idx;
 	ce->access = true;
 	ce->dirty = true;
@@ -84,9 +94,10 @@ struct cache_entry *cache_write(disk_sector_t sector_idx){
 	sector = malloc(DISK_SECTOR_SIZE);
 	if(sector == NULL){
 		printf("cache_write: not enough space to make a cache_sector\n");
+		free(ce);
 		return NULL;
 	}
-	disk_write(filesys_disk, sector_idx, sector);
+	disk_read(filesys_disk, sector_idx, sector);
 	ce->sector = sector;
 
 	lock_acquire(&lock_cache);
@@ -98,6 +109,7 @@ struct cache_entry *cache_write(disk_sector_t sector_idx){
 		list_push_back(&list_cache, &ce->elem);
 	}
 	lock_release(&lock_cache);
+	return ce;
 }
 
 void cache_evict(){
@@ -114,7 +126,6 @@ void cache_evict(){
 			ce->access = false;
 		} else{
 			if(ce->dirty){
-				// TODO
 				disk_write(filesys_disk, ce->sector_idx, ce->sector);
 			}
 			list_remove(e);
