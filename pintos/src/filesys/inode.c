@@ -66,13 +66,11 @@ byte_to_sector (const struct inode *inode, off_t pos)
 	else
 		return -1;
 	*/
-	printf("byte_to_sector start.\n");
 	ASSERT(inode != NULL);
 	if (pos < inode->data.length){
 		int sector = pos / DISK_SECTOR_SIZE;
 		/* direct sector */
 		if(sector < DIRECT){
-			printf("byte_to_sector end.\n");
 			return inode->data.list_sector[sector];
 		}
 		/* single indirect sector */
@@ -85,7 +83,6 @@ byte_to_sector (const struct inode *inode, off_t pos)
 
 			disk_sector_t ret_sector = indirect->list_sector[sector-124];
 			free(indirect);
-			printf("byte_to_sector end.\n");
 			return ret_sector;
 		}
 		/* double indirect sector */
@@ -100,14 +97,11 @@ byte_to_sector (const struct inode *inode, off_t pos)
 
 			disk_sector_t ret_sector = indirect->list_sector[(sector-SINGLE_INDIRECT)%128];
 			free(indirect);
-			printf("byte_to_sector end.\n");
 			return ret_sector;
 		}
-		printf("byte_to_sector end.\n");
 		return -1;
 	}
 	else{
-		printf("byte_to_sector end.\n");
 		return -1;
 	}
 }
@@ -357,7 +351,6 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 bool
 inode_create (disk_sector_t sector, off_t length)
 {
-  printf("inode_create start.\n");
   struct inode_disk *disk_inode = NULL;
   bool success = false;
 
@@ -407,7 +400,6 @@ inode_create (disk_sector_t sector, off_t length)
 
 	  free(disk_inode);
   }
-  printf("inode_create end.\n");
   return success;
 }
 
