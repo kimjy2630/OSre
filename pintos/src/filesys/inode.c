@@ -397,6 +397,10 @@ inode_create (disk_sector_t sector, off_t length)
 	  if(success){
 		  disk_write(filesys_disk, sector, disk_inode);
 	  }
+	  // debug
+	  else{
+		  printf("inode_create: grow_inode fail\n");
+	  }
 
 	  free(disk_inode);
   }
