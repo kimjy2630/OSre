@@ -310,6 +310,7 @@ int write(int fd, const void *buffer, unsigned length) {
 
 	char *tmp_buf = malloc(PGSIZE);
 	if (tmp_buf == NULL)
+		return -1;
 
 	while (cnt < length) {
 		int cur_size = length - cnt;
@@ -366,19 +367,20 @@ int write(int fd, const void *buffer, unsigned length) {
 
 	char *tmp_buf = malloc(PGSIZE);
 	if (tmp_buf == NULL)
+		return -1;
 
-		while (cnt < length) {
-			int cur_size = length - cnt;
-			if (cur_size > PGSIZE)
-				cur_size = PGSIZE;
+	while (cnt < length) {
+		int cur_size = length - cnt;
+		if (cur_size > PGSIZE)
+			cur_size = PGSIZE;
 
-			char *cur_buff = buffer + cnt;
-			memcpy(tmp_buf, cur_buff, cur_size);
-			int op_result = file_write(pf->file, tmp_buf, cur_size);
-			cnt += op_result;
-			if (op_result != cur_size)
-				break;
-		}
+		char *cur_buff = buffer + cnt;
+		memcpy(tmp_buf, cur_buff, cur_size);
+		int op_result = file_write(pf->file, tmp_buf, cur_size);
+		cnt += op_result;
+		if (op_result != cur_size)
+			break;
+	}
 	free(tmp_buf);
 	return cnt;
 #endif
