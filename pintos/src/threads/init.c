@@ -387,6 +387,7 @@ power_off (void)
   const char *p;
 
 #ifdef FILESYS
+  cache_write_back();
   filesys_done ();
 #endif
 
