@@ -7,6 +7,9 @@
 #include "threads/io.h"
 #include "threads/synch.h"
 #include "threads/thread.h"
+#ifdef filesys
+#include "filesys/cache.h"
+#endif
 
 /* See [8254] for hardware details of the 8254 timer chip. */
 
@@ -188,6 +191,10 @@ timer_interrupt (struct intr_frame *args UNUSED)
 	  else
 		  break;
   }
+
+#ifdef filesys
+  cache_write_back();
+#endif
 }
 
 /* Returns true if LOOPS iterations waits for more than one timer
