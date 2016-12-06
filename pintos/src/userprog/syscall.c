@@ -96,11 +96,13 @@ syscall_handler (struct intr_frame *f UNUSED)
 		case SYS_CLOSE:
 		close(get_argument_int(ptr, 1));
 		break;
+#ifdef VM
 		case SYS_MMAP:
 		f->eax = mmap(get_argument_int(ptr, 1), get_argument_ptr(ptr,2));
 		break;
 		case SYS_MUNMAP:
 		munmap(get_argument_int(ptr,1));
+#endif
 		break;
 	}
 }
