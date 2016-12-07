@@ -72,7 +72,7 @@ byte_to_sector (const struct inode *inode, off_t pos)
 		int sector = pos / DISK_SECTOR_SIZE;
 		/* direct sector */
 		if(sector < DIRECT){
-			printf("byte_to_sector: direct\n");
+//			printf("byte_to_sector: direct\n");
 			return inode->data.list_sector[sector];
 		}
 		/* single indirect sector */
@@ -85,7 +85,7 @@ byte_to_sector (const struct inode *inode, off_t pos)
 
 			disk_sector_t ret_sector = indirect->list_sector[sector-124];
 			free(indirect);
-			printf("byte_to_sector: single indirect\n");
+//			printf("byte_to_sector: single indirect\n");
 			return ret_sector;
 		}
 		/* double indirect sector */
@@ -100,7 +100,7 @@ byte_to_sector (const struct inode *inode, off_t pos)
 
 			disk_sector_t ret_sector = indirect->list_sector[(sector-SINGLE_INDIRECT)%128];
 			free(indirect);
-			printf("byte_to_sector: double indirect\n");
+//			printf("byte_to_sector: double indirect\n");
 			return ret_sector;
 		}
 		printf("sector greater than DOUBLE_INDIRECT\n");
@@ -252,7 +252,8 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 			disk_read(filesys_disk, disk_inode->list_sector[124], indirect);
 		}
 
-		for(i = curr_num_sector; i < (num_sector - DIRECT)&& i < SINGLE_INDIRECT; i++){
+		for(i = curr_num_sector; i < (num_sector - DIRECT) && i < SINGLE_INDIRECT; i++){
+			printf("grow_inode: print i = %zu\n", i);
 			if(free_map_allocate(1, &direct_sector)){
 				disk_write(filesys_disk, direct_sector, zeros);
 				indirect->list_sector[i] = direct_sector;
@@ -325,7 +326,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 		// TODO
 		for(j = curr_num_sector - SINGLE_INDIRECT - (i*128); j < num_sector - SINGLE_INDIRECT - (i*128) + 1 && j < 128 ;j++){
 //		for(j = 0; j < 128; j++) {
-			printf("grow_inode: print (i, j) = (%zu, %zu)\n", i, j);
+//			printf("grow_inode: print (i, j) = (%zu, %zu)\n", i, j);
 			if(free_map_allocate(1, &direct_sector)){
 				disk_write(filesys_disk, direct_sector, zeros);
 				indirect->list_sector[j] = direct_sector;
