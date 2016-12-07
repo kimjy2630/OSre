@@ -626,8 +626,12 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
     return 0;
 
   if (offset+size > inode->data.length){
-	  bool success = grow_inode(&(inode->data), offset+size);
-	  disk_write(filesys_disk, inode->sector, &(inode->data));
+	  if(grow_inode(&(inode->data), offset+size))
+		  disk_write(filesys_disk, inode->sector, &(inode->data));
+	  else{
+		  printf("inode_write_at: grow_inode fail\n");
+		  return 0;
+	  }
   }
 
   while (size > 0) 
