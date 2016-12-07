@@ -22,6 +22,7 @@ struct arg_success {
 	bool success;
 	struct file *f;
 	struct semaphore loading;
+	struct thread *parent;
 };
 
 struct process_status {

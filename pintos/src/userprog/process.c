@@ -23,6 +23,9 @@
 #include "lib/kernel/hash.h"
 #include "vm/mmap.h"
 #endif
+#ifdef FILESYS
+#include "filesys/directory.h"
+#endif
 
 static thread_func start_process NO_RETURN;
 static bool load(const char *cmdline, void (**eip)(void), void **esp);
@@ -58,6 +61,7 @@ tid_t process_execute(const char *file_name) {
 		return TID_ERROR;
 	}
 	strlcpy(as->fn_copy, file_name, PGSIZE);
+	as->parent = thread_current();
 
 
 	/* Create a new thread to execute FILE_NAME. */
@@ -98,6 +102,14 @@ static void start_process(void *f_name) {
 	if (!success) {
 		exit(-1);
 	}
+
+#ifdef FILESYS
+	struct thread *parent = ((struct arg_success *) f_name)->parent;
+	if(parent != NULL && parent->dir != NULL)
+		thread_current()->dir = dir_reopen(parent->dir);
+	else
+		thread_current()->dir = dir_open_root();
+#endif
 
 	/* Start the user process by simulating a return from an
 	 interrupt, implemented by intr_exit (in
