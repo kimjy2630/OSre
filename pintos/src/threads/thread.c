@@ -99,6 +99,9 @@ void thread_init(void) {
 	init_thread(initial_thread, "main", PRI_DEFAULT);
 	initial_thread->status = THREAD_RUNNING;
 	initial_thread->tid = allocate_tid();
+#ifdef FILESYS
+	initial_thread->dir = dir_open_root();
+#endif
 }
 
 /* Starts preemptive thread scheduling by enabling interrupts.
@@ -206,6 +209,10 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 	t->esp = NULL;
 	hash_init(&t->mmap_table, hash_mapid, hash_less_mapid, NULL);
 	t->mmap_cnt = 0;
+#endif
+
+#ifdef FILESYS
+	t->dir = thread_current()->dir;
 #endif
 
 	/* Stack frame for kernel_thread(). */
