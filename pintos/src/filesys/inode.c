@@ -81,8 +81,8 @@ byte_to_sector (const struct inode *inode, off_t pos)
 		if(sector < SINGLE_INDIRECT){
 //			/*
 			ce = cache_read(inode->data.list_sector[124]);
-			indirect = ce->sector;
-			disk_sector_t ret_sector = indirect->list_sector[sector-124];
+//			indirect = ce->sector;
+			disk_sector_t ret_sector = ce->sector->list_sector[sector-124];
 //			*/
 			/*
 			indirect = malloc(sizeof(struct indirect_sector));
