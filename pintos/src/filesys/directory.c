@@ -21,6 +21,36 @@ struct dir_entry
     bool in_use;                        /* In use or free? */
   };
 
+void parse_dir(const char *dir, char *path, char *filename){
+	int dir_length = stren(dir);
+	char *buffer = (char *) malloc(sizeof(char) * (dir_length + 1));
+	memcpy(buffer, dir, sizeof(char) * (dir_length + 1));
+
+	/* absolute directory */
+	char *tmp_path = path;
+	if (dir_length > 0 && dir[0] == '/' && tmp_path != NULL) {
+//		if(tmp_path != NULL)
+		*tmp_path++ = '/';
+	}
+
+	char *token, *p, *last = "";
+	for(token = strtok_r(buffer, "/", &p); token != NULL; token = strtok_r(NULL, "/", &p)){
+		int tmp_length = strlen(last);
+		if(tmp_path != NULL && tmp_length > 0){
+			memcpy(tmp_path, last, sizeof(char) * tmp_length);
+			tmp_path[tmp_length] = '/';
+			tmp_path += tmp_length + 1;
+		}
+
+		last = token;
+	}
+
+	if(tmp_path != NULL)
+		tmp_path = '\0';
+	memcpy(filename, last, sizeof(char) * (strlen(last) + 1));
+	free(buffer);
+}
+
 /* Creates a directory with space for ENTRY_CNT entries in the
    given SECTOR.  Returns true if successful, false on failure. */
 bool
@@ -139,7 +169,7 @@ dir_lookup (const struct dir *dir, const char *name,
    Fails if NAME is invalid (i.e. too long) or a disk or memory
    error occurs. */
 bool
-dir_add (struct dir *dir, const char *name, disk_sector_t inode_sector) 
+dir_add (struct dir *dir, const char *name, disk_sector_t inode_sector, bool is_dir)
 {
   struct dir_entry e;
   off_t ofs;
@@ -155,6 +185,19 @@ dir_add (struct dir *dir, const char *name, disk_sector_t inode_sector)
   /* Check that NAME is not in use. */
   if (lookup (dir, name, NULL, NULL))
     goto done;
+
+  /* Check is it add a dir */
+  if (is_dir){
+	  struct dir *child_dir = dir_open(inode_open(inode_sector));
+	  if(child_dir == NULL)
+		  goto done;
+	  e.inode_sector = inode_get_inumber(dir_get_inode(dir));
+	  if(inode_write_at(child_dir->inode, &e, sizeof e, 0) != sizeof e){
+		  dir_close(child_dir);
+		  goto done;
+	  }
+	  dir_close(child_dir);
+  }
 
   /* Set OFS to offset of free slot.
      If there are no free slots, then it will be set to the

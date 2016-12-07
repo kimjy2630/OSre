@@ -153,7 +153,7 @@ bool create(const char *file, unsigned initial_size) {
 		exit(-1);
 		return false;
 	}
-	return filesys_create(file, initial_size);
+	return filesys_create(file, initial_size, false);
 }
 bool remove(const char *file) {
 	if (!read_validity(file, strlen(file) + 1)) {
@@ -524,6 +524,11 @@ bool chdir(const char* dir){
 	return false;
 }
 bool mkdir(const char* dir){
+//	if (!read_validity(dir, strlen(dir) + 1)) {
+//		exit(-1);
+//		return false;
+//	}
+//	return filesys_create(dir, initial_size, true);
 	return false;
 }
 bool readdir(int fd, const char* name){
