@@ -126,9 +126,9 @@ fsutil_put (char **argv)
         PANIC ("%s: write failed with %"PROTd" bytes unwritten",
                file_name, size);
       */
-      int bytes_written = file_write(dst, buffer, chunk_size);
+      size_t bytes_written = file_write(dst, buffer, chunk_size);
       if (bytes_written != chunk_size){
-    	  printf("fsutil_put: bytes_written %d, chunk_size %d\n");
+    	  printf("fsutil_put: bytes_written %u, chunk_size %d\n");
               PANIC ("%s: write failed with %"PROTd" bytes unwritten",
                      file_name, size);
       }
