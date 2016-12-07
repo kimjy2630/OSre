@@ -90,8 +90,8 @@ byte_to_sector (const struct inode *inode, off_t pos)
 			disk_sector_t ret_sector = indirect->list_sector[sector-124];
 			free(indirect);
 			*/
-			printf("byte_to_sector: SINGLE_INDIRECT ret_sector %u, %d\n", ret_sector, ret_sector);
-			printf("                sector %d, pos %u\n", sector, pos);
+//			printf("byte_to_sector: SINGLE_INDIRECT ret_sector %u, %d\n", ret_sector, ret_sector);
+//			printf("                sector %d, pos %u\n", sector, pos);
 			return ret_sector;
 		}
 		/* double indirect sector */
@@ -645,7 +645,7 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
       disk_sector_t sector_idx = byte_to_sector (inode, offset);
 //      printf("inode_write_at: sector_idx %u\n", sector_idx);
       if(sector_idx == -1){
-    	  printf("inode_write_at: sector_idx -1\n");
+//    	  printf("inode_write_at: sector_idx -1\n");
     	  return bytes_written;
       }
 
