@@ -675,7 +675,7 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
     	  struct cache_entry *ce = cache_write(sector_idx);
     	  if(ce == NULL)
     		  break;
-    	  cache_read_ahead(next_sector_idx);
+    	  cache_read_ahead(sector_idx, next_sector_idx);
     	  memcpy(ce->sector, buffer + bytes_written, DISK_SECTOR_SIZE);
 //    	  */
         }
@@ -702,7 +702,7 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
 			struct cache_entry *ce = cache_write(sector_idx);
 			if (ce == NULL)
 				break;
-			cache_read_ahead(next_sector_idx);
+			cache_read_ahead(sector_idx, next_sector_idx);
 
 			bounce = malloc(DISK_SECTOR_SIZE);
 			if(bounce == NULL)
