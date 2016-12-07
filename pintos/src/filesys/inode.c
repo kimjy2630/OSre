@@ -306,7 +306,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 	for(i = (curr_num_sector - SINGLE_INDIRECT) / 128; i < (num_sector - SINGLE_INDIRECT) / 128 + 1 && i < 128; i++){
 		if(double_indirect->list_sector[i] == -1){
 			if(free_map_allocate(1, &indirect_sector)){
-				for(j=0; j<128; j++)
+				for(i=0; i<128; i++)
 					indirect->list_sector[j] = -1;
 			} else{
 				free_inode(disk_inode, curr_num_sector);
