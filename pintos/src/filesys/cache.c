@@ -89,7 +89,7 @@ struct cache_entry *cache_write(disk_sector_t sector_idx){
 	ce->access = true;
 	ce->dirty = true;
 
-	uint8_t *sector = NULL;
+	uint32_t *sector = NULL;
 	sector = malloc(DISK_SECTOR_SIZE);
 	if(sector == NULL){
 		printf("cache_write: not enough space to make a cache_sector\n");
