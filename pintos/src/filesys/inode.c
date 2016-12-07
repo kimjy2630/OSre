@@ -90,6 +90,7 @@ byte_to_sector (const struct inode *inode, off_t pos)
 			disk_sector_t ret_sector = indirect->list_sector[sector-124];
 			free(indirect);
 			*/
+			printf("byte_to_sector: SINGLE_INDIRECT ret_sector %u, %d\n", ret_sector, ret_sector);
 			return ret_sector;
 		}
 		/* double indirect sector */
