@@ -534,6 +534,7 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
 //		printf("inode_read_at: sector_idx %u, %d\n", sector_idx, sector_idx); ////
 		if (sector_idx == -1){
 			printf("inode_read_at: sector_idx -1, offset %u\n", offset);
+			printf("               return %u\n", bytes_read);
 			return bytes_read;
 		}
 
