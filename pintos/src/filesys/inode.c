@@ -72,6 +72,7 @@ byte_to_sector (const struct inode *inode, off_t pos)
 		int sector = pos / DISK_SECTOR_SIZE;
 		/* direct sector */
 		if(sector < DIRECT){
+			printf("byte_to_sector: direct\n");
 			return inode->data.list_sector[sector];
 		}
 		/* single indirect sector */
@@ -84,6 +85,7 @@ byte_to_sector (const struct inode *inode, off_t pos)
 
 			disk_sector_t ret_sector = indirect->list_sector[sector-124];
 			free(indirect);
+			printf("byte_to_sector: single indirect\n");
 			return ret_sector;
 		}
 		/* double indirect sector */
@@ -98,6 +100,7 @@ byte_to_sector (const struct inode *inode, off_t pos)
 
 			disk_sector_t ret_sector = indirect->list_sector[(sector-SINGLE_INDIRECT)%128];
 			free(indirect);
+			printf("byte_to_sector: double indirect\n");
 			return ret_sector;
 		}
 		printf("sector greater than DOUBLE_INDIRECT\n");
