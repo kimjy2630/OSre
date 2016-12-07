@@ -79,17 +79,17 @@ byte_to_sector (const struct inode *inode, off_t pos)
 		struct indirect_sector *indirect;
 		struct cache_entry *ce;
 		if(sector < SINGLE_INDIRECT){
-//			/*
+			/*
 			ce = cache_read(inode->data.list_sector[124]);
 			indirect = ce->sector;
 			disk_sector_t ret_sector = indirect->list_sector[sector-124];
-//			*/
-			/*
+			*/
+//			/*
 			indirect = malloc(sizeof(struct indirect_sector));
 			disk_read(filesys_disk, inode->data.list_sector[124], indirect);
 			disk_sector_t ret_sector = indirect->list_sector[sector-124];
 			free(indirect);
-			*/
+//			*/
 			printf("byte_to_sector: SINGLE_INDIRECT ret_sector %u, %d\n", ret_sector, ret_sector);
 			return ret_sector;
 		}
