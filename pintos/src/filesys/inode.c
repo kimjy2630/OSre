@@ -639,8 +639,9 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
     {
       /* Sector to write, starting byte offset within sector. */
       disk_sector_t sector_idx = byte_to_sector (inode, offset);
+      printf("inode_write_at: sector_idx %u\n", sector_idx);
       if(sector_idx == -1){
-    	  printf("inode_write_at: sector_idx -1\n");
+//    	  printf("inode_write_at: sector_idx -1\n");
     	  return bytes_written;
       }
 
