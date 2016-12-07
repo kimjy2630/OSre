@@ -639,9 +639,9 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
     {
       /* Sector to write, starting byte offset within sector. */
       disk_sector_t sector_idx = byte_to_sector (inode, offset);
-      printf("inode_write_at: sector_idx %u\n", sector_idx);
+//      printf("inode_write_at: sector_idx %u\n", sector_idx);
       if(sector_idx == -1){
-//    	  printf("inode_write_at: sector_idx -1\n");
+    	  printf("inode_write_at: sector_idx -1\n");
     	  return bytes_written;
       }
 
@@ -694,9 +694,19 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
 			if (ce == NULL)
 				break;
 
-			if (sector_ofs == 0 && chunk_size == sector_left)
-				memset(ce->sector, 0, DISK_SECTOR_SIZE);
-			memcpy(ce->sector + sector_ofs, buffer + bytes_written, chunk_size);
+//			if (sector_ofs == 0 && chunk_size == sector_left)
+//				memset(ce->sector, 0, DISK_SECTOR_SIZE);
+//			memcpy(ce->sector + sector_ofs, buffer + bytes_written, chunk_size);
+			if (sector_ofs > 0 || chunk_size < sector_left){
+				bounce = ce->sector;
+			} else{
+				bounce = malloc(DISK_SECTOR_SIZE);
+				if(bounce == NULL)
+					break;
+				memset(bounce, 0, DISK_SECTOR_SIZE);
+			}
+			memcpy(bounce + sector_ofs, buffer + bytes_written, chunk_size);
+			memcpy(ce->sector, bounce, DISK_SECTOR_SIZE);
 //			*/
         }
 
