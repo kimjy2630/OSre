@@ -196,7 +196,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 
 	uint32_t i, j;
 	disk_sector_t direct_sector = 0;
-	char zeros[DISK_SECTOR_SIZE];
+	static char zeros[DISK_SECTOR_SIZE];
 
 	/* direct sector */
 	if(curr_num_sector < DIRECT){
