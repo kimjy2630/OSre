@@ -208,13 +208,6 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
 	t->mmap_cnt = 0;
 #endif
 
-#ifdef FILESYS
-	if(thread_current()->dir != NULL)
-		t->dir = thread_current()->dir;
-	else
-		t->dir = dir_open_root();
-#endif
-
 	/* Stack frame for kernel_thread(). */
 	kf = alloc_frame(t, sizeof *kf);
 	kf->eip = NULL;
