@@ -83,12 +83,10 @@ byte_to_sector (const struct inode *inode, off_t pos)
 			/*
 			ce = cache_read(inode->data.list_sector[124]);
 			indirect = ce->sector;
-
-			disk_sector_t ret_sector = indirect->list_sector[sector-124];
-			free(indirect);
 //			printf("byte_to_sector: single indirect\n");
 			*/
 			disk_read(filesys_disk, inode->data.list_sector[124], indirect);
+
 			disk_sector_t ret_sector = indirect->list_sector[sector-124];
 			free(indirect);
 			return ret_sector;
@@ -96,12 +94,17 @@ byte_to_sector (const struct inode *inode, off_t pos)
 		/* double indirect sector */
 		if(sector < DOUBLE_INDIRECT){
 			indirect = malloc(sizeof(struct indirect_sector));
+			/*
 			ce = cache_read(inode->data.list_sector[125]);
 			indirect = ce->sector;
 
 			disk_sector_t index = indirect->list_sector[(sector-SINGLE_INDIRECT)/128];
 			ce = cache_read(index);
 			indirect = ce->sector;
+			*/
+			disk_read(filesys_disk, inode->data.list_sector[125], indirect);
+			disk_sector_t index = indirect->list_sector[(sector-SINGLE_INDIRECT)/128];
+			disk_read(filesys_disk, index, indirect);
 
 			disk_sector_t ret_sector = indirect->list_sector[(sector-SINGLE_INDIRECT)%128];
 			free(indirect);
