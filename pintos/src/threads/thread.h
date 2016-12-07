@@ -12,6 +12,10 @@
 #include "vm/page.h"
 #endif
 
+#ifdef FILESYS
+#include "filesys/directory.h"
+#endif
+
 /* States in a thread's life cycle. */
 enum thread_status
   {
@@ -131,6 +135,9 @@ struct thread
 //    struct lock lock_page;
 #endif
 
+#ifdef FILESYS
+    struct dir *dir;
+#endif
     /* Owned by thread.c. */
     unsigned magic;                     /* Detects stack overflow. */
   };
