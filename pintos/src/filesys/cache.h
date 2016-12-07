@@ -16,8 +16,8 @@ struct cache_entry{
 void cache_init();
 
 struct cache_entry *cache_find(disk_sector_t sector_idx);
-struct cache_entry *cache_read(disk_sector_t sector_idx);
-struct cache_entry *cache_write(disk_sector_t sector_idx);
+//struct cache_entry *cache_read(disk_sector_t sector_idx);
+//struct cache_entry *cache_write(disk_sector_t sector_idx);
 void cache_evict();
 void cache_write_back();
 
