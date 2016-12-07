@@ -7,7 +7,7 @@
 
 struct cache_entry{
 	disk_sector_t sector_idx;
-	uint8_t *sector;
+	uint32_t *sector;
 	bool dirty;
 	bool access;
 	struct list_elem elem;
