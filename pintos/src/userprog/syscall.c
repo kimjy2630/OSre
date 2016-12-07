@@ -43,57 +43,53 @@ static int get_argument_ptr(void *ptr, int pos) {
 	return *((void**) get_argument(ptr, pos));
 }
 
-static void
-syscall_handler (struct intr_frame *f UNUSED)
-{
+static void syscall_handler(struct intr_frame *f UNUSED) {
 	void *ptr = (void *) f->esp;
 	esp = f->esp;
 #ifdef VM
 	thread_current()->esp = f->esp;
 #endif
-	if (!read_validity(ptr, 4)){
+	if (!read_validity(ptr, 4)) {
 		exit(-1);
 	}
 	switch (*((int*) ptr)) {
-		case SYS_HALT:
+	case SYS_HALT:
 		halt();
 		break;
-		case SYS_EXIT:
+	case SYS_EXIT:
 		exit(get_argument_int(ptr, 1));
 		break;
-		case SYS_EXEC:
+	case SYS_EXEC:
 		f->eax = exec(get_argument_ptr(ptr, 1));
 		break;
-		case SYS_WAIT:
+	case SYS_WAIT:
 		f->eax = wait(get_argument_int(ptr, 1));
 		break;
-		case SYS_CREATE:
+	case SYS_CREATE:
 		f->eax = create(get_argument_ptr(ptr, 1), get_argument_int(ptr, 2));
 		break;
-		case SYS_REMOVE:
+	case SYS_REMOVE:
 		f->eax = remove(get_argument_ptr(ptr, 1));
 		break;
-		case SYS_OPEN:
+	case SYS_OPEN:
 		f->eax = open(get_argument_ptr(ptr, 1));
 		break;
-		case SYS_FILESIZE:
+	case SYS_FILESIZE:
 		f->eax = filesize(get_argument_int(ptr, 1));
 		break;
-		case SYS_READ:
-		f->eax = read(get_argument_int(ptr, 1), get_argument_ptr(ptr, 2),
-				get_argument_int(ptr, 3));
+	case SYS_READ:
+		f->eax = read(get_argument_int(ptr, 1), get_argument_ptr(ptr, 2), get_argument_int(ptr, 3));
 		break;
-		case SYS_WRITE:
-		f->eax = write(get_argument_int(ptr, 1), get_argument_ptr(ptr, 2),
-				get_argument_int(ptr, 3));
+	case SYS_WRITE:
+		f->eax = write(get_argument_int(ptr, 1), get_argument_ptr(ptr, 2), get_argument_int(ptr, 3));
 		break;
-		case SYS_SEEK:
+	case SYS_SEEK:
 		seek(get_argument_int(ptr, 1), get_argument_int(ptr, 2));
 		break;
-		case SYS_TELL:
+	case SYS_TELL:
 		f->eax = tell(get_argument_int(ptr, 1));
 		break;
-		case SYS_CLOSE:
+	case SYS_CLOSE:
 		close(get_argument_int(ptr, 1));
 		break;
 #ifdef VM
@@ -102,8 +98,25 @@ syscall_handler (struct intr_frame *f UNUSED)
 		break;
 		case SYS_MUNMAP:
 		munmap(get_argument_int(ptr,1));
-#endif
 		break;
+#endif
+#ifdef FILESYS
+		case SYS_CHDIR:
+		f->eax = chdir(get_argument_ptr(ptr, 1));
+		break;
+		case SYS_MKDIR:
+		f->eax = mkdir(get_argument_ptr(ptr, 1));
+		break;
+		case SYS_READDIR:
+		f->eax = readdir(get_argument_int(ptr, 1), get_argument_ptr(ptr, 2));
+		break;
+		case SYS_ISDIR:
+		f->eax = isdir(get_argument_int(ptr, 1));
+		break;
+		case SYS_INUMBER:
+		f->eax = inumber(get_argument_int(ptr, 1));
+		break;
+#endif
 	}
 }
 
@@ -112,7 +125,7 @@ void halt(void) {
 }
 
 void exit(int status) {
-	if(lock_held_by_current_thread(&lock_file))
+	if (lock_held_by_current_thread(&lock_file))
 		lock_release(&lock_file);
 	struct thread *curr = thread_current();
 	curr->exit_status = status;
@@ -200,34 +213,33 @@ int read(int fd, void *buffer, unsigned length) {
 		return read_size;
 	}
 
-
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
-	if (pf == NULL){
+	if (pf == NULL) {
 		return -1;
 	}
 	/*
-	size_t cnt = 0;
+	 size_t cnt = 0;
 
-	char *tmp_buf = malloc(PGSIZE);
-	if (tmp_buf == NULL)
-		return -1;
+	 char *tmp_buf = malloc(PGSIZE);
+	 if (tmp_buf == NULL)
+	 return -1;
 
-	while (cnt < length) {
-		int cur_size = length - cnt;
-		if (cur_size > PGSIZE)
-			cur_size = PGSIZE;
+	 while (cnt < length) {
+	 int cur_size = length - cnt;
+	 if (cur_size > PGSIZE)
+	 cur_size = PGSIZE;
 
-		char *cur_buff = buffer + cnt;
-		int op_result = file_read(pf->file, tmp_buf, cur_size);
-		memcpy(cur_buff, tmp_buf, cur_size);
+	 char *cur_buff = buffer + cnt;
+	 int op_result = file_read(pf->file, tmp_buf, cur_size);
+	 memcpy(cur_buff, tmp_buf, cur_size);
 
-		cnt += op_result;
-		if (op_result != cur_size)
-			break;
-	}
-	free(tmp_buf);
-	return cnt;
-	*/
+	 cnt += op_result;
+	 if (op_result != cur_size)
+	 break;
+	 }
+	 free(tmp_buf);
+	 return cnt;
+	 */
 #ifdef VM
 	void* tmp_buf = buffer;
 	unsigned rest = length;
@@ -242,13 +254,13 @@ int read(int fd, void *buffer, unsigned length) {
 		if (he == NULL) {
 			if (tmp_buf >= (esp - 32)
 					&& (PHYS_BASE - pg_round_down(tmp_buf)) <= (1 << 23))
-				spe = stack_grow(tmp_buf - ofs);
+			spe = stack_grow(tmp_buf - ofs);
 			else {
 				exit(-1);
 				return -1;
 			}
 		} else
-			spe = hash_entry(he, struct supp_page_entry, elem);
+		spe = hash_entry(he, struct supp_page_entry, elem);
 
 		ASSERT(spe->uaddr <= PHYS_BASE);
 
@@ -302,31 +314,31 @@ int write(int fd, const void *buffer, unsigned length) {
 	}
 
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
-	if (pf == NULL){
+	if (pf == NULL) {
 		return 0;
 	}
 	/*
-	size_t cnt = 0;
+	 size_t cnt = 0;
 
-	char *tmp_buf = malloc(PGSIZE);
-	if (tmp_buf == NULL)
-		return -1;
+	 char *tmp_buf = malloc(PGSIZE);
+	 if (tmp_buf == NULL)
+	 return -1;
 
-	while (cnt < length) {
-		int cur_size = length - cnt;
-		if (cur_size > PGSIZE)
-			cur_size = PGSIZE;
+	 while (cnt < length) {
+	 int cur_size = length - cnt;
+	 if (cur_size > PGSIZE)
+	 cur_size = PGSIZE;
 
-		char *cur_buff = buffer + cnt;
-		memcpy(tmp_buf, cur_buff, cur_size);
-		int op_result = file_write(pf->file, tmp_buf, cur_size);
-		cnt += op_result;
-		if (op_result != cur_size)
-			break;
-	}
-	free(tmp_buf);
-	return cnt;
-	*/
+	 char *cur_buff = buffer + cnt;
+	 memcpy(tmp_buf, cur_buff, cur_size);
+	 int op_result = file_write(pf->file, tmp_buf, cur_size);
+	 cnt += op_result;
+	 if (op_result != cur_size)
+	 break;
+	 }
+	 free(tmp_buf);
+	 return cnt;
+	 */
 #ifdef VM
 	unsigned rest = length;
 	void *tmp_buf = (void *) buffer;
@@ -340,13 +352,13 @@ int write(int fd, const void *buffer, unsigned length) {
 		if (he == NULL) {
 			if (tmp_buf >= (esp - 32)
 					&& (PHYS_BASE - pg_round_down(tmp_buf)) <= (1 << 23))
-				spe = stack_grow(tmp_buf - ofs);
+			spe = stack_grow(tmp_buf - ofs);
 			else {
 				exit(-1);
 				return -1;
 			}
 		} else
-			spe = hash_entry(he, struct supp_page_entry, elem);
+		spe = hash_entry(he, struct supp_page_entry, elem);
 
 		ASSERT(spe->uaddr <= PHYS_BASE);
 		spe->fe->finned = true;
@@ -410,19 +422,19 @@ void close(int fd) {
 }
 
 #ifdef VM
-mapid_t mmap(int fd, uint8_t *uaddr){
-	if(uaddr > PHYS_BASE){
+mapid_t mmap(int fd, uint8_t *uaddr) {
+	if(uaddr > PHYS_BASE) {
 		exit(-1);
 	}
-	if(uaddr == 0 || pg_ofs(uaddr) != 0 || fd == 0 || fd == 1){
+	if(uaddr == 0 || pg_ofs(uaddr) != 0 || fd == 0 || fd == 1) {
 		return -1;
 	}
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
-	if(pf == NULL){
+	if(pf == NULL) {
 		return -1;
 	}
 	off_t length = filesize(pf->fd);
-	if(length == 0){
+	if(length == 0) {
 		return -1;
 	}
 	lock_acquire(&lock_file);
@@ -430,13 +442,13 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 	lock_release(&lock_file);
 	int num_page = length / PGSIZE;
 	if(length % PGSIZE != 0)
-		num_page++;
+	num_page++;
 	int i;
-	for(i=0; i<num_page; i++){
+	for(i=0; i<num_page; i++) {
 		struct supp_page_entry spe_tmp;
 		spe_tmp.uaddr = uaddr + i * PGSIZE;
 		struct hash_elem* he = hash_find(&thread_current()->supp_page_table, &spe_tmp.elem);
-		if(he != NULL){
+		if(he != NULL) {
 			file_close(file);
 			return -1;
 		}
@@ -446,7 +458,7 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 	unsigned rest = length;
 	uint8_t *tmp_addr = uaddr;
 	size_t mmap_ofs = 0;
-	while(rest>0){
+	while(rest>0) {
 		struct supp_page_entry *spe = supp_page_add(tmp_addr, true);
 		size_t read_bytes = rest > PGSIZE ? PGSIZE : rest;
 		spe->type = MMAP;
@@ -463,11 +475,11 @@ mapid_t mmap(int fd, uint8_t *uaddr){
 	return ret_mapid;
 }
 
-void munmap(mapid_t mapid){
+void munmap(mapid_t mapid) {
 	struct thread *t = thread_current();
 	struct mmapping *mmap = get_mmap_from_mapid(t, mapid);
 	if(mmap == NULL)
-		return;
+	return;
 
 	lock_acquire(&lock_file);
 	off_t length = file_length(mmap->file);
@@ -475,19 +487,19 @@ void munmap(mapid_t mapid){
 
 	int num_page = length / PGSIZE;
 	if(length % PGSIZE != 0)
-		num_page++;
+	num_page++;
 	uint8_t *uaddr = mmap->uaddr;
 	int i;
-	for(i=0; i<num_page; i++){
+	for(i=0; i<num_page; i++) {
 		struct supp_page_entry spe_tmp;
 		spe_tmp.uaddr = uaddr;
 		struct hash_elem *he = hash_find(&t->supp_page_table, &spe_tmp.elem);
 		ASSERT(he != NULL);
 
 		struct supp_page_entry *spe = hash_entry(he, struct supp_page_entry, elem);
-		if(spe->type == MEM_MMAP){
+		if(spe->type == MEM_MMAP) {
 			uint8_t *kaddr = spe->kaddr;
-			if(pagedir_is_dirty(spe->t->pagedir, uaddr)){
+			if(pagedir_is_dirty(spe->t->pagedir, uaddr)) {
 				struct file *file = spe->mmap->file;
 				lock_acquire(&lock_file);
 				file_write_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
@@ -504,6 +516,24 @@ void munmap(mapid_t mapid){
 		free(spe);
 		uaddr += PGSIZE;
 	}
+}
+#endif
+
+#ifdef FILESYS
+bool chdir(const char* dir){
+	return false;
+}
+bool mkdir(const char* dir){
+	return false;
+}
+bool readdir(int fd, const char* name){
+	return false;
+}
+bool isdir(int fd){
+	return false;
+}
+int inumber(int fd){
+	return -1;
 }
 #endif
 

@@ -31,5 +31,11 @@ void close(int fd);
 ////
 mapid_t mmap(int fd, uint8_t *uaddr);
 void munmap(mapid_t mapping);
+////
+bool chdir(const char* dir);
+bool mkdir(const char* dir);
+bool readdir(int fd, const char* name);
+bool isdir(int fd);
+int inumber(int fd);
 
 #endif /* userprog/syscall.h */
