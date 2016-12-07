@@ -538,8 +538,8 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
 		disk_sector_t sector_idx = byte_to_sector(inode, offset);
 //		printf("inode_read_at: sector_idx %u, %d\n", sector_idx, sector_idx); ////
 		if (sector_idx == -1){
-			printf("inode_read_at: sector_idx -1, offset %u\n", offset);
-			printf("               return %u\n", bytes_read);
+//			printf("inode_read_at: sector_idx -1, offset %u\n", offset);
+//			printf("               return %u\n", bytes_read);
 			return bytes_read;
 		}
 
@@ -557,20 +557,20 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
 
 		if (sector_ofs == 0 && chunk_size == DISK_SECTOR_SIZE) {
 			/* Read full sector directly into caller's buffer. */
-			/*
+//			/*
 //			printf("inode_read_at: bytes_read %u\n", bytes_read);
 			 disk_read (filesys_disk, sector_idx, buffer + bytes_read);
-			*/
-//			/*
+//			*/
+			/*
 			struct cache_entry *ce = cache_read(sector_idx);
 			if (ce == NULL)
 				break;
 			memcpy(buffer + bytes_read, ce->sector, DISK_SECTOR_SIZE);
-//			*/
+			*/
 		} else {
 			/* Read sector into bounce buffer, then partially copy
 			 into caller's buffer. */
-			/*
+//			/*
 			 if (bounce == NULL)
 			 {
 			 bounce = malloc (DISK_SECTOR_SIZE);
@@ -579,13 +579,13 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
 			 }
 			 disk_read (filesys_disk, sector_idx, bounce);
 			 memcpy (buffer + bytes_read, bounce + sector_ofs, chunk_size);
-			 */
-//			/*
+//			 */
+			/*
 			struct cache_entry *ce = cache_read(sector_idx);
 			if (ce == NULL)
 				break;
 			memcpy(buffer + bytes_read, ce->sector + sector_ofs, chunk_size);
-//			*/
+			*/
 		}
 
 		/* Advance. */
@@ -638,36 +638,36 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
       if (sector_ofs == 0 && chunk_size == DISK_SECTOR_SIZE) 
         {
           /* Write full sector directly to disk. */
-    	  /*
+//    	  /*
           disk_write (filesys_disk, sector_idx, buffer + bytes_written);
-          */
-//          /*
+//          */
+          /*
     	  struct cache_entry *ce = cache_write(sector_idx);
     	  if(ce == NULL)
     		  break;
     	  memcpy(ce->sector, buffer + bytes_written, DISK_SECTOR_SIZE);
-//    	  */
+    	  */
         }
       else 
         {
-//          /* We need a bounce buffer.*/
-//          if (bounce == NULL)
-//            {
-//              bounce = malloc (DISK_SECTOR_SIZE);
-//              if (bounce == NULL)
-//                break;
-//            }
-//
-//          /* If the sector contains data before or after the chunk
-//             we're writing, then we need to read in the sector
-//             first.  Otherwise we start with a sector of all zeros.*/
-//          if (sector_ofs > 0 || chunk_size < sector_left)
-//            disk_read (filesys_disk, sector_idx, bounce);
-//          else
-//            memset (bounce, 0, DISK_SECTOR_SIZE);
-//          memcpy (bounce + sector_ofs, buffer + bytes_written, chunk_size);
-//          disk_write (filesys_disk, sector_idx, bounce);
-//          /*
+          /* We need a bounce buffer.*/
+          if (bounce == NULL)
+            {
+              bounce = malloc (DISK_SECTOR_SIZE);
+              if (bounce == NULL)
+                break;
+            }
+
+          /* If the sector contains data before or after the chunk
+             we're writing, then we need to read in the sector
+             first.  Otherwise we start with a sector of all zeros.*/
+          if (sector_ofs > 0 || chunk_size < sector_left)
+            disk_read (filesys_disk, sector_idx, bounce);
+          else
+            memset (bounce, 0, DISK_SECTOR_SIZE);
+          memcpy (bounce + sector_ofs, buffer + bytes_written, chunk_size);
+          disk_write (filesys_disk, sector_idx, bounce);
+          /*
 			struct cache_entry *ce = cache_write(sector_idx);
 			if (ce == NULL)
 				break;
@@ -675,7 +675,7 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
 			if (sector_ofs == 0 && chunk_size == sector_left)
 				memset(ce->sector, 0, DISK_SECTOR_SIZE);
 			memcpy(ce->sector + sector_ofs, buffer + bytes_written, chunk_size);
-//			*/
+			*/
         }
 
       /* Advance. */
