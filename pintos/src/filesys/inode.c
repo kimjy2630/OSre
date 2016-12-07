@@ -231,12 +231,12 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 				return false;
 			}
 		}
+		curr_num_sector = DIRECT;
 	}
 	if (growth <= 0) {
 		disk_inode->length = length;
 		return true;
 	}
-	curr_num_sector = DIRECT;
 
 	/* single indirect sector */
 	disk_sector_t indirect_sector = 0;
@@ -286,13 +286,14 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 		} else{
 			disk_write(filesys_disk, disk_inode->list_sector[124], indirect);
 		}
+
+		curr_num_sector = SINGLE_INDIRECT;
 	}
 	if (growth <= 0) {
 		disk_inode->length = length;
 		free(indirect);
 		return true;
 	}
-	curr_num_sector = SINGLE_INDIRECT;
 
 	/* double indirect sector */
 	disk_sector_t double_indirect_sector = 0;
