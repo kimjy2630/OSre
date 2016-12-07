@@ -50,7 +50,7 @@ struct cache_entry *cache_read(disk_sector_t sector_idx){
 	ce->dirty = false;
 	ce->access = true;
 
-	uint8_t *sector = NULL;
+	uint32_t *sector = NULL;
 	sector = malloc(DISK_SECTOR_SIZE);
 	if(sector == NULL){
 		printf("cache_read: not enough space to make a cache_sector\n");
