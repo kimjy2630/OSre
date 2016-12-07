@@ -80,12 +80,17 @@ byte_to_sector (const struct inode *inode, off_t pos)
 		struct cache_entry *ce;
 		if(sector < SINGLE_INDIRECT){
 			indirect = malloc(sizeof(struct indirect_sector));
+			/*
 			ce = cache_read(inode->data.list_sector[124]);
 			indirect = ce->sector;
 
 			disk_sector_t ret_sector = indirect->list_sector[sector-124];
 			free(indirect);
 //			printf("byte_to_sector: single indirect\n");
+			*/
+			disk_read(filesys_disk, inode->data.list_sector[124], indirect);
+			disk_sector_t ret_sector = indirect->list_sector[sector-124];
+			free(indirect);
 			return ret_sector;
 		}
 		/* double indirect sector */
