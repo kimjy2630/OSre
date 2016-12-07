@@ -377,6 +377,8 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 	}
 //	printf("grow_inode: i\n");
 //	printf("grow_inode: length %u, num_sector %u\n", length, num_sector);
+	free(indirect);
+	free(double_indirect);
 	return false;
 }
 
