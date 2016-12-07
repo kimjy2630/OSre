@@ -86,6 +86,7 @@ struct cahche_entry *cache_write(disk_sector_t sector_idx){
 void cache_read_ahead(disk_sector_t read_sector, disk_sector_t next_sector) {
 	if(next_sector == -1)
 		return;
+	printf("cache_read_ahead normally!\n");
 	struct cache_entry *ce = cache_find(next_sector);
 	if (ce == NULL) {
 		ce = malloc(sizeof(struct cache_entry));
