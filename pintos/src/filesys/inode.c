@@ -694,20 +694,21 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
 			if (ce == NULL)
 				break;
 
-			if (sector_ofs == 0 && chunk_size == sector_left)
-				memset(ce->sector, 0, DISK_SECTOR_SIZE);
-			memcpy(ce->sector + sector_ofs, buffer + bytes_written, chunk_size);
+			bounce = malloc(DISK_SECTOR_SIZE);
+			if(bounce == NULL)
+				break;
 
-//			if (sector_ofs > 0 || chunk_size < sector_left){
-//				bounce = ce->sector;
-//			} else{
-//				bounce = malloc(DISK_SECTOR_SIZE);
-//				if(bounce == NULL)
-//					break;
-//				memset(bounce, 0, DISK_SECTOR_SIZE);
-//			}
-//			memcpy(bounce + sector_ofs, buffer + bytes_written, chunk_size);
-//			memcpy(ce->sector, bounce, DISK_SECTOR_SIZE);
+			if (sector_ofs > 0 || chunk_size < sector_left)
+				memcpy(bounce, ce->sector, DISK_SECTOR_SIZE);
+			else
+				memset(bounce, 0, DISK_SECTOR_SIZE);
+			memcpy(bounce + sector_ofs, buffer + bytes_written, chunk_size);
+			memcpy(ce->sector, bounce, DISK_SECTOR_SIZE);
+
+//			if (sector_ofs == 0 && chunk_size == sector_left)
+//				memset(ce->sector, 0, DISK_SECTOR_SIZE);
+//			memcpy(ce->sector + sector_ofs, buffer + bytes_written, chunk_size);
+
 //			*/
         }
 
