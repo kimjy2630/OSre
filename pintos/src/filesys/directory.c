@@ -22,7 +22,7 @@ struct dir_entry
   };
 
 void parse_dir(const char *dir, char *path, char *filename){
-	int dir_length = stren(dir);
+	int dir_length = strlen(dir);
 	char *buffer = (char *) malloc(sizeof(char) * (dir_length + 1));
 	memcpy(buffer, dir, sizeof(char) * (dir_length + 1));
 
