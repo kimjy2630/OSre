@@ -528,7 +528,7 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
 		disk_sector_t sector_idx = byte_to_sector(inode, offset);
 //		printf("inode_read_at: sector_idx %u, %d\n", sector_idx, sector_idx); ////
 		if (sector_idx == -1){
-			printf("inode_read_at: sector_idx -1\n");
+			printf("inode_read_at: sector_idx -1, offset %u\n", offset);
 			return bytes_read;
 		}
 
