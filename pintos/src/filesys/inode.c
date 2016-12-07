@@ -99,9 +99,11 @@ byte_to_sector (const struct inode *inode, off_t pos)
 			free(indirect);
 			return ret_sector;
 		}
+		printf("sector greater than DOUBLE_INDIRECT\n");
 		return -1;
 	}
 	else{
+		printf("pos greater than inode data length\n");
 		return -1;
 	}
 }
