@@ -67,6 +67,7 @@ byte_to_sector (const struct inode *inode, off_t pos)
 		return -1;
 	*/
 	ASSERT(inode != NULL);
+	printf("byte_to_sector: inode data length %u, pos %u\n", inode->data.length, pos);
 	if (pos < inode->data.length){
 		int sector = pos / DISK_SECTOR_SIZE;
 		/* direct sector */
