@@ -114,12 +114,12 @@ byte_to_sector (const struct inode *inode, off_t pos)
 			*/
 			return ret_sector;
 		}
-		printf("sector greater than DOUBLE_INDIRECT\n");
+		printf("byte_to_sector: sector greater than DOUBLE_INDIRECT\n");
 		return -1;
 	}
 	else{
-		printf("pos greater than inode data length\n");
-		printf("byte_to_sector: inode data length %u, pos %u\n", inode->data.length, pos);
+		printf("byte_to_sector: pos greater than inode data length\n");
+		printf("                inode data length %u, pos %u\n", inode->data.length, pos);
 		return -1;
 	}
 }
