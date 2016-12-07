@@ -625,12 +625,17 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
   if (inode->deny_write_cnt)
     return 0;
 
+  if (offset+size > inode->data.length){
+	  bool success = grow_inode(&(inode->data), offset+size);
+	  disk_write(filesys_disk, inode->sector, &(inode->data));
+  }
+
   while (size > 0) 
     {
       /* Sector to write, starting byte offset within sector. */
       disk_sector_t sector_idx = byte_to_sector (inode, offset);
       if(sector_idx == -1){
-    	  printf("inode_read_at: sector_idx -1\n");
+    	  printf("inode_write_at: sector_idx -1\n");
     	  return bytes_written;
       }
 
