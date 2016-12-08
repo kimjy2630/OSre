@@ -47,6 +47,11 @@ filesys_done (void)
 bool
 filesys_create (const char *name, off_t initial_size, bool is_dir)
 {
+	if(!is_dir){
+		printf("filesys_create: file name [%s]\n", name);
+	} else{
+		printf("filesys_create: dir name [%s]\n", name);
+	}
   disk_sector_t inode_sector = 0;
   /*
   struct dir *dir = dir_open_root ();
