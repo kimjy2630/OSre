@@ -525,7 +525,7 @@ bool chdir(const char* dir){
 		exit(-1);
 		return false;
 	}
-	struct dir *dir_target = move_curr_dir(dir);
+	struct dir *dir_target = dir_open_path(dir);
 	if(dir_target == NULL)
 		return false;
 
