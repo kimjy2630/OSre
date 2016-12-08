@@ -91,7 +91,7 @@ dir_open_root (void)
 struct dir *move_curr_dir(char *path){
 	int length = strlen(path);
 	char buffer[length+1];
-	strcpy(buffer, path, length+1);
+	strlcpy(buffer, path, length+1);
 
 	struct dir *curr_dir;
 	if(path[0] == '/'){
@@ -121,10 +121,10 @@ struct dir *move_curr_dir(char *path){
 		curr_dir = next_dir;
 	}
 
-	if (inode_is_removed(dir_get_inode(curr_dir))){
-		dir_close(curr_dir);
-		return NULL;
-	}
+//	if (inode_is_removed(dir_get_inode(curr_dir))){
+//		dir_close(curr_dir);
+//		return NULL;
+//	}
 
 	return curr_dir;
 }
