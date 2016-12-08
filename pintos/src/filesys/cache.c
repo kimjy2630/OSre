@@ -1,6 +1,8 @@
 #include "filesys/cache.h"
-#include <stdlib.h>
-#include <stdbool.h>
+//#include <stdlib.h>
+//#include <stdbool.h>
+#include <list.h>
+#include <debug.h>
 #include "devices/disk.h"
 #include "filesys/filesys.h"
 #include "threads/synch.h"
