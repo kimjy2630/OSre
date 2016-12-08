@@ -263,7 +263,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 				return false;
 			}
 		} else{
-			disk_read(filesys_disk, disk_inode->list_sector[124], indirect);
+			disk_read(filesys_disk, disk_inode->list_sector[123], indirect); //
 		}
 
 //		for(i = curr_num_sector; i < (num_sector - DIRECT) && i < 128; i++){
