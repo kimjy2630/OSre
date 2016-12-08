@@ -7,6 +7,8 @@
 #include "threads/malloc.h"
 #include "threads/thread.h"
 
+bool dir_is_empty (struct dir *dir);
+
 /* A directory. */
 struct dir 
   {
@@ -305,6 +307,14 @@ dir_remove (struct dir *dir, const char *name)
   if (inode == NULL)
     goto done;
 
+  if(inode_is_dir(inode)){
+	  struct dir *dir_target = dir_open(inode);
+	  bool is_target_empty = dir_is_empty(dir_target);
+	  dir_close(dir_target);
+	  if(!is_target_empty)
+		  goto done;
+  }
+
   /* Erase directory entry. */
   e.in_use = false;
   if (inode_write_at (dir->inode, &e, sizeof e, ofs) != sizeof e) 
@@ -337,4 +347,17 @@ dir_readdir (struct dir *dir, char name[NAME_MAX + 1])
         } 
     }
   return false;
+}
+
+bool dir_is_empty (struct dir *dir){
+	struct dir_entry e;
+	off_t ofs = sizeof e; // 0-pos is parent directory
+
+	while (inode_read_at(dir->inode, &e, sizeof e, ofs) == sizeof e) {
+		ofs += sizeof e;
+		if (e.in_use) {
+			return false;
+		}
+	}
+	return true;
 }
