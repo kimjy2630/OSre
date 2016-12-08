@@ -541,6 +541,17 @@ inode_remove (struct inode *inode)
   inode->removed = true;
 }
 
+// TODO
+bool inode_is_removed(struct inode *inode){
+	ASSERT (inode != NULL);
+	return inode->removed;
+}
+
+bool inode_is_dir(struct inode *inode){
+	ASSERT (inode != NULL);
+	return inode->data.is_dir;
+}
+
 /* Reads SIZE bytes from INODE into BUFFER, starting at position OFFSET.
    Returns the number of bytes actually read, which may be less
    than SIZE if an error occurs or end of file is reached. */

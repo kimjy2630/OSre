@@ -121,10 +121,10 @@ struct dir *move_curr_dir(char *path){
 		curr_dir = next_dir;
 	}
 
-//	if (inode_is_removed(dir_get_inode(curr_dir))){
-//		dir_close(curr_dir);
-//		return NULL;
-//	}
+	if (inode_is_removed(dir_get_inode(curr_dir))){
+		dir_close(curr_dir);
+		return NULL;
+	}
 
 	return curr_dir;
 }
