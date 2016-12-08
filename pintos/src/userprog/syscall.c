@@ -13,6 +13,9 @@
 #include "vm/page.h"
 #include "vm/frame.h"
 #include "vm/mmap.h"
+#ifdef FILESYS
+#include "filesys/directory.h"
+#endif
 
 static void syscall_handler(struct intr_frame *);
 
