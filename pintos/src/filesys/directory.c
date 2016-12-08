@@ -249,7 +249,7 @@ dir_add (struct dir *dir, const char *name, disk_sector_t inode_sector, bool is_
   if (lookup (dir, name, NULL, NULL))
     goto done;
 
-  /* Check is it add a dir */
+  /* Update child dir */
   if (is_dir){
 	  struct dir *child_dir = dir_open(inode_open(inode_sector));
 	  if(child_dir == NULL)
@@ -324,7 +324,7 @@ dir_remove (struct dir *dir, const char *name)
   /* Remove inode. */
   inode_remove (inode);
   success = true;
-  printf("dir_remove success [%s]\n", name);
+//  printf("dir_remove success [%s]\n", name);
 
  done:
   inode_close (inode);
