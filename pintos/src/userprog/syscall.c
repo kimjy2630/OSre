@@ -558,12 +558,19 @@ bool mkdir(const char* dir) {
 }
 bool readdir(int fd, const char* name) {
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
-	if(pf == NULL)
+	if(pf == NULL){
+		printf("readdir: process_file not found\n");
 		return false;
+	}
 
 	struct inode *inode = file_get_inode(pf->file);
-	if(inode == NULL || !inode_is_dir(inode))
+	if(inode == NULL || !inode_is_dir(inode)){
+		if(inode == NULL)
+			printf("readdir: inode NULL\n");
+		else
+			printf("readdir: inode is not dir\n");
 		return false;
+	}
 
 	struct dir *dir = dir_open(inode);
 	/*
