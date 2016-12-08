@@ -566,17 +566,6 @@ bool readdir(int fd, const char* name) {
 		return false;
 
 	struct dir *dir = dir_open(inode);
-	/*
-	struct dir_entry e;
-	while(inode_read_at(dir->inode, &e, dir->pos) == sizeof e){
-		if(e.in_use){
-			strlcpy(name, e.name, READDIR_MAX_LEN + 1);
-			dir_close(dir);
-			return true;
-		}
-		dir->pos += sizeof e;
-	}
-	*/
 	bool ret = dir_readdir(dir, name);
 	dir_close(dir);
 	return ret;
