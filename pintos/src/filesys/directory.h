@@ -21,7 +21,6 @@ struct dir *dir_open (struct inode *);
 struct dir *dir_open_root (void);
 //
 struct dir *dir_open_path(char *path);
-struct dir *dir_open_curr();
 //
 struct dir *dir_reopen (struct dir *);
 void dir_close (struct dir *);
