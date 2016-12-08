@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include "devices/disk.h"
 #include "lib/kernel/list.h"
+#include <debug.h>
 
 struct cache_entry{
 	disk_sector_t sector_idx;
