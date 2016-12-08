@@ -47,11 +47,11 @@ filesys_done (void)
 bool
 filesys_create (const char *name, off_t initial_size, bool is_dir)
 {
-	if(!is_dir){
-		printf("filesys_create: file name [%s]\n", name);
-	} else{
-		printf("filesys_create: dir name [%s]\n", name);
-	}
+//	if(!is_dir){
+//		printf("filesys_create: file name [%s]\n", name);
+//	} else{
+//		printf("filesys_create: dir name [%s]\n", name);
+//	}
   disk_sector_t inode_sector = 0;
   /*
   struct dir *dir = dir_open_root ();
@@ -104,17 +104,17 @@ filesys_open(const char *name) {
 	if(strlen(filename) > 0){
 		dir_lookup(dir, filename, &inode);
 		dir_close(dir);
-		printf("filesys_open: dir_lookup dir path [%s], filename [%s]\n", path, filename);
+//		printf("filesys_open: dir_lookup dir path [%s], filename [%s]\n", path, filename);
 	} else{
 		inode = dir_get_inode (dir);
-		printf("filesys_open: dir_get_inode dir path [%s]\n", path);
+//		printf("filesys_open: dir_get_inode dir path [%s]\n", path);
 	}
 
 	if(inode == NULL || inode_is_removed(inode))
 		return NULL;
 
-	if(inode_is_dir(inode))
-		printf("filesys_open: ret_inode dir, filename [%s], name [%s]\n", filename, name);
+//	if(inode_is_dir(inode))
+//		printf("filesys_open: ret_inode dir, filename [%s], name [%s]\n", filename, name);
 	return file_open(inode);
 
 	/*
