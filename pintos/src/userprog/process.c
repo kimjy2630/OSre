@@ -621,7 +621,7 @@ add_process_file(struct thread* t, struct file* file, const char* filename) {
 #ifdef FILESYS
 	pf->dir = NULL;
 #endif
-	return pf;
+	return pf->fd;
 }
 
 void remove_process_file_from_fd(struct thread* t, int fd) {

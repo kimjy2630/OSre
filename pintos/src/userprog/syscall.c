@@ -183,12 +183,11 @@ int open(const char *file) {
 		lock_release(&lock_file);
 		return -1;
 	}
-	struct process_file *pf = add_process_file(thread_current(), f, file);
-	int fd = pf->fd;
+	int fd = add_process_file(thread_current(), f, file);
 #ifdef FILESYS
 	struct inode *inode = file_get_inode(f);
 	if(inode_is_dir(inode)) {
-//		printf("syscall open: open file is dir\n");
+		struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 		pf->dir = dir_open(inode_reopen(inode));
 	}
 #endif
