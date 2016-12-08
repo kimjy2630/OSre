@@ -329,7 +329,7 @@ int write(int fd, const void *buffer, unsigned length) {
 		return 0;
 	}
 #ifdef FILESYS
-	if(pf->is_dir)
+	if(pf->dir != NULL)
 	return -1;
 #endif
 	/*
