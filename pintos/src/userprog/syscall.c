@@ -571,6 +571,7 @@ bool readdir(int fd, const char* name) {
 		return false;
 
 	struct dir *dir = pf->dir;
+	ASSERT(dir != NULL);
 	bool ret = dir_readdir(dir, name);
 	return ret;
 }
