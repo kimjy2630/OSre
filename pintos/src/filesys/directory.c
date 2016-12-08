@@ -103,10 +103,8 @@ struct dir *dir_open_path(char *path){
 		curr_dir = dir_open_root();
 	} else{
 		struct thread *t = thread_current();
-		if(t->curr_dir != NULL){
-			printf("dir_open_path: relative dir, path [%s]\n", path);
+		if(t->curr_dir != NULL)
 			curr_dir = dir_reopen(t->curr_dir);
-		}
 		else
 			curr_dir = dir_open_root();
 	}
