@@ -151,7 +151,7 @@ filesys_remove (const char *name)
 	parse_dir(name, path, filename);
 
 	struct dir *dir = dir_open_path(path);
-	bool success = dir != NUL && dir_remove(dir, filename);
+	bool success = dir != NULL && dir_remove(dir, filename);
 
   dir_close (dir); 
 
