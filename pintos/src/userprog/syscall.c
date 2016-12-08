@@ -554,10 +554,32 @@ bool mkdir(const char* dir) {
 	return filesys_create(dir, 0, true);
 }
 bool readdir(int fd, const char* name) {
+	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
+	if(pf == NULL)
+		return false;
+
+	struct inode *inode = file_get_inode(pf->file);
+	if(inode == NULL || !inode_is_dir(inode))
+		return false;
+
+	struct dir *dir = dir_open(inode);
+	struct dir_entry e;
+	while(inode_read_at(dir->inode, &e, dir->pos) == sizeof e){
+		if(e.in_use){
+			strlcpy(name, e.name, READDIR_MAX_LEN + 1);
+			dir_close(dir);
+			return true;
+		}
+		dir->pos += sizeof e;
+	}
+	dir_close(dir);
 	return false;
 }
 bool isdir(int fd) {
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
+	if(pf == NULL)
+		return false;
+
 	struct inode *inode = file_get_inode(pf->file);
 	return inode_is_dir(inode);
 }
