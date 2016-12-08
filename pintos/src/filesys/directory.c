@@ -31,7 +31,7 @@ void parse_dir(const char *dir, char *path, char *filename){
 	char *tmp_path = path;
 	if (dir_length > 0 && dir[0] == '/' && tmp_path != NULL) {
 //		if(tmp_path != NULL)
-		*tmp_path = '/';
+		tmp_path[0] = '/';
 		tmp_path++;
 	}
 
