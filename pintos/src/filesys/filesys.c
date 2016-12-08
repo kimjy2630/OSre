@@ -136,8 +136,23 @@ filesys_open(const char *name) {
 bool
 filesys_remove (const char *name) 
 {
+  /*
   struct dir *dir = dir_open_root ();
   bool success = dir != NULL && dir_remove (dir, name);
+  */
+	int length = strlen(name);
+	if (length == 0)
+		return NULL;
+
+	char path[length + 1];
+	char filename[length + 1];
+	memset(path, 0, length);
+	memset(filename, 0, length);
+	parse_dir(name, path, filename);
+
+	struct dir *dir = dir_open_path(path);
+	bool success = dir != NUL && dir_remove(dir, filename);
+
   dir_close (dir); 
 
   return success;
