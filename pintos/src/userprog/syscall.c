@@ -547,7 +547,9 @@ bool isdir(int fd){
 	return inode_is_dir(inode);
 }
 int inumber(int fd){
-	return -1;
+	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
+	struct inode *inode = file_get_inode(pf->file);
+	return inode_get_inumber(inode);
 }
 #endif
 
