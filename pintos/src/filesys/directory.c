@@ -129,6 +129,16 @@ struct dir *move_curr_dir(char *path){
 	return curr_dir;
 }
 
+struct dir *dir_open_curr(){
+	struct dir *dir = NULL;
+	struct thread *t = thread_current();
+	if(t->curr_dir == NULL)
+		dir = dir_open_root();
+	else
+		dir = t->curr_dir;
+	return dir;
+}
+
 /* Opens and returns a new directory for the same inode as DIR.
    Returns a null pointer on failure. */
 struct dir *
