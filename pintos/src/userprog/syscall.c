@@ -318,10 +318,10 @@ int write(int fd, const void *buffer, unsigned length) {
 		return 0;
 	}
 
-#ifdef FILESYS
-	if (inode_is_dir(file_get_inode(pf->file)))
-		return -1;
-#endif
+//#ifdef FILESYS
+//	if (inode_is_dir(file_get_inode(pf->file)))
+//		return -1;
+//#endif
 	/*
 	 size_t cnt = 0;
 
