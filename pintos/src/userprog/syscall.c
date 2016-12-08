@@ -184,7 +184,7 @@ int open(const char *file) {
 #ifdef FILESYS
 	struct inode *inode = file_get_inode(f);
 	if(inode_is_dir(inode)) {
-		printf("syscall open: open file is dir\n");
+//		printf("syscall open: open file is dir\n");
 		struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 		pf->is_dir = true;
 	}
