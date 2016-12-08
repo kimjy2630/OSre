@@ -566,6 +566,7 @@ bool readdir(int fd, const char* name) {
 		return false;
 
 	struct dir *dir = dir_open(inode);
+	/*
 	struct dir_entry e;
 	while(inode_read_at(dir->inode, &e, dir->pos) == sizeof e){
 		if(e.in_use){
@@ -575,6 +576,8 @@ bool readdir(int fd, const char* name) {
 		}
 		dir->pos += sizeof e;
 	}
+	*/
+	bool ret = dir_readdir(dir, name);
 	dir_close(dir);
 	return false;
 }
