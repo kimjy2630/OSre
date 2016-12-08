@@ -22,14 +22,14 @@ struct dir_entry
     bool in_use;                        /* In use or free? */
   };
 
-void parse_dir(const char *dir, char *tmp_path, char *filename){
+void parse_dir(const char *dir, char *path, char *filename){
 	int dir_length = strlen(dir);
 	char *buffer = (char *) malloc(sizeof(char) * (dir_length + 1));
 	memcpy(buffer, dir, sizeof(char) * (dir_length + 1));
 
 	/* absolute directory */
-//	char *tmp_path = path;
-	printf("parse_dir: (a) [%s]\n", tmp_path);
+	char *tmp_path = path;
+	printf("parse_dir: (a) [%s]\n", path);
 	if (dir_length > 0 && dir[0] == '/' && tmp_path != NULL) {
 //		if(tmp_path != NULL)
 		tmp_path[0] = '/';
@@ -46,12 +46,12 @@ void parse_dir(const char *dir, char *tmp_path, char *filename){
 		}
 
 		last = token;
-		printf("parse_dir: (b) [%s]\n", tmp_path);
+		printf("parse_dir: (b) [%s]\n", path);
 	}
 
 	if(tmp_path != NULL)
 		tmp_path = '\0';
-	printf("parse_dir: (c) [%s]\n", tmp_path);
+	printf("parse_dir: (c) [%s]\n", path);
 	memcpy(filename, last, sizeof(char) * (strlen(last) + 1));
 	free(buffer);
 }
