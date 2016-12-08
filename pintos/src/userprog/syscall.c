@@ -182,7 +182,7 @@ int open(const char *file) {
 	}
 	int fd = add_process_file(thread_current(), f, file);
 #ifdef FILESYS
-	if(inode_is_dir(f->inode)){
+	if(inode_is_dir(file_get_inode(f))){
 		struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 		pf->is_dir = true;
 	}
