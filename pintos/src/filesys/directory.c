@@ -29,7 +29,7 @@ void parse_dir(const char *dir, char *path, char *filename){
 
 	/* absolute directory */
 	char *tmp_path = path;
-	printf("parse_dir: (a) [%s]\n", path);
+//	printf("parse_dir: (a) [%s]\n", path);
 	if (dir_length > 0 && dir[0] == '/' && tmp_path != NULL) {
 //		if(tmp_path != NULL)
 		tmp_path[0] = '/';
@@ -46,12 +46,12 @@ void parse_dir(const char *dir, char *path, char *filename){
 		}
 
 		last = token;
-		printf("parse_dir: (b) [%s]\n", path);
+//		printf("parse_dir: (b) [%s]\n", path);
 	}
 
 	if(tmp_path != NULL)
 		*tmp_path = '\0';
-	printf("parse_dir: (c) [%s]\n", path);
+//	printf("parse_dir: (c) [%s]\n", path);
 	memcpy(filename, last, sizeof(char) * (strlen(last) + 1));
 	free(buffer);
 }
