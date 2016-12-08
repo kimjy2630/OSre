@@ -93,6 +93,7 @@ dir_open_root (void)
 }
 
 struct dir *dir_open_path(char *path){
+	printf("dir_open_path: init path [%s]\n", path);
 	int length = strlen(path);
 	char buffer[length+1];
 	strlcpy(buffer, path, length+1);
@@ -110,6 +111,7 @@ struct dir *dir_open_path(char *path){
 
 	char *token, *p;
 	for(token = strtok_r(buffer, "/", &p); token != NULL; token = strtok_r(NULL, "/", &p)){
+		printf("dir_open_path: token [%s]\n", token);
 		struct inode *inode = NULL;
 		if(!dir_lookup(curr_dir, token, &inode)){
 			dir_close(curr_dir);
