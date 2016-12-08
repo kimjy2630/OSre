@@ -182,7 +182,8 @@ int open(const char *file) {
 	}
 	int fd = add_process_file(thread_current(), f, file);
 #ifdef FILESYS
-	if(inode_is_dir(file_get_inode(f))){
+	struct inode *inode = file_get_inode(f);
+	if(inode != NULL && inode_is_dir(inode)) {
 		struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 		pf->is_dir = true;
 	}
@@ -325,7 +326,7 @@ int write(int fd, const void *buffer, unsigned length) {
 	}
 #ifdef FILESYS
 	if(pf->is_dir)
-		return 0;
+	return -1;
 #endif
 	/*
 	 size_t cnt = 0;
@@ -530,36 +531,36 @@ void munmap(mapid_t mapid) {
 #endif
 
 #ifdef FILESYS
-bool chdir(const char* dir){
+bool chdir(const char* dir) {
 	if (!read_validity(dir, strlen(dir) + 1)) {
 		exit(-1);
 		return false;
 	}
 	struct dir *dir_target = dir_open_path(dir);
 	if(dir_target == NULL)
-		return false;
+	return false;
 
 	struct dir *curr_dir = thread_current()->curr_dir;
 	dir_close(curr_dir);
 	thread_current()->curr_dir = dir_target;
 	return true;
 }
-bool mkdir(const char* dir){
+bool mkdir(const char* dir) {
 	if (!read_validity(dir, strlen(dir) + 1)) {
 		exit(-1);
 		return false;
 	}
 	return filesys_create(dir, 0, true);
 }
-bool readdir(int fd, const char* name){
+bool readdir(int fd, const char* name) {
 	return false;
 }
-bool isdir(int fd){
+bool isdir(int fd) {
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	struct inode *inode = file_get_inode(pf->file);
 	return inode_is_dir(inode);
 }
-int inumber(int fd){
+int inumber(int fd) {
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	struct inode *inode = file_get_inode(pf->file);
 	return inode_get_inumber(inode);
