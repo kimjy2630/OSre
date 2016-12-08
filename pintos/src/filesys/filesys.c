@@ -72,11 +72,10 @@ filesys_open(const char *name) {
 	if(length == 0)
 		return NULL;
 
-	static char zeros[length];
 	char path[length+1];
 	char filename[length+1];
-	memcpy(path, zeros, length);
-	memcpy(filename, zeros, length);
+	memset(path, 0, length);
+	memset(filename, 0, length);
 	printf("filesys_open: before parse, path [%s], filename [%s]\n", path, filename);
 	parse_dir(name, path, filename);
 	printf("filesys_open: name [%s], path [%s], filename [%s]\n", name, path, filename);
