@@ -586,7 +586,7 @@ bool readdir(int fd, const char* name) {
 	*/
 	bool ret = dir_readdir(dir, name);
 	dir_close(dir);
-	return false;
+	return ret;
 }
 bool isdir(int fd) {
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
