@@ -106,7 +106,8 @@ filesys_open(const char *name) {
 	if(inode == NULL || inode_is_removed(inode))
 		return NULL;
 
-	printf("filesys_open: ret_inode is_dir %d\n", inode_is_dir(inode));
+	if(inode_is_dir(inode))
+		printf("filesys_open: ret_inode dir, filename [%s], name [%s]\n", filename, name);
 	return file_open(inode);
 
 	/*
