@@ -209,9 +209,9 @@ dir_lookup (const struct dir *dir, const char *name,
     *inode = NULL;
   */
 
-  if (strcmp(name, ".")){
+  if (strcmp(name, ".") == 0){
 	  *inode = inode_reopen(dir->inode);
-  } else if(strcmp(name, "..")){
+  } else if(strcmp(name, "..") == 0){
 	  inode_read_at(dir->inode, &e, sizeof e, 0);
 	  *inode = inode_open(e.inode_sector);
   } else if (lookup (dir, name, &e, NULL)){
