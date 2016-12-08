@@ -521,6 +521,10 @@ void munmap(mapid_t mapid) {
 
 #ifdef FILESYS
 bool chdir(const char* dir){
+	if (!read_validity(dir, strlen(dir) + 1)) {
+		exit(-1);
+		return false;
+	}
 	struct dir *dir_target = move_curr_dir(dir);
 	if(dir_target == NULL)
 		return false;
@@ -536,7 +540,6 @@ bool mkdir(const char* dir){
 		return false;
 	}
 	return filesys_create(dir, 0, true);
-//	return false;
 }
 bool readdir(int fd, const char* name){
 	return false;
