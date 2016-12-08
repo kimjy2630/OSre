@@ -278,7 +278,7 @@ dir_add (struct dir *dir, const char *name, disk_sector_t inode_sector, bool is_
   e.in_use = true;
   strlcpy (e.name, name, sizeof e.name);
   e.inode_sector = inode_sector;
-  printf("dir_add: dir in use, name [%s], inode_sector [%d]\n", name, inode_sector);
+//  printf("dir_add: dir in use, name [%s], inode_sector [%d]\n", name, inode_sector);
   success = inode_write_at (dir->inode, &e, sizeof e, ofs) == sizeof e;
 
  done:
@@ -315,7 +315,7 @@ dir_remove (struct dir *dir, const char *name)
 	  dir_close(dir_target);
 	  if(!is_target_empty)
 		  goto done;
-	  printf("dir_remove: empty directory [%s]\n", name);
+//	  printf("dir_remove: empty directory [%s]\n", name);
   }
 
   /* Erase directory entry. */
@@ -369,9 +369,9 @@ bool dir_is_empty (struct dir *dir){
 	struct dir_entry e;
 	off_t ofs;
 
-	printf("dir_is_empty: before for loop\n");
+//	printf("dir_is_empty: before for loop\n");
 	for(ofs = 0; inode_read_at(dir->inode, &e, sizeof e, ofs) == sizeof e; ofs += sizeof e){
-		printf("dir_is_empty: sector %d\n", e.inode_sector);
+//		printf("dir_is_empty: sector %d\n", e.inode_sector);
 		if(e.in_use)
 			return false;
 	}
