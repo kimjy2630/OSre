@@ -22,13 +22,13 @@ struct dir_entry
     bool in_use;                        /* In use or free? */
   };
 
-void parse_dir(const char *dir, char *path, char *filename){
+void parse_dir(const char *dir, char *tmp_path, char *filename){
 	int dir_length = strlen(dir);
 	char *buffer = (char *) malloc(sizeof(char) * (dir_length + 1));
 	memcpy(buffer, dir, sizeof(char) * (dir_length + 1));
 
 	/* absolute directory */
-	char *tmp_path = path;
+//	char *tmp_path = path;
 	printf("parse_dir: (a) [%s]\n", tmp_path);
 	if (dir_length > 0 && dir[0] == '/' && tmp_path != NULL) {
 //		if(tmp_path != NULL)
