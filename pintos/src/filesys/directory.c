@@ -50,7 +50,7 @@ void parse_dir(const char *dir, char *path, char *filename){
 	}
 
 	if(tmp_path != NULL)
-		tmp_path = '\0';
+		*tmp_path = '\0';
 	printf("parse_dir: (c) [%s]\n", path);
 	memcpy(filename, last, sizeof(char) * (strlen(last) + 1));
 	free(buffer);
