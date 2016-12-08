@@ -431,7 +431,7 @@ inode_create (disk_sector_t sector, off_t length, bool is_dir)
 	  disk_inode->is_dir = is_dir;
 
 	  int i;
-	  for(i=0; i<126; i++){
+	  for(i=0; i<125; i++){
 		  disk_inode->list_sector[i] = -1;
 	  }
 
