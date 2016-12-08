@@ -2,6 +2,9 @@
 #define USERPROG_PROCESS_H
 
 #include "threads/thread.h"
+#ifdef FILESYS
+#include "filesys/directory.h"
+#endif
 
 typedef int pid_t;
 
@@ -16,7 +19,7 @@ struct process_file {
 	int fd;
 	struct file *file;
 #ifdef FILESYS
-	bool is_dir;
+	struct dir *dir;
 #endif
 };
 

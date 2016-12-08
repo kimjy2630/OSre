@@ -189,7 +189,7 @@ int open(const char *file) {
 	if(inode_is_dir(inode)) {
 //		printf("syscall open: open file is dir\n");
 		struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
-		pf->is_dir = true;
+		pf->dir = dir_open(inode_reopen(inode));
 	}
 #endif
 	lock_release(&lock_file);
@@ -430,8 +430,13 @@ void close(int fd) {
 	if (pf == NULL)
 		return;
 
-	if (pf->file != NULL)
+	if (pf->file != NULL){
+#ifdef FILESYS
+		if(pf->dir != NULL)
+			dir_close(pf->dir);
+#endif
 		file_close(pf->file);
+	}
 	pf->file = NULL;
 	remove_process_file_from_fd(thread_current(), fd);
 }
@@ -565,9 +570,8 @@ bool readdir(int fd, const char* name) {
 	if(inode == NULL || !inode_is_dir(inode))
 		return false;
 
-	struct dir *dir = dir_open(inode);
+	struct dir *dir = pf->dir;
 	bool ret = dir_readdir(dir, name);
-	dir_close(dir);
 	return ret;
 }
 bool isdir(int fd) {
