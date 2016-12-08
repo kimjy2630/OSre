@@ -106,7 +106,7 @@ static void start_process(void *f_name) {
 #ifdef FILESYS
 	struct thread *parent = ((struct arg_success *) f_name)->parent;
 	if(parent != NULL && parent->curr_dir != NULL)
-		thread_current()->curr_dir = dir_reopen(parent->dir);
+		thread_current()->curr_dir = dir_reopen(parent->curr_dir);
 	else
 		thread_current()->curr_dir = dir_open_root();
 #endif
