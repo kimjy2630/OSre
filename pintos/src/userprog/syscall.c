@@ -521,7 +521,14 @@ void munmap(mapid_t mapid) {
 
 #ifdef FILESYS
 bool chdir(const char* dir){
-	return false;
+	struct dir *dir_target = move_curr_dir(dir);
+	if(dir_target == NULL)
+		return false;
+
+	struct dir *curr_dir = thread_current()->curr_dir;
+	dir_close(curr_dir);
+	thread_current()->curr_dir = dir_target;
+	return true;
 }
 bool mkdir(const char* dir){
 	if (!read_validity(dir, strlen(dir) + 1)) {
@@ -535,7 +542,9 @@ bool readdir(int fd, const char* name){
 	return false;
 }
 bool isdir(int fd){
-	return false;
+	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
+	struct inode *inode = pf->file->inode;
+	return inode_is_dir(inode);
 }
 int inumber(int fd){
 	return -1;
