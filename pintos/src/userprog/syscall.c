@@ -528,7 +528,7 @@ bool mkdir(const char* dir){
 		exit(-1);
 		return false;
 	}
-	return filesys_create(dir, initial_size, true);
+	return filesys_create(dir, 0, true);
 //	return false;
 }
 bool readdir(int fd, const char* name){
