@@ -91,8 +91,8 @@ byte_to_sector (const struct inode *inode, off_t pos)
 			disk_sector_t ret_sector = indirect->list_sector[sector-124];
 			free(indirect);
 			*/
-//			printf("byte_to_sector: SINGLE_INDIRECT ret_sector %u, %d\n", ret_sector, ret_sector);
-//			printf("                sector %d, pos %u\n", sector, pos);
+			printf("byte_to_sector: SINGLE_INDIRECT ret_sector %u, %d\n", ret_sector, ret_sector);
+			printf("                sector %d, pos %u\n", sector, pos);
 			return ret_sector;
 		}
 		/* double indirect sector */
@@ -218,17 +218,12 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 	uint32_t i, j;
 	disk_sector_t direct_sector = 0;
 	static char zeros[DISK_SECTOR_SIZE];
-	struct cache_entry *ce;
 
 	/* direct sector */
 	if(curr_num_sector < DIRECT){
 		for(i = curr_num_sector; i < num_sector && i < DIRECT; i++){
 			if(free_map_allocate(1, &direct_sector)){
-//				disk_write(filesys_disk, direct_sector, zeros);
-				ce = cache_write(direct_sector);
-				if(ce == NULL)
-					return false;
-				memcpy(ce->sector, zeros, DISK_SECTOR_SIZE);
+				disk_write(filesys_disk, direct_sector, zeros);
 				disk_inode->list_sector[i] = direct_sector;
 				growth--;
 			} else{
@@ -268,22 +263,14 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 				return false;
 			}
 		} else{
-//			disk_read(filesys_disk, disk_inode->list_sector[123], indirect);
-			ce = cache_read(disk_inode->list_sector[123]);
-			if (ce == NULL)
-				return false;
-			memcpy(indirect, ce->sector, DISK_SECTOR_SIZE);
+			disk_read(filesys_disk, disk_inode->list_sector[123], indirect); //
 		}
 
 //		for(i = curr_num_sector; i < (num_sector - DIRECT) && i < 128; i++){
 		for(i = curr_num_sector - DIRECT; i < (num_sector - DIRECT) && i < 128; i++){
 //			printf("grow_inode: print i = %zu\n", i);
 			if(free_map_allocate(1, &direct_sector)){
-//				disk_write(filesys_disk, direct_sector, zeros);
-				ce = cache_write(direct_sector);
-				if (ce == NULL)
-					return false;
-				memcpy(ce->sector, zeros, DISK_SECTOR_SIZE);
+				disk_write(filesys_disk, direct_sector, zeros);
 				indirect->list_sector[i] = direct_sector;
 				growth--;
 			} else{
@@ -294,16 +281,12 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 			}
 		}
 
-		if(disk_inode->list_sector[123] == -1)
+		if(disk_inode->list_sector[123] == -1){
 			disk_inode->list_sector[123] = indirect_sector;
-//			disk_write(filesys_disk, indirect_sector, indirect);
-//		} else{
-//			disk_write(filesys_disk, disk_inode->list_sector[123], indirect);
-//		}
-		ce = cache_write(disk_inode->list_sector[123]);
-		if (ce == NULL)
-			return false;
-		memcpy(ce->sector, indirect, DISK_SECTOR_SIZE);
+			disk_write(filesys_disk, indirect_sector, indirect);
+		} else{
+			disk_write(filesys_disk, disk_inode->list_sector[123], indirect);
+		}
 
 		curr_num_sector = SINGLE_INDIRECT;
 	}
@@ -337,11 +320,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 			return false;
 		}
 	} else{
-//		disk_read(filesys_disk, disk_inode->list_sector[124], double_indirect);
-		ce = cache_read(disk_inode->list_sector[124]);
-		if (ce == NULL)
-			return false;
-		memcpy(double_indirect, ce->sector, DISK_SECTOR_SIZE);
+		disk_read(filesys_disk, disk_inode->list_sector[124], double_indirect);
 	}
 
 	for(i = (curr_num_sector - SINGLE_INDIRECT) / 128; i < (num_sector - SINGLE_INDIRECT) / 128 + 1 && i < 128; i++){
@@ -357,11 +336,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 				return false;
 			}
 		} else{
-//			disk_read(filesys_disk, double_indirect->list_sector[i], indirect);
-			ce = cache_read(double_indirect->list_sector[i]);
-			if (ce == NULL)
-				return false;
-			memcpy(indirect, ce->sector, DISK_SECTOR_SIZE);
+			disk_read(filesys_disk, double_indirect->list_sector[i], indirect);
 		}
 
 		// TODO
@@ -369,11 +344,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 //		for(j = 0; j < 128; j++) {
 //			printf("grow_inode: print (i, j) = (%zu, %zu)\n", i, j);
 			if(free_map_allocate(1, &direct_sector)){
-//				disk_write(filesys_disk, direct_sector, zeros);
-				ce = cache_write(direct_sector);
-				if (ce == NULL)
-					return false;
-				memcpy(ce->sector, zeros, DISK_SECTOR_SIZE);
+				disk_write(filesys_disk, direct_sector, zeros);
 				indirect->list_sector[j] = direct_sector;
 				growth--;
 			} else{
@@ -385,29 +356,20 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 			}
 		}
 
-		if(double_indirect->list_sector[i] == -1)
+		if(double_indirect->list_sector[i] == -1){
 			double_indirect->list_sector[i] = indirect_sector;
-//			disk_write(filesys_disk, indirect_sector, indirect);
-//		} else{
-//			disk_write(filesys_disk, double_indirect->list_sector[i], indirect);
-//		}
-		ce = cache_write(double_indirect->list_sector[i]);
-		if (ce == NULL)
-			return false;
-		memcpy(ce->sector, indirect, DISK_SECTOR_SIZE);
+			disk_write(filesys_disk, indirect_sector, indirect);
+		} else{
+			disk_write(filesys_disk, double_indirect->list_sector[i], indirect);
+		}
 	}
 
-	if(disk_inode->list_sector[124] == -1)
+	if(disk_inode->list_sector[124] == -1){
 		disk_inode->list_sector[124] = double_indirect_sector;
-//		disk_write(filesys_disk, double_indirect_sector, double_indirect);
-//	} else{
-//		disk_write(filesys_disk, disk_inode->list_sector[124], double_indirect);
-//	}
-	ce = cache_write(disk_inode->list_sector[124]);
-	if (ce == NULL)
-		return false;
-	memcpy(ce->sector, double_indirect, DISK_SECTOR_SIZE);
-
+		disk_write(filesys_disk, double_indirect_sector, double_indirect);
+	} else{
+		disk_write(filesys_disk, disk_inode->list_sector[124], double_indirect);
+	}
 //	printf("grow_inode: final growth %d\n", growth);
 	if(growth <= 0){
 		disk_inode->length = length;
