@@ -390,7 +390,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
    Returns true if successful.
    Returns false if memory or disk allocation fails. */
 bool
-inode_create (disk_sector_t sector, off_t length)
+inode_create (disk_sector_t sector, off_t length, bool is_dir)
 {
   struct inode_disk *disk_inode = NULL;
   bool success = false;
@@ -428,6 +428,7 @@ inode_create (disk_sector_t sector, off_t length)
   if(disk_inode != NULL){
 	  disk_inode->length = 0;
 	  disk_inode->magic = INODE_MAGIC;
+	  disk_inode->is_dir = is_dir;
 
 	  int i;
 	  for(i=0; i<126; i++){

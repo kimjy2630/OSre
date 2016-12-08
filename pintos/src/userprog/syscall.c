@@ -524,12 +524,12 @@ bool chdir(const char* dir){
 	return false;
 }
 bool mkdir(const char* dir){
-//	if (!read_validity(dir, strlen(dir) + 1)) {
-//		exit(-1);
-//		return false;
-//	}
-//	return filesys_create(dir, initial_size, true);
-	return false;
+	if (!read_validity(dir, strlen(dir) + 1)) {
+		exit(-1);
+		return false;
+	}
+	return filesys_create(dir, initial_size, true);
+//	return false;
 }
 bool readdir(int fd, const char* name){
 	return false;
