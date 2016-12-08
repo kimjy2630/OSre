@@ -314,6 +314,7 @@ dir_remove (struct dir *dir, const char *name)
 	  dir_close(dir_target);
 	  if(!is_target_empty)
 		  goto done;
+	  printf("dir_remove: empty directory [%s]\n", name);
   }
 
   /* Erase directory entry. */
