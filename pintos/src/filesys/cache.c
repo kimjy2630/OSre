@@ -4,6 +4,7 @@
 #include "devices/disk.h"
 #include "filesys/filesys.h"
 #include "threads/synch.h"
+#include <debug.h>
 
 struct list list_cache;
 int cache_num;
