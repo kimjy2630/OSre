@@ -370,6 +370,7 @@ bool dir_is_empty (struct dir *dir){
 	off_t ofs;
 
 	for(ofs = sizeof e; inode_read_at(dir->inode, &e, sizeof e, ofs); ofs += sizeof e){
+		printf("dir_is_empty: sector %d\n", e.inode_sector);
 		if(e.in_use)
 			return false;
 	}
