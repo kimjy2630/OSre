@@ -40,7 +40,7 @@ struct process_status {
 
 struct process_file*
 get_process_file_from_fd(struct thread* t, int fd);
-int
+struct process_file*
 add_process_file(struct thread* t, struct file* file, const char* filename);
 void
 remove_process_file_from_fd(struct thread* t, int fd);
