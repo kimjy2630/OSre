@@ -649,11 +649,7 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
   if (offset+size > inode->data.length){
 	  if(grow_inode(&(inode->data), offset+size)){
 //		  printf("inode_write_at: grow_inode\n");
-//		  disk_write(filesys_disk, inode->sector, &(inode->data));
-		  struct cache_entry *ce = cache_write(inode->sector);
-		  if(ce == NULL)
-			  return 0;
-		  memcpy(ce->sector, &(inode->data) ,DISK_SECTOR_SIZE);
+		  disk_write(filesys_disk, inode->sector, &(inode->data));
 	  }
 	  else{
 		  printf("inode_write_at: grow_inode fail\n");
