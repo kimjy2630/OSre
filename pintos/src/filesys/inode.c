@@ -10,9 +10,9 @@
 /* Identifies an inode. */
 #define INODE_MAGIC 0x494e4f44
 
-#define DIRECT 124
-#define SINGLE_INDIRECT 252
-#define DOUBLE_INDIRECT 16636
+#define DIRECT 123
+#define SINGLE_INDIRECT 251
+#define DOUBLE_INDIRECT 16635
 
 //void free_inode(struct inode_disk *disk_inode, off_t length);
 //bool grow_inode(struct inode_disk *disk_inode, off_t length);
@@ -26,7 +26,8 @@ struct inode_disk {
 //    uint32_t unused[125];               /* Not used. */
 	off_t length;
 	unsigned magic;
-	uint32_t list_sector[126]; // last two for single and double indirect sectors
+	uint32_t list_sector[125]; // last two for single and double indirect sectors
+	bool is_dir;
 };
 
 struct indirect_sector{
@@ -80,9 +81,9 @@ byte_to_sector (const struct inode *inode, off_t pos)
 		struct cache_entry *ce;
 		if(sector < SINGLE_INDIRECT){
 //			/*
-			ce = cache_read(inode->data.list_sector[124]);
+			ce = cache_read(inode->data.list_sector[123]);
 			indirect = ce->sector;
-			disk_sector_t ret_sector = indirect->list_sector[sector-124];
+			disk_sector_t ret_sector = indirect->list_sector[sector-123];
 //			*/
 			/*
 			indirect = malloc(sizeof(struct indirect_sector));
@@ -97,7 +98,7 @@ byte_to_sector (const struct inode *inode, off_t pos)
 		/* double indirect sector */
 		if(sector < DOUBLE_INDIRECT){
 //			/*
-			ce = cache_read(inode->data.list_sector[125]);
+			ce = cache_read(inode->data.list_sector[124]);
 			indirect = ce->sector;
 
 			disk_sector_t index = indirect->list_sector[(sector-SINGLE_INDIRECT)/128];
@@ -147,8 +148,8 @@ void free_inode(struct inode_disk *disk_inode, off_t length){
 	int i, j;
 
 	/* double indirect sector */
-	if(disk_inode->list_sector[125] != -1){
-		double_indirect = disk_inode->list_sector[125];
+	if(disk_inode->list_sector[124] != -1){
+		double_indirect = disk_inode->list_sector[124];
 		for(i=0; i<128; i++){
 			if(num_sector < DOUBLE_INDIRECT - 128*i
 					&& double_indirect->list_sector[127-i] != -1){
@@ -170,14 +171,14 @@ void free_inode(struct inode_disk *disk_inode, off_t length){
 		}
 		if(num_sector < SINGLE_INDIRECT+1){
 			free_map_release(double_indirect, 1);
-			disk_inode->list_sector[125] = -1;
+			disk_inode->list_sector[124] = -1;
 		} else{
-			disk_write(filesys_disk, disk_inode->list_sector[125], double_indirect);
+			disk_write(filesys_disk, disk_inode->list_sector[124], double_indirect);
 		}
 	}
 	/* single indirect sector */
-	if(num_sector < SINGLE_INDIRECT && disk_inode->list_sector[124] != -1){
-		indirect = disk_inode->list_sector[124];
+	if(num_sector < SINGLE_INDIRECT && disk_inode->list_sector[123] != -1){
+		indirect = disk_inode->list_sector[123];
 		for(i=0; i<127; i++){
 			if(num_sector < SINGLE_INDIRECT - i){
 				free_map_release(indirect->list_sector[127-i], 1);
@@ -186,16 +187,16 @@ void free_inode(struct inode_disk *disk_inode, off_t length){
 		}
 		if (num_sector < DIRECT + 1) {
 			free_map_release(indirect, 1);
-			disk_inode->list_sector[124] = -1;
+			disk_inode->list_sector[123] = -1;
 		} else {
-			disk_write(filesys_disk, disk_inode->list_sector[124], indirect);
+			disk_write(filesys_disk, disk_inode->list_sector[123], indirect);
 		}
 	}
 	/* direct sector */
-	for(i=0; i<123; i++){
-		if(num_sector < DIRECT - i && disk_inode->list_sector[123-i] != -1){
-			free_map_release(disk_inode->list_sector[123-i], 1);
-			disk_inode->list_sector[123-i] = -1;
+	for(i=0; i<122; i++){
+		if(num_sector < DIRECT - i && disk_inode->list_sector[122-i] != -1){
+			free_map_release(disk_inode->list_sector[122-i], 1);
+			disk_inode->list_sector[122-i] = -1;
 		}
 	}
 
@@ -250,7 +251,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 	}
 
 	if(curr_num_sector < SINGLE_INDIRECT){
-		if(disk_inode->list_sector[124] == -1){
+		if(disk_inode->list_sector[123] == -1){
 			if(free_map_allocate(1, &indirect_sector)){
 				for(i=0; i<128; i++){
 					indirect->list_sector[i] = -1;
@@ -280,11 +281,11 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 			}
 		}
 
-		if(disk_inode->list_sector[124] == -1){
-			disk_inode->list_sector[124] = indirect_sector;
+		if(disk_inode->list_sector[123] == -1){
+			disk_inode->list_sector[123] = indirect_sector;
 			disk_write(filesys_disk, indirect_sector, indirect);
 		} else{
-			disk_write(filesys_disk, disk_inode->list_sector[124], indirect);
+			disk_write(filesys_disk, disk_inode->list_sector[123], indirect);
 		}
 
 		curr_num_sector = SINGLE_INDIRECT;
@@ -307,7 +308,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 		return false;
 	}
 
-	if(disk_inode->list_sector[125] == -1){
+	if(disk_inode->list_sector[124] == -1){
 		if(free_map_allocate(1, &double_indirect_sector)){
 			for(i=0; i<128; i++)
 				double_indirect->list_sector[i] = -1;
@@ -319,7 +320,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 			return false;
 		}
 	} else{
-		disk_read(filesys_disk, disk_inode->list_sector[125], double_indirect);
+		disk_read(filesys_disk, disk_inode->list_sector[124], double_indirect);
 	}
 
 	for(i = (curr_num_sector - SINGLE_INDIRECT) / 128; i < (num_sector - SINGLE_INDIRECT) / 128 + 1 && i < 128; i++){
@@ -363,11 +364,11 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 		}
 	}
 
-	if(disk_inode->list_sector[125] == -1){
-		disk_inode->list_sector[125] = double_indirect_sector;
+	if(disk_inode->list_sector[124] == -1){
+		disk_inode->list_sector[124] = double_indirect_sector;
 		disk_write(filesys_disk, double_indirect_sector, double_indirect);
 	} else{
-		disk_write(filesys_disk, disk_inode->list_sector[125], double_indirect);
+		disk_write(filesys_disk, disk_inode->list_sector[124], double_indirect);
 	}
 //	printf("grow_inode: final growth %d\n", growth);
 	if(growth <= 0){
