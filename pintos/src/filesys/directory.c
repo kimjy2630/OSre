@@ -32,8 +32,9 @@ void parse_dir(const char *dir, char *path, char *filename){
 //	printf("parse_dir: (a) [%s]\n", path);
 	if (dir_length > 0 && dir[0] == '/' && tmp_path != NULL) {
 //		if(tmp_path != NULL)
-		tmp_path[0] = '/';
-		tmp_path++;
+//		tmp_path[0] = '/';
+//		tmp_path++;
+		*tmp_path++ = '/';
 	}
 
 	char *token, *p, *last = "";
