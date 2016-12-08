@@ -325,7 +325,7 @@ int write(int fd, const void *buffer, unsigned length) {
 	}
 #ifdef FILESYS
 	if(pf->is_dir)
-		return -1;
+		return 0;
 #endif
 	/*
 	 size_t cnt = 0;
