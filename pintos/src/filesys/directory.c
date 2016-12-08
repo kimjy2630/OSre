@@ -351,6 +351,7 @@ dir_readdir (struct dir *dir, char name[NAME_MAX + 1])
 }
 
 bool dir_is_empty (struct dir *dir){
+	/*
 	struct dir_entry e;
 	off_t ofs = sizeof e; // 0-pos is parent directory
 
@@ -359,6 +360,15 @@ bool dir_is_empty (struct dir *dir){
 		if (e.in_use) {
 			return false;
 		}
+	}
+	return true;
+	*/
+	struct dir_entry e;
+	off_t ofs;
+
+	for(ofs = sizeof e; inode_read_at(dir->inode, &e, sizeof e, ofs); ofs += sizeof e){
+		if(e.in_use)
+			return false;
 	}
 	return true;
 }
