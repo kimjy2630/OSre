@@ -87,6 +87,47 @@ dir_open_root (void)
   return dir_open (inode_open (ROOT_DIR_SECTOR));
 }
 
+struct dir *move_curr_dir(char *path){
+	int length = strlen(path);
+	char buffer[length+1];
+	strcpy(buffer, path, length+1);
+
+	struct dir *curr_dir;
+	if(path[0] == '/'){
+		curr_dir = dir_open_root();
+	} else{
+		struct thread *t = thread_current();
+		if(t->curr_dir != NULL)
+			curr_dir = dir_reopen(t->curr_dir);
+		else
+			curr_dir = dir_open_root();
+	}
+
+	char *token, *p;
+	for(token = strtok_r(buffer, "/", &p); token != NULL; token = strtok_r(NULL, "/", &p)){
+		struct inode *inode = NULL;
+		if(!dir_lookup(curr_dir, token, &inode)){
+			dir_close(curr_dir);
+			return NULL;
+		}
+
+		struct dir *next_dir = dir_open(inode);
+		if(next_dir == NULL){
+			dir_close(curr_dir);
+			return NULL;
+		}
+		dir_close(curr_dir);
+		curr_dir = next_dir;
+	}
+
+	if (inode_is_removed(dir_get_inode(curr_dir))){
+		dir_close(curr_dir);
+		return NULL;
+	}
+
+	return curr_dir;
+}
+
 /* Opens and returns a new directory for the same inode as DIR.
    Returns a null pointer on failure. */
 struct dir *
