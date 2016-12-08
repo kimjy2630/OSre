@@ -135,7 +135,7 @@ struct dir *dir_open_curr(){
 	if(t->curr_dir == NULL)
 		dir = dir_open_root();
 	else
-		dir = t->curr_dir;
+		dir = dir_reopen(t->curr_dir);
 	return dir;
 }
 
