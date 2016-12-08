@@ -88,7 +88,7 @@ dir_open_root (void)
   return dir_open (inode_open (ROOT_DIR_SECTOR));
 }
 
-struct dir *move_curr_dir(char *path){
+struct dir *dir_open_path(char *path){
 	int length = strlen(path);
 	char buffer[length+1];
 	strlcpy(buffer, path, length+1);

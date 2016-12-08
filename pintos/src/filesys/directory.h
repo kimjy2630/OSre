@@ -20,7 +20,7 @@ bool dir_create (disk_sector_t sector, size_t entry_cnt);
 struct dir *dir_open (struct inode *);
 struct dir *dir_open_root (void);
 //
-struct dir *move_curr_dir(char *path);
+struct dir *dir_open_path(char *path);
 struct dir *dir_open_curr();
 //
 struct dir *dir_reopen (struct dir *);

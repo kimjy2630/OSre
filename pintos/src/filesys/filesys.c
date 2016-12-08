@@ -75,7 +75,25 @@ filesys_open(const char *name) {
 	char path[length+1];
 	char filename[length+1];
 	parse_dir(name, path, filename);
+	struct dir *dir = dir_open_path(path);
+	struct inode *inode = NULL;
 
+	if(dir == NULL)
+		return NULL;
+
+	if(strlen(file_name) > 0){
+		dir_lookup(dir, filename, &inode);
+		dir_close(dir);
+	} else{
+		inode = dir_get_inode (dir);
+	}
+
+	if(inode == NULL || inode_is_removed(inode))
+		return NULL;
+
+	return file_open(inode);
+
+	/*
 	struct dir *dir = dir_open_root();
 	struct inode *inode = NULL;
 
@@ -84,6 +102,7 @@ filesys_open(const char *name) {
 	dir_close(dir);
 
 	return file_open(inode);
+	*/
 }
 
 /* Deletes the file named NAME.
