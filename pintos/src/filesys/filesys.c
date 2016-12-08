@@ -48,8 +48,19 @@ bool
 filesys_create (const char *name, off_t initial_size, bool is_dir)
 {
   disk_sector_t inode_sector = 0;
-//  struct dir *dir = dir_open_root ();
-  struct dir *dir = dir_open_curr();
+  /*
+  struct dir *dir = dir_open_root ();
+  */
+  int length = strlen(name);
+  if(length == 0)
+	  return NULL;
+
+  char path[length+1];
+  char filename[length+1];
+  memset(path, 0, length);
+  memset(filename, 0, length);
+  parse_dir(name, path, filename);
+  struct dir *dir = dir_open_path(path);
   bool success = (dir != NULL
                   && free_map_allocate (1, &inode_sector)
                   && inode_create (inode_sector, initial_size, is_dir)
