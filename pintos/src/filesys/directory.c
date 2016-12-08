@@ -307,6 +307,7 @@ dir_remove (struct dir *dir, const char *name)
   if (inode == NULL)
     goto done;
 
+  /* Check empty */
   if(inode_is_dir(inode)){
 	  struct dir *dir_target = dir_open(inode);
 	  bool is_target_empty = dir_is_empty(dir_target);
