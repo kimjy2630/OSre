@@ -76,9 +76,9 @@ filesys_open(const char *name) {
 	char filename[length+1];
 	memset(path, 0, length);
 	memset(filename, 0, length);
-	printf("filesys_open: before parse, path [%s], filename [%s]\n", path, filename);
+//	printf("filesys_open: before parse, path [%s], filename [%s]\n", path, filename);
 	parse_dir(name, path, filename);
-	printf("filesys_open: name [%s], path [%s], filename [%s]\n", name, path, filename);
+//	printf("filesys_open: name [%s], path [%s], filename [%s]\n", name, path, filename);
 	struct dir *dir = dir_open_path(path);
 	struct inode *inode = NULL;
 
