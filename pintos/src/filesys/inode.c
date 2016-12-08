@@ -268,7 +268,11 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 				return false;
 			}
 		} else{
-			disk_read(filesys_disk, disk_inode->list_sector[123], indirect); //
+//			disk_read(filesys_disk, disk_inode->list_sector[123], indirect);
+			ce = cache_read(disk_inode->list_sector[123]);
+			if (ce == NULL)
+				return false;
+			memcpy(indirect, ce->sector, DISK_SECTOR_SIZE);
 		}
 
 //		for(i = curr_num_sector; i < (num_sector - DIRECT) && i < 128; i++){
@@ -333,7 +337,11 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 			return false;
 		}
 	} else{
-		disk_read(filesys_disk, disk_inode->list_sector[124], double_indirect);
+//		disk_read(filesys_disk, disk_inode->list_sector[124], double_indirect);
+		ce = cache_read(disk_inode->list_sector[124]);
+		if (ce == NULL)
+			return false;
+		memcpy(double_indirect, ce->sector, DISK_SECTOR_SIZE);
 	}
 
 	for(i = (curr_num_sector - SINGLE_INDIRECT) / 128; i < (num_sector - SINGLE_INDIRECT) / 128 + 1 && i < 128; i++){
@@ -349,7 +357,11 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 				return false;
 			}
 		} else{
-			disk_read(filesys_disk, double_indirect->list_sector[i], indirect);
+//			disk_read(filesys_disk, double_indirect->list_sector[i], indirect);
+			ce = cache_read(double_indirect->list_sector[i]);
+			if (ce == NULL)
+				return false;
+			memcpy(indirect, ce->sector, DISK_SECTOR_SIZE);
 		}
 
 		// TODO
