@@ -378,15 +378,3 @@ bool dir_is_empty (struct dir *dir){
 	return true;
 	*/
 }
-
-bool dir_readdir(struct dir *dir, char *name){
-	struct dir_entry e;
-	while(inode_read_at(dir->inode, &e, dir->pos) == sizeof e) {
-		if(e.in_use) {
-			strlcpy(name, e.name, READDIR_MAX_LEN + 1);
-			return true;
-		}
-		dir->pos += sizeof e;
-	}
-	return false;
-}
