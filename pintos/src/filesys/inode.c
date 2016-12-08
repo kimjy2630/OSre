@@ -87,8 +87,8 @@ byte_to_sector (const struct inode *inode, off_t pos)
 			*/
 //			/*
 			indirect = malloc(sizeof(struct indirect_sector));
-			disk_read(filesys_disk, inode->data.list_sector[124], indirect);
-			disk_sector_t ret_sector = indirect->list_sector[sector-124];
+			disk_read(filesys_disk, inode->data.list_sector[123], indirect);
+			disk_sector_t ret_sector = indirect->list_sector[sector-123];
 			free(indirect);
 //			*/
 //			printf("byte_to_sector: SINGLE_INDIRECT ret_sector %u, %d\n", ret_sector, ret_sector);
@@ -108,7 +108,7 @@ byte_to_sector (const struct inode *inode, off_t pos)
 			*/
 //			/*
 			indirect = malloc(sizeof(struct indirect_sector));
-			disk_read(filesys_disk, inode->data.list_sector[125], indirect);
+			disk_read(filesys_disk, inode->data.list_sector[124], indirect);
 			disk_sector_t index = indirect->list_sector[(sector-SINGLE_INDIRECT)/128];
 			disk_read(filesys_disk, index, indirect);
 
