@@ -15,6 +15,9 @@ struct process_file {
 	struct list_elem elem;
 	int fd;
 	struct file *file;
+#ifdef FILESYS
+	bool is_dir;
+#endif
 };
 
 struct arg_success {

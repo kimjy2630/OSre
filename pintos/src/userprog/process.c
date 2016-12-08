@@ -617,6 +617,9 @@ int add_process_file(struct thread* t, struct file* file, const char* filename) 
 	pf->fd = t->fd_cnt++;
 	pf->file = file;
 	list_push_back(list_pf, &pf->elem);
+#ifdef FILESYS
+	pf->is_dir = false;
+#endif
 	return pf->fd;
 }
 

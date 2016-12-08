@@ -181,6 +181,12 @@ int open(const char *file) {
 		return -1;
 	}
 	int fd = add_process_file(thread_current(), f, file);
+#ifdef FILESYS
+	if(inode_is_dir(f->inode)){
+		struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
+		pf->is_dir = true;
+	}
+#endif
 	lock_release(&lock_file);
 	return fd;
 }
@@ -317,7 +323,10 @@ int write(int fd, const void *buffer, unsigned length) {
 	if (pf == NULL) {
 		return 0;
 	}
-
+#ifdef FILESYS
+	if(pf->is_dir)
+		return -1;
+#endif
 	/*
 	 size_t cnt = 0;
 
