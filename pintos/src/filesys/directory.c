@@ -6,6 +6,7 @@
 #include "filesys/inode.h"
 #include "threads/malloc.h"
 #include "threads/thread.h"
+#include "lib/user/syscall.h"
 
 bool dir_is_empty (struct dir *dir);
 
