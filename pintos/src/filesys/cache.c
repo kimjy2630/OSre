@@ -77,13 +77,13 @@ struct cache_entry *cache(disk_sector_t sector_idx, bool dirty){
 
 struct cache_entry *cache_read(disk_sector_t sector_idx){
 	struct cache_entry *ce = cache(sector_idx, false);
-//	ASSERT(ce != NULL);
+	ASSERT(ce != NULL);
 	return ce;
 }
 
 struct cahche_entry *cache_write(disk_sector_t sector_idx){
 	struct cache_entry *ce = cache(sector_idx, true);
-//	ASSERT(ce != NULL);
+	ASSERT(ce != NULL);
 	return ce;
 }
 
