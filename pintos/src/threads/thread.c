@@ -19,6 +19,9 @@
 #include "vm/page.h"
 #include "vm/mmap.h"
 #endif
+#ifdef FILESYS
+#include "filesys/cache.h"
+#endif
 
 /* Random value for struct thread's `magic' member.
  Used to detect stack overflow.  See the big comment at the top
@@ -351,6 +354,9 @@ void thread_exit(void) {
 		thread_unblock(t);
 	}
 	process_exit ();
+#endif
+#ifdef FILESYS
+	cache_write_back();
 #endif
 
 	/* Just set our status to dying and schedule another process.
