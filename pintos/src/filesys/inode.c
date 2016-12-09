@@ -249,6 +249,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 	static char zeros[DISK_SECTOR_SIZE];
 	struct cache_entry *ce;
 
+	curr_num_sector++;
 	/* direct sector */
 	if(curr_num_sector < DIRECT){
 		for(i = curr_num_sector; i < num_sector && i < DIRECT; i++){
