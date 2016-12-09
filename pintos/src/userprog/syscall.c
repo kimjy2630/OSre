@@ -224,10 +224,13 @@ int read(int fd, void *buffer, unsigned length) {
 		return read_size;
 	}
 
+	lock_acquire(&lock_file); //
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if (pf == NULL) {
+		lock_release(&lock_file); //
 		return -1;
 	}
+	lock_release(&lock_file); //
 	/*
 	 size_t cnt = 0;
 
@@ -301,7 +304,9 @@ int read(int fd, void *buffer, unsigned length) {
 			cur_size = PGSIZE;
 
 		char *cur_buff = buffer + cnt;
+		lock_acquire(&lock_file); //
 		int op_result = file_read(pf->file, tmp_buf, cur_size);
+		lock_release(&lock_file); //
 		memcpy(cur_buff, tmp_buf, cur_size);
 
 		cnt += op_result;
@@ -324,10 +329,13 @@ int write(int fd, const void *buffer, unsigned length) {
 		return length;
 	}
 
+	lock_acquire(&lock_file); //
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if (pf == NULL) {
+		lock_release(&lock_file);
 		return 0;
 	}
+	lock_release(&lock_file);
 #ifdef FILESYS
 	if(pf->dir != NULL)
 	return -1;
@@ -403,7 +411,9 @@ int write(int fd, const void *buffer, unsigned length) {
 
 		char *cur_buff = buffer + cnt;
 		memcpy(tmp_buf, cur_buff, cur_size);
+		lock_acquire(&lock_file); //
 		int op_result = file_write(pf->file, tmp_buf, cur_size);
+		lock_release(&lock_file);
 		cnt += op_result;
 		if (op_result != cur_size)
 			break;
@@ -414,31 +424,47 @@ int write(int fd, const void *buffer, unsigned length) {
 }
 
 void seek(int fd, unsigned position) {
+	lock_acquire(&lock_file); //
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
-	if (pf == NULL)
+	if (pf == NULL){
+		lock_release(&lock_file);
 		return;
+	}
 	file_seek(pf->file, position);
+	lock_release(&lock_file);
 }
 unsigned tell(int fd) {
+	lock_acquire(&lock_file); //
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
-	if (pf == NULL)
+	if (pf == NULL){
+		lock_release(&lock_file);
 		return -1;
-	return file_tell(pf->file);
+	}
+	unsigned ret = file_tell(pf->tell);
+	lock_release(&lock_file);
+	return ret;
 }
 void close(int fd) {
+	lock_acquire(&lock_file); //
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
-	if (pf == NULL)
+	if (pf == NULL){
+		lock_release(&lock_file);
 		return;
+	}
 
 	if (pf->file != NULL){
 #ifdef FILESYS
 		if(pf->dir != NULL)
 			dir_close(pf->dir);
 #endif
+		lock_acquire(&lock_file);
 		file_close(pf->file);
+		lock_release(&lock_file);
 	}
 	pf->file = NULL;
+	lock_acquire(&lock_file);
 	remove_process_file_from_fd(thread_current(), fd);
+	lock_release(&lock_file);
 }
 
 #ifdef VM
@@ -564,11 +590,17 @@ bool mkdir(const char* dir) {
 	return filesys_create(dir, 0, true);
 }
 bool readdir(int fd, const char* name) {
+	lock_acquire(&lock_file);
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
-	if(pf == NULL)
+	if(pf == NULL){
+		lock_release(&lock_file);
 		return false;
+	}
+	lock_release(&lock_file);
 
+	lock_acquire(&lock_file);
 	struct inode *inode = file_get_inode(pf->file);
+	lock_release(&lock_file);
 	if(inode == NULL || !inode_is_dir(inode))
 		return false;
 
@@ -582,16 +614,21 @@ bool readdir(int fd, const char* name) {
 	return success;
 }
 bool isdir(int fd) {
+	lock_acquire(&lock_file);
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
-	if(pf == NULL)
+	if(pf == NULL){
+		lock_release(&lock_file);
 		return false;
+	}
 
 	struct inode *inode = file_get_inode(pf->file);
 	return inode_is_dir(inode);
 }
 int inumber(int fd) {
+	lock_acquire(&lock_file);
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	struct inode *inode = file_get_inode(pf->file);
+	lock_release(&lock_file);
 	return inode_get_inumber(inode);
 }
 #endif
