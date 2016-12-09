@@ -58,6 +58,7 @@ tid_t process_execute(const char *file_name) {
 	if(as->fn_copy==NULL)
 	{
 		free(as);
+		printf("process_execute: A\n");
 		return TID_ERROR;
 	}
 	strlcpy(as->fn_copy, file_name, PGSIZE);
@@ -68,8 +69,10 @@ tid_t process_execute(const char *file_name) {
 
 	tid = thread_create(file_name, PRI_DEFAULT, start_process, as);
 	sema_down(&as->loading);
-	if (!as->success)
+	if (!as->success){
 		tid = -1;
+		printf("process_execute: B\n");
+	}
 
 //	palloc_free_page(as->fn_copy);
 	free(as->fn_copy);
