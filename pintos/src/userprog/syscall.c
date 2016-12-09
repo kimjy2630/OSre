@@ -177,6 +177,7 @@ int open(const char *file) {
 		exit(-1);
 		return -1;
 	}
+	printf("open: file [%s]\n", file);
 
 	lock_acquire(&lock_file);
 	struct file* f;
