@@ -367,7 +367,7 @@ dir_readdir (struct dir *dir, char name[NAME_MAX + 1])
 
 bool dir_is_empty (struct dir *dir){
 	struct dir_entry e;
-	off_t ofs = 0;
+	off_t ofs = sizeof e; //
 
 	while (inode_read_at(dir->inode, &e, sizeof e, ofs) == sizeof e) {
 		ofs += sizeof e;
