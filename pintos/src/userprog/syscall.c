@@ -552,6 +552,7 @@ bool chdir(const char* dir) {
 	struct dir *curr_dir = thread_current()->curr_dir;
 	dir_close(curr_dir);
 	thread_current()->curr_dir = dir_target;
+	printf("chdir: change dir to [%s]\n", dir);
 	return true;
 }
 bool mkdir(const char* dir) {
