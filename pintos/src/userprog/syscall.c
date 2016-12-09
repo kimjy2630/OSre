@@ -440,7 +440,7 @@ unsigned tell(int fd) {
 		lock_release(&lock_file);
 		return -1;
 	}
-	unsigned ret = file_tell(pf->tell);
+	unsigned ret = file_tell(pf->file);
 	lock_release(&lock_file);
 	return ret;
 }
