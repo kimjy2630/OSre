@@ -164,8 +164,10 @@ bool remove(const char *file) {
 		return false;
 	}
 	struct file* f = filesys_open(file);
-	if (f == NULL)
+	if (f == NULL){
+		printf("remove: filesys_open(file) is NULL. file [%s]\n", file);
 		return false;
+	}
 	file_close(f);
 	return filesys_remove(file);
 }
