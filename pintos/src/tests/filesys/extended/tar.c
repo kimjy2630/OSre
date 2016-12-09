@@ -54,16 +54,16 @@ make_tar_archive (const char *archive_name, char *files[], size_t file_cnt)
   bool write_error = false;
   size_t i;
   
-  printf("make_tar_archive: name before create [%s]\n", archive_name);
+//  printf("make_tar_archive: name before create [%s]\n", archive_name);
 
   if (!create (archive_name, 0)) 
     {
       printf ("%s: create failed\n", archive_name);
       return false;
     }
-  printf("make_tar_archive: name before open [%s]\n", archive_name);
+//  printf("make_tar_archive: name before open [%s]\n", archive_name);
   archive_fd = open (archive_name);
-  printf("make_tar_archive: archive_fd %d\n", archive_fd);
+//  printf("make_tar_archive: archive_fd %d\n", archive_fd);
   if (archive_fd < 0)
     {
       printf ("%s: open failed\n", archive_name);
@@ -74,6 +74,7 @@ make_tar_archive (const char *archive_name, char *files[], size_t file_cnt)
     {
       char file_name[128];
       
+      printf("make_tar_archive: files[i] [%s]\n", files[i]);
       strlcpy (file_name, files[i], sizeof file_name);
       if (!archive_file (file_name, sizeof file_name,
                          archive_fd, &write_error))
