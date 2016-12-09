@@ -568,7 +568,6 @@ bool mkdir(const char* dir) {
 	return filesys_create(dir, 0, true);
 }
 bool readdir(int fd, const char* name) {
-	lock_acquire(&lock_file);
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if(pf == NULL){
 		return false;
