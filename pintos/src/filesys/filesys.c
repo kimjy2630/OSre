@@ -66,7 +66,6 @@ filesys_create (const char *name, off_t initial_size, bool is_dir)
   memset(filename, 0, length);
   parse_dir(name, path, filename);
   struct dir *dir = dir_open_path(path);
-  bool dir_add_success = dir_add (dir, filename, inode_sector, is_dir);
   bool success = (dir != NULL
                   && free_map_allocate (1, &inode_sector)
                   && inode_create (inode_sector, initial_size, is_dir) //
