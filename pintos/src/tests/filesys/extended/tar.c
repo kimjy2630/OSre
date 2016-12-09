@@ -74,7 +74,7 @@ make_tar_archive (const char *archive_name, char *files[], size_t file_cnt)
     {
       char file_name[128];
       
-      printf("make_tar_archive: files[%d] [%s]\n", i, files[i]);
+//      printf("make_tar_archive: files[%d] [%s]\n", i, files[i]);
       strlcpy (file_name, files[i], sizeof file_name);
       if (!archive_file (file_name, sizeof file_name,
                          archive_fd, &write_error))
@@ -94,7 +94,7 @@ static bool
 archive_file (char file_name[], size_t file_name_size,
               int archive_fd, bool *write_error) 
 {
-	printf("archive_file: file_name [%s]\n", file_name);
+//	printf("archive_file: file_name [%s]\n", file_name);
   int file_fd = open (file_name);
   if (file_fd >= 0) 
     {
@@ -168,7 +168,7 @@ archive_directory (char file_name[], size_t file_name_size, int file_fd,
   size_t dir_len;
   bool success = true;
 
-  printf("archive_directory: file_name a [%s]\n", file_name);
+//  printf("archive_directory: file_name a [%s]\n", file_name);
   dir_len = strlen (file_name);
   if (dir_len + 1 + READDIR_MAX_LEN + 1 > file_name_size) 
     {
@@ -180,14 +180,14 @@ archive_directory (char file_name[], size_t file_name_size, int file_fd,
     return false;
       
   file_name[dir_len] = '/';
-  printf("archive_directory: file_name b [%s]\n", file_name);
+//  printf("archive_directory: file_name b [%s]\n", file_name);
   while (readdir (file_fd, &file_name[dir_len + 1])){
-	  printf("archive_directory: file_name c [%s]\n", file_name);
+//	  printf("archive_directory: file_name c [%s]\n", file_name);
     if (!archive_file (file_name, file_name_size, archive_fd, write_error))
       success = false;
   }
   file_name[dir_len] = '\0';
-  printf("archive_directory: file_name d [%s]\n", file_name);
+//  printf("archive_directory: file_name d [%s]\n", file_name);
 
   return success;
 }
