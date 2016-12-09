@@ -88,7 +88,7 @@ byte_to_sector (const struct inode *inode, off_t pos)
 //			/*
 			indirect = malloc(sizeof(struct indirect_sector));
 			if(inode->data.list_sector[123] == -1){
-				printf("inode length %u, pos %u, sector %d\n", inode->data.length, pos, sector);
+				printf("byte_to_sector: inode length %u, pos %u, sector %d\n", inode->data.length, pos, sector);
 				int i;
 				for(i=0; i<125; i++){
 					printf("inode->data.list_sector[%d] : %d\n", i, inode->data.list_sector[i]);
@@ -293,6 +293,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 //		printf("grow_inode: b\n");
 		return false;
 	}
+	printf("grow_inode: SINGLE_INDIRECT\n");
 	if(curr_num_sector < SINGLE_INDIRECT - 1){
 		if(disk_inode->list_sector[123] == -1){
 			if(free_map_allocate(1, &indirect_sector)){
