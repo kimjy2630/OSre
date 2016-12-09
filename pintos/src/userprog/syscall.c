@@ -182,6 +182,7 @@ int open(const char *file) {
 	f = filesys_open(file);
 	if (f == NULL) {
 		lock_release(&lock_file);
+		printf("open: filesys_open file [%s] NULL\n", file);
 		return -1;
 	}
 	struct process_file *pf = add_process_file(thread_current(), f, file);
