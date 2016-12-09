@@ -254,7 +254,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 	if(curr_num_sector < DIRECT){ // curr = 122, num = 123
 		for (i = 0; i < num_sector && i < DIRECT; i++) {
 			if (disk_inode->list_sector[i] == -1) {
-//				printf("grow_inode: direct %d\n", i);
+				printf("grow_inode: direct %d\n", i);
 				if (free_map_allocate(1, &direct_sector)) {
 //				/*
 					disk_write(filesys_disk, direct_sector, zeros);
