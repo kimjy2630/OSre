@@ -235,7 +235,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 	size_t curr_num_sector = bytes_to_sectors(disk_inode->length);
 	ASSERT(num_sector < DOUBLE_INDIRECT && curr_num_sector < DOUBLE_INDIRECT);
 	int growth = num_sector - curr_num_sector;
-	printf("grow_inode: curr %d, to %d\n", curr_num_sector, num_sector);
+//	printf("grow_inode: curr %d, to %d\n", curr_num_sector, num_sector);
 //	printf("grow_inode: init growth %d\n", growth);
 
 //	printf("grow_inode: from curr_sector %d to num_sector %d\n", curr_num_sector, num_sector);
@@ -264,7 +264,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 					 */
 
 					disk_inode->list_sector[i] = direct_sector;
-					printf("grow_inode: direct list_sector[%d] = %d\n", i, direct_sector);
+//					printf("grow_inode: direct list_sector[%d] = %d\n", i, direct_sector);
 					growth--;
 				} else {
 					free_inode(disk_inode, curr_num_sector);
@@ -275,7 +275,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 			}
 		}
 	curr_num_sector = DIRECT;
-	printf("grow_inode: DIRECT growth %d\n", growth);
+//	printf("grow_inode: DIRECT growth %d\n", growth);
 	}
 	if (growth <= 0) {
 		disk_inode->length = length;
@@ -293,7 +293,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 //		printf("grow_inode: b\n");
 		return false;
 	}
-	printf("grow_inode: SINGLE_INDIRECT\n");
+//	printf("grow_inode: SINGLE_INDIRECT\n");
 	if(curr_num_sector < SINGLE_INDIRECT - 1){
 		if(disk_inode->list_sector[123] == -1){
 			if(free_map_allocate(1, &indirect_sector)){
@@ -301,7 +301,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 				for(i=0; i<128; i++){
 					indirect->list_sector[i] = -1;
 				}
-				printf("grow_inode: set disk_inode->list_sector[123] = %d\n", indirect_sector);
+//				printf("grow_inode: set disk_inode->list_sector[123] = %d\n", indirect_sector);
 			} else{
 				free_inode(disk_inode, curr_num_sector);
 				free(indirect);
