@@ -571,8 +571,10 @@ bool readdir(int fd, const char* name) {
 
 	struct dir *dir = pf->dir;
 	ASSERT(dir != NULL);
-	bool ret = dir_readdir(dir, name);
-	return ret;
+	bool success = dir_readdir(dir, name);
+	if(success)
+		printf("readdir: name [%s]\n", name);
+	return success;
 }
 bool isdir(int fd) {
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
