@@ -89,9 +89,9 @@ static bool
 archive_file (char file_name[], size_t file_name_size,
               int archive_fd, bool *write_error) 
 {
-	printf("archive_file: file_name [%s]\n", file_name);
+//	printf("archive_file: file_name [%s]\n", file_name);
   int file_fd = open (file_name);
-  	printf("archive_file: file_fd [%d]\n", file_fd);
+//  	printf("archive_file: file_fd [%d]\n", file_fd);
   if (file_fd >= 0) 
     {
       bool success;
@@ -99,12 +99,12 @@ archive_file (char file_name[], size_t file_name_size,
       if (inumber (file_fd) != inumber (archive_fd)) 
         {
           if (!isdir (file_fd)){
-        	  printf("archive_file: ordinary_file\n");
+//        	  printf("archive_file: ordinary_file\n");
             success = archive_ordinary_file (file_name, file_fd,
                                              archive_fd, write_error);
           }
           else{
-        	  printf("archive_file: ordinary_directory\n");
+//        	  printf("archive_file: ordinary_directory\n");
             success = archive_directory (file_name, file_name_size, file_fd,
                                          archive_fd, write_error);
           }
