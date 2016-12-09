@@ -112,7 +112,7 @@ struct dir *dir_open_path(char *path){
 			curr_dir = dir_reopen(t->curr_dir);
 		}
 		else{
-			printf("dir_open_path: start from root dir");
+			printf("dir_open_path: start from root dir\n");
 			curr_dir = dir_open_root();
 		}
 	}
