@@ -88,7 +88,7 @@ byte_to_sector (const struct inode *inode, off_t pos)
 //			/*
 			indirect = malloc(sizeof(struct indirect_sector));
 			if(inode->data.list_sector[123] == -1){
-				printf("inode length %u\n", indoe->data.length);
+				printf("inode length %u\n", inode->data.length);
 				int i;
 				for(i=0; i<125; i++){
 					printf("inode->data.list_sector[%d] : %d\n", i, inode->data.list_sector[i]);
