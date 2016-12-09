@@ -385,7 +385,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 		}
 
 		printf("grow_inode: DOUBLE_INDIRECT debug i = %zu\n", i);
-		for(j = curr_num_sector - SINGLE_INDIRECT; j < num_sector - SINGLE_INDIRECT - (i*128) + 1 && j < 128 ;j++){
+		for(j = curr_num_sector - SINGLE_INDIRECT - (i*128); j < num_sector - SINGLE_INDIRECT - (i*128) + 1 && j < 128 ;j++){
 			printf("grow_inode: DOUBLE_INDIRECT debug (i, j) = (%zu, %zu)\n", i, j);
 			if(free_map_allocate(1, &direct_sector)){
 				/*
