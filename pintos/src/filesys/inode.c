@@ -344,7 +344,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 		memcpy(ce->sector, indirect, DISK_SECTOR_SIZE);
 		*/
 
-		curr_num_sector = SINGLE_INDIRECT - 1;
+		curr_num_sector = SINGLE_INDIRECT;
 	}
 	if (growth <= 0) {
 		disk_inode->length = length;
@@ -387,7 +387,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 		*/
 	}
 
-	for(i = (curr_num_sector - SINGLE_INDIRECT + 1) / 128; i < (num_sector - SINGLE_INDIRECT) / 128 + 1 && i < 128; i++){
+	for(i = (curr_num_sector - SINGLE_INDIRECT) / 128; i < (num_sector - SINGLE_INDIRECT) / 128 + 1 && i < 128; i++){
 		if(double_indirect->list_sector[i] == -1){
 			if(free_map_allocate(1, &indirect_sector)){
 				for(j=0; j<128; j++)
