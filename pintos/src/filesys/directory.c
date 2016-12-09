@@ -114,7 +114,7 @@ struct dir *dir_open_path(char *path){
 
 	char *token, *p;
 	for(token = strtok_r(buffer, "/", &p); token != NULL; token = strtok_r(NULL, "/", &p)){
-//		printf("dir_open_path: token [%s]\n", token);
+		printf("dir_open_path: token [%s]\n", token);
 		struct inode *inode = NULL;
 		if(!dir_lookup(curr_dir, token, &inode)){
 			dir_close(curr_dir);
