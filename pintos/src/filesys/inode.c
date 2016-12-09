@@ -676,7 +676,7 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
 	while (size > 0) {
 		/* Disk sector to read, starting byte offset within sector. */
 		disk_sector_t sector_idx = byte_to_sector(inode, offset);
-		disk_sector_t next_sector_idx = byte_to_sector(inode, offset+DISK_SECTOR_SIZE);
+//		disk_sector_t next_sector_idx = byte_to_sector(inode, offset+DISK_SECTOR_SIZE);
 //		printf("inode_read_at: sector_idx %u, %d, offset %u, sectors %u\n", sector_idx, sector_idx, offset, bytes_to_sectors(offset)); ////
 		if (sector_idx == -1){
 //			printf("inode_read_at: sector_idx -1, offset %u\n", offset);
@@ -779,7 +779,7 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
     {
       /* Sector to write, starting byte offset within sector. */
       disk_sector_t sector_idx = byte_to_sector (inode, offset);
-      disk_sector_t next_sector_idx = byte_to_sector(inode, offset+DISK_SECTOR_SIZE);
+//      disk_sector_t next_sector_idx = byte_to_sector(inode, offset+DISK_SECTOR_SIZE);
 //      printf("inode_write_at: sector_idx %u\n", sector_idx);
       if(sector_idx == -1){
 //    	  printf("inode_write_at: sector_idx -1\n");
