@@ -290,6 +290,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 	if(curr_num_sector < SINGLE_INDIRECT){
 		if(disk_inode->list_sector[123] == -1){
 			if(free_map_allocate(1, &indirect_sector)){
+				disk_inode->list_sector[123] = indirect_sector;
 				for(i=0; i<128; i++){
 					indirect->list_sector[i] = -1;
 				}
@@ -332,8 +333,8 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 			}
 		}
 
-		if(disk_inode->list_sector[123] == -1)
-			disk_inode->list_sector[123] = indirect_sector;
+//		if(disk_inode->list_sector[123] == -1)
+//			disk_inode->list_sector[123] = indirect_sector;
 //		/*
 		disk_write(filesys_disk, disk_inode->list_sector[123], indirect);
 //		*/
