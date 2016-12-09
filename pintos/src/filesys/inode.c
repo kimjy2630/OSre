@@ -627,7 +627,7 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
 	while (size > 0) {
 		/* Disk sector to read, starting byte offset within sector. */
 		disk_sector_t sector_idx = byte_to_sector(inode, offset);
-		disk_sector_t next_sector_idx = byte_to_sector(inode, offset+DISK_SECTOR_SIZE);
+//		disk_sector_t next_sector_idx = byte_to_sector(inode, offset+DISK_SECTOR_SIZE);
 //		printf("inode_read_at: sector_idx %u, %d, offset %u, sectors %u\n", sector_idx, sector_idx, offset, bytes_to_sectors(offset)); ////
 		if (sector_idx == -1){
 //			printf("inode_read_at: sector_idx -1, offset %u\n", offset);
@@ -655,7 +655,7 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
 			*/
 //			/*
 			struct cache_entry *ce = cache_read(sector_idx);
-			cache_read_ahead(sector_idx, next_sector_idx);
+//			cache_read_ahead(sector_idx, next_sector_idx);
 			memcpy(buffer + bytes_read, ce->sector, DISK_SECTOR_SIZE);
 //			*/
 		} else {
@@ -734,7 +734,7 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
 
       /* Bytes left in inode, bytes left in sector, lesser of the two. */
       off_t inode_left = inode_length (inode) - offset;
-      int sector_left = DISK_SECTOR_SIZE - sector_ofs;
+//      int sector_left = DISK_SECTOR_SIZE - sector_ofs;
       int min_left = inode_left < sector_left ? inode_left : sector_left;
 
       /* Number of bytes to actually write into this sector. */
@@ -750,7 +750,7 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
           */
 //          /*
     	  struct cache_entry *ce = cache_write(sector_idx);
-    	  cache_read_ahead(sector_idx, next_sector_idx);
+//    	  cache_read_ahead(sector_idx, next_sector_idx);
     	  memcpy(ce->sector, buffer + bytes_written, DISK_SECTOR_SIZE);
 //    	  */
         }
