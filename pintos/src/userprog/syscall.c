@@ -557,7 +557,7 @@ bool chdir(const char* dir) {
 	if(curr_dir != NULL)
 		dir_close(curr_dir);
 	thread_current()->curr_dir = dir_target;
-//	printf("chdir: change dir to [%s]\n", dir);
+	printf("chdir: change dir to [%s]\n", dir);
 	return true;
 }
 bool mkdir(const char* dir) {
