@@ -310,7 +310,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 			*/
 		}
 
-		for(i = curr_num_sector - DIRECT; i < (num_sector - DIRECT) && i < 128; i++){
+		for(i = curr_num_sector - DIRECT; i < (num_sector - DIRECT) + 1 && i < 128; i++){
 //			printf("grow_inode: print i = %zu\n", i);
 			if(free_map_allocate(1, &direct_sector)){
 //				/*
