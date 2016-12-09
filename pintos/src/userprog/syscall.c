@@ -21,12 +21,12 @@ static void syscall_handler(struct intr_frame *);
 
 void* esp;
 
-struct lock lock_file;
+//struct lock lock_file;
 
 void syscall_init(void) {
 	intr_register_int(0x30, 3, INTR_ON, syscall_handler, "syscall");
 
-	lock_init(&lock_file);
+//	lock_init(&lock_file);
 }
 
 static void*
@@ -128,8 +128,8 @@ void halt(void) {
 }
 
 void exit(int status) {
-	if (lock_held_by_current_thread(&lock_file))
-		lock_release(&lock_file);
+//	if (lock_held_by_current_thread(&lock_file))
+//		lock_release(&lock_file);
 	struct thread *curr = thread_current();
 	curr->exit_status = status;
 	if (curr->ps != NULL)
@@ -177,11 +177,11 @@ int open(const char *file) {
 		return -1;
 	}
 
-	lock_acquire(&lock_file);
+//	lock_acquire(&lock_file);
 	struct file* f;
 	f = filesys_open(file);
 	if (f == NULL) {
-		lock_release(&lock_file);
+//		lock_release(&lock_file);
 		return -1;
 	}
 	struct process_file *pf = add_process_file(thread_current(), f, file);
@@ -192,19 +192,19 @@ int open(const char *file) {
 		pf->dir = dir_open(inode_reopen(inode));
 	}
 #endif
-	lock_release(&lock_file);
+//	lock_release(&lock_file);
 	return fd;
 }
 int filesize(int fd) {
-	lock_acquire(&lock_file);
+//	lock_acquire(&lock_file);
 	struct process_file *pf = get_process_file_from_fd(thread_current(), fd);
 	if (pf == NULL) {
-		lock_release(&lock_file);
+//		lock_release(&lock_file);
 		return -1;
 	}
 
 	int len = file_length(pf->file);
-	lock_release(&lock_file);
+//	lock_release(&lock_file);
 	return len;
 }
 int read(int fd, void *buffer, unsigned length) {
@@ -278,9 +278,9 @@ int read(int fd, void *buffer, unsigned length) {
 		spe->fe->finned = true;
 		size_t read_bytes = ofs + rest > PGSIZE ? PGSIZE - ofs : rest;
 
-		lock_acquire(&lock_file);
+//		lock_acquire(&lock_file);
 		cnt += file_read(pf->file, tmp_buf, read_bytes);
-		lock_release(&lock_file);
+//		lock_release(&lock_file);
 
 		rest -= read_bytes;
 		tmp_buf += read_bytes;
@@ -379,9 +379,9 @@ int write(int fd, const void *buffer, unsigned length) {
 		spe->fe->finned = true;
 		size_t write_bytes = ofs + rest > PGSIZE ? PGSIZE - ofs : rest;
 
-		lock_acquire(&lock_file);
+//		lock_acquire(&lock_file);
 		cnt += file_write(pf->file, tmp_buf, write_bytes);
-		lock_release(&lock_file);
+//		lock_release(&lock_file);
 
 		rest -= write_bytes;
 		tmp_buf += write_bytes;
@@ -461,9 +461,9 @@ mapid_t mmap(int fd, uint8_t *uaddr) {
 	if(length == 0) {
 		return -1;
 	}
-	lock_acquire(&lock_file);
+//	lock_acquire(&lock_file);
 	struct file *file = file_reopen(pf->file);
-	lock_release(&lock_file);
+//	lock_release(&lock_file);
 	int num_page = length / PGSIZE;
 	if(length % PGSIZE != 0)
 	num_page++;
@@ -505,9 +505,9 @@ void munmap(mapid_t mapid) {
 	if(mmap == NULL)
 	return;
 
-	lock_acquire(&lock_file);
+//	lock_acquire(&lock_file);
 	off_t length = file_length(mmap->file);
-	lock_release(&lock_file);
+//	lock_release(&lock_file);
 
 	int num_page = length / PGSIZE;
 	if(length % PGSIZE != 0)
@@ -525,9 +525,9 @@ void munmap(mapid_t mapid) {
 			uint8_t *kaddr = spe->kaddr;
 			if(pagedir_is_dirty(spe->t->pagedir, uaddr)) {
 				struct file *file = spe->mmap->file;
-				lock_acquire(&lock_file);
+//				lock_acquire(&lock_file);
 				file_write_at(file, kaddr, spe->mmap_page_read_bytes, spe->mmap_ofs);
-				lock_release(&lock_file);
+//				lock_release(&lock_file);
 			}
 			pagedir_clear_page(spe->t->pagedir, spe->uaddr);
 			frame_free_fe(spe->fe);
