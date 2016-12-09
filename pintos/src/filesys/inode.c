@@ -355,6 +355,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 
 		curr_num_sector = SINGLE_INDIRECT;
 	}
+	printf("grow_inode: SINGLE_INDIRECT growth %d\n", growth);
 	if (growth <= 0) {
 		disk_inode->length = length;
 		free(indirect);
