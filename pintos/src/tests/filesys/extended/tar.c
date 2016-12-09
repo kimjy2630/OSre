@@ -63,6 +63,7 @@ make_tar_archive (const char *archive_name, char *files[], size_t file_cnt)
     }
   printf("make_tar_archive: name before open [%s]\n", archive_name);
   archive_fd = open (archive_name);
+  printf("make_tar_archive: archive_fd %d\n", archive_fd);
   if (archive_fd < 0)
     {
       printf ("%s: open failed\n", archive_name);
