@@ -221,7 +221,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 	size_t curr_num_sector = bytes_to_sectors(disk_inode->length);
 	ASSERT(num_sector < DOUBLE_INDIRECT && curr_num_sector < DOUBLE_INDIRECT);
 	int growth = num_sector - curr_num_sector;
-	printf("grow_inode: num_sector %d, curr_num_sector %d, growth %d\n", num_sector, curr_num_sector, growth);
+//	printf("grow_inode: num_sector %d, curr_num_sector %d, growth %d\n", num_sector, curr_num_sector, growth);
 	int init_growth = growth;
 
 	if(growth <= 0){
@@ -384,9 +384,9 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 			memcpy(indirect, ce->sector, DISK_SECTOR_SIZE);
 		}
 
-		printf("grow_inode: DOUBLE_INDIRECT debug i = %zu\n", i);
+//		printf("grow_inode: DOUBLE_INDIRECT debug i = %zu\n", i);
 		for(j = curr_num_sector - SINGLE_INDIRECT - (i*128); j < num_sector - SINGLE_INDIRECT - (i*128) + 1 && j < 128 ;j++){
-			printf("grow_inode: DOUBLE_INDIRECT debug (i, j) = (%zu, %zu)\n", i, j);
+//			printf("grow_inode: DOUBLE_INDIRECT debug (i, j) = (%zu, %zu)\n", i, j);
 			if(free_map_allocate(1, &direct_sector)){
 				/*
 				disk_write(filesys_disk, direct_sector, zeros);
