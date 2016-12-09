@@ -104,10 +104,10 @@ filesys_open(const char *name) {
 	if(strlen(filename) > 0){
 		dir_lookup(dir, filename, &inode);
 		dir_close(dir);
-		printf("filesys_open: dir_lookup dir path [%s], filename [%s]\n", path, filename);
+//		printf("filesys_open: dir_lookup dir path [%s], filename [%s]\n", path, filename);
 	} else{
 		inode = dir_get_inode (dir);
-		printf("filesys_open: dir_get_inode dir path [%s]\n", path);
+//		printf("filesys_open: dir_get_inode dir path [%s]\n", path);
 	}
 
 	if(inode == NULL || inode_is_removed(inode))
