@@ -78,7 +78,7 @@ byte_to_sector (const struct inode *inode, off_t pos)
 		}
 		/* single indirect sector */
 		struct indirect_sector *indirect;
-//		struct cache_entry *ce;
+		struct cache_entry *ce;
 		if(sector < SINGLE_INDIRECT){
 //			/*
 			ce = cache_read(inode->data.list_sector[123]);
