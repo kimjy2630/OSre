@@ -94,7 +94,7 @@ filesys_open(const char *name) {
 	memset(filename, 0, length);
 //	printf("filesys_open: before parse, path [%s], filename [%s]\n", path, filename);
 	parse_dir(name, path, filename);
-	printf("filesys_open: name [%s], path [%s], filename [%s]\n", name, path, filename);
+//	printf("filesys_open: name [%s], path [%s], filename [%s]\n", name, path, filename);
 	struct dir *dir = dir_open_path(path);
 	struct inode *inode = NULL;
 
@@ -151,7 +151,7 @@ filesys_remove (const char *name)
 
 	struct dir *dir = dir_open_path(path);
 	if(dir == NULL){
-		printf("filesys_remove: dir_open_path(%s) fails, name [%s]\n", path, name);
+//		printf("filesys_remove: dir_open_path(%s) fails, name [%s]\n", path, name);
 		return false;
 	}
 
@@ -159,7 +159,7 @@ filesys_remove (const char *name)
 	dir_close (dir);
 
 	if(!success){
-		printf("filesys_remove: fails with path [%s] filename[%s]\n", path, filename);
+//		printf("filesys_remove: fails with path [%s] filename[%s]\n", path, filename);
 	}
   return success;
 }
