@@ -574,6 +574,8 @@ bool readdir(int fd, const char* name) {
 	bool success = dir_readdir(dir, name);
 	if(success)
 		printf("readdir: name [%s]\n", name);
+	else
+		printf("readdir: fail\n");
 	return success;
 }
 bool isdir(int fd) {
