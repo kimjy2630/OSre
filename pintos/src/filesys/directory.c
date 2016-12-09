@@ -103,16 +103,16 @@ struct dir *dir_open_path(char *path){
 
 	struct dir *curr_dir;
 	if(path[0] == '/'){
-		printf("dir_open_path: absolute path");
+//		printf("dir_open_path: absolute path");
 		curr_dir = dir_open_root();
 	} else{
 		struct thread *t = thread_current();
 		if(t->curr_dir != NULL){
-			printf("dir_open_path: start from current path, not NULL\n");
+//			printf("dir_open_path: start from current path, not NULL\n");
 			curr_dir = dir_reopen(t->curr_dir);
 		}
 		else{
-			printf("dir_open_path: start from root dir\n");
+//			printf("dir_open_path: start from root dir\n");
 			curr_dir = dir_open_root();
 		}
 	}
