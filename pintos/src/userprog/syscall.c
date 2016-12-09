@@ -13,7 +13,9 @@
 #include "vm/page.h"
 #include "vm/frame.h"
 #include "vm/mmap.h"
+#ifdef FILESYS
 #include "filesys/directory.h"
+#endif
 
 static void syscall_handler(struct intr_frame *);
 
@@ -93,27 +95,31 @@ static void syscall_handler(struct intr_frame *f UNUSED) {
 	case SYS_CLOSE:
 		close(get_argument_int(ptr, 1));
 		break;
-	case SYS_MMAP:
-		f->eax = mmap(get_argument_int(ptr, 1), get_argument_ptr(ptr, 2));
+#ifdef VM
+		case SYS_MMAP:
+		f->eax = mmap(get_argument_int(ptr, 1), get_argument_ptr(ptr,2));
 		break;
-	case SYS_MUNMAP:
-		munmap(get_argument_int(ptr, 1));
+		case SYS_MUNMAP:
+		munmap(get_argument_int(ptr,1));
 		break;
-	case SYS_CHDIR:
+#endif
+#ifdef FILESYS
+		case SYS_CHDIR:
 		f->eax = chdir(get_argument_ptr(ptr, 1));
 		break;
-	case SYS_MKDIR:
+		case SYS_MKDIR:
 		f->eax = mkdir(get_argument_ptr(ptr, 1));
 		break;
-	case SYS_READDIR:
+		case SYS_READDIR:
 		f->eax = readdir(get_argument_int(ptr, 1), get_argument_ptr(ptr, 2));
 		break;
-	case SYS_ISDIR:
+		case SYS_ISDIR:
 		f->eax = isdir(get_argument_int(ptr, 1));
 		break;
-	case SYS_INUMBER:
+		case SYS_INUMBER:
 		f->eax = inumber(get_argument_int(ptr, 1));
 		break;
+#endif
 	}
 }
 
@@ -180,10 +186,12 @@ int open(const char *file) {
 	}
 	struct process_file *pf = add_process_file(thread_current(), f, file);
 	int fd = pf->fd;
+#ifdef FILESYS
 	struct inode *inode = file_get_inode(f);
 	if(inode_is_dir(inode)) {
 		pf->dir = dir_open(inode_reopen(inode));
 	}
+#endif
 	lock_release(&lock_file);
 	return fd;
 }
@@ -320,8 +328,10 @@ int write(int fd, const void *buffer, unsigned length) {
 	if (pf == NULL) {
 		return 0;
 	}
-	if (pf->dir != NULL)
-		return -1;
+#ifdef FILESYS
+	if(pf->dir != NULL)
+	return -1;
+#endif
 	/*
 	 size_t cnt = 0;
 
@@ -424,15 +434,18 @@ void close(int fd) {
 		return;
 	}
 
-	if (pf->file != NULL) {
-		if (pf->dir != NULL)
+	if (pf->file != NULL){
+#ifdef FILESYS
+		if(pf->dir != NULL)
 			dir_close(pf->dir);
+#endif
 		file_close(pf->file);
 	}
 	pf->file = NULL;
 	remove_process_file_from_fd(thread_current(), fd);
 }
 
+#ifdef VM
 mapid_t mmap(int fd, uint8_t *uaddr) {
 	if(uaddr > PHYS_BASE) {
 		exit(-1);
@@ -528,7 +541,9 @@ void munmap(mapid_t mapid) {
 		uaddr += PGSIZE;
 	}
 }
+#endif
 
+#ifdef FILESYS
 bool chdir(const char* dir) {
 	if (!read_validity(dir, strlen(dir) + 1)) {
 		exit(-1);
@@ -585,6 +600,7 @@ int inumber(int fd) {
 	struct inode *inode = file_get_inode(pf->file);
 	return inode_get_inumber(inode);
 }
+#endif
 
 int get_user(const uint8_t *uaddr) {
 	int result;
