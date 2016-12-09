@@ -301,21 +301,27 @@ dir_remove (struct dir *dir, const char *name)
   ASSERT (name != NULL);
 
   /* Find directory entry. */
-  if (!lookup (dir, name, &e, &ofs))
+  if (!lookup (dir, name, &e, &ofs)){
+	  printf("dir_remove: lookup fails\n");
     goto done;
+  }
 
   /* Open inode. */
   inode = inode_open (e.inode_sector);
-  if (inode == NULL)
+  if (inode == NULL){
+	  printf("dir_remove: inode NULL\n");
     goto done;
+  }
 
   /* Check empty */
   if(inode_is_dir(inode)){
 	  struct dir *dir_target = dir_open(inode);
 	  bool is_target_empty = dir_is_empty(dir_target);
 	  dir_close(dir_target);
-	  if(!is_target_empty)
+	  if(!is_target_empty){
+		  printf("dir_remove: target not empty\n");
 		  goto done;
+	  }
 //	  printf("dir_remove: empty directory [%s]\n", name);
   }
 
