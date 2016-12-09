@@ -10,9 +10,9 @@
 /* Identifies an inode. */
 #define INODE_MAGIC 0x494e4f44
 
-#define DIRECT 123
-#define SINGLE_INDIRECT 251
-#define DOUBLE_INDIRECT 16635
+#define DIRECT 122
+#define SINGLE_INDIRECT 250
+#define DOUBLE_INDIRECT 16634
 
 //void free_inode(struct inode_disk *disk_inode, off_t length);
 //bool grow_inode(struct inode_disk *disk_inode, off_t length);
