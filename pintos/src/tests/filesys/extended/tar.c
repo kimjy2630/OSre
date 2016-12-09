@@ -54,6 +54,8 @@ make_tar_archive (const char *archive_name, char *files[], size_t file_cnt)
   bool write_error = false;
   size_t i;
   
+  printf("make_tar_archive: name [%s]\n", archive_name);
+
   if (!create (archive_name, 0)) 
     {
       printf ("%s: create failed\n", archive_name);
