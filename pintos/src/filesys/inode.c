@@ -237,7 +237,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 	int growth = num_sector - curr_num_sector;
 //	printf("grow_inode: init growth %d\n", growth);
 
-	printf("grow_inode: frome curr_sector %d to num_sector %d\n", curr_num_sector, num_sector);
+	printf("grow_inode: from curr_sector %d to num_sector %d\n", curr_num_sector, num_sector);
 
 	if(growth <= 0){
 		disk_inode->length = length;
@@ -740,7 +740,9 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
     return 0;
 
   if (offset+size > inode->data.length){
-	  printf("inode_write_at: grow_inode %d to %d\n", bytes_to_sectors(inode->data.length)), bytes_to_sectors(offset+size);
+	  off_t from = bytes_to_sectors(inode->data.length);
+	  off_t to = bytes_to_sectors(offset+size);
+	  printf("inode_write_at: grow_inode %d to %d\n", from, to);
 	  if(grow_inode(&(inode->data), offset+size)){
 //		  printf("inode_write_at: grow_inode\n");
 //		  /*
