@@ -168,6 +168,7 @@ archive_directory (char file_name[], size_t file_name_size, int file_fd,
   size_t dir_len;
   bool success = true;
 
+  printf("archive_directory: file_name a [%s]\n", file_name);
   dir_len = strlen (file_name);
   if (dir_len + 1 + READDIR_MAX_LEN + 1 > file_name_size) 
     {
@@ -179,10 +180,14 @@ archive_directory (char file_name[], size_t file_name_size, int file_fd,
     return false;
       
   file_name[dir_len] = '/';
-  while (readdir (file_fd, &file_name[dir_len + 1])) 
+  printf("archive_directory: file_name b [%s]\n", file_name);
+  while (readdir (file_fd, &file_name[dir_len + 1])){
+	  printf("archive_directory: file_name c [%s]\n", file_name);
     if (!archive_file (file_name, file_name_size, archive_fd, write_error))
       success = false;
+  }
   file_name[dir_len] = '\0';
+  printf("archive_directory: file_name d [%s]\n", file_name);
 
   return success;
 }
