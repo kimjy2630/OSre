@@ -251,8 +251,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 	struct cache_entry *ce;
 
 	/* direct sector */
-//	if(curr_num_sector < DIRECT){ // curr = 122, num = 123
-	if (num_sector < DIRECT) {
+	if(curr_num_sector < DIRECT){ // curr = 122, num = 123
 		for (i = 0; i < num_sector && i < DIRECT; i++) {
 			if (disk_inode->list_sector[i] == -1) {
 				printf("grow_inode: direct %d\n", i);
@@ -294,8 +293,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 //		printf("grow_inode: b\n");
 		return false;
 	}
-//	if(curr_num_sector < SINGLE_INDIRECT - 1){
-	if(num_sector < SINGLE_INDIRECT){
+	if(curr_num_sector < SINGLE_INDIRECT - 1){
 		if(disk_inode->list_sector[123] == -1){
 			if(free_map_allocate(1, &indirect_sector)){
 				disk_inode->list_sector[123] = indirect_sector;
