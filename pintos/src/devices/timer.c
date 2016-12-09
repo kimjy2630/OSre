@@ -193,7 +193,8 @@ timer_interrupt (struct intr_frame *args UNUSED)
   }
 
 #ifdef filesys
-  cache_write_back();
+  if(ticks % 100 == 0)
+	  cache_write_back();
 #endif
 }
 
