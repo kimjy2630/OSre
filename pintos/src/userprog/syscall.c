@@ -177,14 +177,14 @@ int open(const char *file) {
 		exit(-1);
 		return -1;
 	}
-	printf("open: file [%s]\n", file);
+//	printf("open: file [%s]\n", file);
 
 	lock_acquire(&lock_file);
 	struct file* f;
 	f = filesys_open(file);
 	if (f == NULL) {
 		lock_release(&lock_file);
-		printf("open: filesys_open file [%s] NULL\n", file);
+//		printf("open: filesys_open file [%s] NULL\n", file);
 		return -1;
 	}
 	struct process_file *pf = add_process_file(thread_current(), f, file);
