@@ -156,7 +156,7 @@ bool create(const char *file, unsigned initial_size) {
 		exit(-1);
 		return false;
 	}
-	printf("create: file [%s]\n", file);
+//	printf("create: file [%s]\n", file);
 	return filesys_create(file, initial_size, false);
 }
 bool remove(const char *file) {
@@ -177,7 +177,7 @@ int open(const char *file) {
 		exit(-1);
 		return -1;
 	}
-	printf("open: file [%s]\n", file);
+//	printf("open: file [%s]\n", file);
 
 	lock_acquire(&lock_file);
 	struct file* f;
