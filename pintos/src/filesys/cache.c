@@ -236,10 +236,10 @@ void cache_write_back(){
 	lock_acquire(&lock_cache);
 	for (e = list_begin(&list_cache); e != list_end(&list_cache); e = list_next(e)) {
 		ce = list_entry(e, struct cache_entry, elem);
-		if(ce->dirty){
+//		if(ce->dirty){
 			disk_write(filesys_disk, ce->sector_idx, ce->sector);
-			ce->dirty = false;
-		}
+//			ce->dirty = false;
+//		}
 	}
 	lock_release(&lock_cache);
 }
