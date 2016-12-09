@@ -64,7 +64,23 @@ void parse_dir(const char *dir, char *path, char *filename){
 bool
 dir_create (disk_sector_t sector, size_t entry_cnt) 
 {
+  /*
   return inode_create (sector, entry_cnt * sizeof (struct dir_entry), true);
+  */
+	bool success = inode_create(sector, entry_cnt * sizeof (struct dir_entry), true);
+	if(!success)
+		return false;
+
+	struct dir *dir = dir_open(inode_open(sector));
+	ASSERT(dir != NULL);
+	struct dir_entry e;
+	e.inode_sector = sector;
+	if(inode_write_at(dir->inode, &e, sizeof e, 0) != sizeof e){
+		success = false;
+	}
+	dir_close(dir);
+
+	return success;
 }
 
 /* Opens and returns the directory for the given INODE, of which
