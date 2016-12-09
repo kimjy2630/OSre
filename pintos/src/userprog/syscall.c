@@ -163,11 +163,12 @@ bool remove(const char *file) {
 		exit(-1);
 		return false;
 	}
-
+	/*
 	struct file* f = filesys_open(file);
 	if (f == NULL)
 		return false;
 	file_close(f);
+	*/
 	return filesys_remove(file);
 }
 int open(const char *file) {
