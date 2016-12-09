@@ -754,11 +754,11 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
     return 0;
 
   if (offset+size > inode->data.length){
-//	  /*
+	  /*
 	  off_t from = bytes_to_sectors(inode->data.length);
 	  off_t to = bytes_to_sectors(offset+size);
 	  printf("inode_write_at: grow_inode %d to %d\n", from, to);
-//	  */
+	  */
 	  if(grow_inode(&(inode->data), offset+size)){
 //		  printf("inode_write_at: grow_inode\n");
 //		  /*
