@@ -150,12 +150,17 @@ filesys_remove (const char *name)
 	parse_dir(name, path, filename);
 
 	struct dir *dir = dir_open_path(path);
-	if(dir == NULL)
+	if(dir == NULL){
+		printf("filesys_remove: dir_open_path(%s) fails, name [%s]\n", path, name);
 		return false;
+	}
 
 	bool success = dir_remove(dir, filename);
 	dir_close (dir);
 
+	if(!success){
+		printf("filesys_remove: fails with path [%s] filename[%s]\n", path, filename);
+	}
   return success;
 }
 
