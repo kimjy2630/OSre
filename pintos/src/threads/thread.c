@@ -310,9 +310,9 @@ void thread_exit(void) {
 #endif
 #ifdef USERPROG
 	if (curr->f != NULL) {
-		lock_acquire(&lock_file);
+//		lock_acquire(&lock_file);
 		file_close(curr->f);
-		lock_release(&lock_file);
+//		lock_release(&lock_file);
 		curr->f = NULL;
 	}
 	struct list* list_ps = &curr->list_ps;
@@ -336,9 +336,9 @@ void thread_exit(void) {
 				struct process_file, elem);
 		if (pf != NULL) {
 			if (pf->file != NULL){
-				lock_acquire(&lock_file);
+//				lock_acquire(&lock_file);
 				file_close(pf->file);
-				lock_release(&lock_file);
+//				lock_release(&lock_file);
 			}
 			pf->file = NULL;
 			free(pf);
