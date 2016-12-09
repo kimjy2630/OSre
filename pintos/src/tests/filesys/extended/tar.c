@@ -74,7 +74,7 @@ make_tar_archive (const char *archive_name, char *files[], size_t file_cnt)
     {
       char file_name[128];
       
-      printf("make_tar_archive: files[i] [%s]\n", files[i]);
+      printf("make_tar_archive: files[%d] [%s]\n", i, files[i]);
       strlcpy (file_name, files[i], sizeof file_name);
       if (!archive_file (file_name, sizeof file_name,
                          archive_fd, &write_error))
@@ -94,6 +94,7 @@ static bool
 archive_file (char file_name[], size_t file_name_size,
               int archive_fd, bool *write_error) 
 {
+	printf("archive_file: file_name [%s]\n", file_name);
   int file_fd = open (file_name);
   if (file_fd >= 0) 
     {
