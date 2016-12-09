@@ -300,6 +300,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 				for(i=0; i<128; i++){
 					indirect->list_sector[i] = -1;
 				}
+				printf("grow_inode: set disk_inode->list_sector[123] = %d\n", indirect_sector);
 			} else{
 				free_inode(disk_inode, curr_num_sector);
 				free(indirect);
