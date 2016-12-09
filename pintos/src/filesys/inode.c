@@ -10,9 +10,9 @@
 /* Identifies an inode. */
 #define INODE_MAGIC 0x494e4f44
 
-#define DIRECT 122
-#define SINGLE_INDIRECT 250
-#define DOUBLE_INDIRECT 16634
+#define DIRECT 123
+#define SINGLE_INDIRECT 251
+#define DOUBLE_INDIRECT 16635
 
 //void free_inode(struct inode_disk *disk_inode, off_t length);
 //bool grow_inode(struct inode_disk *disk_inode, off_t length);
@@ -250,7 +250,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 	struct cache_entry *ce;
 
 	/* direct sector */
-	if(curr_num_sector < DIRECT){
+	if(curr_num_sector < DIRECT - 1){ // curr = 122, num = 123
 		for(i = curr_num_sector; i < num_sector && i < DIRECT; i++){
 			if(free_map_allocate(1, &direct_sector)){
 //				/*
