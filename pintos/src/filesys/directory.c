@@ -302,14 +302,14 @@ dir_remove (struct dir *dir, const char *name)
 
   /* Find directory entry. */
   if (!lookup (dir, name, &e, &ofs)){
-	  printf("dir_remove: lookup fails\n");
+	  printf("dir_remove: lookup fails, name [%s]\n", name);
     goto done;
   }
 
   /* Open inode. */
   inode = inode_open (e.inode_sector);
   if (inode == NULL){
-	  printf("dir_remove: inode NULL\n");
+	  printf("dir_remove: inode NULL, name [%s]\n", name);
     goto done;
   }
 
