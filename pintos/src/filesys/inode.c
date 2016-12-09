@@ -87,6 +87,7 @@ byte_to_sector (const struct inode *inode, off_t pos)
 			*/
 //			/*
 			indirect = malloc(sizeof(struct indirect_sector));
+			ASSERT(inode->data.list_sector[123] != -1);
 			disk_read(filesys_disk, inode->data.list_sector[123], indirect);
 			disk_sector_t ret_sector = indirect->list_sector[sector-123];
 			free(indirect);
