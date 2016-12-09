@@ -312,7 +312,7 @@ dir_remove (struct dir *dir, const char *name)
   }
 
   /* Open inode. */
-  inode = inode_open (e.inode_sector/);
+  inode = inode_open (e.inode_sector);
   if (inode == NULL){
 	  printf("dir_remove: inode NULL, name [%s]\n", name);
     goto done;
