@@ -143,7 +143,7 @@ main (void)
 
   /* Finish up. */
 #ifdef FILESYS
-  cache_write_back();
+//  cache_write_back();
 #endif
   if (power_off_when_done)
     power_off ();
