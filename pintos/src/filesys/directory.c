@@ -76,6 +76,7 @@ dir_create (disk_sector_t sector, size_t entry_cnt)
 	ASSERT(dir != NULL);
 	struct dir_entry e;
 	e.inode_sector = sector;
+	e.in_use = false;
 	if(inode_write_at(dir->inode, &e, sizeof e, 0) != sizeof e){
 		success = false;
 	}
