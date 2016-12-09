@@ -577,15 +577,13 @@ bool readdir(int fd, const char* name) {
 	if(inode == NULL || !inode_is_dir(inode))
 		return false;
 
-//	struct dir *dir = pf->dir;
-	struct dir *dir = dir_open(inode);
+	struct dir *dir = pf->dir;
 	ASSERT(dir != NULL);
 	bool success = dir_readdir(dir, name);
 	if(success)
 		printf("readdir: name [%s]\n", name);
 	else
 		printf("readdir: fail\n");
-	dir_close(dir);
 	return success;
 }
 bool isdir(int fd) {
