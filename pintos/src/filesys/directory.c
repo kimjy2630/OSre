@@ -103,18 +103,23 @@ struct dir *dir_open_path(char *path){
 
 	struct dir *curr_dir;
 	if(path[0] == '/'){
+		printf("dir_open_path: absolute path");
 		curr_dir = dir_open_root();
 	} else{
 		struct thread *t = thread_current();
-		if(t->curr_dir != NULL)
+		if(t->curr_dir != NULL){
+			printf("dir_open_path: start from current path, not NULL\n");
 			curr_dir = dir_reopen(t->curr_dir);
-		else
+		}
+		else{
+			printf("dir_open_path: start from root dir");
 			curr_dir = dir_open_root();
+		}
 	}
 
 	char *token, *p;
 	for(token = strtok_r(buffer, "/", &p); token != NULL; token = strtok_r(NULL, "/", &p)){
-//		printf("dir_open_path: token [%s]\n", token);
+		printf("dir_open_path: token [%s]\n", token);
 		struct inode *inode = NULL;
 		if(!dir_lookup(curr_dir, token, &inode)){
 			dir_close(curr_dir);
