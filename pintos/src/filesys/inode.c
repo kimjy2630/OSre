@@ -221,7 +221,7 @@ bool grow_inode(struct inode_disk *disk_inode, off_t length){
 	size_t curr_num_sector = bytes_to_sectors(disk_inode->length);
 	ASSERT(num_sector < DOUBLE_INDIRECT && curr_num_sector < DOUBLE_INDIRECT);
 	int growth = num_sector - curr_num_sector;
-//	printf("grow_inode: init growth %d\n", growth);
+	printf("grow_inode: num_sector %d, curr_num_sector %d, growth %d\n", num_sector, curr_num_sector, growth);
 	int init_growth = growth;
 
 	if(growth <= 0){
