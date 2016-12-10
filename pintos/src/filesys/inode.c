@@ -7,12 +7,17 @@
 #include "filesys/free-map.h"
 #include "threads/malloc.h"
 #include "filesys/cache.h"
+#include "threads/synch.h"
+
 /* Identifies an inode. */
 #define INODE_MAGIC 0x494e4f44
 
 #define DIRECT 123
 #define SINGLE_INDIRECT 251
 #define DOUBLE_INDIRECT 16635
+
+struct condition cond_inode;
+struct lock lock_inode;
 
 //void free_inode(struct inode_disk *disk_inode, off_t length);
 //bool grow_inode(struct inode_disk *disk_inode, off_t length);
@@ -141,8 +146,10 @@ static struct list open_inodes;
 void
 inode_init (void) 
 {
-//  printf("inode_init.\n");
   list_init (&open_inodes);
+
+  cond_init(&cond_inode);
+  lock_init(&lock_inode);
 }
 
 void free_inode(struct inode_disk *disk_inode, off_t length){
@@ -631,6 +638,8 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
   off_t bytes_read = 0;
   uint8_t *bounce = NULL;
 
+  lock_acquire(&lock_inode);
+  cond_wait(&cond_inode, &lock_inode);
 	while (size > 0) {
 		/* Disk sector to read, starting byte offset within sector. */
 		disk_sector_t sector_idx = byte_to_sector(inode, offset);
@@ -639,6 +648,7 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
 		if (sector_idx == -1){
 //			printf("inode_read_at: sector_idx -1, offset %u\n", offset);
 //			printf("               return %u\n", bytes_read);
+			lock_release(&lock_inode);
 			return bytes_read;
 		}
 
@@ -692,6 +702,7 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
 	}
 	free(bounce);
 
+	lock_release(&lock_inode);
   return bytes_read;
 }
 
@@ -717,8 +728,13 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
 		  /*
 		  disk_write(filesys_disk, inode->sector, &(inode->data));
 		  */
+		  lock_acquire(&lock_inode);
+
 		  struct cache_entry *ce = cache_write(inode->sector);
 		  memcpy(ce->sector, &(inode->data), DISK_SECTOR_SIZE);
+
+		  cond_signal(&cond_inode, &lock_inode);
+		  lock_release(&lock_inode);
 	  }
 	  else{
 		  printf("inode_write_at: grow_inode fail\n");
