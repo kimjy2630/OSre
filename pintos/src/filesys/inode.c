@@ -671,8 +671,9 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
   off_t bytes_read = 0;
   uint8_t *bounce = NULL;
 
-  bool use_cond = inode->file_grow;
-//
+//  bool use_cond = inode->file_grow;
+  bool use_cond = false;
+
   if(use_cond){
 //	  inode->read_wait = true;
 
