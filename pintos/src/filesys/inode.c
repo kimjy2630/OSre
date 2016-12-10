@@ -16,15 +16,17 @@
 #define SINGLE_INDIRECT 251
 #define DOUBLE_INDIRECT 16635
 
+//void free_inode(struct inode_disk *disk_inode, off_t length);
+//bool grow_inode(struct inode_disk *disk_inode, off_t length);
+
+/*
 struct condition cond_inode;
 struct lock lock_inode;
 bool file_grow;
 bool read_wait;
 struct condition cond_read;
 struct lock lock_read;
-
-//void free_inode(struct inode_disk *disk_inode, off_t length);
-//bool grow_inode(struct inode_disk *disk_inode, off_t length);
+*/
 
 /* On-disk inode.
    Must be exactly DISK_SECTOR_SIZE bytes long. */
@@ -60,6 +62,13 @@ struct inode
     bool removed;                       /* True if deleted, false otherwise. */
     int deny_write_cnt;                 /* 0: writes ok, >0: deny writes. */
     struct inode_disk data;             /* Inode content. */
+
+    struct condition cond_inode;
+    struct lock lock_inode;
+    bool file_grow;
+    bool read_wait;
+    struct condition cond_read;
+    struct lock lock_read;
   };
 
 /* Returns the disk sector that contains byte offset POS within
@@ -151,13 +160,14 @@ void
 inode_init (void) 
 {
   list_init (&open_inodes);
-
+  /*
   cond_init(&cond_inode);
   lock_init(&lock_inode);
   file_grow = false;
   read_wait = false;
   cond_init(&cond_read);
   lock_init(&lock_read);
+  */
 }
 
 void free_inode(struct inode_disk *disk_inode, off_t length){
@@ -526,6 +536,7 @@ inode_create (disk_sector_t sector, off_t length, bool is_dir)
 
 	  free(disk_inode);
   }
+
   return success;
 }
 
@@ -561,6 +572,20 @@ inode_open (disk_sector_t sector)
   inode->open_cnt = 1;
   inode->deny_write_cnt = 0;
   inode->removed = false;
+
+//  struct condition cond_inode;
+//  struct lock lock_inode;
+//  bool file_grow;
+//  bool read_wait;
+//  struct condition cond_read;
+//  struct lock lock_read;
+  inode->file_grow = false;
+  inode->read_wait = false;
+  init_cond(&inode->cond_inode);
+  init_lock(&inode->lock_inode);
+  init_cond(&inode->cond_read);
+  init_lock(&inode->lock_read);
+
   /*
   disk_read (filesys_disk, inode->sector, &inode->data);
   */
@@ -646,12 +671,12 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
   off_t bytes_read = 0;
   uint8_t *bounce = NULL;
 
-  bool use_cond = file_grow;
+  bool use_cond = inode->file_grow;
 
   if(use_cond){
-	  lock_acquire(&lock_inode);
-	  read_wait = true;
-	  cond_wait(&cond_inode, &lock_inode);
+	  lock_acquire(&inode->lock_inode);
+	  inode->read_wait = true;
+	  cond_wait(&inode->cond_inode, &inode->lock_inode);
   }
 	while (size > 0) {
 		/* Disk sector to read, starting byte offset within sector. */
@@ -662,10 +687,10 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
 //			printf("inode_read_at: sector_idx -1, offset %u\n", offset);
 //			printf("               return %u\n", bytes_read);
 			if(use_cond){
-				lock_acquire(&lock_read);
-				cond_broadcast(&cond_read, &lock_read);
-				lock_release(&lock_read);
-				lock_release(&lock_inode);
+				lock_acquire(&inode->lock_read);
+				cond_broadcast(&inode->cond_read, &inode->lock_read);
+				lock_release(&inode->lock_read);
+				lock_release(&inode->lock_inode);
 			}
 			return bytes_read;
 		}
@@ -721,10 +746,10 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
 	free(bounce);
 
 	if(use_cond){
-		lock_acquire(&lock_read);
-		cond_broadcast(&cond_read, &lock_inode);
-		lock_release(&lock_read);
-		lock_release(&lock_inode);
+		lock_acquire(&inode->lock_read);
+		cond_broadcast(&inode->cond_read, &inode->lock_inode);
+		lock_release(&inode->lock_read);
+		lock_release(&inode->lock_inode);
 	}
   return bytes_read;
 }
@@ -746,14 +771,14 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
     return 0;
 
   if (offset+size > inode->data.length){
-		lock_acquire(&lock_inode);
-		file_grow = true;
+		lock_acquire(&inode->lock_inode);
+		inode->file_grow = true;
 
-		if (read_wait) {
-			lock_acquire(&lock_read);
-			cond_wait(&cond_read, &lock_inode);
-			read_wait = false;
-			lock_release(&lock_read);
+		if (inode->read_wait) {
+			lock_acquire(&inode->lock_read);
+			cond_wait(&inode->cond_read, &inode->lock_inode);
+			inode->read_wait = false;
+			lock_release(&inode->lock_read);
 		}
 	  if(grow_inode(&(inode->data), offset+size)){
 //		  printf("inode_write_at: grow_inode\n");
@@ -764,16 +789,16 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
 		  struct cache_entry *ce = cache_write(inode->sector);
 		  memcpy(ce->sector, &(inode->data), DISK_SECTOR_SIZE);
 
-		  cond_broadcast(&cond_inode, &lock_inode);
-		  lock_release(&lock_inode);
-		  file_grow = false;
+		  cond_broadcast(&inode->cond_inode, &inode->lock_inode);
+		  lock_release(&inode->lock_inode);
+		  inode->file_grow = false;
 	  }
 	  else{
 		  printf("inode_write_at: grow_inode fail\n");
 
-			cond_broadcast(&cond_inode, &lock_inode);
-			lock_release(&lock_inode);
-			file_grow = false;
+			cond_broadcast(&inode->cond_inode, &inode->lock_inode);
+			lock_release(&inode->lock_inode);
+			inode->file_grow = false;
 
 		  return 0;
 	  }
