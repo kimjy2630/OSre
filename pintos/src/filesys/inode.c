@@ -581,10 +581,10 @@ inode_open (disk_sector_t sector)
 //  struct lock lock_read;
   inode->file_grow = false;
   inode->read_wait = false;
-  init_cond(&inode->cond_inode);
-  init_lock(&inode->lock_inode);
-  init_cond(&inode->cond_read);
-  init_lock(&inode->lock_read);
+  cond_init(&inode->cond_inode);
+  lock_init(&inode->lock_inode);
+  cond_init(&inode->cond_read);
+  lock_init(&inode->lock_read);
 
   /*
   disk_read (filesys_disk, inode->sector, &inode->data);
