@@ -776,7 +776,7 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
   if (offset+size > inode->data.length){
 		if (inode->read_wait) {
 			lock_acquire(&inode->lock_read);
-			cond_wait(&inode->cond_read, &inode->lock_inode);
+			cond_wait(&inode->cond_read, &inode->lock_read);
 			inode->read_wait = false;
 			lock_release(&inode->lock_read);
 		}
