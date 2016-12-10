@@ -20,7 +20,8 @@ struct condition cond_inode;
 struct lock lock_inode;
 bool file_grow;
 bool read_wait;
-//struct condition cond_read;
+struct condition cond_read;
+struct lock lock_read;
 
 //void free_inode(struct inode_disk *disk_inode, off_t length);
 //bool grow_inode(struct inode_disk *disk_inode, off_t length);
@@ -155,7 +156,8 @@ inode_init (void)
   lock_init(&lock_inode);
   file_grow = false;
   read_wait = false;
-//  cond_init(&cond_read);
+  cond_init(&cond_read);
+  lock_init(&lock_read);
 }
 
 void free_inode(struct inode_disk *disk_inode, off_t length){
@@ -648,7 +650,7 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
 
   if(use_cond){
 	  lock_acquire(&lock_inode);
-//	  read_wait = true;
+	  read_wait = true;
 	  cond_wait(&cond_inode, &lock_inode);
   }
 	while (size > 0) {
@@ -660,7 +662,9 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
 //			printf("inode_read_at: sector_idx -1, offset %u\n", offset);
 //			printf("               return %u\n", bytes_read);
 			if(use_cond){
-//				cond_broadcast(&cond_read, &lock_inode);
+				lock_acquire(&lock_read);
+				cond_broadcast(&cond_read, &lock_read);
+				lock_release(&lock_read);
 				lock_release(&lock_inode);
 			}
 			return bytes_read;
@@ -717,7 +721,9 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
 	free(bounce);
 
 	if(use_cond){
-//		cond_broadcast(&cond_read, &lock_inode);
+		lock_acquire(&lock_read);
+		cond_broadcast(&cond_read, &lock_inode);
+		lock_release(&lock_read);
 		lock_release(&lock_inode);
 	}
   return bytes_read;
@@ -743,10 +749,12 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
 		lock_acquire(&lock_inode);
 		file_grow = true;
 
-//		if (read_wait) {
-//			cond_wait(&cond_read, &lock_inode);
-//			read_wait = false;
-//		}
+		if (read_wait) {
+			lock_acquire(&lock_read);
+			cond_wait(&cond_read, &lock_inode);
+			read_wait = false;
+			lock_release(&lock_read);
+		}
 	  if(grow_inode(&(inode->data), offset+size)){
 //		  printf("inode_write_at: grow_inode\n");
 		  /*
