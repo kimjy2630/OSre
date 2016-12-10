@@ -675,6 +675,7 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
 //
   if(use_cond){
 	  inode->read_wait = true;
+
 	  lock_acquire(&inode->lock_inode);
 	  cond_wait(&inode->cond_inode, &inode->lock_inode);
   }
@@ -690,6 +691,7 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
 				lock_acquire(&inode->lock_read);
 				cond_broadcast(&inode->cond_read, &inode->lock_read);
 				lock_release(&inode->lock_read);
+
 				lock_release(&inode->lock_inode);
 			}
 			return bytes_read;
@@ -749,6 +751,7 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
 		lock_acquire(&inode->lock_read);
 		cond_broadcast(&inode->cond_read, &inode->lock_inode);
 		lock_release(&inode->lock_read);
+
 		lock_release(&inode->lock_inode);
 	}
   return bytes_read;
@@ -771,15 +774,16 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
     return 0;
 
   if (offset+size > inode->data.length){
-		lock_acquire(&inode->lock_inode);
-		inode->file_grow = true;
-
 		if (inode->read_wait) {
 			lock_acquire(&inode->lock_read);
 			cond_wait(&inode->cond_read, &inode->lock_inode);
 			inode->read_wait = false;
 			lock_release(&inode->lock_read);
 		}
+
+		lock_acquire(&inode->lock_inode);
+		inode->file_grow = true;
+
 	  if(grow_inode(&(inode->data), offset+size)){
 //		  printf("inode_write_at: grow_inode\n");
 		  /*
