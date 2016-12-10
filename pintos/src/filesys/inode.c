@@ -740,18 +740,18 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
     return 0;
 
   if (offset+size > inode->data.length){
+		lock_acquire(&lock_inode);
+		file_grow = true;
+
+		if (read_wait) {
+			cond_wait(&cond_read, &lock_inode);
+			read_wait = false;
+		}
 	  if(grow_inode(&(inode->data), offset+size)){
 //		  printf("inode_write_at: grow_inode\n");
 		  /*
 		  disk_write(filesys_disk, inode->sector, &(inode->data));
 		  */
-		  lock_acquire(&lock_inode);
-		  file_grow = true;
-
-		  if(read_wait){
-			  cond_wait(&cond_read, &lock_inode);
-			  read_wait = false;
-		  }
 
 		  struct cache_entry *ce = cache_write(inode->sector);
 		  memcpy(ce->sector, &(inode->data), DISK_SECTOR_SIZE);
@@ -762,6 +762,11 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
 	  }
 	  else{
 		  printf("inode_write_at: grow_inode fail\n");
+
+			cond_broadcast(&cond_inode, &lock_inode);
+			lock_release(&lock_inode);
+			file_grow = false;
+
 		  return 0;
 	  }
   }
