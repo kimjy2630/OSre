@@ -674,7 +674,7 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
   bool use_cond = inode->file_grow;
 //
   if(use_cond){
-	  inode->read_wait = true;
+//	  inode->read_wait = true;
 
 	  lock_acquire(&inode->lock_inode);
 	  cond_wait(&inode->cond_inode, &inode->lock_inode);
