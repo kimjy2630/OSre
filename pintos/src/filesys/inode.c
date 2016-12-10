@@ -675,7 +675,7 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
 
   if(use_cond){
 	  lock_acquire(&inode->lock_inode);
-	  inode->read_wait = true;
+//	  inode->read_wait = true;
 	  cond_wait(&inode->cond_inode, &inode->lock_inode);
   }
 	while (size > 0) {
