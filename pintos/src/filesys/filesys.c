@@ -11,6 +11,8 @@
 /* The disk that contains the file system. */
 struct disk *filesys_disk;
 
+struct lock lock_filesys;
+
 static void do_format (void);
 
 /* Initializes the file system module.
@@ -29,6 +31,8 @@ filesys_init (bool format)
     do_format ();
 
   free_map_open ();
+
+  lock_init(&lock_filesys);
 }
 
 /* Shuts down the file system module, writing any unwritten data
@@ -65,6 +69,8 @@ filesys_create (const char *name, off_t initial_size, bool is_dir)
   memset(path, 0, length);
   memset(filename, 0, length);
   parse_dir(name, path, filename);
+
+  lock_acquire(&lock_filesys);
   struct dir *dir = dir_open_path(path);
   bool success = (dir != NULL
                   && free_map_allocate (1, &inode_sector)
@@ -73,6 +79,7 @@ filesys_create (const char *name, off_t initial_size, bool is_dir)
   if (!success && inode_sector != 0) 
     free_map_release (inode_sector, 1);
   dir_close (dir);
+  lock_release(&lock_filesys);
 
   return success;
 }
@@ -95,11 +102,14 @@ filesys_open(const char *name) {
 //	printf("filesys_open: before parse, path [%s], filename [%s]\n", path, filename);
 	parse_dir(name, path, filename);
 //	printf("filesys_open: name [%s], path [%s], filename [%s]\n", name, path, filename);
+	lock_acquire(&lock_filesys);
 	struct dir *dir = dir_open_path(path);
 	struct inode *inode = NULL;
 
-	if(dir == NULL)
+	if(dir == NULL){
+		lock_release(&lock_filesys);
 		return NULL;
+	}
 
 	if(strlen(filename) > 0){
 		dir_lookup(dir, filename, &inode);
@@ -110,9 +120,12 @@ filesys_open(const char *name) {
 //		printf("filesys_open: dir_get_inode dir path [%s]\n", path);
 	}
 
-	if(inode == NULL || inode_is_removed(inode))
+	if(inode == NULL || inode_is_removed(inode)){
+		lock_release(&lock_filesys);
 		return NULL;
+	}
 
+	lock_release(&lock_filesys);
 	return file_open(inode);
 
 	/*
@@ -149,18 +162,21 @@ filesys_remove (const char *name)
 	memset(filename, 0, length);
 	parse_dir(name, path, filename);
 
+	lock_acquire(&lock_filesys);
 	struct dir *dir = dir_open_path(path);
 	if(dir == NULL){
 //		printf("filesys_remove: dir_open_path(%s) fails, name [%s]\n", path, name);
+		lock_release(&lock_filesys);
 		return false;
 	}
 
 	bool success = dir_remove(dir, filename);
 	dir_close (dir);
 
-	if(!success){
+//	if(!success){
 //		printf("filesys_remove: fails with path [%s] filename[%s]\n", path, filename);
-	}
+//	}
+	lock_release(&lock_filesys);
   return success;
 }
 
