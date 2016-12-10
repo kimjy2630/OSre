@@ -649,7 +649,6 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
   if(use_cond){
 	  lock_acquire(&lock_inode);
 	  read_wait = true;
-	  cond_broadcast(&cond_read, &lock_inode);
 	  cond_wait(&cond_inode, &lock_inode);
   }
 	while (size > 0) {
@@ -660,8 +659,10 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
 		if (sector_idx == -1){
 //			printf("inode_read_at: sector_idx -1, offset %u\n", offset);
 //			printf("               return %u\n", bytes_read);
-			if(use_cond)
+			if(use_cond){
+				cond_broadcast(&cond_read, &lock_inode);
 				lock_release(&lock_inode);
+			}
 			return bytes_read;
 		}
 
@@ -715,8 +716,10 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
 	}
 	free(bounce);
 
-	if(use_cond)
+	if(use_cond){
+		cond_broadcast(&cond_read, &lock_inode);
 		lock_release(&lock_inode);
+	}
   return bytes_read;
 }
 
