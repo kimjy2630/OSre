@@ -690,9 +690,12 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
 //			printf("inode_read_at: sector_idx -1, offset %u\n", offset);
 //			printf("               return %u\n", bytes_read);
 			if(use_cond){
-				lock_acquire(&inode->lock_read);
-				cond_broadcast(&inode->cond_read, &inode->lock_read);
-				lock_release(&inode->lock_read);
+//				lock_acquire(&inode->lock_read);
+				lock_acquire(&inode->lock_inode);
+//				cond_broadcast(&inode->cond_read, &inode->lock_read);
+				cond_broadcast(&inode->cond_read, &inode->lock_inode);
+//				lock_release(&inode->lock_read);
+				lock_release(&inode->lock_inode);
 
 //				lock_release(&inode->lock_inode);
 			}
@@ -750,9 +753,12 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
 	free(bounce);
 
 	if(use_cond){
-		lock_acquire(&inode->lock_read);
-		cond_broadcast(&inode->cond_read, &inode->lock_read);
-		lock_release(&inode->lock_read);
+//		lock_acquire(&inode->lock_read);
+		lock_acquire(&inode->lock_inode);
+//		cond_broadcast(&inode->cond_read, &inode->lock_read);
+		cond_broadcast(&inode->cond_read, &inode->lock_inode);
+//		lock_release(&inode->lock_read);
+		lock_release(&inode->lock_inode);
 
 //		lock_release(&inode->lock_inode);
 	}
@@ -779,10 +785,13 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
 
   if (need_extension){
 		if (inode->read_wait) {
-			lock_acquire(&inode->lock_read);
-			cond_wait(&inode->cond_read, &inode->lock_read);
+//			lock_acquire(&inode->lock_read);
+			lock_acquire(&inode->lock_inode);
+//			cond_wait(&inode->cond_read, &inode->lock_read);
+			cond_wait(&inode->cond_read, &inode->lock_inode);
 			inode->read_wait = false;
-			lock_release(&inode->lock_read);
+//			lock_release(&inode->lock_read);
+			lock_release(&inode->lock_inode);
 		}
 
 		lock_acquire(&inode->lock_inode);
