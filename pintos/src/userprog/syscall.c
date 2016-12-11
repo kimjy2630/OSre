@@ -557,7 +557,6 @@ bool chdir(const char* dir) {
 	if(curr_dir != NULL)
 		dir_close(curr_dir);
 	thread_current()->curr_dir = dir_target;
-//	printf("chdir: change dir to [%s]\n", dir);
 	return true;
 }
 bool mkdir(const char* dir) {
@@ -580,10 +579,6 @@ bool readdir(int fd, const char* name) {
 	struct dir *dir = pf->dir;
 	ASSERT(dir != NULL);
 	bool success = dir_readdir(dir, name);
-//	if(success)
-//		printf("readdir: name [%s]\n", name);
-//	else
-//		printf("readdir: fail\n");
 	return success;
 }
 bool isdir(int fd) {

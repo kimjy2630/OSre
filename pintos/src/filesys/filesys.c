@@ -41,7 +41,6 @@ filesys_init (bool format)
 void
 filesys_done (void) 
 {
-//  cache_write_back();
   free_map_close ();
 }
 
@@ -52,15 +51,7 @@ filesys_done (void)
 bool
 filesys_create (const char *name, off_t initial_size, bool is_dir)
 {
-//	if(!is_dir){
-//		printf("filesys_create: file name [%s]\n", name);
-//	} else{
-//		printf("filesys_create: dir name [%s]\n", name);
-//	}
   disk_sector_t inode_sector = 0;
-  /*
-  struct dir *dir = dir_open_root ();
-  */
   int length = strlen(name);
   if(length == 0)
 	  return NULL;
@@ -75,8 +66,8 @@ filesys_create (const char *name, off_t initial_size, bool is_dir)
   struct dir *dir = dir_open_path(path);
   bool success = (dir != NULL
                   && free_map_allocate (1, &inode_sector)
-                  && inode_create (inode_sector, initial_size, is_dir) //
-                  && dir_add (dir, filename, inode_sector, is_dir)); //
+                  && inode_create (inode_sector, initial_size, is_dir)
+                  && dir_add (dir, filename, inode_sector, is_dir));
   if (!success && inode_sector != 0) 
     free_map_release (inode_sector, 1);
   dir_close (dir);
@@ -100,9 +91,7 @@ filesys_open(const char *name) {
 	char filename[length+1];
 	memset(path, 0, length);
 	memset(filename, 0, length);
-//	printf("filesys_open: before parse, path [%s], filename [%s]\n", path, filename);
 	parse_dir(name, path, filename);
-//	printf("filesys_open: name [%s], path [%s], filename [%s]\n", name, path, filename);
 	lock_acquire(&lock_filesys);
 	struct dir *dir = dir_open_path(path);
 	struct inode *inode = NULL;
@@ -115,10 +104,8 @@ filesys_open(const char *name) {
 	if(strlen(filename) > 0){
 		dir_lookup(dir, filename, &inode);
 		dir_close(dir);
-//		printf("filesys_open: dir_lookup dir path [%s], filename [%s]\n", path, filename);
 	} else{
 		inode = dir_get_inode (dir);
-//		printf("filesys_open: dir_get_inode dir path [%s]\n", path);
 	}
 
 	if(inode == NULL || inode_is_removed(inode)){
@@ -128,17 +115,6 @@ filesys_open(const char *name) {
 
 	lock_release(&lock_filesys);
 	return file_open(inode);
-
-	/*
-	struct dir *dir = dir_open_root();
-	struct inode *inode = NULL;
-
-	if (dir != NULL)
-		dir_lookup(dir, name, &inode);
-	dir_close(dir);
-
-	return file_open(inode);
-	*/
 }
 
 /* Deletes the file named NAME.
@@ -148,11 +124,6 @@ filesys_open(const char *name) {
 bool
 filesys_remove (const char *name) 
 {
-  /*
-  struct dir *dir = dir_open_root ();
-  bool success = dir != NULL && dir_remove (dir, name);
-  dir_close (dir);
-  */
 	int length = strlen(name);
 	if (length == 0)
 		return NULL;
@@ -166,7 +137,6 @@ filesys_remove (const char *name)
 	lock_acquire(&lock_filesys);
 	struct dir *dir = dir_open_path(path);
 	if(dir == NULL){
-//		printf("filesys_remove: dir_open_path(%s) fails, name [%s]\n", path, name);
 		lock_release(&lock_filesys);
 		return false;
 	}
@@ -174,9 +144,6 @@ filesys_remove (const char *name)
 	bool success = dir_remove(dir, filename);
 	dir_close (dir);
 
-//	if(!success){
-//		printf("filesys_remove: fails with path [%s] filename[%s]\n", path, filename);
-//	}
 	lock_release(&lock_filesys);
   return success;
 }
